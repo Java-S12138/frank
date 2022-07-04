@@ -2,7 +2,10 @@
 
 <img src="https://cdn.nlark.com/yuque/0/2022/png/29483996/1656926658431-4b200ede-3cde-46a9-bbef-a8200e33de90.png" height="400" /> 
 
-> ❤️ [使用教程](https://www.yuque.com/java-s/frank/introduction) 🫰 [提供建议](https://www.yuque.com/java-s/frank/proposal) 🚨[反馈BUG](https://www.yuque.com/java-s/frank/bug)
+> ❤️ [使用教程](https://www.yuque.com/java-s/frank/introduction) 
+🫰 [提供建议](https://www.yuque.com/java-s/frank/proposal) 
+🚨[反馈BUG](https://www.yuque.com/java-s/frank/bug)
+🚩[软件下载](https://www.yuque.com/java-s/frank/introduction#dZwDV) 
 
 ## 项目介绍
 > Frank是一款基于Electron18+Vue3, 开发的一款桌面应用程序,主要功能如下所示:
