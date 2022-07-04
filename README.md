@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Frank Project Introduction
 
 <img src="https://cdn.nlark.com/yuque/0/2022/png/29483996/1656926658431-4b200ede-3cde-46a9-bbef-a8200e33de90.png" height="400" /> 
@@ -87,3 +88,5 @@ project
         │
         └─render 渲染进程工具函数
 ```
+=======
+>>>>>>> main
