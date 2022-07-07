@@ -20,8 +20,8 @@
 ```
 yarn install
 
-若安装失败，请尝试更换国内 npm 源后重试，更换淘宝 nmp 源：
-yarn config set ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/
+若安装失败，请尝试更换国内 npm 源后重试，更换淘宝 npm 源：
+yarn config set ELECTRON_MIRROR https://npmmirror.com/
 ```
 
 ## 启动项目
