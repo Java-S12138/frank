@@ -2,19 +2,14 @@
   <div class="mainCard">
     <n-card class="boxShadow">
       <n-space vertical :size="[2,20]">
-        <n-space class="alignCent" justify="space-between">
-          <n-tag :bordered="false">首页数据</n-tag>
-
-          <n-radio-group :default-value="homeWay"
-                         style="display: flex;width: 218px;justify-content: space-between"
-                         name="radiobuttongroup" size="medium">
-            <n-radio
-              :value="showHomeDataWay[0].label" @click="changeHomeShowWay(showHomeDataWay[0].label)">数据抓取
-            </n-radio>
-            <n-radio
-              :value="showHomeDataWay[1].label" @click="changeHomeShowWay(showHomeDataWay[1].label)">本地获取
-            </n-radio>
-          </n-radio-group>
+        <!--        是否推荐frank-->
+        <n-space>
+          <n-tag :bordered="false">是否推荐</n-tag>
+          <n-space justify="space-between" style="width: 214px">
+            <n-tag :bordered="false" style="width: 140px;">聊天界面推荐Frank</n-tag>
+            <n-switch v-model:value="isRecommend" @click="changeRecommend"
+                      style="margin-left:22px;margin-top: 3px"/>
+          </n-space>
         </n-space>
         <n-space>
           <n-tag :bordered="false">秒选英雄</n-tag>
@@ -46,12 +41,12 @@
           <n-switch v-model:value="isAutoBan" @click="changeBan"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
+
         <n-space>
           <n-tag :bordered="false">秒接对局</n-tag>
           <n-slider v-model:value="isAccept" :step="10" @update:value="handleUpdateAccept"
                     style="width: 213px;margin-top: 5px"/>
         </n-space>
-
         <n-space class="alignCent">
           <n-tag :bordered="false">下载符文</n-tag>
           <n-tag :bordered="false" type="success"
@@ -62,34 +57,74 @@
           </n-button>
 
         </n-space>
+
+        <n-space>
+          <n-tag :bordered="false">默认设置</n-tag>
+            <n-popconfirm
+              @positive-click="toReset"
+              positive-text="确认"
+              negative-text="取消"
+              :show-icon="false"
+            >
+              <template #trigger>
+                <n-button size="small" type="success" style="width: 214px;"
+                          secondary>点击恢复默认设置
+                </n-button>
+              </template>
+              一切都将一去杳然
+            </n-popconfirm>
+        </n-space>
+
+
+
+
         <n-space class="alignCent">
-          <n-tag :bordered="false">安装目录</n-tag>
-          <n-button size="small" type="success" v-if="!isExist"
-                    dashed @click="getGameDirectory">点击获取LOL安装目录
-          </n-button>
-          <n-tag v-else :bordered="false" type="success" >
-            <n-ellipsis style="max-width: 200px" :tooltip="false">
-              {{ directory }}
-            </n-ellipsis>
-          </n-tag>
+          <n-tag :bordered="false">运行文件</n-tag>
+
+          <n-popover trigger="hover" v-if="!isExist">
+            <template #trigger>
+              <n-button size="small" type="success"
+                        dashed @click="getGameDirectory" style="width: 214px">
+                <input type="file" id="file" hidden>
+                选择LOL启动文件 Client.exe
+              </n-button>
+            </template>
+            <span>例如 C:\LOL\英雄联盟\TCLS\Client.exe</span>
+          </n-popover>
+
+          <n-popover trigger="hover" v-else>
+            <template #trigger>
+              <n-tag  :bordered="false" type="success" @click="getGameDirectory" >
+                <input type="file" id="file" hidden>
+                <n-ellipsis style="max-width: 200px" :tooltip="false">
+                  {{ directory }}
+                </n-ellipsis>
+              </n-tag>
+            </template>
+          <span>再次点击可重新设置</span>
+          </n-popover>
+
         </n-space>
         <n-space>
           <n-tag :bordered="false">回到首页</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
-                    secondary @click="toHomePage">因为热爱 所有联盟 BY: Java_S
+                    secondary @click="toHomePage">因为热爱 所以联盟 BY: Java_S
           </n-button>
         </n-space>
+
+
       </n-space>
     </n-card>
+
+
   </div>
 </template>
 
 <script>
 import {
-  NCard, NSpace, NTag, NButton, NEllipsis, NAlert, NSpin,
-  NSelect, NSwitch, NSlider, useMessage, NRadioGroup, NRadio
+  NCard, NSpace, NTag, NButton, NEllipsis, NAlert, NSpin,NPopover,
+  NSelect, NSwitch, NSlider, useMessage,NPopconfirm
 } from 'naive-ui'
-import {ipcRenderer} from 'electron'
 import {mapNameFromUrl, optionsChampion} from '@/utils/render/lolDataList'
 import {ref,onMounted} from "vue";
 import {appConfig} from "@/utils/main/config"
@@ -101,13 +136,14 @@ export default {
   name: "setting",
   components: {
     NCard, NSpace, NTag, NButton, NSlider, NAlert, NSpin,
-    NEllipsis, NSelect, NSwitch, NRadioGroup, NRadio
+    NEllipsis, NSelect, NSwitch,NPopover,NPopconfirm
   },
   setup() {
     let isExist = ref(false)
     let directory = ref('')
     const store = useStore()
     let isAutoPick = ref(appConfig.get('autoPickChampion.isAuto'))
+    let isRecommend = ref(appConfig.get('isRecommend'))
     let pickChampion = ref(appConfig.get('autoPickChampion.championId'))
     const optionsChampionPick = optionsChampion
     let isAutoBan = ref(appConfig.get('autoBanChampion.isAuto'))
@@ -115,17 +151,8 @@ export default {
     const optionsChampionBan = optionsChampion
     let isAccept = ref(appConfig.get('autoAccept'))
     const message = useMessage()
-    let homeWay = ref(appConfig.get('homeShowWay'))
     let currentDowChamp = ref('一键导入符文到本地 OP.GG')
-    let showHomeDataWay = [
-      {
-        value: "网页抓取",
-        label: "web"
-      },
-      {
-        value: "本地获取",
-        label: "local"
-      }]
+
     let countShow = 0
     let messageReactive = null
     let haveLocalRune = ref(appConfig.get('haveLocalRune'))
@@ -181,17 +208,16 @@ export default {
     }
     // 获取英雄联盟客户端安装路径
     const getGameDirectory = () => {
-      ipcRenderer.send('get-game-directory')
-      ipcRenderer.once('reply-game-directory', (e, res) => {
-        if (res != 'error-unstart') {
-          appConfig.set('gameDirectory', res)
-          directory.value = res
-          isExist.value = true
-        } else {
-          message.error('英雄联盟客户端未启动 !')
-        }
+      const fu = document.getElementById('file')
+      fu.click()
+      fu.addEventListener('change', (event) => {
+        const files = event.target.files[0].path
+        appConfig.set('gameDirectory',files)
+        directory.value = files
+        isExist.value = true
       })
     }
+
     // 设置是否自动选择英雄
     const changePick = () => {
       if (appConfig.get('autoPickChampion.isAuto') != true) {
@@ -200,6 +226,15 @@ export default {
         appConfig.set('autoPickChampion.isAuto', false)
       }
     }
+    // 设置是否向队友推荐frank
+    const changeRecommend = () => {
+      if (appConfig.get('isRecommend') != true) {
+        appConfig.set('isRecommend', true)
+      } else {
+        appConfig.set('isRecommend', false)
+      }
+    }
+
     // 设置是否自动禁用英雄
     const changeBan = () => {
       if (appConfig.get('autoBanChampion.isAuto') != true) {
@@ -220,24 +255,24 @@ export default {
     const handleUpdateAccept = () => {
       appConfig.set('autoAccept', isAccept.value)
     }
-    // 改变首页数据获取获取方式
-    const changeHomeShowWay = (way) => {
-      countShow += 1
-      if (countShow == 1) {
-        appConfig.set('homeShowWay', way)
-        location.reload()
-      }
-    }
+
     // 回到首页
     const toHomePage = () => {
       store.pageIncrease()
     }
 
+    // 恢复默认设置
+    const toReset = async () => {
+      message.success('设置已恢复默认, 建议重启Frank')
+      appConfig.clear()
+    }
+
+
     return {
-      isExist, directory, optionsChampionPick, isAutoPick, pickChampion, haveLocalRune,
-      optionsChampionBan, isAutoBan, banChampion, isAccept, showHomeDataWay, homeWay, currentDowChamp,
+      isExist, directory, optionsChampionPick, isAutoPick, pickChampion, haveLocalRune, optionsChampionBan,
+      isAutoBan, banChampion, isAccept, currentDowChamp,isRecommend,
       getGameDirectory, changePick, handleUpdatePick, changeBan, handleUpdateBan, handleUpdateAccept,
-      changeHomeShowWay, toHomePage, runDowRuneMission
+      toHomePage, runDowRuneMission,toReset,changeRecommend
     }
 
   }

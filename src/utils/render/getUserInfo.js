@@ -81,12 +81,12 @@ async function getCarryChamp(url) {
 }
 
 export async function getRealPower(){
-
   const html = await getHtml("https://www.lolzhushou.com/analyse_ability_lcu.php")
   const $ = cheerio.load(html);
   if (html.indexOf('游戏ID不存在') != -1) {
     const realPower = ["召唤师不存在 (或使用了本地获取数据)","width: 50%","逆天","width: 50%","逆天","width: 50%","异常",
       "width: 50%","逆天","width: 50%","逆天"]
+
     return realPower
   }
   let realPower = ["经系统分析 你的真实段位为  "+$('body > div.ability > div > div.conclusion > p:nth-child(1) > span').text()]

@@ -11,21 +11,21 @@ export const appConfig = new Store({
       isAuto:false
     },
     'autoBanChampion':{
-      championId:0,
+      championId:"101",
       isAuto:false
     },
     'autoRune':{},
-    'credentials':'',
+    'credentials':{"port": ""},
     'gameDirectory':'',
     'autoAccept':50,
     'topHorse' :'#7BD9A5',
     'midHorse' :'#F9C97D',
     'bottomHorse' :'#77C1F7',
     'trashHorse' :'#F17D7D',
-    'homeShowWay':'web',
     'haveLocalRune':false,
-    'runesVersion':'12.12.1-v1656323450582',
-    'frankVersion':'1.1.1212'
+    'runesVersion':'12.12.1-v1657187610324',
+    'frankVersion':'1.11.1212',
+    'isRecommend':true
   }
 })
 
