@@ -1,5 +1,3 @@
-# Frank Project Introduction
-
 <img src="https://cdn.nlark.com/yuque/0/2022/png/29483996/1656926658431-4b200ede-3cde-46a9-bbef-a8200e33de90.png" height="400" /> 
 
 > ❤️ [使用教程](https://www.yuque.com/java-s/frank/introduction) 
@@ -8,30 +6,30 @@
 🚩[软件下载](https://www.yuque.com/java-s/frank/introduction#dZwDV) 
 
 ## 项目介绍
-> Frank是一款基于Electron18+Vue3, 开发的一款桌面应用程序,主要功能如下所示:
+> Frank基于[Electron](https://github.com/electron/electron)与[Vue3](https://github.com/vuejs/core)开发, 主要功能如下所示:
 
-💡 	自动启动游戏|隐藏分查询|真实实力分析|秒选英雄|秒禁英雄|自动接受对局|国服数据排行榜
+💡 	自动启动游戏 | 隐藏分查询 | 真实实力分析 | 秒选英雄 | 秒禁英雄 | 自动接受对局 | 国服数据排行榜
 
-💡	查看英雄对位压制|查看英雄优势对线|符文配置|自动配置符文|匹马信息可视化展示
+💡	查看英雄对位压制 | 查看英雄优势对线 | 符文配置 | 自动配置符文 | 匹马信息可视化展示
 
-💡	发送匹马信息到聊天界面|查看召唤师战绩|查看召唤师绝活英雄|查看召唤师战绩详情
+💡	发送匹马信息到聊天界面 | 查看召唤师战绩 | 查看召唤师绝活英雄 | 查看召唤师战绩详情
 
 
 
-## Project setup
+## 安装项目
 ```
 yarn install
 
-electron 可能会安装失败, 执行下列命令后, 再次执行yarn install
+若安装失败，请尝试更换国内 npm 源后重试，更换淘宝 nmp 源：
 yarn config set ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/
 ```
 
-### 启动项目
+## 启动项目
 ```
 yarn electron:serve
 ```
 
-### 编译项目
+## 编译项目
 ```
 yarn electron:build
 ```
