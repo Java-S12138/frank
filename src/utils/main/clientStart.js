@@ -43,7 +43,7 @@ export const getAuthFromCmd = async () => {
 
 export const startClientExe = (exe) => {
   execCmd(
-    'start '+exe,
+    `start "" "${exe}"`,
     false,
   )
 }
