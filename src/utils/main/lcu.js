@@ -3,19 +3,7 @@ import {appConfig} from './config'
 import {getGameScore} from "@/utils/main/gameScore";
 import {champDict} from "@/utils/render/lolDataList";
 
-// 获取游戏安装目录
-export const getGameDirectory = async () => {
-  try {
-    const response = await createHttp1Request({
-      method: 'GET',
-      url: '/data-store/v1/install-dir'
-    }, appConfig.get('credentials'))
-    return response
-  }catch (e) {
-    return null
-  }
 
-}
 //选择或者禁用英雄共用函数
 const champSelectPatchAction = async (credentials, actionID, champId, type) => {
   let localBody = {

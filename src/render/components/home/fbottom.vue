@@ -4,7 +4,7 @@
       <n-space justify="center">
         <n-space :size="[30]" justify="center" style="margin-top: 10px;margin-bottom: 0px">
           <n-button text>
-            <n-popover trigger="hover" :show-arrow="false" placement="top-start" >
+            <n-popover trigger="hover" :show-arrow="false" >
             <template #trigger>
               <n-icon size="20" @click="openGithub">
                 <BrandGithub></BrandGithub>
@@ -24,7 +24,7 @@
           </n-popover>
           </n-button>
           <n-button text>
-            <n-popover trigger="hover" :show-arrow="false" placement="top-end" >
+            <n-popover trigger="hover" :show-arrow="false" >
             <template #trigger>
               <n-icon size="20" @click="openFrank">
                 <Help></Help>
@@ -34,7 +34,7 @@
           </n-popover>
           </n-button>
           <n-button text v-if="showPopover">
-            <n-popover  trigger="hover" :show-arrow="false" placement="top" >
+            <n-popover  trigger="hover" :show-arrow="false">
             <template #trigger>
               <n-icon size="20" @click="openUpdate"
                        color="green">
@@ -45,7 +45,7 @@
             </n-popover>
           </n-button>
           <n-button text v-else>
-            <n-popover  trigger="hover" :show-arrow="false" placement="top" >
+            <n-popover  trigger="hover" :show-arrow="false">
               <template #trigger>
                 <n-icon size="20">
                   <ArrowUpCircle></ArrowUpCircle>
@@ -87,18 +87,19 @@ export default {
       }
     })
     const openUpdate = () => {
-      shell.openExternal('https://syjun.vip')
-      appConfig.set('frankVersion', frankVersion)
+      shell.openExternal('https://wwi.lanzoup.com/b01bvyhuf')
+      appConfig.set('frankVersion', frankVersion.value)
+      showPopover.value = false
     }
 
     const openGithub = () => {
-      shell.openExternal('https://syjun.vip')
+      shell.openExternal('https://github.com/java-S12138/frank')
     }
     const openSyjun = () => {
       shell.openExternal('https://syjun.vip')
     }
     const openFrank = () => {
-      shell.openExternal('https://syjun.vip')
+      shell.openExternal('https://www.yuque.com/java-s/frank')
     }
 
     return {
