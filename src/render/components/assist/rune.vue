@@ -177,11 +177,14 @@ export default {
           pageStart = 0
           pageEnd = runeDataList.length > 4 ? 4 : runeDataList.length
           runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
-          if (appConfig.has(`autoRune.${currentChamp.value}`)) {
-            sendMessageToChat(appConfig.get('credentials'),
-              `Frank 一款全新的LOL助手软件\n${champDict[currentChamp.value].label}的符文 由Frank自动配置成功!\n了解更多功能: https://www.yuque.com/java-s/frank`)
+          if (appConfig.has(`autoRune.${currentChamp.value}`) ) {
             message.success('自动配置符文成功')
+            if (appConfig.get('isRecommend')){
+              sendMessageToChat(appConfig.get('credentials'),
+                `一款全新的LOL助手软件 永久免费\n${champDict[currentChamp.value].label}的符文 由Frank自动配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
+            }
           }
+
           loading.value = false
         } catch (e) {
           console.log(e)
@@ -231,10 +234,12 @@ export default {
         tempData.name = data.alias + ' Powered By Frank'
         ipcRenderer.send('apply-rune-page', JSON.parse(JSON.stringify(tempData)))
         message.success('符文配置成功')
-        console.log(mapNameFromUrl[data.alias].label)
-        sendMessageToChat(appConfig.get('credentials'),
-          `Frank 一款全新的LOL助手软件\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://yuque.comm/java-s/frank`)
-      } catch (e) {
+        if (appConfig.get('isRecommend')){
+          sendMessageToChat(appConfig.get('credentials'),
+            `一款全新的LOL助手软件 永久免费\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
+          }
+        }
+         catch (e) {
         message.error('符文配置失败')
       }
     }

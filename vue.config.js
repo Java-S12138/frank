@@ -14,12 +14,14 @@ module.exports = defineConfig({
       builderOptions: {
         "productName": "Frank",
         "appId": "com.frank.app",
-        "copyright": "Java_S",
+        "copyright": "Copyright © 2022 Java_S",
         extraResources: [
           {from:'./resources',to:'./resources'}],
         win: {
-          "icon": "./resources/app-icon.png",
-          "requestedExecutionLevel": "requireAdministrator"
+          "icon": "./resources/app-icon.png"
+        },
+        "nsis": {
+          "runAfterFinish":false
         },
       },
     },

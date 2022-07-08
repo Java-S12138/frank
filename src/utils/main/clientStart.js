@@ -37,7 +37,7 @@ export const getAuthFromCmd = async () => {
         }
     } catch (err) {
         console.error(`[cmd] `, '英雄联盟 进程未启动')
-        return null
+        return {'port': ''}
     }
 }
 

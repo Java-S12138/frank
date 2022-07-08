@@ -23,7 +23,7 @@
 yarn install
 
 electron 可能会安装失败, 执行下列命令后, 再次执行yarn install
-yarn config set ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/
+yarn config set ELECTRON_MIRROR https://npmmirror.com/mirrors/electron/
 ```
 
 ### 启动项目

@@ -1,49 +1,62 @@
 <template>
   <div style="margin-top: 12px">
     <n-space vertical >
-      <n-tag :bordered="false" type="success">
-         {{realPowerList[0]}}
-      </n-tag>
-      <div>
-        <n-space class="addMargin" v-for="(index,key) in [1,3,5,7,9]">
-          <div :class="'img'+key"></div>
-          <div class="content">
-            <div class="item">
-              <div class="progress">
-                <div class="progress-percentage">{{realPowerList[index+1] }}</div>
-                <div class="progress-bar">
-                  <div :class="'progress-inner progress-inner-'+key" :style=realPowerList[index] style= "margin-left: 8px"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </n-space>
-      </div>
+      <n-space>
+        <n-tag :bordered="false" type="success">
+          {{summonerHonor[0]}}
+        </n-tag>
+        <n-tag :bordered="false" type="warning">
+          {{summonerHonor[1]}}
+        </n-tag>
+      </n-space>
+
+      <n-list  >
+        <n-scrollbar style="max-height: 175px">
+          <n-list-item v-for="chapm in summonerChapmLevel">
+            <n-space style="align-items: center">
+              <n-avatar
+                round
+                :bordered="false"
+                :size="50"
+                :src="chapm[0]"
+                fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+              />
+              <n-tag :bordered="false" style="color: #9aa4af">
+                英雄等级 {{ chapm[1] }}
+              </n-tag>
+              <n-tag :bordered="false" style="color: #9aa4af">
+                英雄熟练度 {{chapm[2]}}
+              </n-tag>
+            </n-space>
+          </n-list-item>
+        </n-scrollbar>
+      </n-list>
     </n-space>
   </div>
 </template>
 
 <script>
 import {
-  NCard, NAvatar, NSpace, NTag, NModal,
-  NInput, NButton, NSelect, NPopover, NList, NListItem, useMessage
+  NSpace, NTag, NList, NListItem,NAvatar,NScrollbar
 } from 'naive-ui'
-import {getRealPower} from '../../../utils/render/getUserInfo'
-import {ref,} from "vue"
+import {ref,onMounted} from "vue"
+import {queryCurrentChapm, querySummonerHonorLevel} from "@/utils/render/renderLcu";
 
 export default {
   name: "realPower",
-  components: {
-    NCard, NAvatar, NSpace, NTag, NModal,
-    NInput, NButton, NSelect, NPopover, NList, NListItem, useMessage
-  },
+  components: {NSpace, NTag, NList, NListItem,NAvatar,NScrollbar},
   setup(){
-    let realPowerList = ref([])
-    getRealPower().then((res) => {
-      realPowerList.value = res
+    let summonerHonor = ref([])
+    let summonerChapmLevel = ref([])
+    onMounted(async () => {
+      const honorData = await querySummonerHonorLevel()
+      if (honorData !=null){
+        summonerHonor.value = honorData
+        summonerChapmLevel.value = await queryCurrentChapm(0,15)
+      }
     })
     return {
-      realPowerList
+      summonerHonor,summonerChapmLevel
     }
   }
 }
@@ -51,7 +64,5 @@ export default {
 
 <style scoped>
 @import url("../../assets/css/realPowerCss.css");
-.addMargin {
-  margin-bottom: 3px !important;
-}
+
 </style>

@@ -227,7 +227,10 @@ export default ({
           最近战绩:${summonerData['kdaHistory'][i]}`
           sendMessage += sendInfo + '\n'+'--------------------------------------------------------------------------------'+'\n'
       }
-      sendMessage += 'Frank 一款全新的LOL助手软件\n秒选英雄|战绩查询|符文配置|国服数据\n了解更多功能: https://syjun.vip'
+      if (appConfig.get('isRecommend')){
+        sendMessage += 'Frank 一款全新的LOL助手软件 永久免费\n秒选英雄|战绩查询|符文配置|国服数据\n了解更多功能: https://cdn.syjun.vip/frank.html'
+      }
+
       sendMessageToChat(appConfig.get('credentials'),sendMessage)
       isSend.value = true
     }
