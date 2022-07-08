@@ -23,8 +23,8 @@ export const appConfig = new Store({
     'bottomHorse' :'#77C1F7',
     'trashHorse' :'#F17D7D',
     'haveLocalRune':false,
-    'runesVersion':'12.12.1-v1657187610324',
-    'frankVersion':'1.11.1212',
+    'runesVersion':'12.12.1-v1657244050166',
+    'frankVersion':'1.122.1212',
     'isRecommend':true
   }
 })

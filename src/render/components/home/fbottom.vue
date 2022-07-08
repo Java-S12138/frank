@@ -87,7 +87,7 @@ export default {
       }
     })
     const openUpdate = () => {
-      shell.openExternal('https://wwi.lanzoup.com/b01bvyhuf')
+      shell.openExternal('https://www.yuque.com/java-s/frank/update')
       appConfig.set('frankVersion', frankVersion.value)
       showPopover.value = false
     }

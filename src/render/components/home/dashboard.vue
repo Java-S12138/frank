@@ -69,7 +69,8 @@ export default {
     const handldDrge = (pos) =>{
       ipcRenderer.send('move-main',{
         x:pos.x,
-        y:pos.y
+        y:pos.y,
+        isWindow:'home'
       })
     }
 
@@ -85,13 +86,13 @@ export default {
       ipcRenderer.send('mainwin-close')
     }
 
-    ipcRenderer.once('client-connect-success',(event,res)  => {
+    ipcRenderer.once('client-connect-success',()  => {
       isConnectSuccess.value = true
       // 如果英雄联盟客户端是在Frank之后启动
-      // 那么在与客户端连成功后 判断首页的显示方式 如果是本地获取 那么需要刷新一次首页获取数据
-      if (res == 'noClient' && appConfig.get('homeShowWay')=='local'){
-        location.reload()
-      }
+      // 那么在与客户端连成功后 需要刷新一次首页获取数据
+        setTimeout(() => {
+          location.reload()
+        },2000)
     })
 
     return {

@@ -162,7 +162,9 @@ export default {
           // let runeData = JSON.parse(fs.readFileSync(`${appConfig.get('gameDirectory')}\\runePage\\${currentChampAlias.value}.json`, 'utf-8'))
 
           if (appConfig.get('haveLocalRune')==true){
-            runeData = JSON.parse(fs.readFileSync(`${appConfig.get('gameDirectory')}\\runes\\${currentChampAlias.value}.json`, 'utf-8'))
+            let lolClientDir = appConfig.get('gameDirectory')
+            lolClientDir = lolClientDir.replace('\\Client.exe','')
+            runeData = JSON.parse(fs.readFileSync(`${lolClientDir}\\runes\\${currentChampAlias.value}.json`, 'utf-8'))
           }else {
             runeData = (await request({
               url: `https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`,

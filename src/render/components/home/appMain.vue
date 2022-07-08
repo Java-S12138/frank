@@ -125,7 +125,7 @@ export default {
     let switchButton = ref(1)
 
     const message = useMessage()
-    querySummonerHonorLevel()
+
     onMounted(() => {
       // 监听是否获取到英雄联盟客户端信息
       ipcRenderer.once('client-starting',()=>{
@@ -135,12 +135,10 @@ export default {
       })
       getDataLocal()
     })
-    // 本地获取数据时
+    // 本地获取数据
     const getDataLocal = async () => {
-      const allList =await returnRankData()
-      if (allList == null){
-        return
-      }
+      const allList = await returnRankData()
+      if (allList == null){return}
       rankData.value = allList.rank
       carryData.value = allList.carry
     }

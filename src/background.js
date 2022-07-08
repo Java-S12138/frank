@@ -147,7 +147,11 @@ function listenIpc() {
   })
   // 移动窗口  主窗口
   ipcMain.on('move-main', (event, pos) => {
-    mainWindow.setBounds({ x: pos.x, y: pos.y, width: 400, height: 650 })
+    if (pos.isWindow=='home'){
+      mainWindow.setBounds({ x: pos.x, y: pos.y, width: 400, height: 650 })
+    }else {
+      mainWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
+    }
   })
   // 移动助手窗口
   ipcMain.on('move-assistWindow', (event, pos) => {
@@ -247,9 +251,9 @@ function showAssistWindow() {
   }
 }
 
-const runLcu = async (isClient) => {
+const runLcu = async () => {
   const ws = await createWebSocketConnection(credentials)
-  mainWindow.webContents.send('client-connect-success',isClient)
+  mainWindow.webContents.send('client-connect-success')
   let idSetInterval
 
   ws.subscribe('/lol-gameflow/v1/gameflow-phase', async (data) => {
@@ -315,7 +319,7 @@ const startClient = async () => {
               credentials = res
               appConfig.set('credentials',credentials)
               setTimeout(() => {
-                runLcu('noClient')
+                runLcu()
               },3000)
             }
           })
@@ -324,7 +328,7 @@ const startClient = async () => {
     }else {
       credentials = res
       appConfig.set('credentials',res)
-      runLcu('onClient')
+      runLcu()
     }
   })
 }

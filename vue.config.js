@@ -21,7 +21,8 @@ module.exports = defineConfig({
           "icon": "./resources/app-icon.png"
         },
         "nsis": {
-          "runAfterFinish":false
+          "runAfterFinish":false,
+
         },
       },
     },

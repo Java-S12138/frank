@@ -209,7 +209,8 @@ export default ({
     const handleChangePosition = (pos) => {
       ipcRenderer.send('move-main', {
         x: pos.x,
-        y: pos.y
+        y: pos.y,
+        isWindow:'horse'
       })
     }
     const toHomePage = () => {

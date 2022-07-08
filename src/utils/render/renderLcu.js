@@ -48,9 +48,15 @@ const queryCurrentRankPoint = async () => {
     method:"GET",
     url:'/lol-ranked/v1/current-ranked-stats'
   },credentials)).json().queues
-  let RANKED_SOLO =  rankPoint[0].tier =="NONE" ? '未定级': `${englishToChinese(rankPoint[0].tier)} ${rankPoint[0].division} ${rankPoint[0].leaguePoints}胜点`
-  let RANKED_FLEX_SR =  rankPoint[1].tier =="NONE" ? '未定级':`${englishToChinese(rankPoint[1].tier)} ${rankPoint[1].division} ${rankPoint[1].leaguePoints}胜点`
-  let RANKED_TFT =  rankPoint[2].tier =="NONE" ? '未定级':`${englishToChinese(rankPoint[2].tier)} ${rankPoint[2].division} ${rankPoint[2].leaguePoints}胜点`
+  // 单双排位/ 灵活排位/ 云顶之亦
+  let rankSolo = rankPoint.find((i) => i.queueType=="RANKED_SOLO_5x5")
+  let rankSr = rankPoint.find((i) => i.queueType=="RANKED_FLEX_SR")
+  let rankTft = rankPoint.find((i) => i.queueType=="RANKED_TFT")
+
+  let RANKED_SOLO =  rankSolo.tier =="NONE" ? '未定级': `${englishToChinese(rankSolo.tier)}${rankSolo.division} ${rankSolo.leaguePoints} 胜点`
+  let RANKED_FLEX_SR =  rankSr.tier =="NONE" ? '未定级':`${englishToChinese(rankSr.tier)}${rankSr.division} ${rankSr.leaguePoints} 胜点`
+  let RANKED_TFT =  rankTft.tier =="NONE" ? '未定级':`${englishToChinese(rankTft.tier)}${rankTft.division} ${rankTft.leaguePoints} 胜点`
+
   return [RANKED_SOLO,RANKED_FLEX_SR,RANKED_TFT]
 }
 
