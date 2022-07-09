@@ -139,49 +139,64 @@ export default {
     const message = useMessage()
 
     ipcRenderer.on('current-champ-select', (event, data) => {
-      if (data == 0 || data == undefined) {
+      if (data.champId == 0 || data.champId == undefined) {
         return
       }
-      if (data != currentChamp.value) {
+      if (data.champId != currentChamp.value) {
         runeDataList = []
         count = 0
-        isAutoRune.value = appConfig.has(`autoRune.${data}`) == true ? 'auto' : 0
+        isAutoRune.value = appConfig.has(`autoRune.${data.champId}`) == true ? 'auto' : 0
       }
       count += 1
-      currentChamp.value = data
-      mapChamp(data)
-      getRuneData()
+      currentChamp.value = data.champId
+      mapChamp(data.champId)
+      getRuneData(data.mode)
     })
 
-    const getRuneData = async () => {
+    const getRuneData = async (gameMode) => {
       if (limitCount == count) {
         ipcRenderer.send('show-assistWindow', currentChamp.value)
         let runeData
         try {
           // ${currentChampAlias.value}
           // let runeData = JSON.parse(fs.readFileSync(`${appConfig.get('gameDirectory')}\\runePage\\${currentChampAlias.value}.json`, 'utf-8'))
-
-          if (appConfig.get('haveLocalRune')==true){
-            runeData = JSON.parse(fs.readFileSync(`${appConfig.get('gameDirectory')}\\runes\\${currentChampAlias.value}.json`, 'utf-8'))
+          // if (appConfig.get('haveLocalRune')==true){
+          //   let lolClientDir = appConfig.get('gameDirectory')
+          //   lolClientDir = lolClientDir.replace('\\Client.exe','')
+          //   runeData = JSON.parse(fs.readFileSync(`${lolClientDir}\\runes\\${currentChampAlias.value}.json`, 'utf-8'))
+          // }else {
+          // }
+          if (gameMode == 'aram'){
+            runeData = (await request({
+              url: `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`,
+              method: 'GET',
+            })).data
           }else {
             runeData = (await request({
               url: `https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`,
               method: 'GET',
             })).data
           }
+
           for (const runeDatum of runeData) {
             for (const rune of runeDatum.runes) {
+              if (gameMode == 'aram'){
+                rune.position = 'aram'
+              }
               runeDataList.push(rune)
             }
           }
           pageStart = 0
           pageEnd = runeDataList.length > 4 ? 4 : runeDataList.length
           runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
-          if (appConfig.has(`autoRune.${currentChamp.value}`)) {
-            sendMessageToChat(appConfig.get('credentials'),
-              `Frank 一款全新的LOL助手软件\n${champDict[currentChamp.value].label}的符文 由Frank自动配置成功!\n了解更多功能: https://www.yuque.com/java-s/frank`)
+          if (appConfig.has(`autoRune.${currentChamp.value}`) ) {
             message.success('自动配置符文成功')
+            if (appConfig.get('isRecommend')){
+              sendMessageToChat(appConfig.get('credentials'),
+                `一款全新的LOL助手软件 永久免费\n${champDict[currentChamp.value].label}的符文 由Frank自动配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
+            }
           }
+
           loading.value = false
         } catch (e) {
           console.log(e)
@@ -198,25 +213,20 @@ export default {
     }
     // 获取位置信息
     const getPosition = (pos) => {
-      let position
       switch (pos) {
         case 'middle':
-          position = '中单';
-          break;
+          return '中单';
         case 'top':
-          position = '上单';
-          break;
+          return '上单';
         case 'support':
-          position = '辅助';
-          break;
+          return '辅助';
         case 'jungle':
-          position = '打野';
-          break;
+          return '打野';
         case 'bottom':
-          position = '射手';
-          break;
+          return '射手';
+        case 'aram':
+          return '极地';
       }
-      return position
     }
     // 通过英雄ID获取部分信息
     const mapChamp = (champId) => {
@@ -231,10 +241,12 @@ export default {
         tempData.name = data.alias + ' Powered By Frank'
         ipcRenderer.send('apply-rune-page', JSON.parse(JSON.stringify(tempData)))
         message.success('符文配置成功')
-        console.log(mapNameFromUrl[data.alias].label)
-        sendMessageToChat(appConfig.get('credentials'),
-          `Frank 一款全新的LOL助手软件\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://yuque.comm/java-s/frank`)
-      } catch (e) {
+        if (appConfig.get('isRecommend')){
+          sendMessageToChat(appConfig.get('credentials'),
+            `一款全新的LOL助手软件 永久免费\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
+          }
+        }
+         catch (e) {
         message.error('符文配置失败')
       }
     }

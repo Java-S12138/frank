@@ -1,20 +1,5 @@
-import {queryAllSummonerId, queryMatchHistory} from "@/utils/main/lcu";
+import {queryMatchHistory} from "@/utils/main/lcu";
 
-let ScoreOptionFirstBloodKill     = "一血击杀"
-let ScoreOptionFirstBloodAssist   = "一血助攻"
-let ScoreOptionPentaKills         = "五杀"
-let ScoreOptionQuadraKills        = "四杀"
-let ScoreOptionTripleKills        = "三杀"
-let ScoreOptionJoinTeamRateRank   = "参团率排名"
-let ScoreOptionGoldEarnedRank     = "打钱排名"
-let ScoreOptionHurtRank           = "伤害排名"
-let ScoreOptionMoney2hurtRateRank = "金钱转换伤害比排名"
-let ScoreOptionVisionScoreRank    = "视野得分排名"
-let ScoreOptionMinionsKilled      = "补兵"
-let ScoreOptionKillRate           = "击杀占比"
-let ScoreOptionHurtRate           = "伤害占比"
-let ScoreOptionAssistRate         = "助攻占比"
-let ScoreOptionKDAAdjust          = "kda微调"
 
 // 获取召唤师游戏评分分数
 export const getGameScore = async (credentials,summonerId) => {

@@ -147,11 +147,15 @@ function listenIpc() {
   })
   // 移动窗口  主窗口
   ipcMain.on('move-main', (event, pos) => {
-    mainWindow.setPosition(pos.x, pos.y)
+    if (pos.isWindow=='home'){
+      mainWindow.setBounds({ x: pos.x, y: pos.y, width: 400, height: 650 })
+    }else {
+      mainWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
+    }
   })
   // 移动助手窗口
   ipcMain.on('move-assistWindow', (event, pos) => {
-    assistWindow.setPosition(pos.x, pos.y)
+    assistWindow.setBounds({ x: pos.x, y: pos.y, width: 320, height: 720 })
     assistWindow.setAlwaysOnTop(true)
   })
   // 最小化窗口(最小到托盘)
@@ -167,16 +171,7 @@ function listenIpc() {
     appConfig.set('credentials.port','')
     app.quit()
   })
-  // 获取游戏安装目录
-  ipcMain.on('get-game-directory',async (event) => {
-    const res = await getGameDirectory()
-    if (res != null){
-      runLcu()
-      event.reply('reply-game-directory',JSON.parse(res.raw))
-    }else {
-      event.reply('reply-game-directory','error-unstart')
-    }
-  })
+
   // 显示助手窗口
   ipcMain.on('show-assistWindow',async (event,champId) => {
     if (appConfig.has(`autoRune.${champId}` )){
@@ -256,9 +251,9 @@ function showAssistWindow() {
   }
 }
 
-const runLcu = async (isClient) => {
+const runLcu = async () => {
   const ws = await createWebSocketConnection(credentials)
-  mainWindow.webContents.send('client-connect-success',isClient)
+  mainWindow.webContents.send('client-connect-success')
   let idSetInterval
 
   ws.subscribe('/lol-gameflow/v1/gameflow-phase', async (data) => {
@@ -280,6 +275,7 @@ const runLcu = async (isClient) => {
       backHome()
       assistWindow.hide()
       clearInterval(idSetInterval)
+      ws.unsubscribe('/lol-champ-select/v1/session')
       assistWindow.webContents.send('refresh-assisit-window')
     }
     if (data =='ReadyCheck' && appConfig.get('autoAccept')>=50){
@@ -291,17 +287,25 @@ const runLcu = async (isClient) => {
 const startClient = async () => {
   if ( appConfig.get('gameDirectory') == ''){
     new Notification({
-      title:"请在设置中获取LOL安装路径",
-      body:"获取的前提条件: 英雄联盟客户端已启动",
+      title:"请在设置中获取LOL启动文件",
+      body:"启动文件路径例如: C:\\LOL\\英雄联盟\\TCLS\\Client.exe",
       icon:iconPath,
     }).show()
     credentials = await getAuthFromCmd()
     appConfig.set('credentials',credentials)
     return
   }
-  const clientExe = appConfig.get('gameDirectory').replace('LeagueClient','TCLS')+'\\Client.exe'
+
+  const clientExe = appConfig.get('gameDirectory')
+  if (clientExe.indexOf('LeagueClient')!=-1){
+    new Notification({
+      title:"请在设置中, 恢复默认设置",
+      body:" 重新获取LOL启动文件, 启动文件路径例如: C:\\LOL\\英雄联盟\\TCLS\\Client.exe",
+      icon:iconPath,
+    }).show()
+  }
   getAuthFromCmd().then(async (res) => {
-    if (res == null){
+    if (res.port == ''){
       // 启动英雄联盟客户端
       mainWindow.webContents.send('client-starting')
       startClientExe(clientExe)
@@ -311,12 +315,12 @@ const startClient = async () => {
         // 登录成功后获取相应的数据 结束时间间隔函数
         let idSetInterval =  setInterval(() => {
           getAuthFromCmd().then(async (res) => {
-            if (res != null){
+            if (res.port != ''){
               clearInterval(idSetInterval)
               credentials = res
               appConfig.set('credentials',credentials)
               setTimeout(() => {
-                runLcu('noClient')
+                runLcu()
               },3000)
             }
           })
@@ -325,7 +329,7 @@ const startClient = async () => {
     }else {
       credentials = res
       appConfig.set('credentials',res)
-      runLcu('onClient')
+      runLcu()
     }
   })
 }

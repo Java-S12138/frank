@@ -1,3 +1,4 @@
+
 const fs = require('fs');
 import axios from "axios";
 import {appConfig} from "@/utils/main/config";
@@ -8,7 +9,8 @@ export const request = axios.create({
 
 // 通过url下载符文json文件到本地
 export const getRuneFileByUrl = async (url) => {
-  const lolClientDir = appConfig.get('gameDirectory')
+  let lolClientDir = appConfig.get('gameDirectory')
+  lolClientDir = lolClientDir.replace('\\Client.exe','')
   if (lolClientDir == ''){
     return 'dir-none'
   }

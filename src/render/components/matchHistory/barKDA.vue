@@ -8,7 +8,7 @@
       title: {
         show: true,
         text: '召唤师 实力排行',
-        subtext: '选取最近10场排位进行分析',
+        subtext: '选取最近5场本局游戏模式进行分析',
         textStyle: { //主标题文本样式
           fontFamily: 'bom',
           fontSize: 20,
@@ -209,7 +209,8 @@ export default ({
     const handleChangePosition = (pos) => {
       ipcRenderer.send('move-main', {
         x: pos.x,
-        y: pos.y
+        y: pos.y,
+        isWindow:'horse'
       })
     }
     const toHomePage = () => {
@@ -221,13 +222,17 @@ export default ({
     }
 
     const sendToChat = (summonerData) => {
+      console.log(summonerData)
       let sendMessage = 'Powered By Java_S \n'
       for (let i = 0; i < summonerData.name.length; i++) {
           let sendInfo = `${summonerData['name'][i]}: [ ${summonerData['horse'][i]} ]  评分:${summonerData['data'][i]}
           最近战绩:${summonerData['kdaHistory'][i]}`
           sendMessage += sendInfo + '\n'+'--------------------------------------------------------------------------------'+'\n'
       }
-      sendMessage += 'Frank 一款全新的LOL助手软件\n秒选英雄|战绩查询|符文配置|国服数据\n了解更多功能: https://syjun.vip'
+      if (appConfig.get('isRecommend')){
+        sendMessage += 'Frank 一款全新的LOL助手软件 永久免费\n秒选英雄|战绩查询|符文配置|国服数据\n了解更多功能: https://cdn.syjun.vip/frank.html'
+      }
+
       sendMessageToChat(appConfig.get('credentials'),sendMessage)
       isSend.value = true
     }
