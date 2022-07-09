@@ -139,40 +139,50 @@ export default {
     const message = useMessage()
 
     ipcRenderer.on('current-champ-select', (event, data) => {
-      if (data == 0 || data == undefined) {
+      if (data.champId == 0 || data.champId == undefined) {
         return
       }
-      if (data != currentChamp.value) {
+      if (data.champId != currentChamp.value) {
         runeDataList = []
         count = 0
-        isAutoRune.value = appConfig.has(`autoRune.${data}`) == true ? 'auto' : 0
+        isAutoRune.value = appConfig.has(`autoRune.${data.champId}`) == true ? 'auto' : 0
       }
       count += 1
-      currentChamp.value = data
-      mapChamp(data)
-      getRuneData()
+      currentChamp.value = data.champId
+      mapChamp(data.champId)
+      getRuneData(data.mode)
     })
 
-    const getRuneData = async () => {
+    const getRuneData = async (gameMode) => {
       if (limitCount == count) {
         ipcRenderer.send('show-assistWindow', currentChamp.value)
         let runeData
         try {
           // ${currentChampAlias.value}
           // let runeData = JSON.parse(fs.readFileSync(`${appConfig.get('gameDirectory')}\\runePage\\${currentChampAlias.value}.json`, 'utf-8'))
-
-          if (appConfig.get('haveLocalRune')==true){
-            let lolClientDir = appConfig.get('gameDirectory')
-            lolClientDir = lolClientDir.replace('\\Client.exe','')
-            runeData = JSON.parse(fs.readFileSync(`${lolClientDir}\\runes\\${currentChampAlias.value}.json`, 'utf-8'))
+          // if (appConfig.get('haveLocalRune')==true){
+          //   let lolClientDir = appConfig.get('gameDirectory')
+          //   lolClientDir = lolClientDir.replace('\\Client.exe','')
+          //   runeData = JSON.parse(fs.readFileSync(`${lolClientDir}\\runes\\${currentChampAlias.value}.json`, 'utf-8'))
+          // }else {
+          // }
+          if (gameMode == 'aram'){
+            runeData = (await request({
+              url: `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`,
+              method: 'GET',
+            })).data
           }else {
             runeData = (await request({
               url: `https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`,
               method: 'GET',
             })).data
           }
+
           for (const runeDatum of runeData) {
             for (const rune of runeDatum.runes) {
+              if (gameMode == 'aram'){
+                rune.position = 'aram'
+              }
               runeDataList.push(rune)
             }
           }
@@ -203,25 +213,20 @@ export default {
     }
     // 获取位置信息
     const getPosition = (pos) => {
-      let position
       switch (pos) {
         case 'middle':
-          position = '中单';
-          break;
+          return '中单';
         case 'top':
-          position = '上单';
-          break;
+          return '上单';
         case 'support':
-          position = '辅助';
-          break;
+          return '辅助';
         case 'jungle':
-          position = '打野';
-          break;
+          return '打野';
         case 'bottom':
-          position = '射手';
-          break;
+          return '射手';
+        case 'aram':
+          return '极地';
       }
-      return position
     }
     // 通过英雄ID获取部分信息
     const mapChamp = (champId) => {

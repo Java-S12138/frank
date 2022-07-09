@@ -82,7 +82,27 @@ export const champSelectSession = async (credentials) => {
 }
 // 监听选择的英雄
 export const listenChampSelect = async (ws, assistWindow, credentials) => {
+ const currentGameMode = await queryCurrentGameMode(credentials)
   ws.subscribe('/lol-champ-select/v1/session', async (data) => {
+    if (currentGameMode == 'ARAM'){
+      pickChampAram(assistWindow,credentials)
+    }else {
+      pickChampRank(ws, assistWindow,credentials,data)
+    }
+  })
+}
+
+// 大乱斗选择英雄
+const pickChampAram = async (assistWindow,credentials) => {
+  const currentChampId = await getCurrentChamp(credentials)
+  if (currentChampId !=0){
+    assistWindow.webContents.send('current-champ-select', {
+      champId:currentChampId,mode:'aram'})
+  }
+}
+
+// 排位或者匹配选择英雄
+const pickChampRank = async (ws, assistWindow,credentials,data) => {
     let localPlayerCellId = data.localPlayerCellId
     let actions = data.actions
     let userSelectChapmID
@@ -94,16 +114,28 @@ export const listenChampSelect = async (ws, assistWindow, credentials) => {
         }
       }
     }
-    getCurrentChamp(credentials).then((res) => {
-      if (res != 0) {
-        ws.unsubscribe('/lol-champ-select/v1/session')
-      }
-    })
+
     if (userSelectChapmID != 0) {
-      assistWindow.webContents.send('current-champ-select', userSelectChapmID)
+      assistWindow.webContents.send('current-champ-select', {
+        champId:userSelectChapmID,mode:'other'})
     }
-  })
 }
+
+
+// 查询当前游戏模式
+const queryCurrentGameMode = async (credentials) => {
+// 获取当前游戏模式信息
+  const currentGameInfo = (await createHttp1Request({
+    method: "GET",
+    url: '/lol-gameflow/v1/session',
+  }, credentials)).json()
+  try {
+    return currentGameInfo.gameData.queue.gameMode
+  }catch (e){
+    return null
+  }
+}
+
 // 应用符文页面
 export const applyRunePage = async (credentials, data) => {
   try {
@@ -180,16 +212,17 @@ export const queryAllSummonerId = async (credentials) => {
   // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return summonerIdList
 }
-// 查询比赛记录 (最近10场排位)
+// 查询比赛记录 (最近5场排位)
 export const queryMatchHistory = async (credentials,summonerId) => {
   let classicMode = []
   let matchCount = 0
+  const currentGameMode = await queryCurrentGameMode(credentials)
   const matchList = (await createHttp1Request({
     method: "GET",
     url: `/lol-match-history/v3/matchlist/account/${summonerId}`,
   }, credentials)).json()['games']['games'].reverse()
   for (const matchListElement of matchList) {
-    if (matchListElement.gameMode == 'CLASSIC' && matchCount < 10){
+    if (matchListElement.gameMode == currentGameMode && matchCount < 5){
       matchCount +=1
       classicMode.push(matchListElement)
     }
@@ -220,6 +253,7 @@ export const getSummonerNickName = async (credentials) => {
     let level = summonerInfo.summonerLevel
     // 通过召唤师ID查询最近十场排位进行分数分析 得出匹马信息
     let gameSocreInfo = await getGameScore(credentials,summonerId)
+    console.log(gameSocreInfo)
 
     allSummonerNickName.push({name:name,iconId:iconId,
       level:level,score:gameSocreInfo['score'],

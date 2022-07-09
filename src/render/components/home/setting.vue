@@ -41,23 +41,11 @@
           <n-switch v-model:value="isAutoBan" @click="changeBan"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
-
         <n-space>
           <n-tag :bordered="false">秒接对局</n-tag>
           <n-slider v-model:value="isAccept" :step="10" @update:value="handleUpdateAccept"
                     style="width: 213px;margin-top: 5px"/>
         </n-space>
-        <n-space class="alignCent">
-          <n-tag :bordered="false">下载符文</n-tag>
-          <n-tag :bordered="false" type="success"
-                 v-if="haveLocalRune" style="width: 214px;justify-content: center">符文已导入成功
-          </n-tag>
-          <n-button v-else size="small" type="success" style="width: 214px;"
-                    secondary @click="runDowRuneMission"> {{ currentDowChamp }}
-          </n-button>
-
-        </n-space>
-
         <n-space>
           <n-tag :bordered="false">默认设置</n-tag>
             <n-popconfirm
@@ -74,10 +62,6 @@
               一切都将一去杳然
             </n-popconfirm>
         </n-space>
-
-
-
-
         <n-space class="alignCent">
           <n-tag :bordered="false">运行文件</n-tag>
 
@@ -111,11 +95,8 @@
                     secondary @click="toHomePage">因为热爱 所以联盟 BY: Java_S
           </n-button>
         </n-space>
-
-
       </n-space>
     </n-card>
-
 
   </div>
 </template>
@@ -125,11 +106,10 @@ import {
   NCard, NSpace, NTag, NButton, NEllipsis, NAlert, NSpin,NPopover,
   NSelect, NSwitch, NSlider, useMessage,NPopconfirm
 } from 'naive-ui'
-import {mapNameFromUrl, optionsChampion} from '@/utils/render/lolDataList'
-import {ref,onMounted} from "vue";
+import {optionsChampion} from '@/utils/render/lolDataList'
+import {ref} from "vue";
 import {appConfig} from "@/utils/main/config"
 import {useStore} from "@/render/store";
-import {getRuneFileByUrl,request} from "@/utils/render/request";
 
 
 export default {
@@ -151,55 +131,6 @@ export default {
     const optionsChampionBan = optionsChampion
     let isAccept = ref(appConfig.get('autoAccept'))
     const message = useMessage()
-    let currentDowChamp = ref('一键导入符文到本地 OP.GG')
-
-    let countShow = 0
-    let messageReactive = null
-    let haveLocalRune = ref(appConfig.get('haveLocalRune'))
-    let runesVersion
-    // https://unpkg.com/@java_s/op.gg@12.12.1-v1656323450582/Kled.json
-
-    onMounted(async () => {
-      runesVersion = (await request({
-        url:'https://unpkg.com/@java_s/op.gg/package.json'
-      })).data.version
-      if (runesVersion != appConfig.get('runesVersion')){
-        currentDowChamp.value = '符文有更新, 请点击下载'
-        appConfig.set('haveLocalRune', false)
-      }
-    })
-
-
-    // 下载符文到本地
-    const runDowRuneMission = async () => {
-      if (appConfig.get('gameDirectory') == '') {
-        currentDowChamp.value = '请先获取客户端安装目录'
-        return
-      }
-      let champNameList = Object.keys(mapNameFromUrl)
-      messageReactive = message.loading("符文下载中......", {
-        duration: 0
-      })
-      try {
-        for (const champ of champNameList) {
-          let url = `https://unpkg.com/@java_s/op.gg/${champ}.json`
-          await getRuneFileByUrl(url)
-          currentDowChamp.value = `${mapNameFromUrl[champ].label} 下载成功`
-        }
-        currentDowChamp.value = '符文导入成功 !'
-        messageReactive.destroy()
-        messageReactive = null
-        appConfig.set('haveLocalRune', true)
-        appConfig.set('runesVersion', runesVersion)
-      } catch (e) {
-        currentDowChamp.value = '符文导入失败 !'
-        messageReactive.destroy()
-        messageReactive = null
-        message.error('导入失败, 请使用在线符文')
-        appConfig.set('haveLocalRune', false)
-      }
-    }
-
 
     // 判断是否已经获取路径
     if (appConfig.get('gameDirectory') != '') {
@@ -269,10 +200,10 @@ export default {
 
 
     return {
-      isExist, directory, optionsChampionPick, isAutoPick, pickChampion, haveLocalRune, optionsChampionBan,
-      isAutoBan, banChampion, isAccept, currentDowChamp,isRecommend,
+      isExist, directory, optionsChampionPick, isAutoPick, pickChampion, optionsChampionBan,
+      isAutoBan, banChampion, isAccept,isRecommend,
       getGameDirectory, changePick, handleUpdatePick, changeBan, handleUpdateBan, handleUpdateAccept,
-      toHomePage, runDowRuneMission,toReset,changeRecommend
+      toHomePage,toReset,changeRecommend
     }
 
   }

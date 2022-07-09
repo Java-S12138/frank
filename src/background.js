@@ -275,6 +275,7 @@ const runLcu = async () => {
       backHome()
       assistWindow.hide()
       clearInterval(idSetInterval)
+      ws.unsubscribe('/lol-champ-select/v1/session')
       assistWindow.webContents.send('refresh-assisit-window')
     }
     if (data =='ReadyCheck' && appConfig.get('autoAccept')>=50){
