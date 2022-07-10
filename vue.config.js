@@ -5,12 +5,14 @@ module.exports = defineConfig({
   publicPath: './',
   pages: {
     index: {
-      entry: 'src/render/main.js'
+      entry: 'src/render/main.ts'
     }
   },
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
+      disableMainProcessTypescript: true,
+      mainProcessTypeChecking: false,
       builderOptions: {
         "productName": "Frank",
         "appId": "com.frank.app",
@@ -27,4 +29,18 @@ module.exports = defineConfig({
       },
     },
   },
+  // configureWebpack: {
+  //   module: {
+  //     rules: [
+  //       {
+  //         test: /\.ts?$/,
+  //         loader: 'ts-loader',
+  //         exclude: /node_modules/,
+  //         options: {
+  //           appendTsSuffixTo: [/\.vue$/],
+  //         }
+  //       }
+  //     ]
+  //   }
+  // },
 })

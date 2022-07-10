@@ -1,27 +1,28 @@
 <template>
-  <dashboard></dashboard>
+  <Dashboard></Dashboard>
   <div>
-      <app-main v-if="pageCount==1" class="slide-in-left "></app-main>
-      <fbottom v-if="pageCount==1" class="slide-in-left "></fbottom>
-      <setting v-else-if="pageCount==2"  class="slide-in-right "></setting>
-
+    <app-main v-if="pageCount === 1" class="slide-in-left"></app-main>
+    <fbottom v-if="pageCount === 1" class="slide-in-left"></fbottom>
+    <setting v-else-if="pageCount === 2" class="slide-in-right"></setting>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Dashboard from './dashboard.vue'
 import Setting from './setting.vue'
 import appMain from './appMain.vue'
 import {NButton} from 'naive-ui'
 import {useStore} from '../../store'
 import {storeToRefs} from 'pinia'
-import Fbottom from "@/render/components/home/fbottom";
+import Fbottom from '../../components/home/fbottom.vue'
+import {defineComponent} from 'vue'
 
-export default {
+export default defineComponent({
   name: "index",
   components: {Fbottom, Dashboard, Setting, appMain, NButton},
   setup() {
     // 使用pinia 管理切换页面的参数
+
     const store = useStore()
     const {pageCount,echartsData} = storeToRefs(store)
     echartsData.value = {name:[],data:[],kdaHistory:[],horse:[]}
@@ -29,10 +30,12 @@ export default {
       store.pageIncrease()
     }
     return {
-      store, pageCount, transPage
+      store,
+      pageCount,
+      transPage
     }
   }
-}
+})
 </script>
 
 <style scoped>

@@ -44,7 +44,7 @@
               英雄熟练度
             </n-button>
           </n-space>
-          <div v-if="switchButton == 1">
+          <div v-if="switchButton === 1">
             <n-list  >
             <n-list-item>
               <n-space justify="space-between">
@@ -93,36 +93,31 @@
 
           </n-list>
           </div>
-          <div v-else-if="switchButton == 2">
+          <div v-else-if="switchButton === 2">
             <real-power></real-power>
           </div>
         </n-card>
   </div>
 </template>
 
-<script>
-import {ref, onMounted} from "vue"
+<script lang="ts">
+import {ref, onMounted, defineComponent} from "vue"
 import {ipcRenderer} from 'electron'
-import router from '@/render/router'
 import RealPower from './realPower.vue'
-import {init} from '@/utils/render/getUserInfo'
-import {serveArea} from '@/utils/render/lolDataList'
-import {appConfig} from '@/utils/main/config'
-import {mapNameFromUrl} from '@/utils/render/lolDataList'
 
 import {NCard, NAvatar, NSpace, NTag, NModal,
   NInput, NButton, NSelect,NPopover,NList,NListItem,useMessage } from 'naive-ui'
-import {querySummonerHonorLevel, returnRankData} from "@/utils/render/renderLcu";
+import {returnRankData} from '../../../utils/render/renderLcu'
 
-export default {
+export default defineComponent({
   name: "appMain",
   components:{NCard,NAvatar,NSpace,NTag,NModal,RealPower,
     NInput,NButton,NSelect,NPopover,NList,NListItem
   },
   setup(){
-    let rankData = ref([])
-    let carryData = ref([])
-    let switchButton = ref(1)
+    const rankData = ref<Array<string>>([])
+    const carryData = ref<Array<string>>([])
+    const switchButton = ref<number>(1)
 
     const message = useMessage()
 
@@ -146,7 +141,7 @@ export default {
       rankData,carryData,switchButton,
     }
   }
-}
+})
 </script>
 
 <style scoped>
