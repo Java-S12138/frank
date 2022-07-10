@@ -2,7 +2,6 @@ import {app, BrowserWindow, ipcMain,screen,
   Tray, nativeImage, Menu,Notification} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import {
-  getGameDirectory,
   autoAcceptGame,
   champSelectSession,
   listenChampSelect,
@@ -12,6 +11,7 @@ import {
 import {createWebSocketConnection} from './utils/league-connect'
 import {appConfig,userAgentList} from './utils/main/config'
 import {getAuthFromCmd, startClientExe} from './utils/main/clientStart'
+import {returnRankData} from "@/utils/render/renderLcu";
 
 const Store = require("electron-store")
 Store.initRenderer()
@@ -253,8 +253,11 @@ function showAssistWindow() {
 
 const runLcu = async () => {
   const ws = await createWebSocketConnection(credentials)
-  mainWindow.webContents.send('client-connect-success')
   let idSetInterval
+
+  const homeData = await returnRankData(credentials)
+  mainWindow.webContents.send('init-home',homeData)
+  mainWindow.webContents.send('client-connect-success')
 
   ws.subscribe('/lol-gameflow/v1/gameflow-phase', async (data) => {
     clientStatus = data
