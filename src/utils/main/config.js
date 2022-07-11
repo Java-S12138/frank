@@ -22,7 +22,7 @@ export const appConfig = new Store({
     'midHorse' :'#F9C97D',
     'bottomHorse' :'#77C1F7',
     'trashHorse' :'#F17D7D',
-    'frankVersion':'1.13.1212',
+    'frankVersion':'1.14.1212',
     'isRecommend':true
   }
 })

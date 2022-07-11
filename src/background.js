@@ -25,7 +25,7 @@ const userHeader =userAgentList[Math.floor((Math.random()*userAgentList.length))
 let mainWindow
 let assistWindow
 let credentials
-let clientStatus ='ChampSelect'
+let clientStatus
 
 const createMainWindow = async () => {
   const win = new BrowserWindow({
@@ -102,7 +102,7 @@ app.whenReady().then(async () => {
   startClient()
 
   app.on('activate', async () => {
-    if (BrowserWindow.getAllWin1dows().length === 0) {
+    if (BrowserWindow.getAllWindows().length === 0) {
       mainWindow = await createMainWindow()
     }
   })
@@ -156,7 +156,6 @@ function listenIpc() {
   // 移动助手窗口
   ipcMain.on('move-assistWindow', (event, pos) => {
     assistWindow.setBounds({ x: pos.x, y: pos.y, width: 320, height: 720 })
-    assistWindow.setAlwaysOnTop(true)
   })
   // 最小化窗口(最小到托盘)
   ipcMain.on('mainwin-minimize', () => {

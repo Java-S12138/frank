@@ -209,6 +209,9 @@ export const queryAllSummonerId = async (credentials) => {
   for (const summonersIdElement of summonersId) {
     summonerIdList.push(summonersIdElement.fromSummonerId)
   }
+  // 数组去重
+  summonerIdList = [... new Set(summonerIdList)]
+
   // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return summonerIdList
 }
@@ -251,9 +254,8 @@ export const getSummonerNickName = async (credentials) => {
     let name = summonerInfo.displayName
     let iconId = summonerInfo.profileIconId
     let level = summonerInfo.summonerLevel
-    // 通过召唤师ID查询最近十场排位进行分数分析 得出匹马信息
+    // 通过召唤师ID查询最近5场排位进行分数分析 得出匹马信息
     let gameSocreInfo = await getGameScore(credentials,summonerId)
-    console.log(gameSocreInfo)
 
     allSummonerNickName.push({name:name,iconId:iconId,
       level:level,score:gameSocreInfo['score'],

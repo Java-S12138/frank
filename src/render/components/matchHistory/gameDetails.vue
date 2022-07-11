@@ -183,7 +183,7 @@
           <n-popover :show-arrow="false" trigger="hover" :delay="2000">
             <template #trigger>
               <n-icon size="24" v-mouse-drag="handleChangePosition">
-                <Hanger/>
+                <Ballon/>
               </n-icon>
             </template>
             移动窗口位置
@@ -199,7 +199,7 @@ import {
   NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,
   NPopover,NList, NListItem,NScrollbar,NGrid,NGi,NBadge
 } from 'naive-ui'
-import {ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Hanger} from '@vicons/tabler'
+import {ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
 import {onMounted,ref} from "vue";
 import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
@@ -211,7 +211,7 @@ export default {
   name: "gameDetails",
   components:{
     NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,
-    NPopover,NList, NListItem,NScrollbar,NGrid,NGi,NBadge,ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Hanger
+    NPopover,NList, NListItem,NScrollbar,NGrid,NGi,NBadge,ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon
   },
   setup(props,{emit}){
     let gameDetalisList = []
