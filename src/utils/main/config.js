@@ -22,8 +22,14 @@ export const appConfig = new Store({
     'midHorse' :'#F9C97D',
     'bottomHorse' :'#77C1F7',
     'trashHorse' :'#F17D7D',
-    'frankVersion':'1.14.1212',
-    'isRecommend':true
+    'frankVersion':'1.15.1212',
+    'isRecommend':true,
+    'horseType':{
+      'top':'锋芒毕露',
+      'mid':'驰骋沙场',
+      'bot':'浑水摸鱼',
+      'trash':'操作抽象',
+    }
   }
 })
 

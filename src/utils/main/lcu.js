@@ -225,6 +225,7 @@ export const queryMatchHistory = async (credentials,summonerId) => {
     url: `/lol-match-history/v3/matchlist/account/${summonerId}`,
   }, credentials)).json()['games']['games'].reverse()
   for (const matchListElement of matchList) {
+    //matchListElement.gameMode == currentGameMode &&
     if (matchListElement.gameMode == currentGameMode && matchCount < 5){
       matchCount +=1
       classicMode.push(matchListElement)
@@ -361,9 +362,11 @@ const querySummonerPosition = (lane) => {
 const getItemImgUrl = (item) => {
   if (item == 7013){
     return `https://game.gtimg.cn/images/lol/act/img/item/3802.png`
+  }else if (item== 7004){
+    return `https://game.gtimg.cn/images/lol/act/img/item/3068.png`
   }
   if (item == 0){
-    return 'https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/items/0.png'
+    return 'https://gw.alipayobjects.com/zos/rmsportal/wYnHWSXDmBhiEmuwXsym.png?x-oss-process=image%2Fresize%2Cm_fill%2Cw_64%2Ch_64%2Fformat%2Cpng'
   }else {
     return `https://game.gtimg.cn/images/lol/act/img/item/${item}.png`
   }
@@ -435,7 +438,12 @@ const analyticalData  = (participant,nameList) => {
     item6:getItemImgUrl(participant.stats.item6),
     kills:participant.stats.kills,
     deaths:participant.stats.deaths,
-    assists:participant.stats.deaths,
+    assists:participant.stats.assists,
+    totalDamageDealtToChampions:participant.stats.totalDamageDealtToChampions,
+    totalDamageTaken:participant.stats.totalDamageTaken,
+    goldEarned:participant.stats.goldEarned,
+    visionScore:participant.stats.visionScore,
+    totalMinionsKilled:participant.stats.totalMinionsKilled+participant.stats.neutralMinionsKilled
   }
 }
 // 获取召唤师participantId 和 name
@@ -451,7 +459,12 @@ const getDetailsTitle = (gameInfo) => {
   let createTime = (new Date(gameInfo.gameCreation).toLocaleString()).split(' ')
   let dateStr = createTime[0].slice(5)
   let timeStr = createTime[1].slice(0, 5)
-  let lane = queryGameType(gameInfo.queueId).split(' ')[1]
+  if (queryGameType(gameInfo.queueId).indexOf(' ') != -1){
+    var lane = queryGameType(gameInfo.queueId).split(' ')[1]
+  }else {
+    var lane = queryGameType(gameInfo.queueId)
+  }
+
   let gameDuration = ((gameInfo.gameDuration) / 60).toFixed(0)
   return [dateStr, timeStr, lane, gameDuration]
 }

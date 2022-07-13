@@ -51,7 +51,7 @@
         </n-space>
 
       </template>
-      <n-scrollbar style="max-height: 450px" >
+      <n-scrollbar style="max-height: 448px" >
         <n-list-item v-for="chapm in champSliceList" >
         <n-space justify="space-evenly" >
           <n-avatar
@@ -83,7 +83,7 @@
 
     <n-drawer v-model:show="restraintActive"
               style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-              :height="485" placement="bottom">
+              :height="476" placement="bottom">
       <n-drawer-content>
         <n-list>
           <template #header>

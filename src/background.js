@@ -27,6 +27,8 @@ let assistWindow
 let credentials
 let clientStatus
 
+
+
 const createMainWindow = async () => {
   const win = new BrowserWindow({
     title: 'Frank',

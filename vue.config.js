@@ -22,7 +22,9 @@ module.exports = defineConfig({
         },
         "nsis": {
           "runAfterFinish":false,
-
+          "oneClick":false,
+          "allowToChangeInstallationDirectory":true,
+          "createDesktopShortcut":true
         },
       },
     },
