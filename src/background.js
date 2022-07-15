@@ -268,8 +268,8 @@ const runLcu = async () => {
       assistWindow.show()
       assistWindow.setSkipTaskbar(true)
       // 秒选&秒禁英雄
-      idSetInterval = setInterval(async function () {
-        champSelectSession(credentials)
+      idSetInterval = setInterval(async () =>  {
+        champSelectSession(credentials,idSetInterval)
       },1000)
       // 监听英雄的选择
       listenChampSelect(ws,assistWindow,credentials)
@@ -289,7 +289,9 @@ const runLcu = async () => {
 }
 
 const startClient = async () => {
-  if ( appConfig.get('gameDirectory') == ''){
+  const clientExe = appConfig.get('gameDirectory')
+
+  if ( clientExe === ''){
     new Notification({
       title:"请在设置中获取LOL启动文件",
       body:"启动文件路径例如: C:\\LOL\\英雄联盟\\TCLS\\Client.exe",
@@ -300,16 +302,8 @@ const startClient = async () => {
     return
   }
 
-  const clientExe = appConfig.get('gameDirectory')
-  if (clientExe.indexOf('LeagueClient')!=-1){
-    new Notification({
-      title:"请在设置中, 恢复默认设置",
-      body:" 重新获取LOL启动文件, 启动文件路径例如: C:\\LOL\\英雄联盟\\TCLS\\Client.exe",
-      icon:iconPath,
-    }).show()
-  }
   getAuthFromCmd().then(async (res) => {
-    if (res.port == ''){
+    if (res.port === ''){
       // 启动英雄联盟客户端
       mainWindow.webContents.send('client-starting')
       startClientExe(clientExe)
@@ -325,7 +319,7 @@ const startClient = async () => {
               appConfig.set('credentials',credentials)
               setTimeout(() => {
                 runLcu()
-              },3000)
+              },6666)
             }
           })
         },1000)

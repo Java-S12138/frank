@@ -16,7 +16,6 @@
                 fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                 style="display: block"
               />
-
             </n-badge>
           </template>
           设置自动配置符文
@@ -24,7 +23,7 @@
 
         <div>
           <n-tag type="success" :bordered="false" :round="true">
-              {{ currentChampName }}
+            {{ currentChampName }}
           </n-tag>
         </div>
         <div class="buttonSwitch" >
@@ -43,7 +42,7 @@
         </div>
       </n-space>
     </n-card>
-    <n-grid :cols="2" v-if="loading" style="margin-left: 15px;margin-top: 30px">
+    <n-grid :cols="2" v-if="loading" style="margin-left: 15px;margin-top: 30px;margin-bottom: 30px">
       <n-gi>
         <n-skeleton style="border-radius: 10px;" :width="130" :height="190" :sharp="false" size="medium"/>
       </n-gi>
@@ -97,6 +96,39 @@
       </n-gi>
     </n-grid>
 
+    <n-card class="boxShadow bottomTip" size="small">
+        <n-space :size="[44]">
+            <div class="skillDiv" v-for="skills in skillsAndItems[0]">
+              <img class="itemImg" :src="skills[0]">
+              <strong class="skillText">{{skills[1]}}</strong>
+            </div>
+
+<!--          <div class="skillDiv">-->
+<!--            <img class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/DariusCleave.png">-->
+<!--            <strong class="skillText">Q</strong>-->
+<!--          </div>-->
+
+          <div class="skillDiv" v-for="items in skillsAndItems[itemCount]">
+            <img :src="items" class="itemImg">
+          </div>
+
+        </n-space>
+      <div class="itemsTotal" v-if="skillsAndItems.length !=0">
+        <n-space>
+          <n-button size="tiny" text text-color="#9aa4af" @click="changeItemsImg">
+            切换装备
+          </n-button>
+
+          <div style="width: 32px;">
+            <span>{{itemCount}}</span>
+            <span>/</span>
+            <span>{{skillsAndItems.length-1}}</span>
+          </div>
+        </n-space>
+
+
+      </div>
+    </n-card>
 
   </div>
 </template>
@@ -135,6 +167,9 @@ export default {
     let count = 0
     let isAutoRune = ref(0)
     let loading = ref(true)
+    const skillsAndItems = ref([])
+    const itemCount = ref(1)
+
 
     const message = useMessage()
 
@@ -144,6 +179,8 @@ export default {
       }
       if (data.champId != currentChamp.value) {
         runeDataList = []
+        skillsAndItems.value = []
+        itemCount.value = 1
         count = 0
         isAutoRune.value = appConfig.has(`autoRune.${data.champId}`) == true ? 'auto' : 0
       }
@@ -156,7 +193,7 @@ export default {
     const getRuneData = async (gameMode) => {
       if (limitCount == count) {
         ipcRenderer.send('show-assistWindow', currentChamp.value)
-        let runeData
+        let champInfo
         try {
           // ${currentChampAlias.value}
           // let runeData = JSON.parse(fs.readFileSync(`${appConfig.get('gameDirectory')}\\runePage\\${currentChampAlias.value}.json`, 'utf-8'))
@@ -167,25 +204,31 @@ export default {
           // }else {
           // }
           if (gameMode == 'aram'){
-            runeData = (await request({
+            champInfo = (await request({
               url: `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`,
               method: 'GET',
             })).data
           }else {
-            runeData = (await request({
+            champInfo = (await request({
               url: `https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`,
               method: 'GET',
             })).data
           }
+          // 技能
+          getSkillsImgUrl(champInfo[0].skillsImg,champInfo[0].skills)
 
-          for (const runeDatum of runeData) {
-            for (const rune of runeDatum.runes) {
+          for (const champ of champInfo) {
+            // 符文
+            for (const rune of champ.runes) {
               if (gameMode == 'aram'){
                 rune.position = 'aram'
               }
               runeDataList.push(rune)
             }
+            // 装备
+            getItemImgUrl(champ.itemBuilds[0].blocks)
           }
+
           pageStart = 0
           pageEnd = runeDataList.length > 4 ? 4 : runeDataList.length
           runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
@@ -206,6 +249,41 @@ export default {
       }
     }
     // getRuneData()
+
+    // 切换不同的装备进行显示
+    const changeItemsImg = () => {
+      if (itemCount.value < skillsAndItems.value.length-1){
+        itemCount.value +=1
+      }else {
+        itemCount.value = 1
+      }
+    }
+
+    // 获取装备图片链接数组
+    const getItemImgUrl = (blocks) => {
+      for (const blocksElement of blocks) {
+        if (blocksElement.type.indexOf('Recommended') !=-1){
+          var currentItemList = []
+          for (const items of blocksElement.items) {
+            const itemImgUrl = `https://game.gtimg.cn/images/lol/act/img/item/${items.id}.png`
+            currentItemList.push(itemImgUrl)
+          }
+          skillsAndItems.value.push(currentItemList)
+        }
+      }
+
+    }
+    // 获取技能图片链接数组
+    const getSkillsImgUrl = (skillsImg,skills) => {
+      let skillsList = []
+
+      for (let i = 0; i < skillsImg.length; i++) {
+        const skillImgUrl = `https://game.gtimg.cn/images/lol/act/img/spell/${skillsImg[i]}`
+        skillsList.push([skillImgUrl,skills[i]])
+      }
+      skillsAndItems.value.push(skillsList)
+      console.log(skillsAndItems.value)
+    }
 
     // 获取图片地址
     const getImaUrl = (imgId) => {
@@ -302,9 +380,10 @@ export default {
     }
 
     return {
-      currentChamp, currentChampImgUrl, currentChampName, loading,
-      runeDataList, pageStart, pageEnd, runeDataListFor, isAutoRune,
-      getImaUrl, getPosition, applyRune, handldDrge, pageBack, pageNext, setAutoRune, deleteAutoRune
+      currentChamp, currentChampImgUrl, currentChampName, loading,itemCount,
+      runeDataList, pageStart, pageEnd, runeDataListFor, isAutoRune,skillsAndItems,
+      getImaUrl, getPosition, applyRune, handldDrge, pageBack,
+      pageNext, setAutoRune, deleteAutoRune,changeItemsImg
     }
   }
 }
@@ -352,11 +431,48 @@ export default {
 .n-card > .n-card__content > .runeCard {
   padding: 0 !important;
 }
-/*.runeCard{*/
-/*  margin-top: 45px!important;*/
-/*}*/
+
 .buttonSwitch {
   margin-top: 5px;
   margin-left: -5px;
+}
+.bottomTip {
+  margin-bottom: 0px;
+  height: 80px;
+  padding-top: 10px;
+  padding-left: 1px;
+}
+.itemImg {
+  width: 35px;
+  height: 35px;
+  border-radius: 4px;
+  position: absolute;
+}
+
+.skillDiv{
+  position: relative;
+}
+
+.skillText {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 19px;
+  left: 19px;
+  background: rgba(32, 45, 55, 0.9);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  white-space: nowrap;
+  color: rgb(0, 215, 176) !important;
+  font-size: 11px !important;
+}
+.itemsTotal{
+  float: right;
+  position: absolute;
+  right: 4px;
+  bottom: -2px;
+  color: #9aa4af
 }
 </style>

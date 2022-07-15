@@ -48,7 +48,7 @@ export const autoAcceptGame = async (credentials) => {
   }
 }
 // 获取选人会话
-export const champSelectSession = async (credentials) => {
+export const champSelectSession = async (credentials,idSetInterval) => {
   const res = await createHttp1Request({
     method: "GET",
     url: '/lol-champ-select/v1/session'
@@ -68,6 +68,7 @@ export const champSelectSession = async (credentials) => {
         if (actionElement.type == 'pick' && !actionElement.completed && appConfig.get('autoPickChampion.isAuto')) {
           console.log('pick')
           autoPickChampion(credentials, userActionID, 'pick')
+          clearInterval(idSetInterval)
         } else if (actionElement.type == 'ban' && !actionElement.completed && appConfig.get('autoBanChampion.isAuto')) {
           console.log('ban')
           autoBanChampion(credentials, userActionID, 'ban')
@@ -82,19 +83,31 @@ export const champSelectSession = async (credentials) => {
 }
 // 监听选择的英雄
 export const listenChampSelect = async (ws, assistWindow, credentials) => {
- const currentGameMode = await queryCurrentGameMode(credentials)
+  const currentGameMode = await queryCurrentGameMode(credentials)
+  let pickHero = 0
+
   ws.subscribe('/lol-champ-select/v1/session', async (data) => {
+    const currentChampId = await getCurrentChamp(credentials)
+
     if (currentGameMode == 'ARAM'){
-      pickChampAram(assistWindow,credentials)
+      pickChampAram(assistWindow,currentChampId)
     }else {
-      pickChampRank(ws, assistWindow,credentials,data)
+      let localPlayerCellId = data.localPlayerCellId
+      let actions = data.actions
+      for (let action of actions) {
+        for (let actionElement of action) {
+          if (actionElement.actorCellId == localPlayerCellId && actionElement.championId != pickHero) {
+            pickHero = actionElement.championId
+            pickChampRank(assistWindow,pickHero)
+          }
+        }
+      }
     }
   })
 }
 
 // 大乱斗选择英雄
-const pickChampAram = async (assistWindow,credentials) => {
-  const currentChampId = await getCurrentChamp(credentials)
+const pickChampAram = async (assistWindow,currentChampId) => {
   if (currentChampId !=0){
     assistWindow.webContents.send('current-champ-select', {
       champId:currentChampId,mode:'aram'})
@@ -102,23 +115,12 @@ const pickChampAram = async (assistWindow,credentials) => {
 }
 
 // 排位或者匹配选择英雄
-const pickChampRank = async (ws, assistWindow,credentials,data) => {
-    let localPlayerCellId = data.localPlayerCellId
-    let actions = data.actions
-    let userSelectChapmID
-
-    for (let action of actions) {
-      for (let actionElement of action) {
-        if (actionElement.actorCellId == localPlayerCellId && actionElement.type == 'pick') {
-          userSelectChapmID = actionElement.championId
-        }
-      }
-    }
-
-    if (userSelectChapmID != 0) {
-      assistWindow.webContents.send('current-champ-select', {
-        champId:userSelectChapmID,mode:'other'})
-    }
+const pickChampRank = async (assistWindow,currentChampId) => {
+  if (currentChampId != 0) {
+    assistWindow.webContents.send('current-champ-select', {
+      champId: currentChampId, mode: 'other'
+    })
+  }
 }
 
 

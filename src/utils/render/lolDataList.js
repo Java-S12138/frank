@@ -158,103 +158,9 @@ export const champDict = {
   '875': {'champId': '875', 'label': '腕豪', 'alias': 'Sett', 'title': '瑟提'},
   '876': {'champId': '876', 'label': '含羞蓓蕾', 'alias': 'Lillia', 'title': '莉莉娅'},
   '887': {'champId': '887', 'label': '灵罗娃娃', 'alias': 'Gwen', 'title': '格温'},
-  '888': {'champId': '888', 'label': '炼金男爵', 'alias': 'Renata', 'title': '烈娜塔 · 戈拉斯克'}
+  '888': {'champId': '888', 'label': '炼金男爵', 'alias': 'Renata', 'title': '烈娜塔 · 戈拉斯克'},
+  '895': {'champId': '895', 'label': '不羁之悦', 'alias': 'Nilah', 'title': '尼菈'}
 }
-
-export const serveArea = [
-  {
-    label: '艾欧尼亚',
-    value: 1
-  },
-  {
-    label: '比尔吉沃特',
-    value: 2
-  },
-  {
-    label: '祖安',
-    value: 3
-  },
-  {
-    label: '诺克萨斯',
-    value: 4
-  },
-  {
-    label: '班德尔城',
-    value: 5
-  },
-  {
-    label: '德玛西亚',
-    value: 6
-  }, {
-    label: '皮尔特沃夫',
-    value: 7
-  },
-  {
-    label: '战争学院',
-    value: 8
-  },
-  {
-    label: '弗雷尔卓德',
-    value: 9
-  }, {
-    label: '巨神峰',
-    value: 10
-  }, {
-    label: '雷瑟守备',
-    value: 11
-  }, {
-    label: '无畏先锋',
-    value: 12
-  }, {
-    label: '裁决之地',
-    value: 13
-  }, {
-    label: '黑色玫瑰',
-    value: 14
-  }, {
-    label: '暗影岛',
-    value: 15
-  },
-  {
-    label: '恕瑞玛',
-    value: 16
-  }, {
-    label: '钢铁烈阳',
-    value: 17
-  }, {
-    label: '水晶之痕',
-    value: 18
-  }, {
-    label: '均衡教派',
-    value: 19
-  }, {
-    label: '扭曲丛林',
-    value: 20
-  }, {
-    label: '影流',
-    value: 22
-  }, {
-    label: '守望之海',
-    value: 23
-  }, {
-    label: '征服之海',
-    value: 24
-  }, {
-    label: '卡拉曼达',
-    value: 25
-  }, {
-    label: '巨龙之巢',
-    value: 26
-  }, {
-    label: '皮城警备',
-    value: 27
-  },
-  {
-    label: '男爵领域',
-    value: 30
-  },
-]
-
 export const optionsChampion = [
   {
     'value': '1',
@@ -736,6 +642,10 @@ export const optionsChampion = [
   }, {
     'value': '888',
     'label': '炼金男爵'
+  },
+  {
+    'value': '895',
+    'label': '不羁之悦'
   }
 ]
 export const mapNameFromUrl = {
@@ -899,32 +809,6 @@ export const mapNameFromUrl = {
   'Sett': {'label': '腕豪', 'name': '瑟提'},
   'Lillia': {'label': '含羞蓓蕾', 'name': '莉莉娅'},
   'Gwen': {'label': '灵罗娃娃', 'name': '格温'},
-  'Renata': {'label': '炼金男爵', 'name': '烈娜塔 · 戈拉斯克'}
+  'Renata': {'label': '炼金男爵', 'name': '烈娜塔 · 戈拉斯克'},
+  'Nilah': {'label': '不羁之悦', 'name': '尼菈'}
 }
-
-
-export const RIOT_GAMES_CERT = "-----BEGIN CERTIFICATE-----\n" +
-  "MIIEIDCCAwgCCQDJC+QAdVx4UDANBgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMC\n" +
-  "VVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFTATBgNVBAcTDFNhbnRhIE1vbmljYTET\n" +
-  "MBEGA1UEChMKUmlvdCBHYW1lczEdMBsGA1UECxMUTG9MIEdhbWUgRW5naW5lZXJp\n" +
-  "bmcxMzAxBgNVBAMTKkxvTCBHYW1lIEVuZ2luZWVyaW5nIENlcnRpZmljYXRlIEF1\n" +
-  "dGhvcml0eTEtMCsGCSqGSIb3DQEJARYeZ2FtZXRlY2hub2xvZ2llc0ByaW90Z2Ft\n" +
-  "ZXMuY29tMB4XDTEzMTIwNDAwNDgzOVoXDTQzMTEyNzAwNDgzOVowgdExCzAJBgNV\n" +
-  "BAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRUwEwYDVQQHEwxTYW50YSBNb25p\n" +
-  "Y2ExEzARBgNVBAoTClJpb3QgR2FtZXMxHTAbBgNVBAsTFExvTCBHYW1lIEVuZ2lu\n" +
-  "ZWVyaW5nMTMwMQYDVQQDEypMb0wgR2FtZSBFbmdpbmVlcmluZyBDZXJ0aWZpY2F0\n" +
-  "ZSBBdXRob3JpdHkxLTArBgkqhkiG9w0BCQEWHmdhbWV0ZWNobm9sb2dpZXNAcmlv\n" +
-  "dGdhbWVzLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKoJemF/\n" +
-  "6PNG3GRJGbjzImTdOo1OJRDI7noRwJgDqkaJFkwv0X8aPUGbZSUzUO23cQcCgpYj\n" +
-  "21ygzKu5dtCN2EcQVVpNtyPuM2V4eEGr1woodzALtufL3Nlyh6g5jKKuDIfeUBHv\n" +
-  "JNyQf2h3Uha16lnrXmz9o9wsX/jf+jUAljBJqsMeACOpXfuZy+YKUCxSPOZaYTLC\n" +
-  "y+0GQfiT431pJHBQlrXAUwzOmaJPQ7M6mLfsnpHibSkxUfMfHROaYCZ/sbWKl3lr\n" +
-  "ZA9DbwaKKfS1Iw0ucAeDudyuqb4JntGU/W0aboKA0c3YB02mxAM4oDnqseuKV/CX\n" +
-  "8SQAiaXnYotuNXMCAwEAATANBgkqhkiG9w0BAQUFAAOCAQEAf3KPmddqEqqC8iLs\n" +
-  "lcd0euC4F5+USp9YsrZ3WuOzHqVxTtX3hR1scdlDXNvrsebQZUqwGdZGMS16ln3k\n" +
-  "WObw7BbhU89tDNCN7Lt/IjT4MGRYRE+TmRc5EeIXxHkQ78bQqbmAI3GsW+7kJsoO\n" +
-  "q3DdeE+M+BUJrhWorsAQCgUyZO166SAtKXKLIcxa+ddC49NvMQPJyzm3V+2b1roP\n" +
-  "SvD2WV8gRYUnGmy/N0+u6ANq5EsbhZ548zZc+BI4upsWChTLyxt2RxR7+uGlS1+5\n" +
-  "EcGfKZ+g024k/J32XP4hdho7WYAS2xMiV83CfLR/MNi8oSMaVQTdKD8cpgiWJk3L\n" +
-  "XWehWA==\n" +
-  "-----END CERTIFICATE-----"

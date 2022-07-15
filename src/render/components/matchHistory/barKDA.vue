@@ -117,7 +117,6 @@
                               }"
                               class="pickerWidth"/>
             </n-space>
-
             <n-space>
 
               <n-popconfirm
@@ -140,8 +139,6 @@
                               }"
                               class="pickerWidth"/>
             </n-space>
-
-
             <n-space>
               <n-popconfirm
                 @positive-click="changeHorseType('trash',trashHorseType)"
@@ -172,7 +169,7 @@
                 发送
               </n-button>
             </template>
-            <n-checkbox-group :value="summonerName" @update:value="handleUpdateValue"  >
+            <n-checkbox-group :value="summonerName"  @update:value="handleUpdateValue"  >
               <n-space vertical item-style="display: flex" >
                 <n-checkbox
                   v-for="summoner in echartsData.name"
@@ -181,6 +178,7 @@
             </n-checkbox-group>
           </n-popconfirm>
         </n-space>
+
         <div class="suspension">
           <n-space>
             <n-button
