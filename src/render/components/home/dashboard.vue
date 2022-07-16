@@ -88,11 +88,6 @@ export default {
 
     ipcRenderer.once('client-connect-success',()  => {
       isConnectSuccess.value = true
-      // 如果英雄联盟客户端是在Frank之后启动
-      // 那么在与客户端连成功后 需要刷新一次首页获取数据
-        setTimeout(() => {
-          location.reload()
-        },2000)
     })
 
     return {

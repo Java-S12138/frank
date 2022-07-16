@@ -1,6 +1,6 @@
 import {promisify} from 'util'
 import {exec} from 'child_process'
-import {RIOT_GAMES_CERT} from "@/utils/render/lolDataList"
+import {RIOT_GAMES_CERT} from "@/utils/render/RIOT"
 const runCommand = promisify(exec)
 
 const execCmd = async (command, powershell) => {
@@ -12,7 +12,6 @@ const execCmd = async (command, powershell) => {
     if (stderr) {
       return Promise.reject(stderr)
     }
-
     return stdout
   } catch (error) {
     return Promise.reject(error)
@@ -36,7 +35,7 @@ export const getAuthFromCmd = async () => {
           certificate
         }
     } catch (err) {
-        console.error(`[cmd] `, '英雄联盟 进程未启动')
+        console.error(`[cmd] `, 'League of Legends progress not start')
         return {'port': ''}
     }
 }

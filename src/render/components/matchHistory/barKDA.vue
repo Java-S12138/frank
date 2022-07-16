@@ -71,12 +71,21 @@
       ]
     }"/></div>
 
-        <n-space style="margin-left: 5px">
-          <div style="display: flex;visibility: revert">
+        <n-space justify="space-between">
             <n-space>
-              <n-tag :bordered="false" style="margin-top: 3px">
-                上等马
-              </n-tag>
+              <n-popconfirm
+                @positive-click="changeHorseType('top',topHorseType)"
+                :show-icon="false" positive-text="修改" negative-text="取消"
+              >
+                <template #trigger>
+                  <n-tag :bordered="false" style="margin-top: 3px">
+                    {{horseType.top}}
+                  </n-tag>
+                </template>
+                <n-input v-model:value="topHorseType"
+                         type="text" style="width: 104px" />
+              </n-popconfirm>
+
               <n-color-picker :modes="['hex']" v-model:value="topHorse"
                               :actions="['confirm']"
                               @confirm="(value) => {
@@ -86,9 +95,20 @@
                               class="pickerWidth"/>
             </n-space>
             <n-space>
-              <n-tag :bordered="false" style="margin-top: 3px">
-                中等马
-              </n-tag>
+
+              <n-popconfirm
+                @positive-click="changeHorseType('mid',midHorseType)"
+                :show-icon="false" positive-text="修改" negative-text="取消"
+              >
+                <template #trigger>
+                  <n-tag :bordered="false" style="margin-top: 3px">
+                    {{horseType.mid}}
+                  </n-tag>
+                </template>
+                <n-input v-model:value="midHorseType"
+                         type="text" style="width: 104px" />
+              </n-popconfirm>
+
               <n-color-picker :modes="['hex']" v-model:value="midHorse"
                               :actions="['confirm']"
                               @confirm="(value) => {
@@ -98,9 +118,19 @@
                               class="pickerWidth"/>
             </n-space>
             <n-space>
-              <n-tag :bordered="false" style="margin-top: 3px">
-                下等马
-              </n-tag>
+
+              <n-popconfirm
+                @positive-click="changeHorseType('bot',botHorseType)"
+                :show-icon="false" positive-text="修改" negative-text="取消"
+              >
+                <template #trigger>
+                  <n-tag :bordered="false" style="margin-top: 3px">
+                    {{horseType.bot}}
+                  </n-tag>
+                </template>
+                <n-input v-model:value="botHorseType"
+                         type="text" style="width: 104px" />
+              </n-popconfirm>
               <n-color-picker :modes="['hex']" v-model:value="bottomHorse"
                               :actions="['confirm']"
                               @confirm="(value) => {
@@ -110,9 +140,18 @@
                               class="pickerWidth"/>
             </n-space>
             <n-space>
-              <n-tag :bordered="false" style="margin-top: 3px">
-                小牛马
-              </n-tag>
+              <n-popconfirm
+                @positive-click="changeHorseType('trash',trashHorseType)"
+                :show-icon="false" positive-text="修改" negative-text="取消"
+              >
+                <template #trigger>
+                  <n-tag :bordered="false" style="margin-top: 3px">
+                    {{horseType.trash}}
+                  </n-tag>
+                </template>
+                <n-input v-model:value="trashHorseType"
+                         type="text" style="width: 104px" />
+              </n-popconfirm>
               <n-color-picker :modes="['hex']" v-model:value="trashHorse"
                               :actions="['confirm']"
                               @confirm="(value) => {
@@ -121,17 +160,25 @@
                               }"
                               class="pickerWidth"/>
             </n-space>
-          </div>
-          <n-popover trigger="hover" placement="top-start">
+          <n-popconfirm :show-icon="false" @positive-click="sendToChat"
+                        negative-text="取消" positive-text="确认"
+          >
             <template #trigger>
-              <n-button type="info" size="small" style="margin-top: 3px;margin-left: 5px" :disabled = "isSend"
-                        strong secondary @click="sendToChat(echartsData)">
+              <n-button type="info" size="small" style="margin-top: 3px;margin-left: 5px"
+                        strong secondary >
                 发送
               </n-button>
             </template>
-            <span>发送匹马信息到聊天页面</span>
-          </n-popover>
+            <n-checkbox-group :value="summonerName"  @update:value="handleUpdateValue"  >
+              <n-space vertical item-style="display: flex" >
+                <n-checkbox
+                  v-for="summoner in echartsData.name"
+                  :value="summoner" :label="summoner" />
+              </n-space>
+            </n-checkbox-group>
+          </n-popconfirm>
         </n-space>
+
         <div class="suspension">
           <n-space>
             <n-button
@@ -151,13 +198,13 @@
                   </n-icon>
                 </n-button>
               </template>
-              不要轻易返回首页<br>避免不必要的Bug发生<br>如果仍要返回请点击确认
+              是否要返回首页
             </n-popconfirm>
 
             <n-popover :show-arrow="false" trigger="hover" :delay="1000">
               <template #trigger>
                 <n-icon size="24" v-mouse-drag="handleChangePosition">
-                  <Hanger/>
+                  <Ballon/>
                 </n-icon>
               </template>
               移动窗口位置
@@ -172,12 +219,12 @@
 <script>
 import VChart from "vue-echarts";
 import {
-  NCard, NAvatar, NSpace, NTag, NIcon,
-  NButton, NColorPicker, NPopover,NPopconfirm
+  NCard, NAvatar, NSpace, NTag, NIcon,NInput,
+NButton, NColorPicker, NPopover,NPopconfirm,NCheckbox,NCheckboxGroup
 } from 'naive-ui'
 import {onMounted, ref} from "vue"
 import {appConfig} from "@/utils/main/config"
-import {ChevronsDownLeft, ArrowBackUp, Hanger} from '@vicons/tabler'
+import {ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
 import {ipcRenderer} from "electron"
 import router from "@/render/router"
 import {useStore} from "@/render/store";
@@ -187,18 +234,24 @@ import {sendMessageToChat} from "@/utils/main/lcu";
 export default ({
   name: "barKDA",
   components: {
-    VChart, NCard, NAvatar, NSpace, NTag, NIcon,NPopconfirm,
-    NButton, NColorPicker, NPopover, ChevronsDownLeft, ArrowBackUp, Hanger
+    VChart, NCard, NAvatar, NSpace, NTag, NIcon,NPopconfirm,NInput,
+    NButton, NColorPicker, NPopover, ChevronsDownLeft, ArrowBackUp, Ballon,NCheckbox,NCheckboxGroup
   },
   setup() {
     const store = useStore()
     const {echartsData} = storeToRefs(store)
     let refresh = ref(1)
-    let isSend = ref(false) // 是否已经发送匹马信息 如果发送了 就不能再次发送
     let topHorse = ref(appConfig.get("topHorse"))
     let midHorse = ref(appConfig.get("midHorse"))
     let bottomHorse = ref(appConfig.get("bottomHorse"))
     let trashHorse = ref(appConfig.get("trashHorse"))
+    const horseType = ref(appConfig.get('horseType'))
+    let topHorseType = ref(horseType.value.top)
+    let midHorseType = ref(horseType.value.mid)
+    let botHorseType = ref(horseType.value.bot)
+    let trashHorseType = ref(horseType.value.trash)
+
+    const summonerName = ref([])
 
     onMounted(() => {
       let colorTitle = document.querySelectorAll('.n-color-picker-trigger__value')
@@ -221,25 +274,45 @@ export default ({
       ipcRenderer.send('mainwin-min')
     }
 
-    const sendToChat = (summonerData) => {
-      console.log(summonerData)
-      let sendMessage = 'Powered By Java_S \n'
-      for (let i = 0; i < summonerData.name.length; i++) {
-          let sendInfo = `${summonerData['name'][i]}: [ ${summonerData['horse'][i]} ]  评分:${summonerData['data'][i]}
-          最近战绩:${summonerData['kdaHistory'][i]}`
-          sendMessage += sendInfo + '\n'+'--------------------------------------------------------------------------------'+'\n'
+    const sendToChat = () => {
+      let sendMessage = 'Powered By Frank \n'
+      for (const summonerDatum of summonerName.value) {
+        const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
+            let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] 评分:${echartsData.value['data'][currentSummonerIndex]} 最近战绩:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
+            sendMessage += sendInfo + '\n'
       }
       if (appConfig.get('isRecommend')){
         sendMessage += 'Frank 一款全新的LOL助手软件 永久免费\n秒选英雄|战绩查询|符文配置|国服数据\n了解更多功能: https://cdn.syjun.vip/frank.html'
       }
-
-      sendMessageToChat(appConfig.get('credentials'),sendMessage)
-      isSend.value = true
+      if (sendMessage.length >18){
+        sendMessageToChat(appConfig.get('credentials'),sendMessage)
+      }
+    }
+    // 多选框组,数据改变
+    const handleUpdateValue = (value) => {
+      summonerName.value = value
+    }
+    // 改变马匹类型
+    const changeHorseType = (type,horse) => {
+      if (type === 'top'){
+        appConfig.set('horseType.top',horse)
+        location.reload()
+      }else if (type === 'mid'){
+        appConfig.set('horseType.mid',horse)
+        location.reload()
+      }else if (type === 'bot'){
+        appConfig.set('horseType.bot',horse)
+        location.reload()
+      }else if (type === 'trash'){
+        appConfig.set('horseType.trash',horse)
+        location.reload()
+      }
     }
 
     return {
-      appConfig, refresh, topHorse, midHorse, bottomHorse, trashHorse,echartsData,isSend,
-      handleChangePosition, toHomePage, handleMin, sendToChat
+      appConfig, refresh, topHorse, midHorse, bottomHorse,
+      trashHorse,echartsData,summonerName,horseType,topHorseType,midHorseType,botHorseType,trashHorseType,
+      handleChangePosition, toHomePage, handleMin, sendToChat,handleUpdateValue,changeHorseType
     }
   }
 })
@@ -255,7 +328,7 @@ export default ({
   margin: 10px;
   border-radius: 10px;
   height: 556px;
-  width: 720px;
+  width: 722px;
 }
 
 .boxShadow {
@@ -265,13 +338,15 @@ export default ({
 }
 
 .pickerWidth {
-  width: 70px;
-  margin-right: 10px;
+  width: 50px;
 }
 
 .suspension {
   position: absolute;
   top: 30px;
   right: 25px;
+}
+.n-popconfirm__action {
+  justify-content: space-between;
 }
 </style>

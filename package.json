@@ -1,10 +1,9 @@
 {
   "name": "frank",
-  "version": "1.13.1212",
-  "private": false,
-  "description": "A bran-new League of Legends assistant software, a replacement for WeGame.",
-  "author": "Java_S",
   "license": "MIT",
+  "private": false,
+  "author": "Java_S",
+  "version": "1.15.1212",
   "main": "background.js",
   "email": "java_s@qq.com",
   "scripts": {

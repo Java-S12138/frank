@@ -1,4 +1,5 @@
 import {queryMatchHistory} from "@/utils/main/lcu";
+import {appConfig} from "@/utils/main/config";
 
 
 // 获取召唤师游戏评分分数
@@ -33,12 +34,12 @@ const analyseSingleMatch = (match) => {
 // 判断是否为 上等马或者下等马
 const jundgeHorse = (score) => {
   if (score>=120){
-    return '上等马'
+    return appConfig.get('horseType.top')
   }else if (score>=110){
-    return '中等马'
+    return appConfig.get('horseType.mid')
   }else if(score>=100){
-    return '下等马'
+    return appConfig.get('horseType.bot')
   }else if (score<100){
-    return '小牛马'
+    return appConfig.get('horseType.trash')
   }
 }

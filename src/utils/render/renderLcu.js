@@ -1,12 +1,10 @@
-import {appConfig} from "@/utils/main/config";
 import {createHttp1Request} from "@/utils/league-connect";
 import {champDict} from "@/utils/render/lolDataList";
 
-const credentials = appConfig.get('credentials')
 let currentId
 
 // 查询本地召唤师信息
-const queryCurrentSummonerInfo = async () => {
+const queryCurrentSummonerInfo = async (credentials) => {
   const summonerInfo = (await createHttp1Request({
     method: "GET",
     url: `/lol-summoner/v1/current-summoner`,
@@ -17,11 +15,16 @@ const queryCurrentSummonerInfo = async () => {
 }
 
 // 查询本地召唤师英雄熟练度
-export const queryCurrentChapm = async (index,end) => {
+export const queryCurrentChapm = async (credentials) => {
   const summonerSuperChampData = (await createHttp1Request({
     method: "GET",
     url: `/lol-collections/v1/inventories/${currentId}/champion-mastery`,
   }, credentials)).json()
+  return summonerSuperChampData
+}
+
+// 处理本地召唤师英雄熟练度数据
+const dealSuperChapm = (summonerSuperChampData,index,end) => {
   let superChampList = []
   if (end>3){
     for (const summonerSuperChampDatum of summonerSuperChampData.slice(index,end)) {
@@ -40,10 +43,10 @@ export const queryCurrentChapm = async (index,end) => {
     }
     return superChampList
   }
-
 }
+
 // 查询召唤师排位分数
-const queryCurrentRankPoint = async () => {
+const queryCurrentRankPoint = async (credentials) => {
   const rankPoint = (await createHttp1Request({
     method:"GET",
     url:'/lol-ranked/v1/current-ranked-stats'
@@ -61,32 +64,27 @@ const queryCurrentRankPoint = async () => {
 }
 
 // 返回最终需要的数据
-export const returnRankData = async () => {
-  if (appConfig.get('credentials.port') == ""){
-    return null
-  }
-  const summonerInfo =  await queryCurrentSummonerInfo()
-  const rankList = await queryCurrentRankPoint()
-  let rank=  [summonerInfo.name,summonerInfo.lv,rankList[0],rankList[1],rankList[2],"S12季前赛",'INVINCIBLE',summonerInfo.imgUrl]
-  let carry = await queryCurrentChapm(0,3)
-  return {rank, carry}
+export const returnRankData = async (credentials) => {
+  const summonerInfo =  await queryCurrentSummonerInfo(credentials)
+  const rankList = await queryCurrentRankPoint(credentials)
+  const rank=  [summonerInfo.name,summonerInfo.lv,rankList[0],rankList[1],rankList[2],"S12季前赛",'INVINCIBLE',summonerInfo.imgUrl]
+
+  const summonerSuperChampData = await queryCurrentChapm(credentials)
+
+  const carry = dealSuperChapm(summonerSuperChampData,0,3)
+  const honorData = await querySummonerHonorLevel(credentials)
+  const chapmLevel = dealSuperChapm(summonerSuperChampData,0,15)
+  return {rank, carry,honorData,chapmLevel}
 }
 
 
 // 查看召唤师荣誉等级
-export const querySummonerHonorLevel = async () => {
-  if (appConfig.get('credentials.port') == ""){
-    return null
-  }
-  try {
+export const querySummonerHonorLevel = async (credentials) => {
     const summonerHonor = (await createHttp1Request({
       method: "GET",
       url: `/lol-honor-v2/v1/profile`,
-    }, credentials)).json()
+    },credentials)).json()
     return ['荣誉等级:'+summonerHonor.honorLevel,'里程点数:'+summonerHonor.checkpoint]
-  }catch (e) {
-    return null
-  }
 }
 
 // 英文段位昵称转中文

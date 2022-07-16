@@ -44,7 +44,7 @@
               英雄熟练度
             </n-button>
           </n-space>
-          <div v-if="switchButton == 1">
+          <div v-show="switchButton == 1">
             <n-list  >
             <n-list-item>
               <n-space justify="space-between">
@@ -93,8 +93,41 @@
 
           </n-list>
           </div>
-          <div v-else-if="switchButton == 2">
-            <real-power></real-power>
+          <div v-show="switchButton == 2">
+            <div style="margin-top: 12px">
+              <n-space vertical >
+                <n-space>
+                  <n-tag :bordered="false" type="success">
+                    {{summonerHonor[0]}}
+                  </n-tag>
+                  <n-tag :bordered="false" type="warning">
+                    {{summonerHonor[1]}}
+                  </n-tag>
+                </n-space>
+
+                <n-list  >
+                  <n-scrollbar style="max-height: 165px">
+                    <n-list-item v-for="chapm in summonerChampLevel">
+                      <n-space class="alignCenter">
+                        <n-avatar
+                          round
+                          :bordered="false"
+                          :size="50"
+                          :src="chapm[0]"
+                          fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+                        />
+                        <n-tag :bordered="false" style="color: #9aa4af">
+                          英雄等级 {{ chapm[1] }}
+                        </n-tag>
+                        <n-tag :bordered="false" style="color: #9aa4af">
+                          英雄熟练度 {{chapm[2]}}
+                        </n-tag>
+                      </n-space>
+                    </n-list-item>
+                  </n-scrollbar>
+                </n-list>
+              </n-space>
+            </div>
           </div>
         </n-card>
   </div>
@@ -103,47 +136,53 @@
 <script>
 import {ref, onMounted} from "vue"
 import {ipcRenderer} from 'electron'
-import router from '@/render/router'
-import RealPower from './realPower.vue'
-import {init} from '@/utils/render/getUserInfo'
-import {serveArea} from '@/utils/render/lolDataList'
-import {appConfig} from '@/utils/main/config'
-import {mapNameFromUrl} from '@/utils/render/lolDataList'
-
 import {NCard, NAvatar, NSpace, NTag, NModal,
-  NInput, NButton, NSelect,NPopover,NList,NListItem,useMessage } from 'naive-ui'
-import {querySummonerHonorLevel, returnRankData} from "@/utils/render/renderLcu";
-
+  NInput, NButton, NSelect,NPopover,NList,NListItem,NScrollbar,useMessage } from 'naive-ui'
+import {appConfig} from "@/utils/main/config";
+import {returnRankData} from "@/utils/render/renderLcu";
 export default {
   name: "appMain",
-  components:{NCard,NAvatar,NSpace,NTag,NModal,RealPower,
-    NInput,NButton,NSelect,NPopover,NList,NListItem
+  components:{NCard,NAvatar,NSpace,NTag,NModal,
+    NInput,NButton,NSelect,NPopover,NList,NListItem,NScrollbar
   },
   setup(){
     let rankData = ref([])
     let carryData = ref([])
+    let summonerHonor = ref([])
+    let summonerChampLevel = ref([])
     let switchButton = ref(1)
 
     const message = useMessage()
 
     onMounted(() => {
+      getHomeData()
       // 监听是否获取到英雄联盟客户端信息
-      ipcRenderer.once('client-starting',()=>{
+      ipcRenderer.once('client-starting', () => {
         message.loading(
           '英雄联盟客户端启动中...'
         )
       })
-      getDataLocal()
+      ipcRenderer.once('init-home', (event,data) => {
+        rankData.value = data.rank
+        carryData.value = data.carry
+        summonerHonor.value = data.honorData
+        summonerChampLevel.value = data.chapmLevel
+      })
     })
-    // 本地获取数据
-    const getDataLocal = async () => {
-      const allList = await returnRankData()
-      if (allList == null){return}
-      rankData.value = allList.rank
-      carryData.value = allList.carry
+    const getHomeData = async () => {
+      const credentials = appConfig.get('credentials')
+      if (credentials.port !=''){
+        const homeData = await returnRankData(credentials)
+        rankData.value = homeData.rank
+        carryData.value = homeData.carry
+        summonerHonor.value = homeData.honorData
+        summonerChampLevel.value = homeData.chapmLevel
+      }
+
     }
+
     return {
-      rankData,carryData,switchButton,
+      rankData,carryData,switchButton,summonerHonor,summonerChampLevel
     }
   }
 }
@@ -180,4 +219,7 @@ export default {
   height: 300px;
 }
 
+.alignCenter{
+  align-items: center;
+}
 </style>

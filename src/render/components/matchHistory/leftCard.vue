@@ -15,16 +15,16 @@
             />
             <n-space vertical :size="[10,4]">
               <n-tag type="success" :bordered="false" round size="small" disabled="disabled">{{ summoner.name }}</n-tag>
-              <n-tag type="success" :bordered="false"  v-if="summoner.horse == '上等马'"
+              <n-tag type="success" :bordered="false"  v-if="summoner.horse == horseType.top"
                      round size="small">{{ summoner.horse }} Lv: {{ summoner.level }}
               </n-tag>
-              <n-tag type="warning" :bordered="false" v-else-if="summoner.horse == '中等马'"
+              <n-tag type="warning" :bordered="false" v-else-if="summoner.horse == horseType.mid"
                      round size="small">{{ summoner.horse }} Lv: {{ summoner.level }}
               </n-tag>
-              <n-tag type="info" :bordered="false" v-else-if="summoner.horse == '下等马'"
+              <n-tag type="info" :bordered="false" v-else-if="summoner.horse == horseType.bot"
                      round size="small">{{ summoner.horse }} Lv: {{ summoner.level }}
               </n-tag>
-              <n-tag type="error" :bordered="false" v-else-if="summoner.horse == '小牛马'"
+              <n-tag type="error" :bordered="false" v-else-if="summoner.horse == horseType.trash"
                      round size="small">{{ summoner.horse }} Lv: {{ summoner.level }}
               </n-tag>
             </n-space>
@@ -37,6 +37,7 @@
 
 <script>
 import {NCard, NAvatar, NSpace, NTag, NButton} from 'naive-ui'
+import {appConfig} from "@/utils/main/config";
 
 export default {
   name: "leftCard",
@@ -51,6 +52,8 @@ export default {
   setup(props,{emit}) {
     let clickCount = 0
     let clickList = []
+    const horseType = appConfig.get('horseType')
+
     const clickCurrentSummoner = (e,summonerId,name) => {
       try {
         emit('summonerId', {summonerId, name})
@@ -70,7 +73,7 @@ export default {
     }
 
     return {
-      clickCurrentSummoner
+      clickCurrentSummoner,horseType
     }
   }
 }

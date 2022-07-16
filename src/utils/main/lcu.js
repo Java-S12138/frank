@@ -48,7 +48,7 @@ export const autoAcceptGame = async (credentials) => {
   }
 }
 // 获取选人会话
-export const champSelectSession = async (credentials) => {
+export const champSelectSession = async (credentials,idSetInterval) => {
   const res = await createHttp1Request({
     method: "GET",
     url: '/lol-champ-select/v1/session'
@@ -68,6 +68,7 @@ export const champSelectSession = async (credentials) => {
         if (actionElement.type == 'pick' && !actionElement.completed && appConfig.get('autoPickChampion.isAuto')) {
           console.log('pick')
           autoPickChampion(credentials, userActionID, 'pick')
+          clearInterval(idSetInterval)
         } else if (actionElement.type == 'ban' && !actionElement.completed && appConfig.get('autoBanChampion.isAuto')) {
           console.log('ban')
           autoBanChampion(credentials, userActionID, 'ban')
@@ -82,19 +83,31 @@ export const champSelectSession = async (credentials) => {
 }
 // 监听选择的英雄
 export const listenChampSelect = async (ws, assistWindow, credentials) => {
- const currentGameMode = await queryCurrentGameMode(credentials)
+  const currentGameMode = await queryCurrentGameMode(credentials)
+  let pickHero = 0
+
   ws.subscribe('/lol-champ-select/v1/session', async (data) => {
+    const currentChampId = await getCurrentChamp(credentials)
+
     if (currentGameMode == 'ARAM'){
-      pickChampAram(assistWindow,credentials)
+      pickChampAram(assistWindow,currentChampId)
     }else {
-      pickChampRank(ws, assistWindow,credentials,data)
+      let localPlayerCellId = data.localPlayerCellId
+      let actions = data.actions
+      for (let action of actions) {
+        for (let actionElement of action) {
+          if (actionElement.actorCellId == localPlayerCellId && actionElement.championId != pickHero) {
+            pickHero = actionElement.championId
+            pickChampRank(assistWindow,pickHero)
+          }
+        }
+      }
     }
   })
 }
 
 // 大乱斗选择英雄
-const pickChampAram = async (assistWindow,credentials) => {
-  const currentChampId = await getCurrentChamp(credentials)
+const pickChampAram = async (assistWindow,currentChampId) => {
   if (currentChampId !=0){
     assistWindow.webContents.send('current-champ-select', {
       champId:currentChampId,mode:'aram'})
@@ -102,23 +115,12 @@ const pickChampAram = async (assistWindow,credentials) => {
 }
 
 // 排位或者匹配选择英雄
-const pickChampRank = async (ws, assistWindow,credentials,data) => {
-    let localPlayerCellId = data.localPlayerCellId
-    let actions = data.actions
-    let userSelectChapmID
-
-    for (let action of actions) {
-      for (let actionElement of action) {
-        if (actionElement.actorCellId == localPlayerCellId && actionElement.type == 'pick') {
-          userSelectChapmID = actionElement.championId
-        }
-      }
-    }
-
-    if (userSelectChapmID != 0) {
-      assistWindow.webContents.send('current-champ-select', {
-        champId:userSelectChapmID,mode:'other'})
-    }
+const pickChampRank = async (assistWindow,currentChampId) => {
+  if (currentChampId != 0) {
+    assistWindow.webContents.send('current-champ-select', {
+      champId: currentChampId, mode: 'other'
+    })
+  }
 }
 
 
@@ -209,6 +211,9 @@ export const queryAllSummonerId = async (credentials) => {
   for (const summonersIdElement of summonersId) {
     summonerIdList.push(summonersIdElement.fromSummonerId)
   }
+  // 数组去重
+  summonerIdList = [... new Set(summonerIdList)]
+
   // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return summonerIdList
 }
@@ -222,6 +227,7 @@ export const queryMatchHistory = async (credentials,summonerId) => {
     url: `/lol-match-history/v3/matchlist/account/${summonerId}`,
   }, credentials)).json()['games']['games'].reverse()
   for (const matchListElement of matchList) {
+    //matchListElement.gameMode == currentGameMode &&
     if (matchListElement.gameMode == currentGameMode && matchCount < 5){
       matchCount +=1
       classicMode.push(matchListElement)
@@ -251,9 +257,8 @@ export const getSummonerNickName = async (credentials) => {
     let name = summonerInfo.displayName
     let iconId = summonerInfo.profileIconId
     let level = summonerInfo.summonerLevel
-    // 通过召唤师ID查询最近十场排位进行分数分析 得出匹马信息
+    // 通过召唤师ID查询最近5场排位进行分数分析 得出匹马信息
     let gameSocreInfo = await getGameScore(credentials,summonerId)
-    console.log(gameSocreInfo)
 
     allSummonerNickName.push({name:name,iconId:iconId,
       level:level,score:gameSocreInfo['score'],
@@ -359,9 +364,11 @@ const querySummonerPosition = (lane) => {
 const getItemImgUrl = (item) => {
   if (item == 7013){
     return `https://game.gtimg.cn/images/lol/act/img/item/3802.png`
+  }else if (item== 7004){
+    return `https://game.gtimg.cn/images/lol/act/img/item/3068.png`
   }
   if (item == 0){
-    return 'https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/items/0.png'
+    return 'https://gw.alipayobjects.com/zos/rmsportal/wYnHWSXDmBhiEmuwXsym.png?x-oss-process=image%2Fresize%2Cm_fill%2Cw_64%2Ch_64%2Fformat%2Cpng'
   }else {
     return `https://game.gtimg.cn/images/lol/act/img/item/${item}.png`
   }
@@ -433,7 +440,12 @@ const analyticalData  = (participant,nameList) => {
     item6:getItemImgUrl(participant.stats.item6),
     kills:participant.stats.kills,
     deaths:participant.stats.deaths,
-    assists:participant.stats.deaths,
+    assists:participant.stats.assists,
+    totalDamageDealtToChampions:participant.stats.totalDamageDealtToChampions,
+    totalDamageTaken:participant.stats.totalDamageTaken,
+    goldEarned:participant.stats.goldEarned,
+    visionScore:participant.stats.visionScore,
+    totalMinionsKilled:participant.stats.totalMinionsKilled+participant.stats.neutralMinionsKilled
   }
 }
 // 获取召唤师participantId 和 name
@@ -449,7 +461,12 @@ const getDetailsTitle = (gameInfo) => {
   let createTime = (new Date(gameInfo.gameCreation).toLocaleString()).split(' ')
   let dateStr = createTime[0].slice(5)
   let timeStr = createTime[1].slice(0, 5)
-  let lane = queryGameType(gameInfo.queueId).split(' ')[1]
+  if (queryGameType(gameInfo.queueId).indexOf(' ') != -1){
+    var lane = queryGameType(gameInfo.queueId).split(' ')[1]
+  }else {
+    var lane = queryGameType(gameInfo.queueId)
+  }
+
   let gameDuration = ((gameInfo.gameDuration) / 60).toFixed(0)
   return [dateStr, timeStr, lane, gameDuration]
 }
