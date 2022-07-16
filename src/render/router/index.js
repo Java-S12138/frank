@@ -25,6 +25,11 @@ const routes = [
     path: '/matchHistory',
     name: 'MatchHistory',
     component: () => import('@/render/components/matchHistory/index.vue')
+  },
+  {
+    path: '/matchDetails',
+    name: 'MatchDetails',
+    component: () => import('@/render/components/matchDetails/index.vue')
   }
 ]
 

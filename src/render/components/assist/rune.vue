@@ -98,22 +98,15 @@
 
     <n-card class="boxShadow bottomTip" size="small">
         <n-space :size="[44]">
-            <div class="skillDiv" v-for="skills in skillsAndItems[0]">
+            <div class="skillDiv text-focus-in" v-for="skills in skillsAndItems[0]">
               <img class="itemImg" :src="skills[0]">
               <strong class="skillText">{{skills[1]}}</strong>
             </div>
-
-<!--          <div class="skillDiv">-->
-<!--            <img class="itemImg" src="https://game.gtimg.cn/images/lol/act/img/spell/DariusCleave.png">-->
-<!--            <strong class="skillText">Q</strong>-->
-<!--          </div>-->
-
-          <div class="skillDiv" v-for="items in skillsAndItems[itemCount]">
+          <div class="skillDiv text-focus-in" v-for="items in skillsAndItems[itemCount]">
             <img :src="items" class="itemImg">
           </div>
-
         </n-space>
-      <div class="itemsTotal" v-if="skillsAndItems.length !=0">
+      <div class="itemsTotal text-focus-in" v-if="skillsAndItems.length !=0">
         <n-space>
           <n-button size="tiny" text text-color="#9aa4af" @click="changeItemsImg">
             切换装备
@@ -282,7 +275,6 @@ export default {
         skillsList.push([skillImgUrl,skills[i]])
       }
       skillsAndItems.value.push(skillsList)
-      console.log(skillsAndItems.value)
     }
 
     // 获取图片地址
@@ -475,4 +467,34 @@ export default {
   bottom: -2px;
   color: #9aa4af
 }
+.text-focus-in {
+  -webkit-animation: text-focus-in 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+  animation: text-focus-in 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+
+@-webkit-keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+@keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0px);
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
 </style>

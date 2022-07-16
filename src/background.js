@@ -1,5 +1,5 @@
 import {app, BrowserWindow, ipcMain,screen,
-  Tray, nativeImage, Menu,Notification} from 'electron'
+  Tray, nativeImage, Menu,Notification } from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import {
   autoAcceptGame,
@@ -13,8 +13,7 @@ import {appConfig,userAgentList} from './utils/main/config'
 import {getAuthFromCmd, startClientExe} from './utils/main/clientStart'
 import {returnRankData} from "@/utils/render/renderLcu";
 
-const Store = require("electron-store")
-Store.initRenderer()
+const Store = require("electron-store");Store.initRenderer()
 const path = require('path')
 const iconPath = path.join(
   process.env.npm_lifecycle_event === "electron:serve" ? `${__dirname}/../resources` : `${__dirname}/../resources`,
@@ -237,6 +236,8 @@ function showMainWindow() {
   }
 }
 
+
+
 function showAssistWindow() {
   if (!assistWindow) {
     return;
@@ -253,6 +254,7 @@ function showAssistWindow() {
 }
 
 const runLcu = async () => {
+
   const ws = await createWebSocketConnection(credentials)
   let idSetInterval
 
@@ -275,7 +277,15 @@ const runLcu = async () => {
       listenChampSelect(ws,assistWindow,credentials)
       // 显示战力窗口
 
-    }else if (data =='None' ||data =='GameStart' ||data =='Matchmaking') {
+    }else if (data =='GameStart' ||data =='Matchmaking') {
+      // 选择英雄结束后,发送消息给渲染进程, 让渲染进程获取到敌方召唤师信息
+      mainWindow.webContents.send('query-enemy-summoner')
+
+      assistWindow.hide()
+      clearInterval(idSetInterval)
+      ws.unsubscribe('/lol-champ-select/v1/session')
+      assistWindow.webContents.send('refresh-assisit-window')
+    }else if(data =='None' ||data =='EndOfGame'){
       backHome()
       assistWindow.hide()
       clearInterval(idSetInterval)

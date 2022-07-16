@@ -36,7 +36,7 @@ export default {
     let matchData = ref([])
     let pageCount = ref(1)
     const store = useStore()
-    const {echartsData,currentQueryGameId,currentSummonerName} = storeToRefs(store)
+    const {echartsData,currentQueryGameId,currentSummonerName,currentTeam,currentEchartData} = storeToRefs(store)
     const credentials = appConfig.get('credentials')
 
     const getChartsData = (res) => {
@@ -47,9 +47,11 @@ export default {
         echartsData.value.kdaHistory.push(re.kdaHistory)
         echartsData.value.horse.push(re.horse)
       }
+      currentEchartData.value = echartsData.value
     }
     onBeforeMount( async () => {
       const res =  await getSummonerNickName(credentials)
+      currentTeam.value = 1
       summonerInfo.value = []
       summonerInfo.value = res
       getChartsData(res)

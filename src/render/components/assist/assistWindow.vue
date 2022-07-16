@@ -41,8 +41,12 @@ export default {
     const tabsInstRef = ref(['champRank', 'rune'])
     const transValue = ref('champRank')
     const message = useMessage()
+    let countTrans = 0
     ipcRenderer.on('current-champ-select', () => {
-      transValue.value = 'rune'
+      countTrans += 1
+        if (countTrans ===1){
+          transValue.value = 'rune'
+        }
     })
 
     ipcRenderer.on('refresh-assisit-window', () => {

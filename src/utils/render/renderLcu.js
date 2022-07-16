@@ -1,5 +1,6 @@
 import {createHttp1Request} from "@/utils/league-connect";
 import {champDict} from "@/utils/render/lolDataList";
+import {request} from "@/utils/render/request";
 
 let currentId
 
@@ -100,4 +101,25 @@ const englishToChinese = (tier) => {
     case 'BRONZE' :return '青铜';
     case 'IRON' :return '黑铁';
   }
+}
+
+// 查询敌方召唤师ID
+export const queryEnemySummonerId= async (credentials) => {
+  await queryCurrentSummonerInfo(credentials)
+  const mactchSession = (await createHttp1Request({
+    method: "GET",
+    url: `/lol-gameflow/v1/session`,
+  },credentials)).json()
+  let enemyId = []
+
+  if (mactchSession.gameData.teamOne.find((i) =>i.accountId === currentId )){
+    var enemyInfo = mactchSession.gameData.teamTwo
+  }else{
+    var enemyInfo = mactchSession.gameData.teamOne
+  }
+
+  for (const enemy of enemyInfo) {
+    enemyId.push(enemy.accountId)
+  }
+  return enemyId
 }

@@ -30,7 +30,7 @@
       },
       xAxis: {
         type: 'category',
-        data: echartsData.name
+        data: currentEchartData.name
       },
       yAxis: {
         type: 'value',
@@ -38,7 +38,7 @@
       },
       series: [
         {
-          data: echartsData.data,
+          data: currentEchartData.data,
           type: 'bar',
           itemStyle: {
             emphasis: {
@@ -172,7 +172,7 @@
             <n-checkbox-group :value="summonerName"  @update:value="handleUpdateValue"  >
               <n-space vertical item-style="display: flex" >
                 <n-checkbox
-                  v-for="summoner in echartsData.name"
+                  v-for="summoner in currentEchartData.name"
                   :value="summoner" :label="summoner" />
               </n-space>
             </n-checkbox-group>
@@ -222,7 +222,7 @@ import {
   NCard, NAvatar, NSpace, NTag, NIcon,NInput,
 NButton, NColorPicker, NPopover,NPopconfirm,NCheckbox,NCheckboxGroup
 } from 'naive-ui'
-import {onMounted, ref} from "vue"
+import {onMounted, ref,watch} from "vue"
 import {appConfig} from "@/utils/main/config"
 import {ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
 import {ipcRenderer} from "electron"
@@ -239,7 +239,7 @@ export default ({
   },
   setup() {
     const store = useStore()
-    const {echartsData} = storeToRefs(store)
+    const {echartsData,enemyEchartsData,currentTeam,currentEchartData} = storeToRefs(store)
     let refresh = ref(1)
     let topHorse = ref(appConfig.get("topHorse"))
     let midHorse = ref(appConfig.get("midHorse"))
@@ -253,11 +253,16 @@ export default ({
 
     const summonerName = ref([])
 
+    watch(currentTeam,() => {
+      currentEchartData.value = currentTeam.value === 1 ? echartsData.value :enemyEchartsData.value
+    })
+
     onMounted(() => {
       let colorTitle = document.querySelectorAll('.n-color-picker-trigger__value')
       for (const colorTitleElement of colorTitle) {
         colorTitleElement.remove()
       }
+
     })
     const handleChangePosition = (pos) => {
       ipcRenderer.send('move-main', {
@@ -310,8 +315,8 @@ export default ({
     }
 
     return {
-      appConfig, refresh, topHorse, midHorse, bottomHorse,
-      trashHorse,echartsData,summonerName,horseType,topHorseType,midHorseType,botHorseType,trashHorseType,
+      appConfig, refresh, topHorse, midHorse, bottomHorse,currentTeam,enemyEchartsData,currentEchartData,
+      trashHorse,summonerName,horseType,topHorseType,midHorseType,botHorseType,trashHorseType,
       handleChangePosition, toHomePage, handleMin, sendToChat,handleUpdateValue,changeHorseType
     }
   }
