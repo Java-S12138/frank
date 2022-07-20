@@ -4,10 +4,9 @@ import Home from './views/home/index.vue'
 </script>
 
 <template>
-<!--    <n-message-provider>-->
-<!--        <router-view></router-view>-->
-<!--    </n-message-provider>-->
-    <home></home>
+    <n-message-provider :placement="'bottom'">
+        <router-view></router-view>
+    </n-message-provider>
 </template>
 
 <style>

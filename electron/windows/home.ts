@@ -2,13 +2,12 @@ import {app, BrowserWindow, ipcMain} from 'electron'
 import {appConfig} from "../../utils/main/config";
 import path from 'path'
 
-
 const winConfig = {
   title: 'Frank',
   center: true,
   show: false,
   frame: false,
-  resizable: false,
+  resizable: true,
   width: 400,
   height: 650,
   webPreferences: {
@@ -20,8 +19,9 @@ const winConfig = {
   }
 }
 
-export class HomeWindow {
-  win
+export class MainWindow {
+  public win
+
   constructor() {
     this.win = new BrowserWindow(winConfig)
     this.init()
@@ -62,5 +62,19 @@ export class HomeWindow {
         this.win.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
       }
     })
+  }
+
+  showWindow() {
+    if (!this.win) {
+      return
+    }
+    const visible = this.win.isVisible()
+    if (!visible) {
+      this.win.show()
+      this.win.setSkipTaskbar(false)
+    } else {
+      this.win.hide()
+      this.win.setSkipTaskbar(true)
+    }
   }
 }

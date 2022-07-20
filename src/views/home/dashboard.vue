@@ -54,7 +54,6 @@ import {ref} from "vue";
 
 const store = useStore()
 const isConnectSuccess = ref(window.appConfig.get('credentials.port'))
-console.log(window.appConfig.get('horseType'))
 const toSettingPage = () => {
     store.pageIncrease()
 }
