@@ -1,65 +1,81 @@
 {
   "name": "frank",
   "license": "MIT",
-  "private": false,
-  "author": "Java_S",
-  "version": "1.16.1213",
-  "main": "background.js",
-  "email": "java_s@qq.com",
+  "private": true,
+  "author": {
+    "name": "Java_S",
+    "email": "java_s@qq.com"
+  },
+  "version": "1.0.0",
+  "main": "dist/electron/main/index.js",
   "description": "A bran-new League of Legends assistant software, a replacement for WeGame.",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "dev": "vite",
+    "build": "rimraf dist && vite build && electron-builder"
+  },
+  "env": {
+    "VITE_DEV_SERVER_HOST": "127.0.0.1",
+    "VITE_DEV_SERVER_PORT": 3000
   },
   "dependencies": {
-    "core-js": "^3.8.3",
-    "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue": "^3.2.25",
+    "vue-router": "4"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@types/node-fetch": "^2.6.1",
     "@vicons/tabler": "^0.12.0",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "@vue/eslint-config-standard": "^6.1.0",
+    "@vitejs/plugin-vue": "^3.0.0",
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
-    "cheerio": "^1.0.0-rc.11",
-    "default-passive-events": "^2.0.0",
     "echarts": "^5.3.3",
-    "electron": "18.1.0",
-    "electron-devtools-installer": "^3.1.0",
-    "electron-store": "^8.0.1",
-    "naive-ui": "^2.29.0",
-    "pinia": "^2.0.14",
-    "vue-cli-plugin-electron-builder": "~2.1.1",
-    "vue-echarts": "^6.1.0"
+    "electron": "^19.0.8",
+    "electron-builder": "^23.1.0",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-store": "^8.0.2",
+    "less": "^4.1.2",
+    "naive-ui": "^2.31.0",
+    "path-browserify": "^1.0.1",
+    "pinia": "^2.0.16",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.0",
+    "vite-plugin-electron": "^0.7.5",
+    "vue-echarts": "^6.2.3",
+    "vue-tsc": "^0.38.4"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "@vue/standard"
+  "build": {
+    "appId": "com.electron.frank",
+    "productName": "Frank",
+    "asar": true,
+    "copyright": "Copyright © 2022 Java_S",
+    "extraResources": [
+      {
+        "from": "./resources",
+        "to": "./resources"
+      }
     ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
+    "directories": {
+      "output": "release/${version}"
+    },
+    "files": [
+      "dist"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/frank.ico",
+      "artifactName": "${productName}_${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
     }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+  }
 }

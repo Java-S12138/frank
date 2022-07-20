@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "rootDir": "./"
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx",
+    "src/**/*.vue", "electron/**/*.ts", "electron/preload/**/*.ts", "*.json","utils/**/*.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
