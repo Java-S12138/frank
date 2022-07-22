@@ -26,7 +26,7 @@ const routes = [
     name: 'MatchHistory',
     component: () => import('@/render/components/matchHistory/index.vue')
   }
-]
+  ]
 
 const router = createRouter({
   history: createWebHashHistory(),

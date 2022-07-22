@@ -83,22 +83,17 @@ export const champSelectSession = async (credentials,idSetInterval) => {
 }
 // 监听选择的英雄
 export const listenChampSelect = async (ws, assistWindow, credentials) => {
-  const currentGameMode = await queryCurrentGameMode(credentials)
-  let pickHero = 0
-
   ws.subscribe('/lol-champ-select/v1/session', async (data) => {
     const currentChampId = await getCurrentChamp(credentials)
-
-    if (currentGameMode == 'ARAM'){
+    if (currentChampId !=0 ){
       pickChampAram(assistWindow,currentChampId)
     }else {
       let localPlayerCellId = data.localPlayerCellId
       let actions = data.actions
       for (let action of actions) {
         for (let actionElement of action) {
-          if (actionElement.actorCellId == localPlayerCellId && actionElement.championId != pickHero) {
-            pickHero = actionElement.championId
-            pickChampRank(assistWindow,pickHero)
+          if (actionElement.actorCellId == localPlayerCellId && actionElement.isInProgress && actionElement.type != 'ban') {
+              pickChampRank(assistWindow,actionElement.championId)
           }
         }
       }
@@ -132,7 +127,7 @@ const queryCurrentGameMode = async (credentials) => {
     url: '/lol-gameflow/v1/session',
   }, credentials)).json()
   try {
-    return currentGameInfo.gameData.queue.gameMode
+    return currentGameInfo.gameData.queue.id
   }catch (e){
     return null
   }
@@ -213,7 +208,7 @@ export const queryAllSummonerId = async (credentials) => {
   }
   // 数组去重
   summonerIdList = [... new Set(summonerIdList)]
-
+  // todo 测试
   // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return summonerIdList
 }
@@ -222,13 +217,14 @@ export const queryMatchHistory = async (credentials,summonerId) => {
   let classicMode = []
   let matchCount = 0
   const currentGameMode = await queryCurrentGameMode(credentials)
+  console.log('当前游戏模式:',currentGameMode)
   const matchList = (await createHttp1Request({
     method: "GET",
     url: `/lol-match-history/v3/matchlist/account/${summonerId}`,
   }, credentials)).json()['games']['games'].reverse()
   for (const matchListElement of matchList) {
-    //matchListElement.gameMode == currentGameMode &&
-    if (matchListElement.gameMode == currentGameMode && matchCount < 5){
+    //matchListElement.queueId == currentGameMode &&
+    if (matchListElement.queueId == currentGameMode && matchCount < 5){
       matchCount +=1
       classicMode.push(matchListElement)
     }
@@ -244,9 +240,14 @@ const querySummonerInfo = async (credentials,summonerId) => {
   return summonerInfo
 }
 // 获取召唤师昵称和等级和头像
-export const getSummonerNickName = async (credentials) => {
+export const getSummonerNickName = async (credentials,enemyIdList) => {
   console.log('[info] 获取召唤师昵称和等级和头像...')
-  const allSummonerId = await queryAllSummonerId(credentials)
+  let allSummonerId
+  if (enemyIdList != null){
+    allSummonerId = enemyIdList
+  }else {
+    allSummonerId = await queryAllSummonerId(credentials)
+  }
   if (allSummonerId == null){
     return null
   }
@@ -259,13 +260,46 @@ export const getSummonerNickName = async (credentials) => {
     let level = summonerInfo.summonerLevel
     // 通过召唤师ID查询最近5场排位进行分数分析 得出匹马信息
     let gameSocreInfo = await getGameScore(credentials,summonerId)
+    let rankPoint = await queryRankPoint(credentials,summonerInfo.puuid)
+    if (rankPoint === null){
+      rankPoint = `Lv: ${level}`
+    }
 
-    allSummonerNickName.push({name:name,iconId:iconId,
-      level:level,score:gameSocreInfo['score'],
-      horse:gameSocreInfo['horse'],kdaHistory:gameSocreInfo['kdaHistory'],summonerId:summonerId})
+    allSummonerNickName.push({name:name,iconId:iconId,score:gameSocreInfo['score'],
+      horse:gameSocreInfo['horse'],kdaHistory:gameSocreInfo['kdaHistory'],summonerId:summonerId,
+      rankPoint:rankPoint
+    })
   }
   return allSummonerNickName
 }
+
+// 获取当前排位模式的段位分数
+const queryRankPoint = async (credentials,puuid) => {
+  const currentMatchMode = await queryCurrentGameMode(credentials)
+  if (currentMatchMode !=420 && currentMatchMode!= 440){
+    return null
+  }
+  const rankData =  await accordingToRankModeQueryRankPoint(credentials,currentMatchMode,puuid)
+  // 查询单双排的分数
+  return rankData
+}
+
+// 查询不同排位模式的段位分数
+const accordingToRankModeQueryRankPoint = async (credentials,mode,puuid) => {
+  const matchType = mode === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR'
+  const rankData = (await createHttp1Request({
+    method:"GET",
+    url:`/lol-ranked/v1/ranked-stats/${puuid}`
+  },credentials)).json().queueMap[matchType]
+
+  const tier = englishToChinese(rankData.tier)
+  const division = rankData.division
+  const leaguePoints = rankData.leaguePoints
+
+  return `${tier}${division}  ${leaguePoints}`
+}
+
+
 // 发送消息到当前聊天界面
 export const sendMessageToChat = async (credentials,message) => {
   const chatId = await getChatSelectChampId(credentials)
@@ -472,4 +506,20 @@ const getDetailsTitle = (gameInfo) => {
 }
 const goldToStr = (gold) => {
   return (gold/1000).toFixed(1) + 'K'
+}
+
+// 英文段位昵称转中文
+const englishToChinese = (tier) => {
+  switch (tier) {
+    case 'NONE' :return '未定级';
+    case 'CHALLENGER' :return '王者';
+    case 'GRANDMASTER' :return '宗师';
+    case 'MASTER' :return '大师';
+    case 'DIAMOND' :return '砖石';
+    case 'PLATINUM' :return '铂金';
+    case 'GOLD' :return '黄金';
+    case 'SILVER' :return '白银';
+    case 'BRONZE' :return '青铜';
+    case 'IRON' :return '黑铁';
+  }
 }

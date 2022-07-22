@@ -67,28 +67,28 @@ import {BrandGithub,Help,Code,ArrowUpCircle} from '@vicons/tabler'
 import {shell } from 'electron'
 import {ref,onMounted} from "vue";
 import {request} from "@/utils/render/request";
-import {appConfig} from "@/utils/main/config";
+import {useStore} from "@/render/store";
+import {storeToRefs} from "pinia/dist/pinia";
 export default {
   name: "fbottom",
   components:{NCard, NSpace, NTag,NAvatar,NButton,
     NIcon,BrandGithub,NPopover,Help,Code,ArrowUpCircle},
   setup(){
     let showPopover = ref(false)
-    let frankVersion = ref(appConfig.get('frankVersion'))
-
+    const store = useStore()
+    const {frankVersion} = storeToRefs(store)
 
     // 检查版本更新
     onMounted(async () => {
-      frankVersion.value = (await request({
+      const onLineFrankVersion = (await request({
         url:'https://unpkg.com/@java_s/op.gg/package.json'
       })).data.frankVersion
-      if (frankVersion.value != appConfig.get('frankVersion')){
+      if (frankVersion.value != onLineFrankVersion){
         showPopover.value = true
       }
     })
     const openUpdate = () => {
       shell.openExternal('https://www.yuque.com/java-s/frank/update')
-      appConfig.set('frankVersion', frankVersion.value)
       showPopover.value = false
     }
 

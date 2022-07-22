@@ -46,7 +46,7 @@
           </n-space>
           <div v-show="switchButton == 1">
             <n-list  >
-            <n-list-item>
+              <n-list-item>
               <n-space justify="space-between">
                 <n-tag type="success" :bordered="false" :round="false" size="large">
                   单双排位
@@ -57,7 +57,7 @@
                 </n-tag>
               </n-space>
             </n-list-item>
-            <n-list-item>
+              <n-list-item>
               <n-space justify="space-between">
                 <n-tag type="success" :bordered="false" :round="false" size="large">
                   灵活排位
@@ -68,7 +68,7 @@
                 </n-tag>
               </n-space>
             </n-list-item>
-            <n-list-item>
+              <n-list-item>
               <n-space justify="space-between">
                 <n-tag type="success" :bordered="false" :round="false" size="large">
                   云顶排位
@@ -79,34 +79,26 @@
                 </n-tag>
               </n-space>
             </n-list-item>
-            <n-list-item>
-              <n-space justify="space-between">
-                <n-tag type="success" :bordered="false" :round="false" size="large">
-                  国服排名
-                </n-tag>
+              <n-list-item>
+                <n-space justify="space-between">
+                  <n-tag type="success" :bordered="false" :round="false" size="large">
+                    {{summonerHonor[0]}}
+                  </n-tag>
 
-                <n-tag type="warning" :bordered="false" :round="false" size="large" >
-                  {{ rankData[6] }}
-                </n-tag>
-              </n-space>
-            </n-list-item>
+                  <n-tag type="warning" :bordered="false" :round="false" size="large" >
+                    {{summonerHonor[1]}}
+                  </n-tag>
+                </n-space>
+              </n-list-item>
 
           </n-list>
           </div>
           <div v-show="switchButton == 2">
             <div style="margin-top: 12px">
               <n-space vertical >
-                <n-space>
-                  <n-tag :bordered="false" type="success">
-                    {{summonerHonor[0]}}
-                  </n-tag>
-                  <n-tag :bordered="false" type="warning">
-                    {{summonerHonor[1]}}
-                  </n-tag>
-                </n-space>
 
                 <n-list  >
-                  <n-scrollbar style="max-height: 165px">
+                  <n-scrollbar style="max-height: 215px">
                     <n-list-item v-for="chapm in summonerChampLevel">
                       <n-space class="alignCenter">
                         <n-avatar
@@ -120,7 +112,7 @@
                           英雄等级 {{ chapm[1] }}
                         </n-tag>
                         <n-tag :bordered="false" style="color: #9aa4af">
-                          英雄熟练度 {{chapm[2]}}
+                          熟练度 {{chapm[2]}}
                         </n-tag>
                       </n-space>
                     </n-list-item>
