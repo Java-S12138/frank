@@ -68,7 +68,7 @@
           </n-space>
 
           <n-space style="margin-top: 12px;width: 200px" v-else-if="summonerInfo !=null && enemySummonerInfo.length === 0">
-            <n-tag :bordered="false" size="small">进入游戏后可查看敌方信息(Alt+X)</n-tag>
+            <n-tag :bordered="false" size="small">进入游戏后可查看敌方信息</n-tag>
           </n-space>
         </n-space>
       </n-card>
@@ -162,9 +162,4 @@ export default {
   height: 556px
 }
 
-.boxShadow {
-  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.08),
-  0 3px 6px 0 rgba(0, 0, 0, 0.06),
-  0 5px 12px 4px rgba(0, 0, 0, 0.04);;
-}
 </style>

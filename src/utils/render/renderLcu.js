@@ -1,6 +1,5 @@
 import {createHttp1Request} from "@/utils/league-connect";
 import {champDict} from "@/utils/render/lolDataList";
-import {request} from "@/utils/render/request";
 
 let currentId
 
@@ -57,9 +56,9 @@ const queryCurrentRankPoint = async (credentials) => {
   let rankSr = rankPoint.find((i) => i.queueType=="RANKED_FLEX_SR")
   let rankTft = rankPoint.find((i) => i.queueType=="RANKED_TFT")
 
-  let RANKED_SOLO =  rankSolo.tier =="NONE" ? '未定级': `${englishToChinese(rankSolo.tier)}${rankSolo.division} ${rankSolo.leaguePoints} 胜点`
-  let RANKED_FLEX_SR =  rankSr.tier =="NONE" ? '未定级':`${englishToChinese(rankSr.tier)}${rankSr.division} ${rankSr.leaguePoints} 胜点`
-  let RANKED_TFT =  rankTft.tier =="NONE" ? '未定级':`${englishToChinese(rankTft.tier)}${rankTft.division} ${rankTft.leaguePoints} 胜点`
+  let RANKED_SOLO =  rankSolo.tier =="NONE" ? '未定级': `${englishToChinese(rankSolo.tier)}${rankSolo.division} ${rankSolo.leaguePoints}`
+  let RANKED_FLEX_SR =  rankSr.tier =="NONE" ? '未定级':`${englishToChinese(rankSr.tier)}${rankSr.division} ${rankSr.leaguePoints}`
+  let RANKED_TFT =  rankTft.tier =="NONE" ? '未定级':`${englishToChinese(rankTft.tier)}${rankTft.division} ${rankTft.leaguePoints}`
 
   return [RANKED_SOLO,RANKED_FLEX_SR,RANKED_TFT]
 }
@@ -85,7 +84,7 @@ export const querySummonerHonorLevel = async (credentials) => {
       method: "GET",
       url: `/lol-honor-v2/v1/profile`,
     },credentials)).json()
-    return ['荣誉等级:'+summonerHonor.honorLevel,'里程点数:'+summonerHonor.checkpoint]
+    return ['荣誉等级 '+summonerHonor.honorLevel,'里程点数 '+summonerHonor.checkpoint]
 }
 
 // 英文段位昵称转中文

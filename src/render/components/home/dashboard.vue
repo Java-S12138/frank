@@ -1,5 +1,5 @@
 <template>
-  <header v-mouse-drag = "handldDrge" class="frankTitle">
+  <header v-mouse-drag="handldDrge" class="frankTitle">
     <n-space class="frankTitle">
       <img src="../../assets/icon/app-icon.png" alt="" width="40" @click="handleMin" v-if="isConnectSuccess !=''">
       <img src="../../assets/icon/app-icon-bw.png" alt="" width="40" @click="handleMin" v-else>
@@ -39,12 +39,11 @@
         </template>
         退出
       </n-popover>
-
     </n-space>
   </header>
 </template>
 
-<script>
+<script setup>
 import {NIcon, NSpace, NButton, NPopover} from 'naive-ui'
 import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
 import {useStore} from "@/render/store";
@@ -52,50 +51,37 @@ import {ipcRenderer} from 'electron'
 import {ref} from "vue";
 import {appConfig} from "@/utils/main/config";
 
-export default {
-  name: "Dashboard",
-  components: {
-    NIcon, NSpace, NButton, NPopover,
-    ChevronsDownRight, Settings, CircleX
-  },
-  setup() {
-    const store = useStore()
-    let isConnectSuccess = ref(appConfig.get('credentials.port'))
 
-    const toSettingPage = () => {
-      store.pageIncrease()
-    }
+const store = useStore()
+let isConnectSuccess = ref(appConfig.get('credentials.port'))
 
-    const handldDrge = (pos) =>{
-      ipcRenderer.send('move-main',{
-        x:pos.x,
-        y:pos.y,
-        isWindow:'home'
-      })
-    }
-
-    const handleMinimize = () =>{
-      ipcRenderer.send('mainwin-minimize')
-    }
-
-    const handleMin = () =>{
-      ipcRenderer.send('mainwin-min')
-    }
-
-    const handleClose = () =>{
-      ipcRenderer.send('mainwin-close')
-    }
-
-    ipcRenderer.once('client-connect-success',()  => {
-      isConnectSuccess.value = true
-    })
-
-    return {
-      isConnectSuccess,toSettingPage,
-      handldDrge,handleMinimize,handleMin,handleClose
-    }
-  }
+const toSettingPage = () => {
+  store.pageIncrease()
 }
+
+const handldDrge = (pos) => {
+  ipcRenderer.send('move-main', {
+    x: pos.x,
+    y: pos.y,
+  })
+}
+
+const handleMinimize = () => {
+  ipcRenderer.send('mainwin-minimize')
+}
+
+const handleMin = () => {
+  ipcRenderer.send('mainwin-min')
+}
+
+const handleClose = () => {
+  ipcRenderer.send('mainwin-close')
+}
+
+ipcRenderer.once('client-connect-success', () => {
+  isConnectSuccess.value = true
+})
+
 </script>
 
 <style scoped>

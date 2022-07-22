@@ -189,16 +189,16 @@
               </n-icon>
             </n-button>
 
-            <n-popconfirm @positive-click="toHomePage" :show-icon="false"
+            <n-popconfirm @positive-click="closeWindow" :show-icon="false"
                           negative-text="取消" positive-text="确认">
               <template #trigger>
                 <n-button text circle color="black" >
                   <n-icon size="24">
-                    <ArrowBackUp/>
+                    <circle-x/>
                   </n-icon>
                 </n-button>
               </template>
-              是否要返回首页
+              是否关闭当前页面
             </n-popconfirm>
 
             <n-popover :show-arrow="false" trigger="hover" :delay="1000">
@@ -224,9 +224,8 @@ NButton, NColorPicker, NPopover,NPopconfirm,NCheckbox,NCheckboxGroup
 } from 'naive-ui'
 import {onMounted, ref,watch} from "vue"
 import {appConfig} from "@/utils/main/config"
-import {ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
+import {ChevronsDownLeft, ArrowBackUp,CircleX, Ballon} from '@vicons/tabler'
 import {ipcRenderer} from "electron"
-import router from "@/render/router"
 import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {sendMessageToChat} from "@/utils/main/lcu";
@@ -234,7 +233,7 @@ import {sendMessageToChat} from "@/utils/main/lcu";
 export default ({
   name: "barKDA",
   components: {
-    VChart, NCard, NAvatar, NSpace, NTag, NIcon,NPopconfirm,NInput,
+    VChart, NCard, NAvatar, NSpace, NTag, NIcon,NPopconfirm,NInput,CircleX,
     NButton, NColorPicker, NPopover, ChevronsDownLeft, ArrowBackUp, Ballon,NCheckbox,NCheckboxGroup
   },
   setup() {
@@ -265,18 +264,16 @@ export default ({
 
     })
     const handleChangePosition = (pos) => {
-      ipcRenderer.send('move-main', {
+      ipcRenderer.send('move-match-history-window', {
         x: pos.x,
         y: pos.y,
-        isWindow:'horse'
       })
     }
-    const toHomePage = () => {
-      router.back()
-      ipcRenderer.send('to-mainWindow')
+    const closeWindow = () => {
+      ipcRenderer.send('close-match-history-window')
     }
     const handleMin = () => {
-      ipcRenderer.send('mainwin-min')
+      ipcRenderer.send('match-history-window-min')
     }
 
     const sendToChat = () => {
@@ -317,7 +314,7 @@ export default ({
     return {
       appConfig, refresh, topHorse, midHorse, bottomHorse,currentTeam,enemyEchartsData,currentEchartData,
       trashHorse,summonerName,horseType,topHorseType,midHorseType,botHorseType,trashHorseType,
-      handleChangePosition, toHomePage, handleMin, sendToChat,handleUpdateValue,changeHorseType
+      handleChangePosition, closeWindow, handleMin, sendToChat,handleUpdateValue,changeHorseType
     }
   }
 })
@@ -334,12 +331,6 @@ export default ({
   border-radius: 10px;
   height: 556px;
   width: 722px;
-}
-
-.boxShadow {
-  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.08),
-  0 3px 6px 0 rgba(0, 0, 0, 0.06),
-  0 5px 12px 4px rgba(0, 0, 0, 0.04);;
 }
 
 .pickerWidth {

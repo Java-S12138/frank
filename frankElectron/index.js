@@ -1,0 +1,5 @@
+export {createMainWindow} from './home'
+export {createAssistWindow} from './assist'
+export {makeTray} from './makeTray'
+export {listenIpc} from './listenCommonIpc'
+export {createMatchHistoryWindow} from './matchHistory'

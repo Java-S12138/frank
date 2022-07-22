@@ -15,7 +15,7 @@ export const appConfig = new Store({
       isAuto:false
     },
     'autoRune':{},
-    'credentials':{"port": ""},
+    'credentials':{'port': ''},
     'gameDirectory':'',
     'autoAccept':50,
     'topHorse' :'#7BD9A5',
@@ -28,6 +28,10 @@ export const appConfig = new Store({
       'mid':'驰骋沙场',
       'bot':'浑水摸鱼',
       'trash':'操作抽象',
+    },
+    'champRankOption':{
+      'tier':200,
+      'lane':'mid'
     }
   }
 })

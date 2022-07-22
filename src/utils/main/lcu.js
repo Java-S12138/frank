@@ -78,9 +78,9 @@ export const champSelectSession = async (credentials,idSetInterval) => {
       }
     }
   }
-
-
 }
+
+
 // 监听选择的英雄
 export const listenChampSelect = async (ws, assistWindow, credentials) => {
   ws.subscribe('/lol-champ-select/v1/session', async (data) => {
@@ -156,7 +156,9 @@ export const applyRunePage = async (credentials, data) => {
       url: 'lol-perks/v1/pages',
       body: data
     }, credentials)
+    return true
   } catch (e) {
+    return false
     console.log(e)
   }
 }
