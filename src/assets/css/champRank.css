@@ -1,0 +1,119 @@
+.n-card {
+    margin: 15px;
+    border-radius: 10px;
+    width: auto;
+}
+
+.n-tag {
+    border-radius: 5px;
+}
+
+.isHover:hover {
+    background-color: #ffffff;
+    color: #4098fc;
+}
+
+.imgT0 {
+    font-size: 0px;
+    width: 24px;
+    height: 24px;
+    background-image: url('../../assets/tLevel/t0.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+
+.imgT1 {
+    font-size: 0px;
+    width: 24px;
+    height: 24px;
+    background-image: url('../../assets/tLevel/t1.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+
+.imgT2 {
+    font-size: 0px;
+    width: 24px;
+    height: 24px;
+    background-image: url('../../assets/tLevel/t2.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+
+.imgT3 {
+    font-size: 0px;
+    width: 24px;
+    height: 24px;
+    background-image: url('../../assets/tLevel/t3.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+.imgT4 {
+    font-size: 0px;
+    width: 24px;
+    height: 24px;
+    background-image: url('../../assets/tLevel/t4.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+
+
+.top {
+    font-size: 0px;
+    width: 30px;
+    height: 30px;
+    background-image: url('../../assets/tLevel/top.svg');
+    display: inline-block;
+}
+.mid {
+    font-size: 0px;
+    width: 30px;
+    height: 30px;
+    background-image: url('../../assets/tLevel/mid.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+    color: #4098fc;
+
+}
+.jungle {
+    font-size: 0px;
+    width: 30px;
+    height: 30px;
+    background-image: url('../../assets/tLevel/jug.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+.bottom {
+    font-size: 0px;
+    width: 30px;
+    height: 30px;
+    background-image: url('../../assets/tLevel/bot.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+.support {
+    font-size: 0px;
+    width: 30px;
+    height: 30px;
+    background-image: url('../../assets/tLevel/sup.svg');
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+.addMargin {
+    margin-top: -1.5px;
+    margin-right: -4px;
+}
+
+.textColorSecend {
+    color: #9AA4AF;
+    font-size: 13px;
+    width: 150px;
+}
+.textColorSecendDrawer {
+    color: #9AA4AF;
+    font-size: 12px;
+    width: 150px;
+}
+.alignCenter {
+    align-items: center;
+}

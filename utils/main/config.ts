@@ -15,7 +15,7 @@ export const appConfig = new Store({
       isAuto:false
     },
     'autoRune':{},
-    'credentials':{"port": ""},
+    'credentials':{"port": 0,"pid":0,"password":"","certificate":''},
     'gameDirectory':'',
     'autoAccept':50,
     'topHorse' :'#7BD9A5',

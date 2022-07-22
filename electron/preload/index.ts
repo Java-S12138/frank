@@ -10,10 +10,13 @@ contextBridge.exposeInMainWorld("electron", {
 });
 
 contextBridge.exposeInMainWorld("appConfig",{
-  get:(e:string) => appConfig.get(e),
+  get:(key:string) => appConfig.get(key),
   set:(key:string,value:any) => appConfig.set(key,value),
-  clear:() => appConfig.clear()
+  clear:() => appConfig.clear(),
+  delete:(key:any) => appConfig.delete(key),
+  has:(key:any) => appConfig.has(key)
 })
+
 contextBridge.exposeInMainWorld("lct",{
   createHttp1Request: async (option:any,credentials:any) => (await createHttp1Request(option,credentials)).json(),
 })

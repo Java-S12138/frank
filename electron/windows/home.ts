@@ -20,7 +20,7 @@ const winConfig = {
 }
 
 export class MainWindow {
-  public win
+  public win:BrowserWindow
 
   constructor() {
     this.win = new BrowserWindow(winConfig)
@@ -29,7 +29,7 @@ export class MainWindow {
 
   init() {
     this.win.on('ready-to-show', () => {
-      this.win.show()
+      // this.win.show()
       this.listenIpc()
     })
     if (app.isPackaged) {
@@ -51,7 +51,7 @@ export class MainWindow {
     })
     // 关闭窗口
     ipcMain.on('mainwin-close', () => {
-      appConfig.set('credentials.port','')
+      appConfig.set('credentials.port',0)
       app.quit()
     })
     // 移动窗口  主窗口

@@ -36,7 +36,7 @@
         </n-card>
 
         <n-card class="boxShadow pointCard" size="small" >
-            <n-space justify="space-between" >
+            <n-space justify="space-between">
                 <n-button dashed size="large" style=" color: #666F75;" @click = "switchButton = 1">
                     个人生涯
                 </n-button>
@@ -140,7 +140,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue"
 import {NCard, NAvatar, NSpace, NTag,NButton,NPopover,NList,NListItem,NScrollbar,useMessage } from 'naive-ui'
-import {returnRankData} from "../../../utils/render/homeLcu";
+import {returnRankData} from "../../../utils/lcu/homeLcu";
 import {credentials} from "../../../utils/types/lcu";
 import {homeData,ChapmLevel} from "../../../utils/types/lcu";
 
@@ -169,7 +169,7 @@ onMounted(() => {
 
 const getHomeData = async () => {
     const credentials:credentials = window.appConfig.get('credentials')
-    if (credentials.port !=''){
+    if (credentials.port !=0){
         const homeData:homeData = await returnRankData(credentials)
         rankData.value = homeData.rank
         carryData.value = homeData.carry
@@ -208,7 +208,7 @@ const getHomeData = async () => {
     align-items: center;
 }
 .tagWidth{
-    width: 96px;
+    width: 85px;
     justify-content: center;
 }
 </style>

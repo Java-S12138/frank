@@ -1,5 +1,5 @@
 export interface credentials {
-  port:string|number
+  port:number
   pid:number
   password:string
   certificate:string
