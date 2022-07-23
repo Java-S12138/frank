@@ -120,5 +120,6 @@ export const queryEnemySummonerId= async (credentials) => {
   for (const enemy of enemyInfo) {
     enemyId.push(enemy.accountId)
   }
+  // const enemyId =[2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return enemyId
 }

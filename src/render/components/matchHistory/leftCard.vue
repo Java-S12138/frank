@@ -1,7 +1,7 @@
 <template>
   <div>
       <n-card class="mainCard boxShadow">
-        <n-space>
+        <n-space v-if="summonerInfo !=null">
           <n-space vertical style="margin-top: 15px;width: 200px"
                    :size="[2,34]" v-if="currentTeam ===1">
             <n-space v-for="summoner in summonerInfo">
@@ -71,12 +71,16 @@
             <n-tag :bordered="false" size="small">进入游戏后可查看敌方信息</n-tag>
           </n-space>
         </n-space>
+        <n-space v-else style="align-items: center">
+          <n-spin size="medium" />
+          <p>数据加载中....</p>
+        </n-space>
       </n-card>
   </div>
 </template>
 
 <script>
-import {NCard, NAvatar, NSpace, NTag, NButton,NBadge} from 'naive-ui'
+import {NCard, NAvatar, NSpace, NTag, NButton,NBadge,NSpin} from 'naive-ui'
 import {appConfig} from "@/utils/main/config";
 import {queryEnemySummonerId} from "@/utils/render/renderLcu";
 import {ref} from "vue";
@@ -88,7 +92,7 @@ import {ipcRenderer} from "electron";
 export default {
   name: "leftCard",
   components: {
-    NCard, NAvatar, NSpace, NTag, NButton,NBadge
+    NCard, NAvatar, NSpace, NTag, NButton,NBadge,NSpin
   },
   props: {
     summonerInfo: {

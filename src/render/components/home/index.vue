@@ -17,7 +17,7 @@ import Fbottom from "@/render/components/home/fbottom";
 
 // 使用pinia 管理切换页面的参数
 const store = useStore()
-const {pageCount, echartsData} = storeToRefs(store)
+let {pageCount, echartsData} = storeToRefs(store)
 
 </script>
 

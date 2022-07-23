@@ -59,8 +59,9 @@ const runLcu = async () => {
 
     }else if (data =='GameStart' ||data =='Matchmaking') {
       // 选择英雄结束后,发送消息给渲染进程, 让渲染进程获取到敌方召唤师信息
-      mainWindow.webContents.send('query-enemy-summoner')
-
+      if (matchHistoryWindow != null){
+        matchHistoryWindow.webContents.send('query-enemy-summoner')
+      }
       assistWindow.hide()
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
@@ -128,6 +129,9 @@ const mathcHistoryIpc = () => {
   // 展示战力分析窗口
   ipcMain.on('showCharts',async (event) => {
     matchHistoryWindow = await createMatchHistoryWindow(userHeader)
+    // if (clientStatus === '"Matchmaking"' || clientStatus === '"GameStart"' || clientStatus==='"InProgress"'){
+    //   matchHistoryWindow.webContents.send('query-enemy-summoner')
+    // }
   })
 // 移动游戏历史窗口
   ipcMain.on('move-match-history-window', (event, pos) => {

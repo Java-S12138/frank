@@ -38,7 +38,7 @@ onMounted(() => {
     ' border-color 1s var(--n-bezier)'
 })
 const tabsInstRef = ref(['champRank', 'rune'])
-const transValue = ref('champRank')
+let transValue = ref('champRank')
 const message = useMessage()
 
 ipcRenderer.once('current-champ-select', () => {

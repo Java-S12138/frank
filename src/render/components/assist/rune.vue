@@ -187,12 +187,14 @@ const getRuneData = async (gameMode) => {
     try {
       if (gameMode === 'aram' && currentGameMode === 'aram') {
         champInfo = (await request({
-          url: `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`,
+          // `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`
+          url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json`,
           method: 'GET',
         })).data
       } else {
+        // https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`
         champInfo = (await request({
-          url: `https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`,
+          url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json `,
           method: 'GET',
         })).data
       }
@@ -202,7 +204,7 @@ const getRuneData = async (gameMode) => {
       for (const champ of champInfo) {
         // 符文
         for (const rune of champ.runes) {
-          if (gameMode == 'aram') {
+          if (gameMode == 'aram' && currentGameMode === 'aram') {
             rune.position = 'aram'
           }
           runeDataList.push(rune)
@@ -296,16 +298,13 @@ const mapChamp = (champId) => {
 // 应用符文
 const applyRune = async (data) => {
   let tempData = JSON.parse(JSON.stringify(data))
+  // console.log(tempData)
   tempData.name = data.alias + ' Powered By Frank'
-  const isapplySuccess = await applyRunePage(credentials,JSON.parse(JSON.stringify(tempData)))
-  if (isapplySuccess){
-    message.success('符文配置成功')
-    if (appConfig.get('isRecommend')) {
-      sendMessageToChat(credentials,
-        `一款全新的LOL助手软件 永久免费\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
-    }
-  }else {
-    message.error('符文配置失败')
+  applyRunePage(credentials,JSON.parse(JSON.stringify(tempData)))
+  message.success('符文配置成功')
+  if (appConfig.get('isRecommend')) {
+    sendMessageToChat(credentials,
+      `一款全新的LOL助手软件 永久免费\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
   }
 }
 // 拖动顶部盒子 改变窗口位置

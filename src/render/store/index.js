@@ -12,7 +12,7 @@ export const useStore = defineStore('app', {
       currentQueryGameId:0,
       currentSummonerName:'',
       currentTeam:1, // 当前队伍
-      frankVersion:'1.16.1213'
+      frankVersion:'1.171.1213'
     }
   },
   actions:{

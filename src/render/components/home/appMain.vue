@@ -42,9 +42,9 @@
         <n-button dashed size="large" style=" color: #666F75;" @click = "switchButton = 2">
           英雄数据
         </n-button>
-        <n-button dashed size="large" style=" color: #666F75;" @click = "switchButton = 2">
-          查询战绩
-        </n-button>
+<!--        <n-button dashed size="large" style=" color: #666F75;" @click = "switchButton = 2">-->
+<!--          查询战绩-->
+<!--        </n-button>-->
       </n-space>
       <div v-show="switchButton == 1">
         <n-list>
@@ -153,7 +153,7 @@ const rankData = ref([])
 const carryData = ref([])
 const summonerHonor = ref([])
 const summonerChampLevel = ref([])
-const switchButton = ref(1)
+let switchButton = ref(1)
 
 const message = useMessage()
 

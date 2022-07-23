@@ -145,7 +145,7 @@ export const applyRunePage = async (credentials, data) => {
 
     if (current != undefined) {
       // 删除当前符文页
-      await await createHttp1Request({
+      await createHttp1Request({
         method: "DELETE",
         url: `lol-perks/v1/pages/${current.id}`,
       }, credentials)

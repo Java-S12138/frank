@@ -76,7 +76,7 @@ const {frankVersion} = storeToRefs(store)
 // 检查版本更新
 onMounted(async () => {
   const onLineFrankVersion = (await request({
-    url: 'https://unpkg.com/@java_s/op.gg/package.json'
+    url: 'https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/package.json'
   })).data.frankVersion
   if (frankVersion.value != onLineFrankVersion) {
     showPopover.value = true
