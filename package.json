@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": false,
   "author": "Java_S",
-  "version": "1.16.1213",
+  "version": "1.172.1213",
   "main": "background.js",
   "email": "java_s@qq.com",
   "description": "A bran-new League of Legends assistant software, a replacement for WeGame.",

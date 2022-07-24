@@ -43,6 +43,7 @@ const runLcu = async () => {
   const homeData = await returnRankData(credentials)
   mainWindow.webContents.send('init-home',homeData)
   mainWindow.webContents.send('client-connect-success')
+  assistWindow.webContents.send('client-connect-success')
 
   ws.subscribe('/lol-gameflow/v1/gameflow-phase', async (data) => {
     console.log(data)
@@ -65,7 +66,7 @@ const runLcu = async () => {
       assistWindow.hide()
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
-    }else if(data =='None' ||data =='EndOfGame'){
+    }else if(data =='None' ||data =='PreEndOfGame'){ // PreEndOfGame
       assistWindow.hide()
       if (matchHistoryWindow !=null){
         matchHistoryWindow.close()

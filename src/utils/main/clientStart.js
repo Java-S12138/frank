@@ -21,7 +21,7 @@ const execCmd = async (command, powershell) => {
 export const getAuthFromCmd = async () => {
     try {
         const cmdLine = await execCmd(
-            `wmic PROCESS WHERE name='LeagueClientUx.exe' GET commandline`,
+            `wmic PROCESS WHERE name='LeagueClientUx.exe' GET commandline /value`,
             false,
         )
       const port = Number(cmdLine.split('--app-port=')[1].split('"')[0])

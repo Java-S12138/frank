@@ -5,7 +5,7 @@
     <n-tab name="rune" tab="符文配置" @click="transValue='rune'"></n-tab>
   </n-tabs>
   <champ-rank v-show="transValue=='champRank'" class="slide-in-right"></champ-rank>
-  <rune v-show="transValue=='rune'" class="slide-in-left"></rune>
+  <rune v-show="transValue=='rune'" ></rune>
 </template>
 
 <script setup>
@@ -16,7 +16,6 @@ import Rune from './rune.vue'
 import ChampRank from './champRank.vue'
 import {onMounted, ref} from "vue";
 import {ipcRenderer} from "electron";
-import router from "@/render/router";
 import {createHttp1Request} from "@/utils/league-connect";
 import {appConfig} from "@/utils/main/config";
 
@@ -44,9 +43,12 @@ const message = useMessage()
 ipcRenderer.once('current-champ-select', () => {
     transValue.value = 'rune'
 })
+ipcRenderer.once('client-connect-success',() => {
+  location.reload()
+})
 
 ipcRenderer.on('refresh-assisit-window', () => {
-  router.go(0)
+  location.reload()
 })
 
 const showMatch = async () => {

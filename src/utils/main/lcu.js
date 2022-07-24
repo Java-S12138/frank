@@ -142,7 +142,6 @@ export const applyRunePage = async (credentials, data) => {
       url: 'lol-perks/v1/pages',
     }, credentials)).json()
     const current = currentRuneList.find((i) => i.current && i.isDeletable)
-
     if (current != undefined) {
       // 删除当前符文页
       await createHttp1Request({
@@ -158,8 +157,8 @@ export const applyRunePage = async (credentials, data) => {
     }, credentials)
     return true
   } catch (e) {
-    return false
     console.log(e)
+    return false
   }
 }
 // 自动配置符文

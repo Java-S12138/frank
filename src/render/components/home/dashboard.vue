@@ -29,22 +29,23 @@
         </template>
         设置
       </n-popover>
-      <n-popover :show-arrow="false" trigger="hover" :delay="1000">
+      <n-popconfirm @positive-click="handleClose" :show-icon="false"
+                    negative-text="取消" positive-text="确认">
         <template #trigger>
-          <n-button text circle @click="handleClose" color="black">
+          <n-button text circle color="black">
             <n-icon size="24">
               <circle-x/>
             </n-icon>
           </n-button>
         </template>
-        退出
-      </n-popover>
+        是否退出Frank
+      </n-popconfirm>
     </n-space>
   </header>
 </template>
 
 <script setup>
-import {NIcon, NSpace, NButton, NPopover} from 'naive-ui'
+import {NIcon, NSpace, NButton, NPopover,NPopconfirm} from 'naive-ui'
 import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
 import {useStore} from "@/render/store";
 import {ipcRenderer} from 'electron'

@@ -57,7 +57,7 @@
       </n-gi>
     </n-grid>
     <n-grid :cols="2" v-else>
-      <n-gi v-for="(rune,index) in runeDataListFor">
+      <n-gi v-for="rune in runeDataListFor">
         <n-card class="boxShadow runeCard" size="small">
           <n-space :size=[-5] align="stretch">
             <n-space vertical style="width: 50px;" :size=[1,-5]>
@@ -79,17 +79,11 @@
                 <img :src="getImaUrl(rune.selectedPerkIds[8])" alt="" class="runImgseSondary">
               </n-space>
               <div style="margin-top: 12px">
-                <n-popover trigger="hover" placement="top-end" :delay="1000">
-                  <template #trigger>
-                    <n-tag :bordered="false" type="success"
-                           size="medium" @click="applyRune(rune)">
-                      应用
-                    </n-tag>
-                  </template>
-                  <span>Win {{ rune.winRate }} <br/>Pick {{ rune.pickCount }}</span>
-                </n-popover>
+                <n-tag :bordered="false" type="success"
+                       size="medium" @click="applyRune(rune)">
+                  应用
+                </n-tag>
               </div>
-
             </n-space>
           </n-space>
         </n-card>
@@ -147,8 +141,6 @@ let runeDataList = []
 const runeDataListFor = ref([])
 let pageStart = 0
 let pageEnd = 0
-const limitCount = 1
-let count = 0
 const isAutoRune = ref(0)
 const loading = ref(true)
 const skillsAndItems = ref([])
@@ -166,9 +158,7 @@ ipcRenderer.on('current-champ-select', (event, data) => {
     runeDataList = []
     skillsAndItems.value = []
     itemCount.value = 1
-    count = 0
     isAutoRune.value = appConfig.has(`autoRune.${data.champId}`) == true ? 'auto' : 0
-    count += 1
     currentChamp.value = data.champId
     mapChamp(data.champId)
     getRuneData(data.mode)
@@ -178,59 +168,56 @@ ipcRenderer.on('current-champ-select', (event, data) => {
 })
 
 const getRuneData = async (gameMode) => {
-  if (limitCount === count) {
-    // 判断当前英雄是否配置看自动符文
-    if (appConfig.has(`autoRune.${currentChamp.value}` )){
-      applyRunePage(credentials,appConfig.get(`autoRune.${currentChamp.value}`))
-    }
-    let champInfo
-    try {
-      if (gameMode === 'aram' && currentGameMode === 'aram') {
-        champInfo = (await request({
-          // `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`
-          url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json`,
-          method: 'GET',
-        })).data
-      } else {
-        // https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`
-        champInfo = (await request({
-          url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json `,
-          method: 'GET',
-        })).data
-      }
-      // 技能
-      getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
-
-      for (const champ of champInfo) {
-        // 符文
-        for (const rune of champ.runes) {
-          if (gameMode == 'aram' && currentGameMode === 'aram') {
-            rune.position = 'aram'
-          }
-          runeDataList.push(rune)
-        }
-        // 装备
-        getItemImgUrl(champ.itemBuilds[0].blocks)
-      }
-
-      pageStart = 0
-      pageEnd = runeDataList.length > 4 ? 4 : runeDataList.length
-      runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
-      if (appConfig.has(`autoRune.${currentChamp.value}`)) {
-        message.success('自动配置符文成功')
-        if (appConfig.get('isRecommend')) {
-          sendMessageToChat(credentials,
-            `一款全新的LOL助手软件 永久免费\n${champDict[currentChamp.value].label}的符文 由Frank自动配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
-        }
-      }
-
-      loading.value = false
-    } catch (e) {
-      console.log(e)
-    }
-  } else {
-    return
+  // 判断当前英雄是否配置看自动符文
+  if (appConfig.has(`autoRune.${currentChamp.value}` )){
+    applyRunePage(credentials,appConfig.get(`autoRune.${currentChamp.value}`))
   }
+  let champInfo
+  try {
+    if (gameMode === 'aram' && currentGameMode === 'aram') {
+      champInfo = (await request({
+        // `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`
+        url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json`,
+        method: 'GET',
+      })).data
+    } else {
+      // https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`
+      champInfo = (await request({
+        url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json `,
+        method: 'GET',
+      })).data
+    }
+    // 技能
+    getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
+
+    for (const champ of champInfo) {
+      // 符文
+      for (const rune of champ.runes) {
+        if (gameMode == 'aram' && currentGameMode === 'aram') {
+          rune.position = 'aram'
+        }
+        runeDataList.push(rune)
+      }
+      // 装备
+      getItemImgUrl(champ.itemBuilds[0].blocks)
+    }
+
+    pageStart = 0
+    pageEnd = runeDataList.length > 4 ? 4 : runeDataList.length
+    runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
+    if (appConfig.has(`autoRune.${currentChamp.value}`)) {
+      message.success('自动配置符文成功')
+      if (appConfig.get('isRecommend')) {
+        sendMessageToChat(credentials,
+          `一款全新的LOL助手软件 永久免费\n${champDict[currentChamp.value].label}的符文 由Frank自动配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
+      }
+    }
+
+    loading.value = false
+  } catch (e) {
+    console.log(e)
+  }
+
 }
 // getRuneData()
 
@@ -298,14 +285,19 @@ const mapChamp = (champId) => {
 // 应用符文
 const applyRune = async (data) => {
   let tempData = JSON.parse(JSON.stringify(data))
-  // console.log(tempData)
-  tempData.name = data.alias + ' Powered By Frank'
-  applyRunePage(credentials,JSON.parse(JSON.stringify(tempData)))
-  message.success('符文配置成功')
-  if (appConfig.get('isRecommend')) {
-    sendMessageToChat(credentials,
-      `一款全新的LOL助手软件 永久免费\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
+  tempData.name = mapNameFromUrl[data.alias].name + " By Frank"
+  const isApplySuccess = await applyRunePage(credentials,JSON.parse(JSON.stringify(tempData)))
+  console.log(isApplySuccess)
+  if (isApplySuccess){
+    message.success('符文配置成功')
+    if (appConfig.get('isRecommend')) {
+      sendMessageToChat(credentials,
+        `一款全新的LOL助手软件 永久免费\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
+    }
+  }else {
+    message.error('符文配置失败, 按Ctrl+R 再试试')
   }
+
 }
 // 拖动顶部盒子 改变窗口位置
 const handldDrge = (pos) => {
