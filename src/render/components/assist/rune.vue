@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <n-card class="boxShadow" size="small" v-mouse-drag="handldDrge">
+  <div v-if="!loading">
+    <n-card class="boxShadow" size="small">
       <n-space justify="space-between">
         <n-popconfirm :show-icon="false" positive-text="确认" negative-text="取消"
                       @positive-click="setAutoRune" @negative-click="deleteAutoRune"
@@ -42,21 +42,7 @@
         </div>
       </n-space>
     </n-card>
-    <n-grid :cols="2" v-if="loading" style="margin-left: 15px;margin-top: 30px;margin-bottom: 30px">
-      <n-gi>
-        <n-skeleton style="border-radius: 10px;" :width="130" :height="190" :sharp="false" size="medium"/>
-      </n-gi>
-      <n-gi>
-        <n-skeleton style="border-radius: 10px;" :width="130" :height="190" :sharp="false" size="medium"/>
-      </n-gi>
-      <n-gi style="margin-top: 30px">
-        <n-skeleton style="border-radius: 10px;" :width="130" :height="190" :sharp="false" size="medium"/>
-      </n-gi>
-      <n-gi style="margin-top: 30px">
-        <n-skeleton style="border-radius: 10px;" :width="130" :height="190" :sharp="false" size="medium"/>
-      </n-gi>
-    </n-grid>
-    <n-grid :cols="2" v-else>
+    <n-grid :cols="2" >
       <n-gi v-for="rune in runeDataListFor">
         <n-card class="boxShadow runeCard" size="small">
           <n-space :size=[-5] align="stretch">
@@ -116,7 +102,13 @@
 
       </div>
     </n-card>
-
+  </div>
+  <div v-else>
+    <n-card class="boxShadow" size="small">
+      <n-space justify="center">
+        <p style="color: #9aa4af;">英雄选择阶段才可以使用符文配置功能</p>
+      </n-space>
+    </n-card>
   </div>
 </template>
 
@@ -124,7 +116,7 @@
 import {ipcRenderer} from "electron"
 import {
   NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon, NBadge,
-  NSkeleton, NButton, NPopover, NPopconfirm, useMessage
+  NSkeleton, NButton, NPopconfirm, useMessage
 } from 'naive-ui'
 import {ref} from "vue";
 import {champDict, mapNameFromUrl} from '../../../utils/render/lolDataList'
@@ -299,13 +291,7 @@ const applyRune = async (data) => {
   }
 
 }
-// 拖动顶部盒子 改变窗口位置
-const handldDrge = (pos) => {
-  ipcRenderer.send('move-assistWindow', {
-    x: pos.x,
-    y: pos.y
-  })
-}
+
 // 上一页
 const pageBack = () => {
   if (pageStart != 0 && pageEnd != runeDataList.length) {
@@ -432,19 +418,6 @@ const deleteAutoRune = () => {
 .text-focus-in {
   -webkit-animation: text-focus-in 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
   animation: text-focus-in 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
-}
-
-@-webkit-keyframes text-focus-in {
-  0% {
-    -webkit-filter: blur(12px);
-    filter: blur(12px);
-    opacity: 0;
-  }
-  100% {
-    -webkit-filter: blur(0px);
-    filter: blur(0px);
-    opacity: 1;
-  }
 }
 
 @keyframes text-focus-in {

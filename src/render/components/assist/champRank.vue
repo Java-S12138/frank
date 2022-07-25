@@ -231,7 +231,7 @@ let searchValue = ref(null)
 const message = useMessage()
 
 onMounted(() => {
-  let rankSetDiv = document.querySelector('#app > div.slide-in-right > div:nth-child(1) > div')
+  let rankSetDiv = document.querySelector('#app > div.slide-in-bottom > div:nth-child(1) > div')
   rankSetDiv.style['padding-bottom'] = '6px'
   getChampRankData(tier.value, lane.value, getLacalDateStr()).then(() => {
     if (champSliceList.value.length == 0) {

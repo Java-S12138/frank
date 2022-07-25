@@ -1,8 +1,9 @@
 <script setup>
 import {NMessageProvider} from 'naive-ui'
+document.title="Frank"
 </script>
 
-<template  >
+<template>
   <n-message-provider :placement="'bottom'">
     <router-view></router-view>
   </n-message-provider>

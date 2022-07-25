@@ -8,7 +8,14 @@ import {createWebSocketConnection} from './utils/league-connect'
 import {appConfig, userAgentList} from './utils/main/config'
 import {getAuthFromCmd, startClientExe} from './utils/main/clientStart'
 import {returnRankData} from "@/utils/render/renderLcu";
-import {createAssistWindow,createMainWindow,listenIpc,makeTray,createMatchHistoryWindow} from "../frankElectron";
+import {
+  createAssistWindow,
+  createMainWindow,
+  listenIpc,
+  makeTray,
+  createMatchHistoryWindow,
+  createQueryMatchWindow
+} from "../frankElectron";
 const Store = require("electron-store");Store.initRenderer()
 const path = require('path')
 
@@ -18,7 +25,7 @@ const iconPath = path.join(
 )
 const userHeader =userAgentList[Math.floor((Math.random()*userAgentList.length))]
 
-let credentials;let mainWindow;let assistWindow;let matchHistoryWindow
+let credentials;let mainWindow;let assistWindow;let matchHistoryWindow;let queryMatchWindow
 
 // -----------------------------main----------------------------
 app.whenReady().then(async () => {
@@ -52,25 +59,34 @@ const runLcu = async () => {
       assistWindow.show()
       assistWindow.setSkipTaskbar(true)
       // 秒选&秒禁英雄
-      idSetInterval = setInterval(async () =>  {
-        champSelectSession(credentials,idSetInterval)
-      },1000)
+      if (appConfig.get('autoPickChampion.isAuto') || appConfig.get('autoBanChampion.isAuto')){
+        console.log('秒选&秒禁英雄')
+        idSetInterval = setInterval(async () =>  {
+          champSelectSession(credentials,idSetInterval)
+        },1000)
+      }
+
       // 监听英雄的选择
       listenChampSelect(ws,assistWindow,credentials)
 
-    }else if (data =='GameStart' ||data =='Matchmaking') {
+    }else if (data =='GameStart') {
       // 选择英雄结束后,发送消息给渲染进程, 让渲染进程获取到敌方召唤师信息
-      if (matchHistoryWindow != null){
-        matchHistoryWindow.webContents.send('query-enemy-summoner')
+      if ( matchHistoryWindow != null) {
+        if (!matchHistoryWindow.isDestroyed()) {
+          matchHistoryWindow.webContents.send('query-enemy-summoner')
+        }
       }
       assistWindow.hide()
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
     }else if(data =='None' ||data =='PreEndOfGame'){ // PreEndOfGame
       assistWindow.hide()
-      if (matchHistoryWindow !=null){
-        matchHistoryWindow.close()
+      if ( matchHistoryWindow != null){
+        if (!matchHistoryWindow.isDestroyed()){
+          matchHistoryWindow.close()
+        }
       }
+
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
       assistWindow.webContents.send('refresh-assisit-window')
@@ -128,7 +144,7 @@ const startClient = async () => {
 
 const mathcHistoryIpc = () => {
   // 展示战力分析窗口
-  ipcMain.on('showCharts',async (event) => {
+  ipcMain.on('showCharts',async () => {
     matchHistoryWindow = await createMatchHistoryWindow(userHeader)
     // if (clientStatus === '"Matchmaking"' || clientStatus === '"GameStart"' || clientStatus==='"InProgress"'){
     //   matchHistoryWindow.webContents.send('query-enemy-summoner')
@@ -146,5 +162,22 @@ const mathcHistoryIpc = () => {
   ipcMain.on('close-match-history-window', () => {
     matchHistoryWindow.close()
     matchHistoryWindow = null
+  })
+  // queryMatchIpc()
+}
+const queryMatchIpc = () => {
+  ipcMain.on('show-query-match',async () => {
+    mainWindow.minimize()
+    queryMatchWindow = await createQueryMatchWindow(userHeader)
+  })
+  ipcMain.on('query-match-close',() => {
+    queryMatchWindow.close()
+    mainWindow.show()
+  })
+  ipcMain.on('query-match-min',() => {
+    queryMatchWindow.minimize()
+  })
+  ipcMain.on('move-query-match-window', (event, pos) => {
+    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
   })
 }
