@@ -1,7 +1,7 @@
 <template>
   <div>
       <n-card class="mainCard boxShadow">
-        <n-space v-if="summonerInfo !=null">
+        <n-space v-if="summonerInfo.length !=0">
           <n-space vertical style="margin-top: 15px;width: 200px"
                    :size="[2,34]" v-if="currentTeam ===1">
             <n-space v-for="summoner in summonerInfo">
@@ -94,18 +94,13 @@ export default {
   components: {
     NCard, NAvatar, NSpace, NTag, NButton,NBadge,NSpin
   },
-  props: {
-    summonerInfo: {
-      type: Array
-    }
-  },
   setup(props,{emit}) {
     let clickCount = 0
     let clickList = []
     const horseType = appConfig.get('horseType')
     const enemySummonerInfo = ref([])
     const store = useStore()
-    const {enemyEchartsData,currentTeam} = storeToRefs(store)
+    const {enemyEchartsData,currentTeam,summonerInfo} = storeToRefs(store)
 
     ipcRenderer.on('query-enemy-summoner',() => {
       getEnemyInfo()
@@ -151,7 +146,7 @@ export default {
     }
 
     return {
-      horseType,currentTeam,enemySummonerInfo,
+      horseType,currentTeam,enemySummonerInfo,summonerInfo,
       clickCurrentSummoner,changeCurrentTeam
     }
   }

@@ -8,7 +8,7 @@
 
     <champ-rank v-show="transValue==='champRank'" class="slide-in-bottom"></champ-rank>
     <rune v-show="transValue==='rune'" class="slide-in-bottom" ></rune>
-    <blacklist v-if="transValue==='blacklist'"></blacklist>
+    <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>
 
 </template>
 
@@ -23,7 +23,9 @@ import {onMounted, ref} from "vue";
 import {ipcRenderer} from "electron";
 import {createHttp1Request} from "@/utils/league-connect";
 import {appConfig} from "@/utils/main/config";
-
+import {useStore} from "@/render/store";
+import {storeToRefs} from "pinia/dist/pinia";
+import {getSummonerNickName} from "@/utils/main/lcu";
 
 onMounted(() => {
   let nTabsRail = document.querySelector('.n-tabs-rail')
@@ -44,16 +46,30 @@ onMounted(() => {
 const tabsInstRef = ref(['champRank', 'rune','blacklist'])
 let transValue = ref('champRank')
 const message = useMessage()
+const store = useStore()
+const {summonerInfo,showSummonerInfoModal} = storeToRefs(store)
+const credentials = appConfig.get('credentials')
 
-ipcRenderer.once('current-champ-select', () => {
-    transValue.value = 'rune'
-})
+
 ipcRenderer.once('client-connect-success',() => {
   location.reload()
 })
 
 ipcRenderer.on('refresh-assisit-window', () => {
-  location.reload()
+  // location.reload()
+  transValue.value = 'blacklist'
+})
+ipcRenderer.on('query-other-summoner',() => {
+  showSummonerInfoModal.value = false
+  transValue.value = 'champRank'
+  ipcRenderer.once('current-champ-select', () => {
+    transValue.value = 'rune'
+  })
+  setTimeout( async () => {
+    const res =  await getSummonerNickName(credentials)
+    summonerInfo.value = []
+    summonerInfo.value = res
+  },2000)
 })
 
 const showMatch = async () => {

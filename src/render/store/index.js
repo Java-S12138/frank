@@ -6,6 +6,8 @@ export const useStore = defineStore('app', {
   state: () => {
     return {
       pageCount:1,// 首页页面切换计数器
+      summonerInfo:[],
+      showSummonerInfoModal:false,
       echartsData:{name:[],data:[],kdaHistory:[],horse:[]},// 图表基础数据
       enemyEchartsData:{name:[],data:[],kdaHistory:[],horse:[]},// 图表基础数据
       currentEchartData:{name:[],data:[],kdaHistory:[],horse:[]},

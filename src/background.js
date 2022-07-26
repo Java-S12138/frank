@@ -54,10 +54,12 @@ const runLcu = async () => {
 
   ws.subscribe('/lol-gameflow/v1/gameflow-phase', async (data) => {
     console.log(data)
-    if (data =='ChampSelect'){
+    if (data ==='ChampSelect'){
       // 显示助手窗口
       assistWindow.show()
       assistWindow.setSkipTaskbar(true)
+      // 获取其它召唤师信息
+      assistWindow.webContents.send('query-other-summoner')
       // 秒选&秒禁英雄
       if (appConfig.get('autoPickChampion.isAuto') || appConfig.get('autoBanChampion.isAuto')){
         console.log('秒选&秒禁英雄')
@@ -69,7 +71,7 @@ const runLcu = async () => {
       // 监听英雄的选择
       listenChampSelect(ws,assistWindow,credentials)
 
-    }else if (data =='GameStart') {
+    }else if (data ==='GameStart') {
       // 选择英雄结束后,发送消息给渲染进程, 让渲染进程获取到敌方召唤师信息
       if ( matchHistoryWindow != null) {
         if (!matchHistoryWindow.isDestroyed()) {
@@ -79,8 +81,13 @@ const runLcu = async () => {
       assistWindow.hide()
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
-    }else if(data =='None' ||data =='PreEndOfGame'){ // PreEndOfGame
+    }else if(data ==='None' ||data ==='PreEndOfGame'){ // PreEndOfGame
       assistWindow.hide()
+      if (data === 'PreEndOfGame'){
+        assistWindow.show()
+        assistWindow.webContents.send('show-other-summoner')
+      }
+
       if ( matchHistoryWindow != null){
         if (!matchHistoryWindow.isDestroyed()){
           matchHistoryWindow.close()

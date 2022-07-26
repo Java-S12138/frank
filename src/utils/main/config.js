@@ -32,7 +32,8 @@ export const appConfig = new Store({
     'champRankOption':{
       'tier':200,
       'lane':'mid'
-    }
+    },
+    'blacklist':{}
   }
 })
 

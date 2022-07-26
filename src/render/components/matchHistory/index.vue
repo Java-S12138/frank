@@ -1,8 +1,7 @@
 <template>
   <div style="overflow: hidden;">
     <n-space>
-      <left-card :summonerInfo = "summonerInfo"
-                 @summonerId="getSummonerId($event)"></left-card>
+      <left-card @summonerId="getSummonerId($event)"></left-card>
       <n-space>
       <bar-k-d-a
                 v-if="pageCount==1" class="slide-in-right"></bar-k-d-a>
@@ -26,17 +25,16 @@ import {NSpace} from "naive-ui";
 import {onBeforeMount,ref} from "vue";
 import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
-import {getSummonerNickName, queryMatchSummonerInfo} from "@/utils/main/lcu";
+import {getSummonerNickName,queryMatchSummonerInfo} from "@/utils/main/lcu";
 import {appConfig} from "@/utils/main/config";
 export default {
   name: "index",
   components:{leftCard,barKDA,standing,NSpace,gameDetails},
   setup(){
-    let summonerInfo = ref(null)
     let matchData = ref([])
     let pageCount = ref(1)
     const store = useStore()
-    const {echartsData,currentQueryGameId,currentSummonerName,currentTeam,currentEchartData} = storeToRefs(store)
+    const {summonerInfo,echartsData,currentQueryGameId,currentSummonerName,currentTeam,currentEchartData} = storeToRefs(store)
     const credentials = appConfig.get('credentials')
 
     const getChartsData = (res) => {
@@ -49,12 +47,13 @@ export default {
       }
       currentEchartData.value = echartsData.value
     }
-    onBeforeMount( async () => {
+    onBeforeMount(async () => {
       const res =  await getSummonerNickName(credentials)
       currentTeam.value = 1
       summonerInfo.value = []
       summonerInfo.value = res
-      getChartsData(res)
+      console.log(summonerInfo.value)
+      getChartsData(summonerInfo.value)
     })
 
     const getSummonerId = async (summonerData) => {
@@ -70,7 +69,7 @@ export default {
     }
 
     return{
-      summonerInfo,pageCount,matchData,
+      pageCount,matchData,
       getSummonerId,toGameDetailsPage
     }
   }
