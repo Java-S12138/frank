@@ -81,22 +81,18 @@ const runLcu = async () => {
       assistWindow.hide()
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
-    }else if(data ==='None' ||data ==='PreEndOfGame'){ // PreEndOfGame
-      assistWindow.hide()
-      if (data === 'PreEndOfGame'){
+    }else if(data ==='PreEndOfGame'){ // PreEndOfGame
+      // assistWindow.hide()
+      // if (data === 'PreEndOfGame'){
         assistWindow.show()
         assistWindow.webContents.send('show-other-summoner')
-      }
-
+      // }
       if ( matchHistoryWindow != null){
         if (!matchHistoryWindow.isDestroyed()){
           matchHistoryWindow.close()
         }
       }
-
-      clearInterval(idSetInterval)
-      ws.unsubscribe('/lol-champ-select/v1/session')
-      assistWindow.webContents.send('refresh-assisit-window')
+      // assistWindow.webContents.send('refresh-assisit-window')
     }
     // 自动接受对局
     if (data =='ReadyCheck' && appConfig.get('autoAccept')>=50){

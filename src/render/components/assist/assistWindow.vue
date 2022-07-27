@@ -47,7 +47,7 @@ const tabsInstRef = ref(['champRank', 'rune','blacklist'])
 let transValue = ref('champRank')
 const message = useMessage()
 const store = useStore()
-const {summonerInfo,showSummonerInfoModal} = storeToRefs(store)
+const {summonerInfo,showSummonerInfoModal,currentBlackList} = storeToRefs(store)
 const credentials = appConfig.get('credentials')
 
 
@@ -55,7 +55,7 @@ ipcRenderer.once('client-connect-success',() => {
   location.reload()
 })
 
-ipcRenderer.on('refresh-assisit-window', () => {
+ipcRenderer.on('show-other-summoner', () => {
   // location.reload()
   transValue.value = 'blacklist'
 })
@@ -69,8 +69,26 @@ ipcRenderer.on('query-other-summoner',() => {
     const res =  await getSummonerNickName(credentials)
     summonerInfo.value = []
     summonerInfo.value = res
-  },2000)
+    getCurrentBlacklist(summonerInfo.value)
+  },1500)
 })
+
+const getCurrentBlacklist = (summonerInfo) => {
+  let summonerList = []
+  for (const summoner of summonerInfo) {
+    summonerList.push(summoner.name)
+  }
+
+  const blacklistNames = Object.keys(appConfig.get('blacklist'))
+  for (const blacklistName of blacklistNames) {
+    if (summonerList.indexOf(blacklistName) !=-1){
+      currentBlackList.value.push(blacklistName)
+    }
+  }
+  if (currentBlackList.value.length !=0){
+    transValue.value = 'blacklist'
+  }
+}
 
 const showMatch = async () => {
   const clientStatus = (await createHttp1Request({

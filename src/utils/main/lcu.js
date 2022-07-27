@@ -197,7 +197,7 @@ export const getChatSelectChampId = async (credentials) => {
 // 查询对局中的所有召唤师的Id
 export const queryAllSummonerId = async (credentials) => {
   let summonerIdList = []
-  const chatId = await await getChatSelectChampId(credentials)
+  const chatId = await getChatSelectChampId(credentials)
   if (chatId == null){return null}
 
   const summonersId = (await createHttp1Request({

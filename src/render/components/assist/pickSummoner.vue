@@ -19,56 +19,24 @@
     </n-modal>
 
     <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-              :height="475" placement="bottom" :auto-focus="false">
-      <n-drawer-content>
-        <template #header>
-          <n-space justify="space-between" style="width: 142%">
-            <p style="font-size: 15px">{{addBlackDatum.name}}</p>
-            <p style="font-size: 15px">{{addBlackDatum.date}}</p>
-          </n-space>
-        </template>
-        <template #footer>
-          <n-button type="error" size="small" @click="confirmShielding">拉黑一下</n-button>
-        </template>
-        <n-space vertical>
-          <n-input
-            v-model:value="addBlackDatum.content"
-            type="textarea"
-            autosize
-            placeholder="请输入拉黑原因"
-            :bordered="false"
-          />
-          <n-space>
-            <n-tag :bordered="false" type="info" style="margin-left: 5px">拉黑标签</n-tag>
-            <n-select
-              v-model:value="selectValue"
-              :options="options"
-              style="width: 162px;"
-              size="small"
-              tag
-              filterable
-            />
-          </n-space>
-
-        </n-space>
-      </n-drawer-content>
+              :height="420" placement="bottom" :auto-focus="false">
+      <add-blacklist @closeDrawer="closeDrawer" :name="blacklistName"></add-blacklist>
     </n-drawer>
   </div>
 </template>
 
 <script setup>
 import {
-  NCard, NModal, NSpace, NTag, NButton, NDrawer, NDrawerContent,
-  NInput, NSelect,useMessage
+  NCard, NModal, NSpace, NTag, NButton, NDrawer
 } from "naive-ui"
-import {ref,reactive} from "vue";
+import AddBlacklist from './addBlacklist.vue'
+import {ref} from "vue";
 import {ipcRenderer} from "electron";
 import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
-import {appConfig} from "@/utils/main/config";
+
 
 const active = ref(false)
-const selectValue = ref('摆烂')
 const options = [
   {
     label: "摆烂",
@@ -90,8 +58,8 @@ const options = [
 const summonersList = ref([])
 const store = useStore()
 const {summonerInfo,showSummonerInfoModal} = storeToRefs(store)
-let addBlackDatum = reactive({name:'',date:'',content:'',tag:''})
-const message = useMessage()
+const blacklistName = ref('')
+const emits = defineEmits(['refreshList'])
 
 ipcRenderer.on('show-other-summoner',() => {
   summonersList.value = []
@@ -101,27 +69,13 @@ ipcRenderer.on('show-other-summoner',() => {
   showSummonerInfoModal.value = true
 })
 
-const queryCurrenDate = () => {
-  var myDate = new Date()
-  return myDate.toLocaleDateString()
-}
-
 const preAddBlacklist = (summonerName) => {
-  addBlackDatum.name = summonerName
-  addBlackDatum.date = queryCurrenDate()
-  addBlackDatum.content = ''
+  blacklistName.value = summonerName
   active.value=true
-
 }
-const confirmShielding = () => {
-  addBlackDatum.tag = selectValue.value
-  appConfig.set(`blacklist.${addBlackDatum.name}`,{
-    date:addBlackDatum.date,
-    content:addBlackDatum.content,
-    tag:addBlackDatum.tag
-  })
-  active.value = false
-  message.success(`${addBlackDatum.name}---拉入黑名单成功 !`)
+const closeDrawer =() => {
+  emits('refreshList')
+  active.value=false
 }
 
 </script>

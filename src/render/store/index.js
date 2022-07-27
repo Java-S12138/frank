@@ -6,7 +6,8 @@ export const useStore = defineStore('app', {
   state: () => {
     return {
       pageCount:1,// 首页页面切换计数器
-      summonerInfo:[],
+      summonerInfo:[],// 当前对局中队友的信息
+      currentBlackList:[],// 当前对局中出现的黑名单队友
       showSummonerInfoModal:false,
       echartsData:{name:[],data:[],kdaHistory:[],horse:[]},// 图表基础数据
       enemyEchartsData:{name:[],data:[],kdaHistory:[],horse:[]},// 图表基础数据

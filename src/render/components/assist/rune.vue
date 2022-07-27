@@ -142,8 +142,15 @@ let currentGameMode = ''
 
 const message = useMessage()
 
+ipcRenderer.on('show-other-summoner', () => {
+  loading.value = false
+})
+ipcRenderer.on('query-other-summoner', () => {
+  currentGameMode = ''
+})
+
 ipcRenderer.on('current-champ-select', (event, data) => {
-  if (data.champId == 0 || data.champId == undefined) {
+  if (data.champId === 0 || data.champId.httpStatus === 404) {
     return
   }
   if (data.champId != currentChamp.value) {
