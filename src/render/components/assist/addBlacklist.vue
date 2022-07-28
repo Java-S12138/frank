@@ -13,7 +13,7 @@
       </n-space>
     </template>
     <template #footer>
-      <n-space style="width: 270px" justify="space-between">
+      <n-space style="width: 280px" justify="space-between">
         <n-space>
           <n-tag :bordered="false" type="success" style="margin-left: 5px">标签</n-tag>
           <n-select
@@ -46,8 +46,13 @@
 import {NSpace,NInput,NSelect,NTag,NButton,NDrawerContent,useMessage} from 'naive-ui'
 import {ref,onBeforeMount} from "vue";
 import {appConfig} from "@/utils/main/config";
+import {createHttp1Request} from "@/utils/league-connect";
 const props = defineProps({
   name:{
+    type:String,
+    default:''
+  },
+  summonerId:{
     type:String,
     default:''
   }
@@ -76,15 +81,13 @@ const blacklistName = ref('')
 const message = useMessage()
 const emits = defineEmits(['closeDrawer']);
 
-// 判断当期召唤师是否存在于黑名单中
+// 判断当前召唤师是否存在于黑名单中
 onBeforeMount(() => {
-  if (props.name != ''){
-    if (appConfig.has(`blacklist.${props.name}`)){
-      blacklistContent.value = appConfig.get(`blacklist.${props.name}.content`)
-      selectValue.value = appConfig.get(`blacklist.${props.name}.tag`)
-    }
+  if (props.summonerId != '' && appConfig.has(`blacklist.${props.summonerId}`)){
+    const currentSummoner = appConfig.get(`blacklist.${props.summonerId}`)
+    blacklistContent.value = currentSummoner.content
+    selectValue.value = currentSummoner.tag
   }
-
 })
 
 const queryCurrenDate = () => {
@@ -93,20 +96,42 @@ const queryCurrenDate = () => {
 }
 const currentDate = queryCurrenDate()
 
-const confirmShielding = () => {
-  const currentName = props.name != '' ? props.name : blacklistName.value
+const confirmShielding = async () => {
+  const currentName = props.name !== '' ? props.name : blacklistName.value
   if (currentName ===''){
     message.error('召唤师昵称不能为空 !')
     return
   }
-  appConfig.set(`blacklist.${currentName}`,{
+  const summonerId = props.summonerId !== '' ?props.summonerId : await querySummonerId(currentName)
+  if (summonerId === null){
+    message.error('哎呀 召唤师不存在 !')
+    return
+  }
+  if (blacklistContent.value ===''){
+    message.error('拉黑原因不能为空 !')
+    return
+  }
+  appConfig.set(`blacklist.${summonerId}`,{
+    nickname:currentName,
     date:currentDate,
     timestamp:Date.now(),
     content:blacklistContent.value,
     tag:selectValue.value,
   })
   emits('closeDrawer','closeDrawer') //向父组件发送消息关闭抽屉
-  message.success(`${currentName} --- 拉黑成功 !`)
+  message.success(`${currentName}   拉黑成功😡`)
+}
+
+const querySummonerId = async (nickname) => {
+  nickname = encodeURI(nickname)
+  const res = (await createHttp1Request({
+    method:"GET",
+    url:`/lol-summoner/v1/summoners/?name=${nickname}`
+  },appConfig.get('credentials'))).json()
+  if (res.httpStatus === 404){
+    return null
+  }else
+    return res.summonerId
 }
 </script>
 

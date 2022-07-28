@@ -2,7 +2,7 @@
   <n-tabs type="segment" :animated=true ref="tabsInstRef" :value="transValue">
     <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'"></n-tab>
     <n-tab name="match" tab="查看战绩" @click="showMatch"></n-tab>
-    <n-tab name="blacklist" tab="拉黑名单" @click="transValue='blacklist'"></n-tab>
+    <n-tab name="blacklist" tab="排位笔记" @click="transValue='blacklist'"></n-tab>
     <n-tab name="rune" tab="符文配置" @click="transValue='rune'"></n-tab>
   </n-tabs>
 
@@ -25,7 +25,7 @@ import {createHttp1Request} from "@/utils/league-connect";
 import {appConfig} from "@/utils/main/config";
 import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
-import {getSummonerNickName} from "@/utils/main/lcu";
+import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName} from "@/utils/render/blacklistUtils";
 
 onMounted(() => {
   let nTabsRail = document.querySelector('.n-tabs-rail')
@@ -47,8 +47,7 @@ const tabsInstRef = ref(['champRank', 'rune','blacklist'])
 let transValue = ref('champRank')
 const message = useMessage()
 const store = useStore()
-const {summonerInfo,showSummonerInfoModal,currentBlackList} = storeToRefs(store)
-const credentials = appConfig.get('credentials')
+const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo} = storeToRefs(store)
 
 
 ipcRenderer.once('client-connect-success',() => {
@@ -57,8 +56,19 @@ ipcRenderer.once('client-connect-success',() => {
 
 ipcRenderer.on('show-other-summoner', () => {
   // location.reload()
+  currentBlackList.value.length = 0
   transValue.value = 'blacklist'
 })
+
+ipcRenderer.on('query-enemy-summoner',() => {
+  setTimeout(async () => {
+    const res = await queryEnemySummonerIdAndSummonerName(appConfig.get('credentials'))
+    console.log(res)
+    endGameAfterInfo.value = [[],[]]
+    endGameAfterInfo.value = res
+  },1500)
+})
+
 ipcRenderer.on('query-other-summoner',() => {
   showSummonerInfoModal.value = false
   transValue.value = 'champRank'
@@ -66,7 +76,7 @@ ipcRenderer.on('query-other-summoner',() => {
     transValue.value = 'rune'
   })
   setTimeout( async () => {
-    const res =  await getSummonerNickName(credentials)
+    const res =  await querySummonerIdAndSummonerName(appConfig.get('credentials'))
     summonerInfo.value = []
     summonerInfo.value = res
     getCurrentBlacklist(summonerInfo.value)
@@ -75,17 +85,18 @@ ipcRenderer.on('query-other-summoner',() => {
 
 const getCurrentBlacklist = (summonerInfo) => {
   let summonerList = []
+
   for (const summoner of summonerInfo) {
-    summonerList.push(summoner.name)
+    summonerList.push(`${summoner.summonerId}`)
   }
 
-  const blacklistNames = Object.keys(appConfig.get('blacklist'))
-  for (const blacklistName of blacklistNames) {
-    if (summonerList.indexOf(blacklistName) !=-1){
-      currentBlackList.value.push(blacklistName)
+  const blacklistIds = Object.keys(appConfig.get('blacklist'))
+  for (const blacklistId of blacklistIds) {
+    if (summonerList.indexOf(blacklistId) !=-1){
+      currentBlackList.value.push(blacklistId)
     }
   }
-  if (currentBlackList.value.length !=0){
+  if (currentBlackList.value.length > 1){
     transValue.value = 'blacklist'
   }
 }

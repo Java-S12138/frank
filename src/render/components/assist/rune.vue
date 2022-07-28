@@ -143,7 +143,7 @@ let currentGameMode = ''
 const message = useMessage()
 
 ipcRenderer.on('show-other-summoner', () => {
-  loading.value = false
+  loading.value = true
 })
 ipcRenderer.on('query-other-summoner', () => {
   currentGameMode = ''

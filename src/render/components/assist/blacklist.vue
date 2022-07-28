@@ -1,7 +1,11 @@
 <template>
   <div >
     <n-card class="boxShadow listCard"  size="small">
-      <n-scrollbar style="max-height: 525px;">
+      <n-space v-if="blacklist.length=== 0" justify="center" :size="[0,-1]">
+        <p style="color: #666F75;">笔记功能介绍请查看更新详情</p>
+        <p style="color: #666F75">愿你的排位笔记永远没有笔记</p>
+      </n-space>
+      <n-scrollbar v-else style="max-height: 525px;">
         <n-list style="margin-right:13px;margin-left: 13px" >
           <n-list-item v-for="blackSummoner in blacklist">
             <n-space justify="space-between" class="alignCenter">
@@ -9,7 +13,7 @@
                 max-width: 112px;
                 width:112px;
                 color: #ff6666;"
-                v-if="currentBlackList.indexOf(blackSummoner[0]) !=-1"
+                v-if="currentBlackList.indexOf(blackSummoner[4]) !=-1"
                 >
                 {{ blackSummoner[0] }}
               </n-ellipsis>
@@ -22,7 +26,7 @@
               </n-ellipsis>
 
               <p style="color: #9aa4af;"> {{ blackSummoner[1] }}</p>
-              <n-button size="small" type="error" dashed @click="getDetails(blackSummoner[0])"> {{ showTagContent(blackSummoner[2]) }}</n-button>
+              <n-button size="small" type="error" dashed @click="getDetails(blackSummoner[4])"> {{ showTagContent(blackSummoner[2]) }}</n-button>
             </n-space>
           </n-list-item>
       </n-list>
@@ -121,7 +125,7 @@
 <script setup>
 import {NCard,NSpace,NList,NPopover,NInput,NTag,NPopconfirm,
   NListItem,NButton,NScrollbar,NEllipsis,NDrawer,NDrawerContent,useMessage} from 'naive-ui'
-import {onMounted, reactive, ref} from "vue"
+import {onMounted, reactive, ref,watch} from "vue"
 import PickSummoner from "./pickSummoner.vue"
 import {appConfig} from "@/utils/main/config";
 import AddBlacklist from "./addBlacklist.vue"
@@ -131,34 +135,40 @@ import {storeToRefs} from "pinia/dist/pinia";
 const active = ref(false)
 const addBlacklistActive = ref(false)
 const blacklist = ref([])
-const detialsJson = reactive({name:'',date:'',content:'',tag:''})
+const detialsJson = reactive({name:'',date:'',content:'',tag:'',summonerId:''})
 const message = useMessage()
 let localBlacklist
 const store = useStore()
 const {currentBlackList} = storeToRefs(store)
 
-
+watch(currentBlackList.value,() => {
+  if (currentBlackList.value.length === 1){
+    getDetails(currentBlackList.value[0])
+  }
+  if (currentBlackList.value.value !=0){
+    const loaclBlacklistSummonerId = []
+    for (const blacklistElement of blacklist.value) {
+      loaclBlacklistSummonerId.push(blacklistElement[4])
+    }
+    for (const currentSummonerId of currentBlackList.value) {
+      if (loaclBlacklistSummonerId.indexOf(currentSummonerId) !== -1){
+        shiftFirst(currentSummonerId)
+      }
+    }
+  }
+})
 
 onMounted(() => {
   let divListCard = document.querySelectorAll("div.n-card.n-card--bordered.boxShadow.listCard > div")
-  divListCard[0]['style'] = "padding-left:0px;padding-right:0px"
+  if (divListCard.length !=0){divListCard[0]['style'] = "padding-left:0px;padding-right:0px"}
   queryBlacklist()
-    if (currentBlackList.value.length === 1){
-      getDetails(currentBlackList.value[0])
-    }
-    for (const blacklistElement of blacklist.value) {
-      for (const currentName of currentBlackList.value) {
-        if (blacklistElement.indexOf(currentName) != -1){
-          shiftFirst(currentName)
-        }
-      }
-    }
 })
+
 // 将某个元素移动到数组首位
-const shiftFirst = (currentName) => {
+const shiftFirst = (currentSummonerId) => {
   let tempArr = []
   blacklist.value.forEach((item,index)=>{
-    if(item[0] === currentName){
+    if(item[4] === currentSummonerId){
       tempArr = item
       blacklist.value.splice(index,1)
       return
@@ -173,39 +183,39 @@ const queryBlacklist = () => {
   localBlacklist = appConfig.get('blacklist')
   // 获取黑名单数据
   for (const black in localBlacklist) {
-    let tempList = [black,localBlacklist[black].date,
-      localBlacklist[black].tag,localBlacklist[black].timestamp]
+    let tempList = [localBlacklist[black].nickname,localBlacklist[black].date,
+      localBlacklist[black].tag,localBlacklist[black].timestamp,black]
     blacklist.value.push(tempList)
   }
   blacklist.value.sort((x,y) => {return y[3]-x[3]})
-  console.log(blacklist.value)
 }
 // 获取单个召唤师的详细信息
-const getDetails = (summonerName) => {
-  detialsJson.name = summonerName
-  const currentData = localBlacklist[summonerName]
+const getDetails = (summonerId) => {
+  const currentData = localBlacklist[summonerId]
+  detialsJson.name = currentData.nickname
   detialsJson.date = currentData.date
   detialsJson.content = currentData.content
   detialsJson.tag = currentData.tag
+  detialsJson.summonerId = summonerId
   active.value = true
 }
 // 修改黑名单内容
 const reviseContent = () => {
-  appConfig.set(`blacklist.${detialsJson.name}.content`,detialsJson.content)
+  appConfig.set(`blacklist.${detialsJson.summonerId}.content`,detialsJson.content)
   queryBlacklist()
   active.value = false
   message.success('修改内容成功')
 }
 // 修改标签内容
 const reviseTag = () => {
-  appConfig.set(`blacklist.${detialsJson.name}.tag`,detialsJson.tag)
+  appConfig.set(`blacklist.${detialsJson.summonerId}.tag`,detialsJson.tag)
   queryBlacklist()
   active.value = false
   message.success('修改标签成功')
 }
 // 删除某个黑名单
 const deleteBlackElement = () => {
-  appConfig.delete(`blacklist.${detialsJson.name}`)
+  appConfig.delete(`blacklist.${detialsJson.summonerId}`)
   queryBlacklist()
   active.value = false
 }

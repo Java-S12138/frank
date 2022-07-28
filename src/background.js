@@ -78,7 +78,9 @@ const runLcu = async () => {
           matchHistoryWindow.webContents.send('query-enemy-summoner')
         }
       }
+
       assistWindow.hide()
+      assistWindow.webContents.send('query-enemy-summoner')
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
     }else if(data ==='PreEndOfGame'){ // PreEndOfGame
