@@ -18,6 +18,8 @@ export const listenIpc = (mainWindow,assistWindow) => {
   })
   // 关闭窗口
   ipcMain.on('mainwin-close', () => {
+    const assistWindowBounds = assistWindow.getBounds()
+    appConfig.set('assistWindowPosition',{x:assistWindowBounds.x,y:assistWindowBounds.y})
     appConfig.set('credentials.port','')
     app.quit()
   })

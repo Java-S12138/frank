@@ -2,15 +2,6 @@
   <div class="mainCard">
     <n-card class="boxShadow">
       <n-space vertical :size="[2,20]">
-        <!--        是否推荐frank-->
-        <n-space>
-          <n-tag :bordered="false">是否推荐</n-tag>
-          <n-space justify="space-between" style="width: 214px">
-            <n-tag :bordered="false" style="width: 140px;">聊天界面推荐Frank</n-tag>
-            <n-switch v-model:value="isRecommend" @click="changeRecommend"
-                      style="margin-left:22px;margin-top: 3px"/>
-          </n-space>
-        </n-space>
         <n-space>
           <n-tag :bordered="false">秒选英雄</n-tag>
           <n-select
@@ -116,7 +107,6 @@ let isExist = ref(false)
 let directory = ref('')
 const store = useStore()
 let isAutoPick = ref(appConfig.get('autoPickChampion.isAuto'))
-let isRecommend = ref(appConfig.get('isRecommend'))
 let pickChampion = ref(appConfig.get('autoPickChampion.championId'))
 const optionsChampionPick = optionsChampion
 let isAutoBan = ref(appConfig.get('autoBanChampion.isAuto'))
@@ -150,14 +140,7 @@ const changePick = () => {
     appConfig.set('autoPickChampion.isAuto', false)
   }
 }
-// 设置是否向队友推荐frank
-const changeRecommend = () => {
-  if (appConfig.get('isRecommend') != true) {
-    appConfig.set('isRecommend', true)
-  } else {
-    appConfig.set('isRecommend', false)
-  }
-}
+
 
 // 设置是否自动禁用英雄
 const changeBan = () => {

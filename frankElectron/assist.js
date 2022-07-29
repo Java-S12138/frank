@@ -1,8 +1,16 @@
 import {BrowserWindow, screen} from "electron";
 import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
+import {appConfig} from "@/utils/main/config";
+
 
 export const createAssistWindow = async (userHeader) => {
   const currentScreen = screen.getPrimaryDisplay()['size']
+  const assistWindowPosition = appConfig.get('assistWindowPosition')
+  if (assistWindowPosition.x ===0 && assistWindowPosition.y ===0){
+    assistWindowPosition.x = currentScreen.width -320
+    assistWindowPosition.y = (currentScreen.height -770)/2
+    appConfig.set('assistWindowPosition',{x:currentScreen.width -320,y:(currentScreen.height -770)/2})
+  }
   const assistWin = new BrowserWindow({
     title: 'Frank',
     show: false,
@@ -10,8 +18,8 @@ export const createAssistWindow = async (userHeader) => {
     resizable: false,
     width: 320,
     height: 720,
-    x:currentScreen.width -320,
-    y:(currentScreen.height -770)/2,
+    x:assistWindowPosition.x,
+    y:assistWindowPosition.y,
     alwaysOnTop: false,
     webPreferences: {
       nodeIntegration: true,

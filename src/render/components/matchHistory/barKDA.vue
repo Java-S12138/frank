@@ -283,9 +283,6 @@ export default ({
             let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] 评分:${echartsData.value['data'][currentSummonerIndex]} 最近战绩:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
             sendMessage += sendInfo + '\n'
       }
-      if (appConfig.get('isRecommend')){
-        sendMessage += 'Frank 一款全新的LOL助手软件 永久免费\n秒选英雄|战绩查询|符文配置|国服数据\n了解更多功能: https://cdn.syjun.vip/frank.html'
-      }
       if (sendMessage.length >18){
         sendMessageToChat(appConfig.get('credentials'),sendMessage)
       }

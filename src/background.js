@@ -45,6 +45,7 @@ app.whenReady().then(async () => {
 
 const runLcu = async () => {
   const ws = await createWebSocketConnection(credentials)
+  const isAutoAccept = appConfig.get('autoAccept')
   let idSetInterval
 
   const homeData = await returnRankData(credentials)
@@ -84,20 +85,16 @@ const runLcu = async () => {
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
     }else if(data ==='PreEndOfGame'){ // PreEndOfGame
-      // assistWindow.hide()
-      // if (data === 'PreEndOfGame'){
-        assistWindow.show()
-        assistWindow.webContents.send('show-other-summoner')
-      // }
+      assistWindow.show()
+      assistWindow.webContents.send('show-other-summoner')
       if ( matchHistoryWindow != null){
         if (!matchHistoryWindow.isDestroyed()){
           matchHistoryWindow.close()
         }
       }
-      // assistWindow.webContents.send('refresh-assisit-window')
     }
     // 自动接受对局
-    if (data =='ReadyCheck' && appConfig.get('autoAccept')>=50){
+    if (data =='ReadyCheck' && isAutoAccept>=50){
       autoAcceptGame(credentials)
     }
   })
@@ -167,22 +164,5 @@ const mathcHistoryIpc = () => {
   ipcMain.on('close-match-history-window', () => {
     matchHistoryWindow.close()
     matchHistoryWindow = null
-  })
-  // queryMatchIpc()
-}
-const queryMatchIpc = () => {
-  ipcMain.on('show-query-match',async () => {
-    mainWindow.minimize()
-    queryMatchWindow = await createQueryMatchWindow(userHeader)
-  })
-  ipcMain.on('query-match-close',() => {
-    queryMatchWindow.close()
-    mainWindow.show()
-  })
-  ipcMain.on('query-match-min',() => {
-    queryMatchWindow.minimize()
-  })
-  ipcMain.on('move-query-match-window', (event, pos) => {
-    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
   })
 }

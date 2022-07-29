@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="runeDataListFor.length !=0">
     <n-card class="boxShadow" size="small">
       <n-space justify="space-between">
         <n-popconfirm :show-icon="false" positive-text="确认" negative-text="取消"
@@ -75,7 +75,6 @@
         </n-card>
       </n-gi>
     </n-grid>
-
     <n-card class="boxShadow bottomTip" size="small">
       <n-space :size="[44]">
         <div class="skillDiv text-focus-in" v-for="skills in skillsAndItems[0]">
@@ -103,9 +102,11 @@
       </div>
     </n-card>
   </div>
+
   <div v-else>
     <n-card class="boxShadow" size="small">
-      <n-space justify="center">
+      <n-space justify="center" vertical>
+        <p style="color: #9aa4af;">符文来源 OP.GG</p>
         <p style="color: #9aa4af;">英雄选择阶段才可以使用符文配置功能</p>
       </n-space>
     </n-card>
@@ -143,7 +144,7 @@ let currentGameMode = ''
 const message = useMessage()
 
 ipcRenderer.on('show-other-summoner', () => {
-  loading.value = true
+  runeDataListFor.value.length = 0
 })
 ipcRenderer.on('query-other-summoner', () => {
   currentGameMode = ''
@@ -206,10 +207,6 @@ const getRuneData = async (gameMode) => {
     runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
     if (appConfig.has(`autoRune.${currentChamp.value}`)) {
       message.success('自动配置符文成功')
-      if (appConfig.get('isRecommend')) {
-        sendMessageToChat(credentials,
-          `一款全新的LOL助手软件 永久免费\n${champDict[currentChamp.value].label}的符文 由Frank自动配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
-      }
     }
 
     loading.value = false
@@ -286,17 +283,12 @@ const applyRune = async (data) => {
   let tempData = JSON.parse(JSON.stringify(data))
   tempData.name = mapNameFromUrl[data.alias].name + " By Frank"
   const isApplySuccess = await applyRunePage(credentials,JSON.parse(JSON.stringify(tempData)))
-  console.log(isApplySuccess)
+
   if (isApplySuccess){
     message.success('符文配置成功')
-    if (appConfig.get('isRecommend')) {
-      sendMessageToChat(credentials,
-        `一款全新的LOL助手软件 永久免费\n${mapNameFromUrl[data.alias].label}的符文 由Frank一键配置成功!\n了解更多功能: https://cdn.syjun.vip/frank.html`)
-    }
   }else {
     message.error('符文配置失败, 按Ctrl+R 再试试')
   }
-
 }
 
 // 上一页

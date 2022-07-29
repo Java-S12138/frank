@@ -20,16 +20,20 @@ export const makeTray = (iconPath,mainWindow,assistWindow) => {
       label: `显示助手`,
       click() {
         showWindow(assistWindow)
+        if (assistWindow.isVisible()){
+          assistWindow.setSkipTaskbar(true)
+        }
       },
     },
     {
       label: `退出软件`,
       click() {
+        const assistWindowBounds = assistWindow.getBounds()
+        appConfig.set('assistWindowPosition',{x:assistWindowBounds.x,y:assistWindowBounds.y})
         appConfig.set('credentials.port','')
         app.quit()
       },
     },
-
   ]);
   tray.setContextMenu(contextMenu)
 }

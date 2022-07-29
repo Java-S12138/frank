@@ -2,9 +2,9 @@ import Store from 'electron-store'
 
 export const appConfig = new Store({
   defaults: {
-    'userInfo':{
-      name:'',
-      area:1,
+    'assistWindowPosition':{
+      x:0,
+      y:0,
     },
     'autoPickChampion':{
       championId:"157",

@@ -33,6 +33,7 @@ const getPosition = (selectedPosition) => {
     case 'TOP': return 1;
     case 'MIDDLE': return 3;
     case 'UTILITY': return 5;
+    case 'NONE':return 0;
   }
 }
 
@@ -61,17 +62,19 @@ export const queryEnemySummonerIdAndSummonerName= async (credentials) => {
     var friendInfo = mactchSession.gameData.teamTwo
   }
 
-  for (let i = 0; i < enemyInfo.length; i++) {
+  for (let i = 0; i < friendInfo.length; i++) {
     try {
       friendInfoList.push({
-        name:friendInfo[i].summonerName,
-        summonerId:friendInfo[i].accountId,
-        selectChamp:"https://game.gtimg.cn/images/lol/act/img/champion/"+champDict[`${playerChampionSelections[friendInfo[i].summonerInternalName]}`].alias+".png",
-        index:getPosition(friendInfo[i].selectedPosition)
+        name: friendInfo[i].summonerName,
+        summonerId: friendInfo[i].accountId,
+        selectChamp: "https://game.gtimg.cn/images/lol/act/img/champion/" + champDict[`${playerChampionSelections[friendInfo[i].summonerInternalName]}`].alias + ".png",
+        index: getPosition(friendInfo[i].selectedPosition)
       })
-    }catch (e) {
+    } catch (e) {
       break
     }
+  }
+  for (let i = 0; i < enemyInfo.length; i++) {
     try {
       enemyInfoList.push({
         name:enemyInfo[i].summonerName,

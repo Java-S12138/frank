@@ -59,6 +59,7 @@
           <n-space style="width: 270px;" justify="space-between">
             <n-popconfirm
               @positive-click="reviseTag"
+
               :show-icon="false" positive-text="修改" negative-text="取消"
             >
               <template #trigger>
@@ -66,6 +67,7 @@
                        style="font-size: 15px">{{detialsJson.tag}}</n-tag>
               </template>
               <n-input v-model:value="detialsJson.tag"
+                       placeholder="输入标签"
                        type="text" style="width: 104px" />
             </n-popconfirm>
 
