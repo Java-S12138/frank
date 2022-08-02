@@ -3,7 +3,7 @@
     <n-space>
       <n-card class="boxShadow mainCard">
         <div>
-        <v-chart style="margin-top: 10px" class="chart" :key="refresh" :option="
+          <v-chart style="margin-top: 10px" class="chart" :key="refresh" :option="
 {
       title: {
         show: true,
@@ -69,114 +69,125 @@
           }
         },
       ]
-    }"/></div>
+    }"/>
+        </div>
 
         <n-space justify="space-between">
-            <n-space>
-              <n-popconfirm
-                @positive-click="changeHorseType('top',topHorseType)"
-                :show-icon="false" positive-text="修改" negative-text="取消"
-              >
-                <template #trigger>
-                  <n-tag :bordered="false" style="margin-top: 3px">
-                    {{horseType.top}}
-                  </n-tag>
-                </template>
-                <n-input v-model:value="topHorseType"
-                         type="text" style="width: 104px" />
-              </n-popconfirm>
+          <n-space>
+            <n-popconfirm
+              @positive-click="changeHorseType('top',topHorseType)"
+              :show-icon="false" positive-text="修改" negative-text="取消"
+            >
+              <template #trigger>
+                <n-tag :bordered="false" style="margin-top: 3px">
+                  {{ horseType.top }}
+                </n-tag>
+              </template>
+              <n-input v-model:value="topHorseType"
+                       type="text" style="width: 104px"/>
+            </n-popconfirm>
 
-              <n-color-picker :modes="['hex']" v-model:value="topHorse"
-                              :actions="['confirm']"
-                              @confirm="(value) => {
+            <n-color-picker :modes="['hex']" v-model:value="topHorse"
+                            :actions="['confirm']"
+                            @confirm="(value) => {
                                 appConfig.set('topHorse',value)
                                 refresh +=1
                               }"
-                              class="pickerWidth"/>
-            </n-space>
-            <n-space>
+                            class="pickerWidth"/>
+          </n-space>
+          <n-space>
 
-              <n-popconfirm
-                @positive-click="changeHorseType('mid',midHorseType)"
-                :show-icon="false" positive-text="修改" negative-text="取消"
-              >
-                <template #trigger>
-                  <n-tag :bordered="false" style="margin-top: 3px">
-                    {{horseType.mid}}
-                  </n-tag>
-                </template>
-                <n-input v-model:value="midHorseType"
-                         type="text" style="width: 104px" />
-              </n-popconfirm>
+            <n-popconfirm
+              @positive-click="changeHorseType('mid',midHorseType)"
+              :show-icon="false" positive-text="修改" negative-text="取消"
+            >
+              <template #trigger>
+                <n-tag :bordered="false" style="margin-top: 3px">
+                  {{ horseType.mid }}
+                </n-tag>
+              </template>
+              <n-input v-model:value="midHorseType"
+                       type="text" style="width: 104px"/>
+            </n-popconfirm>
 
-              <n-color-picker :modes="['hex']" v-model:value="midHorse"
-                              :actions="['confirm']"
-                              @confirm="(value) => {
+            <n-color-picker :modes="['hex']" v-model:value="midHorse"
+                            :actions="['confirm']"
+                            @confirm="(value) => {
                                 appConfig.set('midHorse',value)
                                 refresh +=1
                               }"
-                              class="pickerWidth"/>
-            </n-space>
-            <n-space>
+                            class="pickerWidth"/>
+          </n-space>
+          <n-space>
 
-              <n-popconfirm
-                @positive-click="changeHorseType('bot',botHorseType)"
-                :show-icon="false" positive-text="修改" negative-text="取消"
-              >
-                <template #trigger>
-                  <n-tag :bordered="false" style="margin-top: 3px">
-                    {{horseType.bot}}
-                  </n-tag>
-                </template>
-                <n-input v-model:value="botHorseType"
-                         type="text" style="width: 104px" />
-              </n-popconfirm>
-              <n-color-picker :modes="['hex']" v-model:value="bottomHorse"
-                              :actions="['confirm']"
-                              @confirm="(value) => {
+            <n-popconfirm
+              @positive-click="changeHorseType('bot',botHorseType)"
+              :show-icon="false" positive-text="修改" negative-text="取消"
+            >
+              <template #trigger>
+                <n-tag :bordered="false" style="margin-top: 3px">
+                  {{ horseType.bot }}
+                </n-tag>
+              </template>
+              <n-input v-model:value="botHorseType"
+                       type="text" style="width: 104px"/>
+            </n-popconfirm>
+            <n-color-picker :modes="['hex']" v-model:value="bottomHorse"
+                            :actions="['confirm']"
+                            @confirm="(value) => {
                                 appConfig.set('bottomHorse',value)
                                 refresh +=1
                               }"
-                              class="pickerWidth"/>
-            </n-space>
-            <n-space>
-              <n-popconfirm
-                @positive-click="changeHorseType('trash',trashHorseType)"
-                :show-icon="false" positive-text="修改" negative-text="取消"
-              >
-                <template #trigger>
-                  <n-tag :bordered="false" style="margin-top: 3px">
-                    {{horseType.trash}}
-                  </n-tag>
-                </template>
-                <n-input v-model:value="trashHorseType"
-                         type="text" style="width: 104px" />
-              </n-popconfirm>
-              <n-color-picker :modes="['hex']" v-model:value="trashHorse"
-                              :actions="['confirm']"
-                              @confirm="(value) => {
+                            class="pickerWidth"/>
+          </n-space>
+          <n-space>
+            <n-popconfirm
+              @positive-click="changeHorseType('trash',trashHorseType)"
+              :show-icon="false" positive-text="修改" negative-text="取消"
+            >
+              <template #trigger>
+                <n-tag :bordered="false" style="margin-top: 3px">
+                  {{ horseType.trash }}
+                </n-tag>
+              </template>
+              <n-input v-model:value="trashHorseType"
+                       type="text" style="width: 104px"/>
+            </n-popconfirm>
+            <n-color-picker :modes="['hex']" v-model:value="trashHorse"
+                            :actions="['confirm']"
+                            @confirm="(value) => {
                                 appConfig.set('trashHorse',value)
                                 refresh +=1
                               }"
-                              class="pickerWidth"/>
-            </n-space>
-          <n-popconfirm :show-icon="false" @positive-click="sendToChat"
-                        negative-text="取消" positive-text="确认"
-          >
+                            class="pickerWidth"/>
+          </n-space>
+
+          <n-popover :show-arrow="false" style="bottom: 5px"
+                     trigger="click" :show="sendPopover">
             <template #trigger>
               <n-button type="info" size="small" style="margin-top: 3px;margin-left: 5px"
-                        strong secondary >
-                发送
+                        strong secondary @click="sendPopover = !sendPopover">
+                <p v-if="sendPopover === false">发送</p>
+                <p v-else>取消</p>
               </n-button>
             </template>
-            <n-checkbox-group :value="summonerName"  @update:value="handleUpdateValue"  >
-              <n-space vertical item-style="display: flex" >
-                <n-checkbox
-                  v-for="summoner in currentEchartData.name"
-                  :value="summoner" :label="summoner" />
+            <n-space vertical>
+              <n-checkbox-group :value="summonerName" @update:value="handleUpdateValue">
+                <n-space vertical item-style="display: flex">
+                  <n-checkbox
+                    v-for="summoner in currentEchartData.name"
+                    :value="summoner" :label="summoner"/>
+                </n-space>
+              </n-checkbox-group>
+              <n-space justify="space-between">
+                <n-button size="small" type="success" secondary  @click="allSelect">
+                  <p v-if="summonerName.length ===0">全选</p>
+                  <p v-else>归零</p>
+                </n-button>
+                <n-button size="small" type="success" @click="sendToChat">确定</n-button>
               </n-space>
-            </n-checkbox-group>
-          </n-popconfirm>
+            </n-space>
+          </n-popover>
         </n-space>
 
         <div class="suspension">
@@ -192,7 +203,7 @@
             <n-popconfirm @positive-click="closeWindow" :show-icon="false"
                           negative-text="取消" positive-text="确认">
               <template #trigger>
-                <n-button text circle color="black" >
+                <n-button text circle color="black">
                   <n-icon size="24">
                     <circle-x/>
                   </n-icon>
@@ -216,105 +227,102 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import VChart from "vue-echarts";
 import {
-  NCard, NAvatar, NSpace, NTag, NIcon,NInput,
-NButton, NColorPicker, NPopover,NPopconfirm,NCheckbox,NCheckboxGroup
+  NCard, NSpace, NTag, NIcon, NInput,
+  NButton, NColorPicker, NPopover, NPopconfirm, NCheckbox, NCheckboxGroup
 } from 'naive-ui'
-import {onMounted, ref,watch} from "vue"
+import {onMounted, ref, watch} from "vue"
 import {appConfig} from "@/utils/main/config"
-import {ChevronsDownLeft, ArrowBackUp,CircleX, Ballon} from '@vicons/tabler'
+import {ChevronsDownLeft, CircleX, Ballon} from '@vicons/tabler'
 import {ipcRenderer} from "electron"
 import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {sendMessageToChat} from "@/utils/main/lcu";
 
-export default ({
-  name: "barKDA",
-  components: {
-    VChart, NCard, NAvatar, NSpace, NTag, NIcon,NPopconfirm,NInput,CircleX,
-    NButton, NColorPicker, NPopover, ChevronsDownLeft, ArrowBackUp, Ballon,NCheckbox,NCheckboxGroup
-  },
-  setup() {
-    const store = useStore()
-    const {echartsData,enemyEchartsData,currentTeam,currentEchartData} = storeToRefs(store)
-    let refresh = ref(1)
-    let topHorse = ref(appConfig.get("topHorse"))
-    let midHorse = ref(appConfig.get("midHorse"))
-    let bottomHorse = ref(appConfig.get("bottomHorse"))
-    let trashHorse = ref(appConfig.get("trashHorse"))
-    const horseType = ref(appConfig.get('horseType'))
-    let topHorseType = ref(horseType.value.top)
-    let midHorseType = ref(horseType.value.mid)
-    let botHorseType = ref(horseType.value.bot)
-    let trashHorseType = ref(horseType.value.trash)
+const store = useStore()
+const {echartsData, enemyEchartsData, currentTeam, currentEchartData} = storeToRefs(store)
+let refresh = ref(1)
+let topHorse = ref(appConfig.get("topHorse"))
+let midHorse = ref(appConfig.get("midHorse"))
+let bottomHorse = ref(appConfig.get("bottomHorse"))
+let trashHorse = ref(appConfig.get("trashHorse"))
+const horseType = ref(appConfig.get('horseType'))
+let topHorseType = ref(horseType.value.top)
+let midHorseType = ref(horseType.value.mid)
+let botHorseType = ref(horseType.value.bot)
+let trashHorseType = ref(horseType.value.trash)
+const sendPopover = ref(false)
 
-    const summonerName = ref([])
+const summonerName = ref([])
 
-    watch(currentTeam,() => {
-      currentEchartData.value = currentTeam.value === 1 ? echartsData.value :enemyEchartsData.value
-    })
-
-    onMounted(() => {
-      let colorTitle = document.querySelectorAll('.n-color-picker-trigger__value')
-      for (const colorTitleElement of colorTitle) {
-        colorTitleElement.remove()
-      }
-
-    })
-    const handleChangePosition = (pos) => {
-      ipcRenderer.send('move-match-history-window', {
-        x: pos.x,
-        y: pos.y,
-      })
-    }
-    const closeWindow = () => {
-      ipcRenderer.send('close-match-history-window')
-    }
-    const handleMin = () => {
-      ipcRenderer.send('match-history-window-min')
-    }
-
-    const sendToChat = () => {
-      let sendMessage = 'Powered By Frank \n'
-      for (const summonerDatum of summonerName.value) {
-        const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
-            let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] 评分:${echartsData.value['data'][currentSummonerIndex]} 最近战绩:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
-            sendMessage += sendInfo + '\n'
-      }
-      if (sendMessage.length >18){
-        sendMessageToChat(appConfig.get('credentials'),sendMessage)
-      }
-    }
-    // 多选框组,数据改变
-    const handleUpdateValue = (value) => {
-      summonerName.value = value
-    }
-    // 改变马匹类型
-    const changeHorseType = (type,horse) => {
-      if (type === 'top'){
-        appConfig.set('horseType.top',horse)
-        location.reload()
-      }else if (type === 'mid'){
-        appConfig.set('horseType.mid',horse)
-        location.reload()
-      }else if (type === 'bot'){
-        appConfig.set('horseType.bot',horse)
-        location.reload()
-      }else if (type === 'trash'){
-        appConfig.set('horseType.trash',horse)
-        location.reload()
-      }
-    }
-
-    return {
-      appConfig, refresh, topHorse, midHorse, bottomHorse,currentTeam,enemyEchartsData,currentEchartData,
-      trashHorse,summonerName,horseType,topHorseType,midHorseType,botHorseType,trashHorseType,
-      handleChangePosition, closeWindow, handleMin, sendToChat,handleUpdateValue,changeHorseType
-    }
-  }
+watch(currentTeam, () => {
+  currentEchartData.value = currentTeam.value === 1 ? echartsData.value : enemyEchartsData.value
 })
+onMounted(() => {
+  let colorTitle = document.querySelectorAll('.n-color-picker-trigger__value')
+  for (const colorTitleElement of colorTitle) {
+    colorTitleElement.remove()
+  }
+
+})
+const handleChangePosition = (pos) => {
+  ipcRenderer.send('move-match-history-window', {
+    x: pos.x,
+    y: pos.y,
+  })
+}
+const closeWindow = () => {
+  ipcRenderer.send('close-match-history-window')
+}
+const handleMin = () => {
+  ipcRenderer.send('match-history-window-min')
+}
+
+const sendToChat = () => {
+  if (summonerName.value.length ===0){sendPopover.value = !sendPopover.value; return}
+  let sendMessage = 'Powered By Frank \n'
+  for (const summonerDatum of summonerName.value) {
+    const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
+    let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] 评分:${echartsData.value['data'][currentSummonerIndex]} 最近战绩:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
+    sendMessage += sendInfo + '\n'
+  }
+  if (sendMessage.length > 18) {
+    sendMessageToChat(appConfig.get('credentials'), sendMessage)
+  }
+  sendPopover.value = !sendPopover.value
+}
+// 多选框组全选按钮
+const allSelect = () => {
+  if (summonerName.value.length === 0){
+    summonerName.value=currentEchartData.value.name
+  }else {
+    summonerName.value = []
+  }
+}
+
+// 多选框组,数据改变
+const handleUpdateValue = (value) => {
+  summonerName.value = value
+}
+// 改变马匹类型
+const changeHorseType = (type, horse) => {
+  if (type === 'top') {
+    appConfig.set('horseType.top', horse)
+    location.reload()
+  } else if (type === 'mid') {
+    appConfig.set('horseType.mid', horse)
+    location.reload()
+  } else if (type === 'bot') {
+    appConfig.set('horseType.bot', horse)
+    location.reload()
+  } else if (type === 'trash') {
+    appConfig.set('horseType.trash', horse)
+    location.reload()
+  }
+}
+
 </script>
 
 <style scoped>
@@ -339,6 +347,7 @@ export default ({
   top: 30px;
   right: 25px;
 }
+
 .n-popconfirm__action {
   justify-content: space-between;
 }

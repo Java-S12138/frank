@@ -1,4 +1,4 @@
-import {createHttp1Request} from "@/utils/league-connect";
+import {createHttp1Request,createHttpSession,createHttp2Request} from "@/utils/league-connect";
 import {champDict} from "@/utils/render/lolDataList";
 
 let currentId
@@ -47,10 +47,16 @@ const dealSuperChapm = (summonerSuperChampData,index,end) => {
 
 // 查询召唤师排位分数
 const queryCurrentRankPoint = async (credentials) => {
-  const rankPoint = (await createHttp1Request({
+  // const rankPoint = (await createHttp1Request({
+  //   method:"GET",
+  //   url:'/lol-ranked/v1/current-ranked-stats'
+  // },credentials)).json().queues
+
+  const session = await createHttpSession(credentials)
+  const rankPoint = (await createHttp2Request({
     method:"GET",
     url:'/lol-ranked/v1/current-ranked-stats'
-  },credentials)).json().queues
+  }, session, credentials)).json().queues
   // 单双排位/ 灵活排位/ 云顶之亦
   let rankSolo = rankPoint.find((i) => i.queueType=="RANKED_SOLO_5x5")
   let rankSr = rankPoint.find((i) => i.queueType=="RANKED_FLEX_SR")

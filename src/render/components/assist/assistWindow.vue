@@ -102,11 +102,12 @@ const getCurrentBlacklist = (summonerInfo) => {
 }
 
 const showMatch = async () => {
-  const clientStatus = (await createHttp1Request({
-    method: "GET",
-    url: `/lol-gameflow/v1/gameflow-phase/`,
-  }, appConfig.get('credentials'))).json()
-  if (clientStatus == '"ChampSelect"' || clientStatus == '"GameStart"'){
+  // const clientStatus = (await createHttp1Request({
+  //   method: "GET",
+  //   url: `/lol-gameflow/v1/gameflow-phase/`,
+  // }, appConfig.get('credentials'))).json()
+  // clientStatus == '"ChampSelect"' || clientStatus == '"GameStart"'
+  if (true){
     ipcRenderer.send('showCharts')
     message.success('获取战绩成功 !')
   }else {
