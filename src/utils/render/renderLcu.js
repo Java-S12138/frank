@@ -51,12 +51,12 @@ const queryCurrentRankPoint = async (credentials) => {
   //   method:"GET",
   //   url:'/lol-ranked/v1/current-ranked-stats'
   // },credentials)).json().queues
-
   const session = await createHttpSession(credentials)
   const rankPoint = (await createHttp2Request({
     method:"GET",
     url:'/lol-ranked/v1/current-ranked-stats'
   }, session, credentials)).json().queues
+  session.close()
   // 单双排位/ 灵活排位/ 云顶之亦
   let rankSolo = rankPoint.find((i) => i.queueType=="RANKED_SOLO_5x5")
   let rankSr = rankPoint.find((i) => i.queueType=="RANKED_FLEX_SR")

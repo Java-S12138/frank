@@ -20,6 +20,7 @@ const util_1 = __importDefault(require("util"));
 const exec = util_1.default.promisify(child_process_1.default.exec);
 const DEFAULT_NAME = 'LeagueClientUx';
 const DEFAULT_POLL_INTERVAL = 2500;
+const RiotJs = require("../render/RIOT");
 /**
  * Indicates that the application does not run on an environment that the
  * League Client supports. The Client runs on windows, linux or darwin.
@@ -53,7 +54,7 @@ exports.ClientNotFoundError = ClientNotFoundError;
  */
 function authenticate(options) {
     return __awaiter(this, void 0, void 0, function* () {
-      const RIOT_GAMES_CERT = yield fs_1.default.promises.readFile(path_1.default.join(__dirname, '../resources', 'riotgames.pem'), 'utf-8');
+        const RIOT_GAMES_CERT = RiotJs.RIOT_GAMES_CERT
         function tryAuthenticate() {
             var _a, _b;
             return __awaiter(this, void 0, void 0, function* () {

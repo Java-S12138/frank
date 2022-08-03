@@ -196,21 +196,21 @@ export const getChatSelectChampId = async (credentials) => {
 }
 // 查询对局中的所有召唤师的Id
 export const queryAllSummonerId = async (credentials) => {
-  // let summonerIdList = []
-  // const chatId = await getChatSelectChampId(credentials)
-  // if (chatId == null){return null}
-  //
-  // const summonersId = (await createHttp1Request({
-  //   method: "GET",
-  //   url: `/lol-chat/v1/conversations/${chatId}/messages`,
-  // }, credentials)).json()
-  // for (const summonersIdElement of summonersId) {
-  //   summonerIdList.push(summonersIdElement.fromSummonerId)
-  // }
-  // // 数组去重
-  // summonerIdList = [... new Set(summonerIdList)]
+  let summonerIdList = []
+  const chatId = await getChatSelectChampId(credentials)
+  if (chatId == null){return null}
+
+  const summonersId = (await createHttp1Request({
+    method: "GET",
+    url: `/lol-chat/v1/conversations/${chatId}/messages`,
+  }, credentials)).json()
+  for (const summonersIdElement of summonersId) {
+    summonerIdList.push(summonersIdElement.fromSummonerId)
+  }
+  // 数组去重
+  summonerIdList = [... new Set(summonerIdList)]
   // todo 测试
-  let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
+  // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return summonerIdList
 }
 // 查询比赛记录 (最近5场排位)
