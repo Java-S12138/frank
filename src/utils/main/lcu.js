@@ -219,10 +219,12 @@ export const queryMatchHistory = async (credentials,summonerId) => {
   let matchCount = 0
   const currentGameMode = await queryCurrentGameMode(credentials)
   console.log('当前游戏模式:',currentGameMode)
-  const matchList = (await createHttp1Request({
+  const session = await createHttpSession(credentials)
+  const matchList = (await createHttp2Request({
     method: "GET",
     url: `/lol-match-history/v3/matchlist/account/${summonerId}`,
-  }, credentials)).json()['games']['games'].reverse()
+  },session, credentials)).json()['games']['games'].reverse()
+  session.close()
   for (const matchListElement of matchList) {
     //matchListElement.queueId == currentGameMode &&
     if (matchListElement.queueId == currentGameMode && matchCount < 5){
