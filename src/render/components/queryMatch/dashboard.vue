@@ -4,10 +4,6 @@
       <img src="../../assets/icon/app-icon.png" draggable="false"  alt="" width="40" @click="handleMin">
       <img src="../../assets/icon/Frank.png" draggable="false"  style="margin-top: 4px">
     </n-space>
-    <n-space>
-      <n-input v-model:value="querySummoneName"
-               type="text" placeholder="请输入召唤师昵称" />
-    </n-space>
     <n-space class="rightCorner">
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
         <template #trigger>
@@ -42,8 +38,7 @@ import {NIcon, NSpace, NButton, NPopover,NPopconfirm,NInput} from 'naive-ui'
 import {ChevronsDownLeft,CircleX} from '@vicons/tabler'
 import {ipcRenderer} from 'electron'
 import {ref} from "vue";
-
-const querySummoneName = ref('')
+document.title = 'Frank 战绩查询'
 
 const handldDrge = (pos) => {
   ipcRenderer.send('move-query-match-window', {
@@ -65,12 +60,8 @@ const handleClose = () => {
 <style scoped>
 header {
   display: flex;
-  height: 50px;
   justify-content: space-between;
-  margin-top: 10px;
-  margin-right: 16px;
-  margin-left: 16px;
-  margin-bottom: 10px;
+  padding: 12px;
 }
 
 .rightCorner {

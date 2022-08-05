@@ -25,9 +25,9 @@ const iconPath = path.join(
 )
 const userHeader =userAgentList[Math.floor((Math.random()*userAgentList.length))]
 
-let credentials;let mainWindow;let assistWindow;let matchHistoryWindow;let queryMatchWindow
+let credentials;let mainWindow;let assistWindow;let matchHistoryWindow;
 
-// -----------------------------main----------------------------
+// -----------------------------main---------------------------- //
 app.whenReady().then(async () => {
   mainWindow = await createMainWindow(userHeader)
   assistWindow = await createAssistWindow(userHeader)
@@ -35,6 +35,7 @@ app.whenReady().then(async () => {
   await startClient()
   listenIpc(mainWindow,assistWindow)
   mathcHistoryIpc()
+  queryMatchIpc()
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -144,7 +145,7 @@ const startClient = async () => {
   })
 }
 
-const mathcHistoryIpc = () => {
+const mathcHistoryIpc = async () => {
   // 展示战力分析窗口
   ipcMain.on('showCharts',async () => {
     matchHistoryWindow = await createMatchHistoryWindow(userHeader)
@@ -164,5 +165,27 @@ const mathcHistoryIpc = () => {
   ipcMain.on('close-match-history-window', () => {
     matchHistoryWindow.close()
     matchHistoryWindow = null
+  })
+}
+
+const queryMatchIpc = async () => {
+  let queryMatchWindow
+  // 展示查询战绩窗口
+  ipcMain.on('show-query-match',async () => {
+    queryMatchWindow = await createQueryMatchWindow(userHeader)
+    mainWindow.hide()
+  })
+// 移动游戏历史窗口
+  ipcMain.on('move-query-match-window', (event, pos) => {
+    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
+  })
+// 最小化游戏历史窗口
+  ipcMain.on('query-match-min', () => {
+    queryMatchWindow.minimize()
+  })
+// 关闭游戏历史窗口
+  ipcMain.on('query-match-close', () => {
+    queryMatchWindow.close()
+    queryMatchWindow = null
   })
 }

@@ -6,7 +6,7 @@ export const createQueryMatchWindow = async (userHeader) => {
     title: 'Frank',
     show: false,
     frame: false,
-    resizable: false,
+    resizable: true,
     width: 1024,
     height: 576,
     center: true,

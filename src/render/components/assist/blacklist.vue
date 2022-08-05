@@ -1,46 +1,49 @@
 <template>
   <div >
     <n-card class="boxShadow listCard"  size="small">
-      <n-space v-if="blacklist.length=== 0" justify="center" :size="[0,5]">
+      <n-space v-if="blacklist.length=== 0" justify="center" :size="[0,-1]">
         <p style="color: #666F75;">笔记功能介绍请查看更新详情</p>
         <p style="color: #666F75">愿你的排位笔记永远没有笔记</p>
-        <p style="color: #666F75;">营造良好游戏环境从你我做起</p>
       </n-space>
-      <div v-else>
-        <n-scrollbar  style="max-height: 575px;">
-          <n-list style="margin-right:13px;margin-left: 13px" >
-            <n-list-item v-for="blackSummoner in blacklist">
-              <n-space justify="space-between" class="alignCenter">
-                  <n-ellipsis style="
-                  max-width: 112px;
-                  width:112px;
-                  color: #ff6666;"
-                  v-if="currentBlackList.indexOf(blackSummoner[4]) !=-1"
-                  >
-                  {{ blackSummoner[0] }}
-                </n-ellipsis>
-                <n-ellipsis style="
-                  max-width: 112px;
-                  width:112px;
-                  color: #9aa4af;" v-else
-                >
-                  {{ blackSummoner[0] }}
-                </n-ellipsis>
+      <n-scrollbar v-else style="max-height: 525px;">
+        <n-list style="margin-right:13px;margin-left: 13px" >
+          <n-list-item v-for="blackSummoner in blacklist">
+            <n-space justify="space-between" class="alignCenter">
+              <n-ellipsis style="
+                max-width: 112px;
+                width:112px;
+                color: #ff6666;"
+                          v-if="currentBlackList.indexOf(blackSummoner[4]) !=-1"
+              >
+                {{ blackSummoner[0] }}
+              </n-ellipsis>
+              <n-ellipsis style="
+                max-width: 112px;
+                width:112px;
+                color: #9aa4af;" v-else
+              >
+                {{ blackSummoner[0] }}
+              </n-ellipsis>
 
-                <p style="color: #9aa4af;"> {{ blackSummoner[1] }}</p>
-                <n-button size="small" type="error" dashed @click="getDetails(blackSummoner[4])"> {{ showTagContent(blackSummoner[2]) }}</n-button>
-              </n-space>
-            </n-list-item>
+              <p style="color: #9aa4af;"> {{ blackSummoner[1] }}</p>
+              <n-button size="small" type="error" dashed @click="getDetails(blackSummoner[4])"> {{ showTagContent(blackSummoner[2]) }}</n-button>
+            </n-space>
+          </n-list-item>
         </n-list>
-        </n-scrollbar>
-        <n-space justify="space-between"
-                 style="margin-left: 12px;margin-right: 12px;margin-top: 5px" >
-          <n-button size="small" type="success" secondary>导入线上名单</n-button>
-          <n-button size="small" type="success" secondary  @click="addBlacklistActive=true">新增本地笔记</n-button>
-        </n-space>
-      </div>
+      </n-scrollbar>
     </n-card>
+    <n-card class="boxShadow"  size="small" >
+      <n-popover trigger="hover" :show-arrow="false">
+        <template #trigger>
+          <n-space justify="center" :size="[0,-1]" @click="addBlacklistActive=true">
+            <p style="color: #9aa4af;">珍爱生命 远离摆烂</p>
+            <p style="color: #9aa4af;">营造良好游戏环境从你我做起</p>
+          </n-space>
+        </template>
+        <span>点击此处  新增黑名单</span>
+      </n-popover>
 
+    </n-card>
     <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
               :height="420" placement="bottom" :auto-focus = "false" >
       <n-drawer-content >
