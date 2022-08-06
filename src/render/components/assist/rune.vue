@@ -6,8 +6,7 @@
                       @positive-click="setAutoRune" @negative-click="deleteAutoRune"
         >
           <template #trigger>
-            <n-skeleton v-if="loading" circle size="medium" style="width: 50px;height: 50px;"/>
-            <n-badge v-else :value="isAutoRune" color="#ff6666">
+            <n-badge :value="isAutoRune" color="#ff6666">
               <n-avatar
                 round
                 :bordered="false"
@@ -116,15 +115,14 @@
 <script setup>
 import {ipcRenderer} from "electron"
 import {
-  NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon, NBadge,
-  NSkeleton, NButton, NPopconfirm, useMessage
+  NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon, NBadge, NButton, NPopconfirm, useMessage
 } from 'naive-ui'
 import {ref} from "vue";
 import {champDict, mapNameFromUrl} from '../../../utils/render/lolDataList'
 import {appConfig} from '../../../utils/main/config'
 import {ArrowBigRightLine, ArrowBigLeftLine} from '@vicons/tabler'
 import {request} from "../../../utils/render/request"
-import {applyRunePage, sendMessageToChat,setAutoRuneFromChamp} from "@/utils/main/lcu";
+import {applyRunePage,setAutoRuneFromChamp} from "@/utils/main/lcu";
 
 const currentChamp = ref(null)
 const currentChampImgUrl = ref('')
@@ -209,7 +207,6 @@ const getRuneData = async (gameMode) => {
       message.success('自动配置符文成功')
     }
 
-    loading.value = false
   } catch (e) {
     console.log(e)
   }

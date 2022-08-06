@@ -35,7 +35,7 @@ app.whenReady().then(async () => {
   await startClient()
   listenIpc(mainWindow,assistWindow)
   mathcHistoryIpc()
-  queryMatchIpc()
+  // queryMatchIpc()
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -86,7 +86,8 @@ const runLcu = async () => {
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
     }else if(data ==='PreEndOfGame'){ // PreEndOfGame
-      assistWindow.show()
+      if (appConfig.get('isSwitchBlacklist')){assistWindow.show()}
+
       assistWindow.webContents.send('show-other-summoner')
       if ( matchHistoryWindow != null){
         if (!matchHistoryWindow.isDestroyed()){

@@ -27,4 +27,8 @@ export const listenIpc = (mainWindow,assistWindow) => {
   ipcMain.on('move-assistWindow', (event, pos) => {
     assistWindow.setBounds({ x: pos.x, y: pos.y, width: 320, height: 720 })
   })
+  // 刷新助手页面
+  ipcMain.on('setting-page-refresh-assist',() => {
+    assistWindow.webContents.send('client-connect-success')
+  })
 }

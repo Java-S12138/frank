@@ -33,6 +33,14 @@
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
         <n-space>
+          <n-tag :bordered="false">排位笔记</n-tag>
+          <n-tag :bordered="false" type="success"
+                 style="width: 140px;justify-content: center">是否使用排位笔记</n-tag>
+
+          <n-switch v-model:value="isSwitchBlacklist" @click="changeBlacklist"
+                    style="margin-left:22px;margin-top: 3px"/>
+        </n-space>
+        <n-space>
           <n-tag :bordered="false">秒接对局</n-tag>
           <n-slider v-model:value="isAccept" :step="10" @update:value="handleUpdateAccept"
                     style="width: 213px;margin-top: 5px"/>
@@ -101,7 +109,7 @@ import {optionsChampion} from '@/utils/render/lolDataList'
 import {ref} from "vue";
 import {appConfig} from "@/utils/main/config"
 import {useStore} from "@/render/store";
-
+import {ipcRenderer} from "electron";
 
 let isExist = ref(false)
 let directory = ref('')
@@ -110,6 +118,7 @@ let isAutoPick = ref(appConfig.get('autoPickChampion.isAuto'))
 let pickChampion = ref(appConfig.get('autoPickChampion.championId'))
 const optionsChampionPick = optionsChampion
 let isAutoBan = ref(appConfig.get('autoBanChampion.isAuto'))
+const isSwitchBlacklist = ref(appConfig.get('isSwitchBlacklist'))
 let banChampion = ref(appConfig.get('autoBanChampion.championId'))
 const optionsChampionBan = optionsChampion
 let isAccept = ref(appConfig.get('autoAccept'))
@@ -149,6 +158,15 @@ const changeBan = () => {
   } else {
     appConfig.set('autoBanChampion.isAuto', false)
   }
+}
+// 设置是否开启排位日记
+const changeBlacklist = () => {
+  if (appConfig.get('isSwitchBlacklist') != true) {
+    appConfig.set('isSwitchBlacklist', true)
+  } else {
+    appConfig.set('isSwitchBlacklist', false)
+  }
+  ipcRenderer.send('setting-page-refresh-assist')
 }
 // 通过选择器选择英雄后, 执行的函数 选择
 const handleUpdatePick = () => {

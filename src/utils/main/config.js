@@ -33,6 +33,7 @@ export const appConfig = new Store({
       'tier':200,
       'lane':'mid'
     },
+    'isSwitchBlacklist':true,
     'blacklist':{}
   }
 })

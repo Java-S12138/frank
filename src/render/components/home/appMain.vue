@@ -42,9 +42,9 @@
         <n-button dashed size="large" style=" color: #666F75;" @click = "switchButton = 2">
           英雄数据
         </n-button>
-        <n-button dashed size="large" style=" color: #666F75;" @click = "queryMatch">
-          查询战绩
-        </n-button>
+<!--        <n-button dashed size="large" style=" color: #666F75;" @click = "queryMatch">-->
+<!--          查询战绩-->
+<!--        </n-button>-->
       </n-space>
       <div v-show="switchButton == 1">
         <n-list>
