@@ -12,7 +12,7 @@ export const createAssistWindow = async (userHeader) => {
     appConfig.set('assistWindowPosition',{x:currentScreen.width -320,y:(currentScreen.height -770)/2})
   }
   const assistWin = new BrowserWindow({
-    title: 'Frank',
+    title: 'FrankAssist',
     show: false,
     frame: false,
     resizable: false,

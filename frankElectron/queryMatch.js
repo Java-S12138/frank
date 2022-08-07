@@ -3,12 +3,12 @@ import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
 
 export const createQueryMatchWindow = async (userHeader) => {
   const queryMatchWindow = new BrowserWindow({
-    title: 'Frank',
+    title: 'FrankQueryMatch',
     show: false,
     frame: false,
     resizable: true,
     width: 1024,
-    height: 576,
+    height: 650,
     center: true,
     webPreferences: {
       nodeIntegration: true,

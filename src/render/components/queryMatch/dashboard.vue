@@ -38,7 +38,7 @@ import {NIcon, NSpace, NButton, NPopover,NPopconfirm,NInput} from 'naive-ui'
 import {ChevronsDownLeft,CircleX} from '@vicons/tabler'
 import {ipcRenderer} from 'electron'
 import {ref} from "vue";
-document.title = 'Frank 战绩查询'
+// document.title = 'Frank 战绩查询'
 
 const handldDrge = (pos) => {
   ipcRenderer.send('move-query-match-window', {

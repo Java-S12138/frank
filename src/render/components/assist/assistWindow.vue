@@ -29,6 +29,8 @@ import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName} from "@/utils/render/blacklistUtils";
 
+document.title = 'Assist'
+
 onMounted(() => {
   let nTabsRail = document.querySelector('.n-tabs-rail')
   let champRank = document.querySelector('#app > div.n-tabs.n-tabs--segment-type.n-tabs--medium-size > div > div > div:nth-child(1) > div')

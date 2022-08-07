@@ -35,7 +35,7 @@ app.whenReady().then(async () => {
   await startClient()
   listenIpc(mainWindow,assistWindow)
   mathcHistoryIpc()
-  // queryMatchIpc()
+  queryMatchIpc()
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -43,6 +43,17 @@ app.whenReady().then(async () => {
     }
   })
 })
+// QueryMatch
+// MatchHistory
+// Assist
+// Frank
+const closeWin = (window) => {
+  for (const currentWindow of BrowserWindow.getAllWindows()) {
+    if (currentWindow.title === window){
+      currentWindow.close()
+    }
+  }
+}
 
 const runLcu = async () => {
   const ws = await createWebSocketConnection(credentials)
@@ -87,13 +98,8 @@ const runLcu = async () => {
       ws.unsubscribe('/lol-champ-select/v1/session')
     }else if(data ==='PreEndOfGame'){ // PreEndOfGame
       if (appConfig.get('isSwitchBlacklist')){assistWindow.show()}
-
       assistWindow.webContents.send('show-other-summoner')
-      if ( matchHistoryWindow != null){
-        if (!matchHistoryWindow.isDestroyed()){
-          matchHistoryWindow.close()
-        }
-      }
+      closeWin('MatchHistory')
     }
     // 自动接受对局
     if (data =='ReadyCheck' && isAutoAccept>=50){
@@ -164,8 +170,7 @@ const mathcHistoryIpc = async () => {
   })
 // 关闭游戏历史窗口
   ipcMain.on('close-match-history-window', () => {
-    matchHistoryWindow.close()
-    matchHistoryWindow = null
+    closeWin('MatchHistory')
   })
 }
 
@@ -174,19 +179,22 @@ const queryMatchIpc = async () => {
   // 展示查询战绩窗口
   ipcMain.on('show-query-match',async () => {
     queryMatchWindow = await createQueryMatchWindow(userHeader)
+    for (const argument of BrowserWindow.getAllWindows()) {
+      console.log(argument.title)
+    }
     mainWindow.hide()
+
   })
 // 移动游戏历史窗口
   ipcMain.on('move-query-match-window', (event, pos) => {
-    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
+    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 650 })
   })
 // 最小化游戏历史窗口
   ipcMain.on('query-match-min', () => {
-    queryMatchWindow.minimize()
+    queryMatchWindow.minimi1ze()
   })
 // 关闭游戏历史窗口
   ipcMain.on('query-match-close', () => {
-    queryMatchWindow.close()
-    queryMatchWindow = null
+    closeWin('QueryMatch')
   })
 }

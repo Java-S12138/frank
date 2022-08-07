@@ -3,7 +3,7 @@ import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
 
 export const createMatchHistoryWindow = async (userHeader) => {
   const matchHistoryWindow = new BrowserWindow({
-    title: 'Frank',
+    title: 'FrankMatchHistory',
     show: false,
     frame: false,
     resizable: false,

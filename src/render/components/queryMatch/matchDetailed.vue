@@ -21,6 +21,6 @@ import {NCard} from "naive-ui";
 <style scoped>
 @import url("../../assets/css/queryMatchCommon.css");
 .mainCard {
-  width: 63.7vw;
+  width: 69.1vw;
 }
 </style>

@@ -1,6 +1,5 @@
 <script setup>
 import {NMessageProvider} from 'naive-ui'
-document.title="Frank"
 </script>
 
 <template>
@@ -32,7 +31,9 @@ html {
   0 3px 6px 0 rgba(0, 0, 0, 0.06),
   0 5px 12px 4px rgba(0, 0, 0, 0.04);;
 }
-
+.n-tag{
+  line-height: 1px !important;
+}
 #app {
   /*-webkit-font-smoothing: antialiased;*/
   /*-moz-osx-font-smoothing: grayscale;*/

@@ -9,7 +9,7 @@
         fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
       />
       <n-space vertical :size="[2,10]">
-        <div style="">
+        <div>
           <!--                昵称-->
           <n-tag type="success" :bordered="false" :round="true">
             {{ rankData[0] }}
@@ -20,17 +20,27 @@
             {{ rankData[1] }}
           </n-tag>
         </div>
-        <n-space style="justify-content: space-between;">
-          <n-popover v-for="value in [0,2,4]"
+          <n-popover
                      trigger="hover" :show-arrow="false" placement="bottom">
             <template #trigger>
-              <n-tag type="warning" :bordered="false" :round="true" size="small">
-                {{ carryData[value] }}
-              </n-tag>
+                <n-tag type="warning" size="small"  style="width: 241px"
+                       :bordered="false" :round="true">
+                  <n-space v-if="xp!==null" class="alignCenter" justify="space-between">
+                    <n-progress
+                      type="line"
+                      :show-indicator="false"
+                      :percentage="xp"
+                      status="warning"
+                      processing
+                      style="width:174px"
+                      :height="10"
+                    />
+                    <div style="font-size: 13px;">{{xp}} %</div>
+                  </n-space>
+                </n-tag>
             </template>
-            {{ carryData[value + 1] }}
+            <span v-if="xp!==null">下次升级还差 {{rankData[6][1]}} - {{rankData[6][0]}} 经验</span>
           </n-popover>
-        </n-space>
       </n-space>
     </n-card>
 
@@ -42,9 +52,9 @@
         <n-button dashed size="large" style=" color: #666F75;" @click = "switchButton = 2">
           英雄数据
         </n-button>
-<!--        <n-button dashed size="large" style=" color: #666F75;" @click = "queryMatch">-->
-<!--          查询战绩-->
-<!--        </n-button>-->
+        <n-button dashed size="large" style=" color: #666F75;" @click = "queryMatch">
+          查询战绩
+        </n-button>
       </n-space>
       <div v-show="switchButton == 1">
         <n-list>
@@ -143,16 +153,16 @@
 import {ref, onMounted} from "vue"
 import {ipcRenderer} from 'electron'
 import {
-  NCard, NAvatar, NSpace, NTag, NButton, NPopover, NList, NListItem, NScrollbar, useMessage
+  NCard, NAvatar,NProgress, NSpace, NTag, NButton, NPopover, NList, NListItem, NScrollbar, useMessage
 } from 'naive-ui'
 import {appConfig} from "@/utils/main/config";
 import {returnRankData} from "@/utils/render/renderLcu";
 
 
 const rankData = ref([])
-const carryData = ref([])
 const summonerHonor = ref([])
 const summonerChampLevel = ref([])
+const xp = ref(null)
 let switchButton = ref(1)
 
 const message = useMessage()
@@ -167,9 +177,9 @@ onMounted(() => {
   })
   ipcRenderer.once('init-home', (event, data) => {
     rankData.value = data.rank
-    carryData.value = data.carry
     summonerHonor.value = data.honorData
     summonerChampLevel.value = data.chapmLevel
+    xp.value = parseInt((homeData.rank[6][0]/homeData.rank[6][1])*100)
   })
 })
 const getHomeData = async () => {
@@ -177,9 +187,9 @@ const getHomeData = async () => {
   if (credentials.port != '') {
     const homeData = await returnRankData(credentials)
     rankData.value = homeData.rank
-    carryData.value = homeData.carry
     summonerHonor.value = homeData.honorData
     summonerChampLevel.value = homeData.chapmLevel
+    xp.value = parseInt((homeData.rank[6][0]/homeData.rank[6][1])*100)
   }
 }
 const queryMatch = () => {

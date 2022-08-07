@@ -14,6 +14,7 @@ import AppMain from './appMain.vue'
 import {useStore} from '../../store'
 import {storeToRefs} from 'pinia'
 import Fbottom from "@/render/components/home/fbottom";
+document.title = 'Frank'
 
 // 使用pinia 管理切换页面的参数
 const store = useStore()

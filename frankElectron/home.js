@@ -6,7 +6,7 @@ import {userAgentList} from "@/utils/main/config";
 
 export const createMainWindow = async (userHeader) => {
   const win = new BrowserWindow({
-    title: 'Frank',
+    title: 'FrankHome',
     center: true,
     show: false,
     frame: false,

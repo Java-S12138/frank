@@ -11,7 +11,12 @@ const queryCurrentSummonerInfo = async (credentials) => {
   }, credentials)).json()
   currentId = summonerInfo.summonerId
   const imgUrl = `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summonerInfo.profileIconId}.png`
-  return {name:summonerInfo.displayName,imgUrl,lv:"Lv "+summonerInfo.summonerLevel}
+  return {name:summonerInfo.displayName,
+    imgUrl,
+    lv:"Lv "+summonerInfo.summonerLevel,
+    xpSL:summonerInfo.xpSinceLastLevel,
+    xpNL:summonerInfo.xpUntilNextLevel
+  }
 }
 
 // 查询本地召唤师英雄熟练度
@@ -26,23 +31,14 @@ export const queryCurrentChapm = async (credentials) => {
 // 处理本地召唤师英雄熟练度数据
 const dealSuperChapm = (summonerSuperChampData,index,end) => {
   let superChampList = []
-  if (end>3){
-    for (const summonerSuperChampDatum of summonerSuperChampData.slice(index,end)) {
+  for (const summonerSuperChampDatum of summonerSuperChampData.slice(index,end)) {
 
-      let champImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(summonerSuperChampDatum.championId)].alias}.png`
-      let championPoints = summonerSuperChampDatum.championPoints
-      let champLevel = summonerSuperChampDatum.championLevel
-      superChampList.push([champImgUrl,champLevel,championPoints])
-    }
-    return superChampList
-  }else {
-    for (const summonerSuperChampDatum of summonerSuperChampData.slice(index,end)) {
-      let champName = champDict[String(summonerSuperChampDatum.championId)].label
-      let championPoints = "英雄熟练度：" +summonerSuperChampDatum.championPoints
-      superChampList.push(champName,championPoints)
-    }
-    return superChampList
+    let champImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(summonerSuperChampDatum.championId)].alias}.png`
+    let championPoints = summonerSuperChampDatum.championPoints
+    let champLevel = summonerSuperChampDatum.championLevel
+    superChampList.push([champImgUrl,champLevel,championPoints])
   }
+  return superChampList
 }
 
 // 查询召唤师排位分数
@@ -73,14 +69,14 @@ const queryCurrentRankPoint = async (credentials) => {
 export const returnRankData = async (credentials) => {
   const summonerInfo =  await queryCurrentSummonerInfo(credentials)
   const rankList = await queryCurrentRankPoint(credentials)
-  const rank=  [summonerInfo.name,summonerInfo.lv,rankList[0],rankList[1],rankList[2],"S12季前赛",'INVINCIBLE',summonerInfo.imgUrl]
+  const rank=  [summonerInfo.name,summonerInfo.lv,rankList[0],rankList[1],rankList[2],
+    "S12季前赛",[summonerInfo.xpSL,summonerInfo.xpNL],summonerInfo.imgUrl]
 
   const summonerSuperChampData = await queryCurrentChapm(credentials)
 
-  const carry = dealSuperChapm(summonerSuperChampData,0,3)
   const honorData = await querySummonerHonorLevel(credentials)
   const chapmLevel = dealSuperChapm(summonerSuperChampData,0,15)
-  return {rank, carry,honorData,chapmLevel}
+  return {rank,honorData,chapmLevel}
 }
 
 

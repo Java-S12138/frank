@@ -11,7 +11,7 @@ import Dashboard from './dashboard'
 import SummonerInfo from "./summonerInfo";
 import MatchDetailed from "./matchDetailed";
 import {NSpace} from "naive-ui"
-
+document.title='QueryMatch'
 </script>
 
 <style scoped>
