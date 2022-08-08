@@ -67,7 +67,7 @@
           <n-popover trigger="hover" v-if="!isExist">
             <template #trigger>
               <n-button size="small" type="success"
-                        dashed @click="getGameDirectory" style="width: 214px">
+                        dashed @click="getGameDirectory" style="width: 214px;">
                 <input type="file" id="file" hidden>
                 选择LOL启动文件 Client.exe
               </n-button>
@@ -77,7 +77,7 @@
 
           <n-popover trigger="hover" v-else>
             <template #trigger>
-              <n-tag :bordered="false" type="success" @click="getGameDirectory">
+              <n-tag :bordered="false" type="success" style="line-height: 28px !important;" @click="getGameDirectory">
                 <input type="file" id="file" hidden>
                 <n-ellipsis style="max-width: 200px" :tooltip="false">
                   {{ directory }}

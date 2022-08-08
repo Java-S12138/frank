@@ -8,39 +8,46 @@
         :src="rankData[7]"
         fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
       />
-      <n-space vertical :size="[2,10]">
-        <div>
+      <n-space vertical :size="[2,5]">
+        <n-space justify="space-between">
           <!--                昵称-->
           <n-tag type="success" :bordered="false" :round="true">
             {{ rankData[0] }}
           </n-tag>
           <!--                大区-->
-          <n-tag type="success" style="float: right"
-                 :bordered="false" :round="true">
-            {{ rankData[1] }}
+          <n-tag  type="success"
+                 :bordered="false" :round="true" @click = "queryMatch">
+           <p v-if="xp!==null">查询战绩</p>
           </n-tag>
-        </div>
+        </n-space>
+        <n-space justify="space-between" v-if="xp!==null">
+          <n-tag type="warning" size="small" round style="width: 56px;justify-content: center"
+                 :bordered="false" > {{ rankData[1] }}</n-tag>
           <n-popover
-                     trigger="hover" :show-arrow="false" placement="bottom">
+            trigger="hover" :show-arrow="false" placement="bottom">
             <template #trigger>
-                <n-tag type="warning" size="small"  style="width: 241px"
-                       :bordered="false" :round="true">
-                  <n-space v-if="xp!==null" class="alignCenter" justify="space-between">
-                    <n-progress
-                      type="line"
-                      :show-indicator="false"
-                      :percentage="xp"
-                      status="warning"
-                      processing
-                      style="width:174px"
-                      :height="10"
-                    />
-                    <div style="font-size: 13px;">{{xp}} %</div>
-                  </n-space>
-                </n-tag>
+              <n-tag type="warning" size="small"  style="width: 173px;justify-content: center"
+                     :bordered="false" :round="true">
+                <n-space class="alignCenter" justify="space-between">
+                  <n-progress
+                    type="line"
+                    :show-indicator="false"
+                    :percentage="xp"
+                    status="warning"
+                    processing
+                    style="width:100px"
+                    :height="10"
+                  />
+                  <div style="font-size: 13px;">{{xp}} %</div>
+                </n-space>
+              </n-tag>
             </template>
-            <span v-if="xp!==null">下次升级还差 {{rankData[6][1]}} - {{rankData[6][0]}} 经验</span>
+            <span>下次升级还差 {{rankData[6][1]}} - {{rankData[6][0]}} 经验</span>
           </n-popover>
+
+        </n-space>
+        <n-tag v-else type="warning" size="small" round style="width: 241px"
+               :bordered="false"></n-tag>
       </n-space>
     </n-card>
 
@@ -52,8 +59,8 @@
         <n-button dashed size="large" style=" color: #666F75;" @click = "switchButton = 2">
           英雄数据
         </n-button>
-        <n-button dashed size="large" style=" color: #666F75;" @click = "queryMatch">
-          查询战绩
+        <n-button dashed size="large" style=" color: #666F75;">
+          永恒星碑
         </n-button>
       </n-space>
       <div v-show="switchButton == 1">
@@ -179,7 +186,7 @@ onMounted(() => {
     rankData.value = data.rank
     summonerHonor.value = data.honorData
     summonerChampLevel.value = data.chapmLevel
-    xp.value = parseInt((homeData.rank[6][0]/homeData.rank[6][1])*100)
+    xp.value = parseInt((data.rank[6][0]/data.rank[6][1])*100)
   })
 })
 const getHomeData = async () => {

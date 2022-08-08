@@ -1,7 +1,6 @@
 <template>
   <div class="mainCard">
     <n-card class="boxShadow" size="small">
-      <header>
         <n-space justify="space-between">
           <n-avatar
             round
@@ -33,15 +32,63 @@
           </n-tag>
         </n-space>
       </n-space>
-      </header>
 
-      <div style="margin-top: 20px">
+        <n-list style="margin-top: 20px">
+          <n-list-item >
+            <n-space justify="space-between">
+              <n-tag type="success" :bordered="false" class="tagWidth"
+                     :round="false" size="large">
+                单双排位
+              </n-tag>
+
+              <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
+                黄金IV 92
+              </n-tag>
+            </n-space>
+          </n-list-item >
+          <n-list-item>
+            <n-space justify="space-between">
+              <n-tag type="success" :bordered="false" class="tagWidth"
+                     :round="false" size="large">
+                单双排位
+              </n-tag>
+
+              <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
+                黄金IV 92
+              </n-tag>
+            </n-space>
+          </n-list-item>
+          <n-list-item>
+            <n-space justify="space-between">
+              <n-tag type="success" :bordered="false" class="tagWidth"
+                     :round="false" size="large">
+                单双排位
+              </n-tag>
+
+              <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
+                黄金IV 92
+              </n-tag>
+            </n-space>
+          </n-list-item>
+          <n-list-item>
+            <n-space justify="space-between">
+              <n-tag type="success" :bordered="false" class="tagWidth"
+                     :round="false" size="large">
+                荣誉等级 0
+              </n-tag>
+
+              <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
+                里程点数 0
+              </n-tag>
+            </n-space>
+          </n-list-item>
+        </n-list>
+    </n-card>
+    <n-card class="boxShadow secendCard" size="small">
         <n-space>
           <n-input style="width: 153px;" placeholder="仅支持当前大区玩家"/>
           <n-button type="success">搜索</n-button>
         </n-space>
-
-      </div>
     </n-card>
 
   </div>
@@ -64,5 +111,12 @@ import {
 @import url("../../assets/css/queryMatchCommon.css");
 .mainCard {
   width: 25vw;
+}
+.tagWidth {
+  width: 96px;
+  justify-content: center;
+}
+.secendCard {
+  margin-top: 40px;
 }
 </style>

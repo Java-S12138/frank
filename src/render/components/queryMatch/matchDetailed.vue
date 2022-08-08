@@ -1,6 +1,6 @@
 <template>
   <div class="mainCard">
-    <n-card class="boxShadow" size="small">
+    <n-card class="boxShadow" size="small" style="height: 100%">
       <h1>123</h1>
     </n-card>
 
