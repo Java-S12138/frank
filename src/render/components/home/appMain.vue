@@ -42,7 +42,7 @@
                 </n-space>
               </n-tag>
             </template>
-            <span>下次升级还差 {{rankData[6][1]}} - {{rankData[6][0]}} 经验</span>
+            <span>下次升级还差 {{rankData[6][1] - rankData[6][0]}} 经验(总:{{rankData[6][1]}})</span>
           </n-popover>
 
         </n-space>

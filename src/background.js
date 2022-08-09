@@ -100,6 +100,9 @@ const runLcu = async () => {
       if (appConfig.get('isSwitchBlacklist')){assistWindow.show()}
       assistWindow.webContents.send('show-other-summoner')
       closeWin('MatchHistory')
+    } else if (data === 'Lobby' || data === 'None') {
+        //选英雄途中退出游戏 关闭符文助手工具
+        assistWindow && assistWindow.hide()
     }
     // 自动接受对局
     if (data =='ReadyCheck' && isAutoAccept>=50){
