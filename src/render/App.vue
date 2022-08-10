@@ -19,6 +19,7 @@ import {NMessageProvider} from 'naive-ui'
   padding: 0;
   font-family: FZBenMoYueYiTiS, Avenir, Helvetica, Arial, sans-serif;
   -webkit-user-select: none;
+
 }
 html {
   background: #f5f5f5;

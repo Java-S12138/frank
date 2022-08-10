@@ -31,3 +31,19 @@ export const useStore = defineStore('app', {
     },
   }
 })
+
+export const queryStore = defineStore('query',{
+  state: () => {
+    return {
+      querySummonerId:null,
+      summoner:{
+        rankData:[],
+        summonerInfo:{},
+        honorLevel:[],
+        superChampList:[]
+      },
+     begIndex : 0,
+     endIndex : 8
+    }
+}
+})

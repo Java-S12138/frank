@@ -15,7 +15,8 @@ const queryCurrentSummonerInfo = async (credentials) => {
     imgUrl,
     lv:"Lv "+summonerInfo.summonerLevel,
     xpSL:summonerInfo.xpSinceLastLevel,
-    xpNL:summonerInfo.xpUntilNextLevel
+    xpNL:summonerInfo.xpUntilNextLevel,
+    puuid:summonerInfo.puuid
   }
 }
 
@@ -36,7 +37,8 @@ const dealSuperChapm = (summonerSuperChampData,index,end) => {
     let champImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(summonerSuperChampDatum.championId)].alias}.png`
     let championPoints = summonerSuperChampDatum.championPoints
     let champLevel = summonerSuperChampDatum.championLevel
-    superChampList.push([champImgUrl,champLevel,championPoints])
+    let championId = summonerSuperChampDatum.championId
+    superChampList.push([champImgUrl,champLevel,championPoints,championId])
   }
   return superChampList
 }
@@ -58,11 +60,74 @@ const queryCurrentRankPoint = async (credentials) => {
   let rankSr = rankPoint.find((i) => i.queueType=="RANKED_FLEX_SR")
   let rankTft = rankPoint.find((i) => i.queueType=="RANKED_TFT")
 
-  let RANKED_SOLO =  rankSolo.tier =="NONE" ? '未定级': `${englishToChinese(rankSolo.tier)}${rankSolo.division} ${rankSolo.leaguePoints}`
-  let RANKED_FLEX_SR =  rankSr.tier =="NONE" ? '未定级':`${englishToChinese(rankSr.tier)}${rankSr.division} ${rankSr.leaguePoints}`
-  let RANKED_TFT =  rankTft.tier =="NONE" ? '未定级':`${englishToChinese(rankTft.tier)}${rankTft.division} ${rankTft.leaguePoints}`
+  let RANKED_SOLO =  rankSolo.tier =="NONE" ? '未定级': `${englishToChinese(rankSolo.tier)}${dealDivsion(rankSolo.division)} ${rankSolo.leaguePoints}`
+  let RANKED_FLEX_SR =  rankSr.tier =="NONE" ? '未定级':`${englishToChinese(rankSr.tier)}${dealDivsion(rankSr.division)} ${rankSr.leaguePoints}`
+  let RANKED_TFT =  rankTft.tier =="NONE" ? '未定级':`${englishToChinese(rankTft.tier)}${dealDivsion(rankTft.division)} ${rankTft.leaguePoints}`
 
   return [RANKED_SOLO,RANKED_FLEX_SR,RANKED_TFT]
+}
+// 处理段位数据
+const dealDivsion = (divsion) => {
+  return divsion === 'NA'?'':divsion
+}
+// 获取永痕星碑数据
+const queryStatstones = async (credentials,puuid) => {
+  const session = await createHttpSession(credentials)
+  const statstones = (await createHttp2Request({
+    method:"GET",
+    url:`/lol-statstones/v1/profile-summary/${puuid}`
+  }, session, credentials)).json()
+  session.close()
+  let statstonesList = []
+  for (const statstonesElement of statstones) {
+    const imgUrl = (statstonesElement.imageUrl).split('LCU/')[1]
+    statstonesList.push({
+      championId:`${champDict[String(statstonesElement.championId)].title}`,
+      name:statstonesElement.name,
+      imgUrl,
+      value:statstonesElement.value
+    })
+  }
+  return statstonesList
+}
+
+// 查看指定英雄的永恒星碑
+export const queryCurrentChampStatstones = async (credentials,champId) => {
+  try {
+    const session = await createHttpSession(credentials)
+    const champSta = (await createHttp2Request({
+      method:"GET",
+      url:`/lol-statstones/v2/player-statstones-self/${champId}`
+    },session,credentials)).json()
+    session.close()
+
+    let champStatstonesList = []
+    for (const champStaElement of champSta) {
+      let name = champStaElement.name
+      let simpleStatstonesList = dealChampStatstones(champStaElement.statstones)
+      champStatstonesList.push({name,simpleStatstonesList})
+    }
+    if (champStatstonesList[0].simpleStatstonesList[0].value ===''){
+      return `${champDict[champId].label} 暂无永恒星碑`
+    }
+    return champStatstonesList
+  }catch (e) {
+    console.log(e)
+    return null
+  }
+
+}
+// 处理英雄永恒星碑数据
+const dealChampStatstones = (statstones) => {
+  let simpleStatstonesList = []
+  for (const statstone of statstones) {
+    let name = statstone.name
+    let value = statstone.formattedValue
+    let imgUrl = (statstone.imageUrl).split('LCU/')[1]
+    let milestoneLevel = statstone.formattedMilestoneLevel
+    simpleStatstonesList.push({name,value,imgUrl,milestoneLevel})
+  }
+  return simpleStatstonesList
 }
 
 // 返回最终需要的数据
@@ -76,7 +141,8 @@ export const returnRankData = async (credentials) => {
 
   const honorData = await querySummonerHonorLevel(credentials)
   const chapmLevel = dealSuperChapm(summonerSuperChampData,0,15)
-  return {rank,honorData,chapmLevel}
+  const statstones = await queryStatstones(credentials,summonerInfo.puuid)
+  return {rank,honorData,chapmLevel,statstones}
 }
 
 
@@ -95,7 +161,7 @@ const englishToChinese = (tier) => {
     case 'CHALLENGER' :return '王者';
     case 'GRANDMASTER' :return '宗师';
     case 'MASTER' :return '大师';
-    case 'DIAMOND' :return '砖石';
+    case 'DIAMOND' :return '钻石';
     case 'PLATINUM' :return '铂金';
     case 'GOLD' :return '黄金';
     case 'SILVER' :return '白银';

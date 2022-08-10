@@ -191,7 +191,7 @@ const queryMatchIpc = async () => {
   })
 // 最小化游戏历史窗口
   ipcMain.on('query-match-min', () => {
-    queryMatchWindow.minimi1ze()
+    queryMatchWindow.minimize()
   })
 // 关闭游戏历史窗口
   ipcMain.on('query-match-close', () => {

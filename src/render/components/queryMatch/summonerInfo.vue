@@ -1,39 +1,46 @@
 <template>
   <div class="mainCard">
     <n-card class="boxShadow" size="small">
-        <n-space justify="space-between">
-          <n-avatar
-            round
-            :bordered="false"
-            :size="60"
-            src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/5430.png"
-            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-            style="display:block"
-          />
+      <n-space justify="space-between">
+        <n-avatar
+          round
+          :bordered="false"
+          :size="60"
+          :src="summoner.summonerInfo.imgUrl"
+          fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+          style="display:block"
+        />
         <n-space vertical :size="[2,10]">
           <n-tag type="success" style="width: 150px;justify-content: center"
                  :bordered="false" :round="true">
-            多元函数积分学
+            {{summoner.summonerInfo.name}}
           </n-tag>
-          <n-tag type="warning" size="small"  style="width: 150px"
-                 :bordered="false" :round="true">
-            <n-space style="align-items: center">
-              <n-progress
-                type="line"
-                :show-indicator="false"
-                :percentage="60"
-                status="warning"
-                processing
-                style="width: 90px;"
-                :height="10"
-              />
-              <span style="padding-top: 2px">60%</span>
-            </n-space>
-          </n-tag>
+          <n-popover
+            trigger="hover" :show-arrow="false" placement="bottom">
+            <template #trigger>
+              <n-tag type="warning" size="small"
+                     style="width: 150px;justify-content: center;padding-top: 2px"
+                     :bordered="false" :round="true">
+                <n-space style="align-items: center">
+
+                  <n-progress
+                    type="line"
+                    :show-indicator="false"
+                    :percentage="parseInt((summoner.summonerInfo.xpSL/summoner.summonerInfo.xpNL)*100)"
+                    status="warning"
+                    processing
+                    style="width: 85px;"
+                    :height="10"
+                  />
+                  <span style="padding-top: 2px">{{parseInt((summoner.summonerInfo.xpSL/summoner.summonerInfo.xpNL)*100)}} %</span>
+                </n-space>
+              </n-tag>
+            </template>
+            <span>当前等级 {{summoner.summonerInfo.lv}}</span>
+          </n-popover>
         </n-space>
       </n-space>
-
-        <n-list style="margin-top: 20px">
+        <n-list style="margin-top: 8px">
           <n-list-item >
             <n-space justify="space-between">
               <n-tag type="success" :bordered="false" class="tagWidth"
@@ -42,7 +49,7 @@
               </n-tag>
 
               <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
-                黄金IV 92
+                {{summoner.rankData[0]}}
               </n-tag>
             </n-space>
           </n-list-item >
@@ -50,11 +57,11 @@
             <n-space justify="space-between">
               <n-tag type="success" :bordered="false" class="tagWidth"
                      :round="false" size="large">
-                单双排位
+                灵活排位
               </n-tag>
 
               <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
-                黄金IV 92
+                {{summoner.rankData[1]}}
               </n-tag>
             </n-space>
           </n-list-item>
@@ -62,35 +69,44 @@
             <n-space justify="space-between">
               <n-tag type="success" :bordered="false" class="tagWidth"
                      :round="false" size="large">
-                单双排位
+                云顶排位
               </n-tag>
 
               <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
-                黄金IV 92
-              </n-tag>
-            </n-space>
-          </n-list-item>
-          <n-list-item>
-            <n-space justify="space-between">
-              <n-tag type="success" :bordered="false" class="tagWidth"
-                     :round="false" size="large">
-                荣誉等级 0
-              </n-tag>
-
-              <n-tag type="warning" :bordered="false" class="tagWidth" :round="false" size="large">
-                里程点数 0
+                {{summoner.rankData[2]}}
               </n-tag>
             </n-space>
           </n-list-item>
         </n-list>
     </n-card>
-    <n-card class="boxShadow secendCard" size="small">
-        <n-space>
-          <n-input style="width: 153px;" placeholder="仅支持当前大区玩家"/>
-          <n-button type="success">搜索</n-button>
-        </n-space>
-    </n-card>
+    <n-card class="boxShadow" size="small" style="margin-top: 14.3px">
+        <!--        召唤师绝活英雄展示-->
+      <n-scrollbar style="max-height: 263px">
+        <n-space vertical style="" :size="[2,16]" >
+          <n-space v-if="summoner.superChampList.length !==0"
+            v-for="superChamp in summoner.superChampList"  class="alignCenter">
+            <n-avatar
+              :bordered="false"
+              :size="40"
+              :src="superChamp.champImgUrl"
+              fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+              style="display: block"
+            />
+            <n-space >
+              <n-tag size="small"  style="width:100px;"
+                     type="success" :bordered="false" >
+                熟练度: {{ superChamp.championPoints }}
+              </n-tag>
+              <n-tag size="small" type="warning" :bordered="false" style="">
+                Lv: {{ superChamp.champLevel }}
+              </n-tag>
+            </n-space>
+          </n-space>
+          <n-space  v-else justify="center"><n-tag type="error" :bordered="false">当前召唤师英雄数据为空</n-tag></n-space>
 
+        </n-space>
+      </n-scrollbar>
+    </n-card>
   </div>
 </template>
 
@@ -104,6 +120,21 @@ import {
   NCard, NAvatar, NSpace, NTag, NButton, NPopover,NInput,
   NList, NListItem, NScrollbar, useMessage,NProgress
 } from 'naive-ui'
+import {onMounted, ref} from "vue";
+import {returnSummonerData} from "@/utils/render/queryMatchLcu";
+import {appConfig} from "@/utils/main/config";
+import {queryStore} from '../../store'
+import {storeToRefs} from 'pinia'
+
+const searchName = ref(null)
+const message = useMessage()
+const store = queryStore()
+const {querySummonerId,summoner} = storeToRefs(store)
+
+onMounted(async () => {
+  summoner.value = await returnSummonerData(appConfig.get('credentials'),'')
+  querySummonerId.value = summoner.value.summonerInfo.summonerId
+})
 
 </script>
 
@@ -113,10 +144,13 @@ import {
   width: 25vw;
 }
 .tagWidth {
-  width: 96px;
+  width: 85px;
   justify-content: center;
 }
 .secendCard {
   margin-top: 40px;
+}
+.alignCenter {
+  align-items: center
 }
 </style>

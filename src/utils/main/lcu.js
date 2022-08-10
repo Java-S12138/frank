@@ -2,8 +2,6 @@ import {createHttp1Request, createHttp2Request, createHttpSession} from '../leag
 import {appConfig} from './config'
 import {getGameScore} from "@/utils/main/gameScore";
 import {champDict} from "@/utils/render/lolDataList";
-
-
 //选择或者禁用英雄共用函数
 const champSelectPatchAction = async (credentials, actionID, champId, type) => {
   let localBody = {
@@ -79,8 +77,6 @@ export const champSelectSession = async (credentials,idSetInterval) => {
     }
   }
 }
-
-
 // 监听选择的英雄
 export const listenChampSelect = async (ws, assistWindow, credentials) => {
   ws.subscribe('/lol-champ-select/v1/session', async (data) => {
@@ -100,7 +96,6 @@ export const listenChampSelect = async (ws, assistWindow, credentials) => {
     }
   })
 }
-
 // 大乱斗选择英雄
 const pickChampAram = async (assistWindow,currentChampId) => {
   if (currentChampId !=0){
@@ -108,7 +103,6 @@ const pickChampAram = async (assistWindow,currentChampId) => {
       champId:currentChampId,mode:'aram'})
   }
 }
-
 // 排位或者匹配选择英雄
 const pickChampRank = async (assistWindow,currentChampId) => {
   if (currentChampId != 0) {
@@ -117,8 +111,6 @@ const pickChampRank = async (assistWindow,currentChampId) => {
     })
   }
 }
-
-
 // 查询当前游戏模式
 const queryCurrentGameMode = async (credentials) => {
 // 获取当前游戏模式信息
@@ -132,7 +124,6 @@ const queryCurrentGameMode = async (credentials) => {
     return null
   }
 }
-
 // 应用符文页面
 export const applyRunePage = async (credentials, data) => {
   try {
@@ -278,7 +269,6 @@ export const getSummonerNickName = async (credentials,enemyIdList) => {
   }
   return allSummonerNickName
 }
-
 // 获取当前排位模式的段位分数
 const queryRankPoint = async (credentials,puuid) => {
   const currentMatchMode = await queryCurrentGameMode(credentials)
@@ -289,7 +279,6 @@ const queryRankPoint = async (credentials,puuid) => {
   // 查询单双排的分数
   return rankData
 }
-
 // 查询不同排位模式的段位分数
 const accordingToRankModeQueryRankPoint = async (credentials,mode,puuid) => {
   const matchType = mode === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR'
@@ -304,8 +293,6 @@ const accordingToRankModeQueryRankPoint = async (credentials,mode,puuid) => {
 
   return `${tier}${division}  ${leaguePoints}`
 }
-
-
 // 发送消息到当前聊天界面
 export const sendMessageToChat = async (credentials,message) => {
   const chatId = await getChatSelectChampId(credentials)
@@ -513,7 +500,6 @@ const getDetailsTitle = (gameInfo) => {
 const goldToStr = (gold) => {
   return (gold/1000).toFixed(1) + 'K'
 }
-
 // 英文段位昵称转中文
 const englishToChinese = (tier) => {
   switch (tier) {
@@ -521,7 +507,7 @@ const englishToChinese = (tier) => {
     case 'CHALLENGER' :return '王者';
     case 'GRANDMASTER' :return '宗师';
     case 'MASTER' :return '大师';
-    case 'DIAMOND' :return '砖石';
+    case 'DIAMOND' :return '钻石';
     case 'PLATINUM' :return '铂金';
     case 'GOLD' :return '黄金';
     case 'SILVER' :return '白银';
