@@ -42,8 +42,9 @@ export const queryStore = defineStore('query',{
         honorLevel:[],
         superChampList:[]
       },
-     begIndex : 0,
-     endIndex : 8
+      begIndex : 0,
+      endIndex : 8,
+      currentQueryGameId:null,
     }
 }
 })

@@ -7,7 +7,7 @@ export const createQueryMatchWindow = async (userHeader) => {
     show: false,
     frame: false,
     resizable: true,
-    width: 1024,
+    width: 1166,
     height: 650,
     center: true,
     webPreferences: {

@@ -7,7 +7,7 @@
           <n-list-item v-for="match in matchData.slice(0,matchData.length-1)" >
             <n-space vertical style="margin-top: 10px" >
               <!--        头像 技能 模式-->
-              <n-space>
+              <n-space  @click="toGameDetailsPage(match.gameId)">
                 <n-avatar
                   round
                   :bordered="false"
@@ -15,9 +15,9 @@
                   :src="match.champImgUrl"
                   fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                   style="display: block"
-                  @click="toGameDetailsPage(match.gameId)"
+
                 />
-                <n-space vertical :size="[10,-3.4]">
+                <n-space vertical :size="[10,-2.4]">
                   <n-space :size="[5]">
                     <n-tag type="success" :bordered="false" v-if="match.isWin == '胜利'">{{match.isWin}}</n-tag>
                     <n-tag type="error" :bordered="false" v-else>{{match.isWin}}</n-tag>
@@ -48,7 +48,7 @@
                   </n-space>
                   <n-space :size="[9]">
                     <span style="color: #2080f0">{{ match.lane }}</span>
-                    <n-icon size="19" color="#18a058" v-if="(match.kills+match.assists)/match.deaths >=5" >
+                    <n-icon size="19" color="#18a058" v-if="((match.kills+match.assists)/match.deaths)*3 >=10" >
                       <ThumbUp/>
                     </n-icon>
                     <n-icon size="19" color="#ff6666" v-else >
@@ -70,7 +70,7 @@
         </n-list>
 
 <!--        召唤师绝活英雄展示-->
-        <n-space vertical style="margin-top: 42px;margin-left: 20px" :size="[2,44.5]">
+        <n-space vertical style="margin-top: 40px;margin-left: 20px" :size="[2,44.5]">
           <n-space v-for="superChamp in matchData[matchData.length-1]">
             <n-avatar
               round
@@ -80,11 +80,11 @@
               fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
               style="display: block"
             />
-            <n-space vertical :size="[2,4]">
-              <n-tag size="small" round type="warning" :bordered="false">
+            <n-space vertical :size="[2,5]">
+              <n-tag size="small" round  type="warning" :bordered="false">
                 熟练度: {{ superChamp.championPoints }}
               </n-tag>
-              <n-tag size="small" round type="default" :bordered="false" style="">
+              <n-tag size="small" round  type="default" :bordered="false" style="">
                 <p style="color: #9AA4AF"> 英雄等级: {{ superChamp.champLevel }}</p>
               </n-tag>
             </n-space>
@@ -94,6 +94,7 @@
 
       <div class="suspension">
         <n-space>
+          <n-tag :bordered="false">点击英雄头像查看完整战绩</n-tag>
           <n-button
             text
             @click="handleMin" color="black">
@@ -181,7 +182,7 @@ export default {
 }
 .suspension {
   position: absolute;
-  top: 20px;
-  right: 25px;
+  bottom: 5px;
+  right: 60px;
 }
 </style>

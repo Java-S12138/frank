@@ -68,7 +68,8 @@
           </n-space>
 
           <n-space style="margin-top: 12px;width: 200px" v-else-if="summonerInfo !=null && enemySummonerInfo.length === 0">
-            <n-tag :bordered="false" size="small">进入游戏后可查看敌方信息</n-tag>
+            <n-tag :bordered="false" size="small" class="tipTag">进入游戏后可查看敌方信息</n-tag>
+            <n-tag :bordered="false" size="small" class="tipTag">点击召唤师的头像查看战绩</n-tag>
           </n-space>
         </n-space>
         <n-space v-else style="align-items: center">
@@ -160,5 +161,9 @@ export default {
   width: 250px;
   height: 556px
 }
-
+.tipTag {
+  width: 200px;
+  justify-content: center;
+  color: #9aa4af;
+}
 </style>

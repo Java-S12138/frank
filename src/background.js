@@ -187,7 +187,7 @@ const queryMatchIpc = async () => {
   })
 // 移动游戏历史窗口
   ipcMain.on('move-query-match-window', (event, pos) => {
-    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 650 })
+    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1166, height: 650 })
   })
 // 最小化游戏历史窗口
   ipcMain.on('query-match-min', () => {

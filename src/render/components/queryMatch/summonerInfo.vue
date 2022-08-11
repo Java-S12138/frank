@@ -117,19 +117,18 @@ export default {
 </script>
 <script setup>
 import {
-  NCard, NAvatar, NSpace, NTag, NButton, NPopover,NInput,
+  NCard, NAvatar, NSpace, NTag, NPopover,
   NList, NListItem, NScrollbar, useMessage,NProgress
 } from 'naive-ui'
-import {onMounted, ref} from "vue";
+import {onMounted} from "vue";
 import {returnSummonerData} from "@/utils/render/queryMatchLcu";
 import {appConfig} from "@/utils/main/config";
 import {queryStore} from '../../store'
 import {storeToRefs} from 'pinia'
 
-const searchName = ref(null)
 const message = useMessage()
 const store = queryStore()
-const {querySummonerId,summoner} = storeToRefs(store)
+const {querySummonerId,summoner,} = storeToRefs(store)
 
 onMounted(async () => {
   summoner.value = await returnSummonerData(appConfig.get('credentials'),'')
@@ -141,7 +140,7 @@ onMounted(async () => {
 <style scoped>
 @import url("../../assets/css/queryMatchCommon.css");
 .mainCard {
-  width: 25vw;
+  width: 256px;
 }
 .tagWidth {
   width: 85px;

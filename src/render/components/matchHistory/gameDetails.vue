@@ -5,13 +5,13 @@
         <n-grid :cols="7">
           <n-gi>
             <n-space vertical class="alignCent">
-              <span class="spanTitle">日期</span>
+              <span class="spanTitle">对局日期</span>
               <span style="font-size: 15px">{{titleList[0]}}</span>
             </n-space>
           </n-gi>
           <n-gi>
             <n-space vertical class="alignCent">
-              <span class="spanTitle">类型</span>
+              <span class="spanTitle">对局类型</span>
               <span style="font-size: 15px">{{titleList[2]}}</span>
             </n-space>
           </n-gi>
@@ -25,14 +25,14 @@
           <n-gi>
             <n-space vertical class="alignCent">
               <span class="spanTitle">数据显示</span>
-              <n-tag :bordered="false" type="success"
+              <n-tag :bordered="false" type="success" style="cursor:pointer"
                      @click="changeShowWay">{{otherDataText}}</n-tag>
             </n-space>
           </n-gi>
 
           <n-gi>
             <n-space vertical class="alignCent">
-              <span class="spanTitle">人头</span>
+              <span class="spanTitle">双方比分</span>
               <span style="font-size: 15px;display: flex">
                 <p style="color: #d03050">{{titleList[4]}}</p>  &nbsp;/&nbsp;
                 <p style="color: #4098fc">{{titleList[5]}}</p>
@@ -41,16 +41,16 @@
           </n-gi>
           <n-gi>
             <n-space vertical class="alignCent">
-              <span class="spanTitle">时长</span>
+              <span class="spanTitle">对局时长</span>
               <span style="font-size: 15px">{{titleList[3]}}分钟</span>
             </n-space>
           </n-gi>
           <n-gi>
             <n-space vertical class="alignCent">
-              <span class="spanTitle">金钱</span>
+              <span class="spanTitle">经济差距</span>
               <span style="font-size: 15px;display: flex">
-                <p style="color: #d03050">{{titleList[6]}}</p>  &nbsp;/&nbsp;
-                <p style="color: #4098fc">{{titleList[7]}}</p>
+                <p v-if="titleList[6]>titleList[7]" style="color: #d03050">{{ (titleList[6]-titleList[7] ).toFixed(1)}} K</p>
+                <p v-else style="color: #4098fc">{{ (titleList[7]-titleList[6] ).toFixed(1)}} K</p>
               </span>
             </n-space>
           </n-gi>
@@ -101,8 +101,14 @@
                     <img class="itemClassSecond" :src="singleData[0].spell2Id" alt="">
                   </n-space>
                   <!--                召唤师昵称-->
-                  <p style="color: #9AA4AF;font-size: 13px;width: 110px" v-if="singleData[0].name!=currentSummonerName">{{ singleData[0].name }}</p>
-                  <p style="color: #18a058;font-size: 13px;width: 110px" v-else>{{ singleData[0].name }}</p>
+                  <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;"
+                              v-if="singleData[0].name!=currentSummonerName">
+                    {{ singleData[0].name }}
+                  </n-ellipsis>
+                  <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;"
+                              v-else>
+                    {{ singleData[0].name }}
+                  </n-ellipsis>
                   <div style="color: #666F75;font-size: 13px">
                     {{singleData[0].kills}}/{{singleData[0].deaths}}/{{singleData[0].assists }}
                   </div>
@@ -167,8 +173,14 @@
 
                     </n-space>
                     <!--                召唤师昵称-->
-                    <p style="color: #9AA4AF;font-size: 13px;width: 110px" v-if="singleData[1].name!=currentSummonerName">{{ singleData[1].name }}</p>
-                    <p style="color: #18a058;font-size: 13px;width: 110px" v-else>{{ singleData[1].name }}</p>
+                    <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;"
+                                v-if="singleData[1].name!=currentSummonerName">
+                      {{ singleData[1].name }}
+                    </n-ellipsis>
+                    <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;"
+                                v-else>
+                      {{ singleData[1].name }}
+                    </n-ellipsis>
                     <div style="color: #666F75;font-size: 13px">
                       {{singleData[1].kills}}/{{singleData[1].deaths}}/{{singleData[1].assists }}
                     </div>
@@ -178,9 +190,11 @@
 
               <n-popover trigger="hover" :show-arrow="false">
                 <template #trigger>
-                  <p class="scale-in-hor-left"  :key="otherDataCount"
-                     :style="'width:'+otherDataPercent[index][1][otherDataKey]"  style="height: 7px;border-radius: 2px;
-            background-color:#4098fc;"></p>
+                  <div style="width: 98%;">
+                    <p class="scale-in-hor-left" :key="otherDataCount"
+                       :style="'width:'+otherDataPercent[index][1][otherDataKey]"
+                       style="height: 7px;border-radius: 2px;background-color:#4098fc;"></p>
+                  </div>
                 </template>
                 <span>{{otherDataText}}: {{otherData[index][1][otherDataKey]}}</span>
               </n-popover>
@@ -228,20 +242,20 @@
 <script>
 import {
   NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,
-  NPopover,NList, NListItem,NScrollbar,NGrid,NGi,NBadge
+  NPopover,NList, NListItem,NScrollbar,NGrid,NGi,NBadge,NEllipsis
 } from 'naive-ui'
 import {ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
 import {onMounted,ref} from "vue";
 import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {appConfig} from "@/utils/main/config";
-import {queryGameDetailsData} from "@/utils/main/lcu";
+import {queryGameDetailsData} from "@/utils/main/queryDetailedGame";
 import {ipcRenderer} from "electron";
 
 export default {
   name: "gameDetails",
   components:{
-    NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,
+    NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,NEllipsis,
     NPopover,NList, NListItem,NScrollbar,NGrid,NGi,NBadge,ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon
   },
   setup(props,{emit}){
@@ -395,7 +409,7 @@ export default {
 .itemClassSecond{
   width: 15px;
   height: 15px;
-  border-radius: 50px;
+  border-radius: 3px;
 }
 .suspension {
   position: absolute;
@@ -407,22 +421,6 @@ export default {
   animation: scale-in-hor-left 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
-@-webkit-keyframes scale-in-hor-left {
-  0% {
-    -webkit-transform: scaleX(0);
-    transform: scaleX(0);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-    opacity: 1;
-  }
-  100% {
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-    opacity: 1;
-  }
-}
 @keyframes scale-in-hor-left {
   0% {
     -webkit-transform: scaleX(0);

@@ -121,7 +121,6 @@ export const queryMatchHistory = async (credentials,summonerId,begIndex,endIdex)
 export const dealMatchHistory = async (credentials,summonerId,begIndex,endIdex) => {
   const matchList = await queryMatchHistory(credentials,summonerId,begIndex,endIdex)
   let simpleMatchList = []
-  const gameCount = matchList.games.gameCount
   for (const matchListElement of matchList['games']['games'].reverse()) {
     // 本局游戏ID
     let gameId = matchListElement.gameId
@@ -141,5 +140,5 @@ export const dealMatchHistory = async (credentials,summonerId,begIndex,endIdex) 
     let queueId = queryGameType(matchListElement.queueId)
     simpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId})
   }
-  return {simpleMatchList,gameCount}
+  return simpleMatchList
 }

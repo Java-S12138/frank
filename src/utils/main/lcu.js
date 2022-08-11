@@ -422,7 +422,6 @@ export const queryGameDetailsData = async (gameId,credentials)  => {
     method: 'GET',
     url: `/lol-match-history/v1/games/${gameId}`
   }, credentials)).json()
-
   let detailsList =  getParticipantsDetails(response,response.participants, response.participantIdentities)
   return detailsList
 }
@@ -435,24 +434,24 @@ const getParticipantsDetails = (res,participants, participantIdentities) => {
   let team200Kills = 0
   let team100GoldEarned = 0
   let team200GoldEarned = 0
-
   for (let i = 0; i < 5; i++) {
     team100Kills += participants[i].stats.kills
     team200Kills += participants[i + 5].stats.kills
     team100GoldEarned += participants[i].stats.goldEarned
     team200GoldEarned += participants[i+5].stats.goldEarned
 
-    detalisList.push([analyticalData(participants[i],nameList[i]),
-      analyticalData(participants[i+5],nameList[i+5])])
+    detalisList.push([analyticalData(participants[i],nameList[i].name,nameList[i].summonerId),
+      analyticalData(participants[i+5],nameList[i+5].name,nameList[i+5].summonerId)])
   }
   titleList.push(team100Kills,team200Kills,goldToStr(team100GoldEarned),goldToStr(team200GoldEarned))
   detalisList.push(titleList)
   return detalisList
 }
 // 解析对局数据
-const analyticalData  = (participant,nameList) => {
+const analyticalData  = (participant,nameList,accountIdList) => {
   return{
     name: nameList,
+    accountId:accountIdList,
     teamType: participant.teamId,
     champLevel:participant.stats.champLevel,
     champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[participant.championId].alias}.png`,
@@ -479,7 +478,9 @@ const analyticalData  = (participant,nameList) => {
 const getparticipantIdAndName = (participantIdentities) => {
   let dataList = []
   for (const participantIdentity of participantIdentities) {
-    dataList.push(participantIdentity.player.summonerName)
+    dataList.push({
+      name: participantIdentity.player.summonerName,
+      summonerId:participantIdentity.player.accountId})
   }
   return dataList
 }
@@ -498,7 +499,7 @@ const getDetailsTitle = (gameInfo) => {
   return [dateStr, timeStr, lane, gameDuration]
 }
 const goldToStr = (gold) => {
-  return (gold/1000).toFixed(1) + 'K'
+  return Number((gold/1000).toFixed(1))
 }
 // 英文段位昵称转中文
 const englishToChinese = (tier) => {
