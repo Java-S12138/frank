@@ -31,9 +31,9 @@
       </n-space>
     </n-space>
     <n-space style="margin-top: -8px">
-      <n-space style="margin-right: 88px">
-      <n-input style="width: 153px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
-      <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
+      <n-space style="margin-right: 64px">
+        <n-input style="width: 153px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
+        <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
       </n-space>
       <n-pagination :on-update-page="changePage(page)"
         v-model:page="page" :page-count="20" :page-slot="7" />
@@ -54,8 +54,7 @@ import {queryStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 
 const store = queryStore()
-const {querySummonerId,summoner,begIndex,endIndex} = storeToRefs(store)
-const page = ref(1)
+const {querySummonerId,summoner,begIndex,endIndex,page} = storeToRefs(store)
 const message = useMessage()
 const searchName = ref(null)
 let isSearch = false

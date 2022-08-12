@@ -62,7 +62,8 @@ export default {
 
 <script setup>
 import {ThumbUp,ThumbDown} from '@vicons/tabler'
-import {NCard,NLayout,NLayoutSider,NLayoutContent, NAvatar,NIcon, NSpace, NTag, NList, NListItem} from "naive-ui";
+import {NCard,NLayout,NLayoutSider,NLayoutContent, NAvatar,NIcon, NSpace, NTag,
+  NList, NListItem,useMessage} from "naive-ui";
 import {queryStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia.esm-browser";
 import {ref, watch} from "vue";
@@ -76,9 +77,14 @@ const matchList = ref([])
 const credentials = appConfig.get('credentials')
 const currentGameId = ref(0)
 const currentMatchIndex = ref(0)
+const message = useMessage()
 
 watch(querySummonerId,async () => {
   const matchDict = await dealMatchHistory(credentials,querySummonerId.value,0,8)
+  if (matchDict === null){
+    message.warning('当前页数战绩为空')
+    return
+  }
   currentGameId.value = matchDict[0].gameId
   matchList.value =matchDict
   currentMatchIndex.value = 0
@@ -87,6 +93,10 @@ watch(querySummonerId,async () => {
 
 watch(begIndex,async () => {
   const matchDict = await dealMatchHistory(credentials,querySummonerId.value,begIndex.value,endIndex.value)
+  if (matchDict === null){
+    message.warning('当前页数战绩为空')
+    return
+  }
   currentGameId.value = matchDict[0].gameId
   matchList.value =matchDict
   currentMatchIndex.value = 0

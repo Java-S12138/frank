@@ -120,6 +120,7 @@ export const queryMatchHistory = async (credentials,summonerId,begIndex,endIdex)
 // 处理战绩数据
 export const dealMatchHistory = async (credentials,summonerId,begIndex,endIdex) => {
   const matchList = await queryMatchHistory(credentials,summonerId,begIndex,endIdex)
+  if (matchList['games']['games'].length ===0){return null}
   let simpleMatchList = []
   for (const matchListElement of matchList['games']['games'].reverse()) {
     // 本局游戏ID

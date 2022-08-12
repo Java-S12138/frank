@@ -188,8 +188,10 @@ const toHomePage = () => {
 
 // 恢复默认设置
 const toReset = async () => {
-  message.success('设置已恢复默认, 建议重启Frank')
+  const blacklist = appConfig.get('blacklist')
   appConfig.clear()
+  appConfig.set('blacklist',blacklist)
+  message.success('设置已恢复默认, 建议重启Frank')
 }
 
 </script>

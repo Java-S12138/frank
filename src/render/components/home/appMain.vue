@@ -180,9 +180,9 @@
     </n-card>
 
     <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-              :height="375" :placement="'bottom'">
+              :height="380" :placement="'bottom'">
       <n-drawer-content>
-        <n-space class="alignCenter" justify="space-between" style="margin-bottom: 24px">
+        <n-space class="alignCenter" justify="space-between" style="margin-top: 10px;margin-bottom: 24px">
           <n-avatar
             round
             style="margin-right: 0px"

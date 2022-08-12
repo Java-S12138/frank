@@ -82,7 +82,7 @@ const queryStatstones = async (credentials,puuid) => {
   for (const statstonesElement of statstones) {
     const imgUrl = (statstonesElement.imageUrl).split('LCU/')[1]
     statstonesList.push({
-      championId:`${champDict[String(statstonesElement.championId)].title}`,
+      championId:`${champDict[String(statstonesElement.championId)].label}`,
       name:statstonesElement.name,
       imgUrl,
       value:statstonesElement.value
@@ -107,7 +107,7 @@ export const queryCurrentChampStatstones = async (credentials,champId) => {
       let simpleStatstonesList = dealChampStatstones(champStaElement.statstones)
       champStatstonesList.push({name,simpleStatstonesList})
     }
-    if (champStatstonesList[0].simpleStatstonesList[0].value ===''){
+    if (champStatstonesList[0].simpleStatstonesList[0].value ==='' &&champStatstonesList[1].simpleStatstonesList[1].value ==='' ){
       return `${champDict[champId].label} 暂无永恒星碑`
     }
     return champStatstonesList

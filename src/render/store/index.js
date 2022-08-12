@@ -45,6 +45,7 @@ export const queryStore = defineStore('query',{
       begIndex : 0,
       endIndex : 8,
       currentQueryGameId:null,
+      page:1
     }
 }
 })
