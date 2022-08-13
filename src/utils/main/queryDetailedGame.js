@@ -53,10 +53,31 @@ const analyticalData  = (participant,nameList,accountIdList) => {
     kills:participant.stats.kills,
     deaths:participant.stats.deaths,
     assists:participant.stats.assists,
+    //物理伤害
+    physicalDamageDealtToChampions:participant.stats.physicalDamageDealtToChampions,
+    // 魔法伤害
+    magicDamageDealtToChampions:participant.stats.magicDamageDealtToChampions,
+    // 真实伤害
+    trueDamageDealtToChampions:participant.stats.trueDamageDealtToChampions,
+    // 伤害总和
     totalDamageDealtToChampions:participant.stats.totalDamageDealtToChampions,
+    // 承受伤害
     totalDamageTaken:participant.stats.totalDamageTaken,
+    // 击杀野怪
+    neutralMinionsKilled:participant.stats.neutralMinionsKilled,
+    // 击杀小兵
+    totalMinionsKill:participant.stats.totalMinionsKilled,
+    // 获得金钱
     goldEarned:participant.stats.goldEarned,
+    // 花费金钱
+    goldSpent:participant.stats.goldSpent,
+    // 视野得分
     visionScore:participant.stats.visionScore,
+    // 防止视野
+    wardsPlaced:participant.stats.wardsPlaced,
+    // 符问数据
+    runesList:[participant.stats.perk0,participant.stats.perk1,participant.stats.perk2,
+      participant.stats.perk3,participant.stats.perk4,participant.stats.perk5],
     totalMinionsKilled:participant.stats.totalMinionsKilled+participant.stats.neutralMinionsKilled
   }
 }

@@ -1,6 +1,7 @@
 // 查询本地召唤师信息
 import {createHttp1Request, createHttp2Request, createHttpSession} from "@/utils/league-connect";
 import {champDict} from "@/utils/render/lolDataList";
+import {run} from "@babel/core/lib/transformation";
 
 const queryCurrentSummonerId = async (credentials) => {
   const summonerInfo = (await createHttp1Request({
@@ -92,6 +93,11 @@ export const returnSummonerData = async (credentials,summonerId) => {
   const superChampList = await querySummonerSuperChampData(credentials,summonerId)
   return {summonerInfo,rankData,superChampList}
 }
+export const returnRankData = async (credentials,summonerId) => {
+  const summonerInfo = await querySummonerInfo(credentials,summonerId)
+  const rankData = await queryCurrentRankPoint(credentials,summonerInfo.puuid)
+  return rankData
+}
 
 // matchDetailed Page ==================================================================== //
 
@@ -136,10 +142,15 @@ export const dealMatchHistory = async (credentials,summonerId,begIndex,endIdex) 
     // 助攻数目
     let assists = matchListElement.participants[0].stats.assists
     // 游戏时间
-    let matchTime = ((matchListElement.gameCreationDate).split('T')[0]).slice(5)
+    let matchTime = timestampToDate(matchListElement.gameCreation)
     // 游戏模式
     let queueId = queryGameType(matchListElement.queueId)
     simpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId})
   }
   return simpleMatchList
+}
+
+const timestampToDate = (timestamp)  => {
+  var date = new Date(timestamp)
+  return (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1)+'-'+ date.getDate()
 }

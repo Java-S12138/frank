@@ -1,4 +1,4 @@
-import {BrowserWindow} from "electron";
+import {BrowserWindow, ipcMain} from "electron";
 import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
 
 export const createMatchHistoryWindow = async (userHeader) => {
@@ -32,3 +32,4 @@ export const createMatchHistoryWindow = async (userHeader) => {
   }
   return matchHistoryWindow
 }
+

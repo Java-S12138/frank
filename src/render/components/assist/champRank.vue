@@ -42,7 +42,8 @@
 
             <n-popover :show-arrow="false" trigger="hover">
               <template #trigger>
-                <n-icon color="#9AA4AF" size="30" v-mouse-drag="handleChangePosition">
+                <n-icon color="#9AA4AF" style="margin-right: 5px"
+                        size="30" v-mouse-drag="handleChangePosition">
                   <Ballon/>
                 </n-icon>
               </template>
@@ -53,7 +54,8 @@
         </template>
         <n-scrollbar style="max-height: 448px">
           <n-list-item v-for="chapm in champSliceList">
-            <n-space justify="space-evenly">
+            <n-space justify="space-evenly"
+                     @click="getRestraintData(chapm.champId,lane,chapm.imgUrl,chapm.name,chapm.tLevel,chapm.win,chapm.ban)">
               <n-avatar
                 round
                 :bordered="false"
@@ -61,7 +63,7 @@
                 :src=chapm.imgUrl
                 fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                 style="display: block"
-                @click="getRestraintData(chapm.champId,lane,chapm.imgUrl,chapm.name,chapm.tLevel,chapm.win,chapm.ban)"
+
               />
               <n-space vertical>
                 <n-space style="margin-bottom: -12px" justify="space-between">
@@ -520,7 +522,7 @@ const handleChangePosition = (pos) => {
 
 .addMargin {
   margin-top: -1.5px;
-  margin-right: -4px;
+  margin-left: 8px;
 }
 
 .textColorSecend {

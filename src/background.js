@@ -14,7 +14,7 @@ import {
   listenIpc,
   makeTray,
   createMatchHistoryWindow,
-  createQueryMatchWindow
+  queryMatchIpc
 } from "../frankElectron";
 const Store = require("electron-store");Store.initRenderer()
 const path = require('path')
@@ -24,36 +24,28 @@ const iconPath = path.join(
   'app-icon.png',
 )
 const userHeader =userAgentList[Math.floor((Math.random()*userAgentList.length))]
-
 let credentials;let mainWindow;let assistWindow;let matchHistoryWindow;
 
 // -----------------------------main---------------------------- //
-app.whenReady().then(async () => {
-  mainWindow = await createMainWindow(userHeader)
-  assistWindow = await createAssistWindow(userHeader)
-  makeTray(iconPath,mainWindow,assistWindow)
-  await startClient()
-  listenIpc(mainWindow,assistWindow)
-  mathcHistoryIpc()
-  queryMatchIpc()
 
+const init = async () => {
+  mainWindow = await createMainWindow(userHeader) // 渲染主窗口
+  assistWindow = await createAssistWindow(userHeader) // 渲染助手窗口
+  makeTray(iconPath,mainWindow,assistWindow) //  渲染系统托盘
+  await startClient() // 启动英雄联盟客户端
+  listenIpc(mainWindow,assistWindow) // 监听主窗口和助手窗口的事件
+  queryMatchIpc(mainWindow,userHeader) // 战绩查询窗口
+  mathcHistoryIpc()  // 战绩历史窗口
+}
+
+app.whenReady().then(async () => {
+  await init()
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       mainWindow = await createMainWindow()
     }
   })
 })
-// QueryMatch
-// MatchHistory
-// Assist
-// Frank
-const closeWin = (window) => {
-  for (const currentWindow of BrowserWindow.getAllWindows()) {
-    if (currentWindow.title === window){
-      currentWindow.close()
-    }
-  }
-}
 
 const runLcu = async () => {
   const ws = await createWebSocketConnection(credentials)
@@ -152,6 +144,14 @@ const startClient = async () => {
   })
 }
 
+const closeWin = (window) => {
+  for (const currentWindow of BrowserWindow.getAllWindows()) {
+    if (currentWindow.title === window){
+      currentWindow.close()
+    }
+  }
+}
+
 const mathcHistoryIpc = async () => {
   // 展示战力分析窗口
   ipcMain.on('showCharts',async () => {
@@ -174,27 +174,3 @@ const mathcHistoryIpc = async () => {
   })
 }
 
-const queryMatchIpc = async () => {
-  let queryMatchWindow
-  // 展示查询战绩窗口
-  ipcMain.on('show-query-match',async () => {
-    queryMatchWindow = await createQueryMatchWindow(userHeader)
-    for (const argument of BrowserWindow.getAllWindows()) {
-      console.log(argument.title)
-    }
-    mainWindow.hide()
-
-  })
-// 移动游戏历史窗口
-  ipcMain.on('move-query-match-window', (event, pos) => {
-    queryMatchWindow.setBounds({ x: pos.x, y: pos.y, width: 1166, height: 650 })
-  })
-// 最小化游戏历史窗口
-  ipcMain.on('query-match-min', () => {
-    queryMatchWindow.minimize()
-  })
-// 关闭游戏历史窗口
-  ipcMain.on('query-match-close', () => {
-    closeWin('QueryMatch')
-  })
-}

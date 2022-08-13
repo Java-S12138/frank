@@ -79,11 +79,12 @@
           </n-list-item>
         </n-list>
     </n-card>
-    <n-card class="boxShadow" size="small" style="margin-top: 14.3px">
+    <n-card class="boxShadow" size="small" :content-style="'padding-right: 0px'"
+            style="margin-top: 14.3px">
         <!--        召唤师绝活英雄展示-->
       <n-scrollbar style="max-height: 263px">
         <n-space vertical style="" :size="[2,16]" >
-          <n-space v-if="summoner.superChampList.length !==0"
+          <n-space v-if="summoner.superChampList.length !==0" :size="[20.5]"
             v-for="superChamp in summoner.superChampList"  class="alignCenter">
             <n-avatar
               :bordered="false"
@@ -92,7 +93,7 @@
               fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
               style="display: block"
             />
-            <n-space >
+            <n-space :size="[20.5]" >
               <n-tag size="small"  style="width:100px;"
                      type="success" :bordered="false" >
                 熟练度: {{ superChamp.championPoints }}
@@ -100,6 +101,8 @@
               <n-tag size="small" type="warning" :bordered="false" style="">
                 Lv: {{ superChamp.champLevel }}
               </n-tag>
+
+
             </n-space>
           </n-space>
           <n-space  v-else justify="center"><n-tag type="error" :bordered="false">当前召唤师英雄数据为空</n-tag></n-space>

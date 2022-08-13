@@ -76,15 +76,15 @@
     </n-grid>
     <n-card class="boxShadow bottomTip" size="small">
       <n-space :size="[44]">
-        <div class="skillDiv text-focus-in" v-for="skills in skillsAndItems[0]">
+        <div class="skillDiv slide-in-bottom" v-for="skills in skillsAndItems[0]">
           <img class="itemImg" :src="skills[0]">
           <strong class="skillText">{{ skills[1] }}</strong>
         </div>
-        <div class="skillDiv text-focus-in" v-for="items in skillsAndItems[itemCount]">
+        <div class="skillDiv slide-in-bottom" v-for="items in skillsAndItems[itemCount]">
           <img :src="items" class="itemImg">
         </div>
       </n-space>
-      <div class="itemsTotal text-focus-in" v-if="skillsAndItems.length !=0">
+      <div class="itemsTotal slide-in-bottom" v-if="skillsAndItems.length !=0">
         <n-space>
           <n-button size="tiny" text text-color="#9aa4af" @click="changeItemsImg">
             切换装备
@@ -411,22 +411,23 @@ const deleteAutoRune = () => {
   color: #9aa4af
 }
 
-.text-focus-in {
-  -webkit-animation: text-focus-in 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
-  animation: text-focus-in 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+.slide-in-bottom {
+  -webkit-animation: slide-in-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: slide-in-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
-@keyframes text-focus-in {
+@keyframes slide-in-bottom {
   0% {
-    -webkit-filter: blur(12px);
-    filter: blur(12px);
+    -webkit-transform: translateY(1000px);
+    transform: translateY(1000px);
     opacity: 0;
   }
   100% {
-    -webkit-filter: blur(0px);
-    filter: blur(0px);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
     opacity: 1;
   }
 }
+
 
 </style>

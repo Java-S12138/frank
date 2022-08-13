@@ -61,81 +61,67 @@
 
         <n-space justify="space-between" v-for="(singleData,index) in summonersDataList">
             <!--        队伍一-->
-            <n-popconfirm style="bottom: 20px"
-              :show-icon="false" positive-text="确定" negative-text="取消" :placement="'top-start'"
-              @positive-click="searchSummonerInfo(singleData[0].name)"
-            >
-              <template #trigger>
-                <n-space vertical :size="[2,0]"
-                         style="position: relative">
-                  <n-space>
-                    <n-badge :value="singleData[0].champLevel" :type="singleData[0].teamType === 100?'error':'info'">
-                      <!--              头像-->
-                      <n-avatar
-                        :bordered="false"
-                        :size="50"
-                        :src="singleData[0].champImgUrl"
-                        fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-                        style="display: block;margin-right: -6px"
-                      />
-                    </n-badge>
-                    <!--            物品-->
-                    <n-space vertical :size="[10,1]" style="margin-left: 8px">
-                      <n-space :size="[5]">
-                        <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item0">
-                        <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item1">
-                        <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item2">
-                        <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item3">
-                        <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item4">
-                        <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item5">
-                        <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item6">
-                      </n-space>
-                      <n-space>
-                        <!--                召唤师技能-->
-                        <n-space :size="[5]" style="margin-top: 1px">
-                          <img class="itemClassSecond" :src="singleData[0].spell1Id" alt="">
-                          <img class="itemClassSecond" :src="singleData[0].spell2Id" alt="">
-                        </n-space>
-                        <!--                召唤师昵称-->
-                        <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
-                                    v-if="singleData[0].accountId!=querySummonerId">
-                          {{ singleData[0].name }}
-                        </n-ellipsis>
-                        <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
-                                    v-else>
-                          {{ singleData[0].name }}
-                        </n-ellipsis>
 
-                        <div class="kdaDiv1">
-                          {{ singleData[0].kills }}-{{ singleData[0].deaths }}-{{ singleData[0].assists }}
-                        </div>
-                      </n-space>
-                    </n-space>
-                  </n-space>
-                  <n-popover trigger="hover" :show-arrow="false">
-                    <template #trigger>
-                      <p class="scale-in-hor-left" :key="otherDataCount"
-                         :style="'width:'+otherDataPercent[index][0][otherDataKey]" style="height: 7px;border-radius: 2px;
-              background-color:#ff6666;"></p>
-                    </template>
-                    <span>{{ otherDataText }}: {{ otherData[index][0][otherDataKey] }}</span>
-                  </n-popover>
-
+          <n-space vertical :size="[2,0]" @click="queryPersonalGameDetails(index,0)"
+                   style="position: relative">
+            <n-space>
+              <n-badge :value="singleData[0].champLevel" :type="singleData[0].teamType === 100?'error':'info'">
+                <!--              头像-->
+                <n-avatar
+                  :bordered="false"
+                  :size="50"
+                  :src="singleData[0].champImgUrl"
+                  fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+                  style="display: block;margin-right: -6px"
+                />
+              </n-badge>
+              <!--            物品-->
+              <n-space vertical :size="[10,1]" style="margin-left: 8px">
+                <n-space :size="[5]">
+                  <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item0">
+                  <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item1">
+                  <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item2">
+                  <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item3">
+                  <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item4">
+                  <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item5">
+                  <img class="itemClass" :onerror="slnotimg" :src="singleData[0].item6">
                 </n-space>
-              </template>
-              <div style="width: 243px;display: flex;justify-content: center">
-                是否查看 ( <p style="color: #ff6666"> {{singleData[0].name }} </p> ) 的战绩
-              </div>
-            </n-popconfirm>
+                <n-space>
+                  <!--                召唤师技能-->
+                  <n-space :size="[5]" style="margin-top: 1px">
+                    <img class="itemClassSecond" :src="singleData[0].spell1Id" alt="">
+                    <img class="itemClassSecond" :src="singleData[0].spell2Id" alt="">
+                  </n-space>
+                  <!--                召唤师昵称-->
+                  <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
+                              v-if="singleData[0].accountId!=querySummonerId">
+                    {{ singleData[0].name }}
+                  </n-ellipsis>
+                  <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
+                              v-else>
+                    {{ singleData[0].name }}
+                  </n-ellipsis>
 
+                  <div class="kdaDiv1">
+                    {{ singleData[0].kills }}-{{ singleData[0].deaths }}-{{ singleData[0].assists }}
+                  </div>
+                </n-space>
+              </n-space>
+            </n-space>
+            <n-popover trigger="hover" :show-arrow="false">
+              <template #trigger>
+                <p class="scale-in-hor-left" :key="otherDataCount"
+                   :style="'width:'+otherDataPercent[index][0][otherDataKey]" style="height: 7px;border-radius: 2px;
+        background-color:#ff6666;"></p>
+              </template>
+              <span>{{ otherDataText }}: {{ otherData[index][0][otherDataKey] }}</span>
+            </n-popover>
+
+          </n-space>
 
             <!--        队伍二-->
-            <n-popconfirm style="bottom: 20px"
-                          :show-icon="false" positive-text="确定" negative-text="取消" :placement="'top-start'"
-                          @positive-click="searchSummonerInfo(singleData[1].name)"
-            >
-              <template #trigger>
-                <n-space vertical :size="[2,0]"
+
+          <n-space vertical :size="[2,0]" @click="queryPersonalGameDetails(index,1)"
                          style="padding-right: 2px;position: relative;justify-content: flex-end">
                   <n-space style="flex-direction: row-reverse">
                     <n-badge :value="singleData[1].champLevel" :type="singleData[1].teamType === 100?'error':'info'">
@@ -199,11 +185,7 @@
                     <span>{{ otherDataText }}: {{ otherData[index][1][otherDataKey] }}</span>
                   </n-popover>
                 </n-space>
-              </template>
-              <div style="width: 243px;display: flex;justify-content: center">
-                是否查看 ( <p style="color: #ff6666"> {{singleData[1].name }} </p> ) 的战绩
-              </div>
-            </n-popconfirm>
+
           </n-space>
 
       </n-space>
@@ -214,8 +196,10 @@
       :width="293"
       :placement="'left'"
     >
-      <n-drawer-content title="斯通纳">
-        《斯通纳》是美国作家约翰·威廉姆斯在 1965 年出版的小说。
+      <n-drawer-content :body-content-style="'padding:12px'">
+        <personal-game-details
+          @queryDetails="queryDetails"
+          :personalDetails="personalDetails"></personal-game-details>
       </n-drawer-content>
     </n-drawer>
     </div>
@@ -224,14 +208,15 @@
 
 <script setup>
 import {NAvatar, NSpace, NTag, NPopover, NGrid, NGi,NDrawer,NDrawerContent,
-  NBadge, NEllipsis, useMessage,NPopconfirm} from 'naive-ui'
+  NBadge, NEllipsis, useMessage} from 'naive-ui'
 import {onMounted, ref} from "vue";
 import {queryStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {appConfig} from "@/utils/main/config";
 import {queryGameDetailsData} from "@/utils/main/queryDetailedGame";
 import {createHttp2Request, createHttpSession} from "@/utils/league-connect";
-import {returnSummonerData} from "@/utils/render/queryMatchLcu";
+import {returnSummonerData,returnRankData} from "@/utils/render/queryMatchLcu";
+import PersonalGameDetails from "./personalGameDetails.vue";
 
 const active = ref(false)
 let gameDetalisList = []
@@ -245,6 +230,8 @@ const otherDataText = ref('输出伤害')
 let otherDataCount = ref(1)
 const otherDataPercent = []
 const message = useMessage()
+const personalDetails = ref(null)
+
 
 const props = defineProps({
   currentGameId: {
@@ -260,9 +247,8 @@ onMounted(async () => {
 })
 
 // 获取指定召唤师战绩
-const searchSummonerInfo = async (name) => {
-  active.value = true
-  return
+const queryDetails = async (name) => {
+  active.value = false
   const nickname = encodeURI(name)
   const credentials = appConfig.get('credentials')
   const session = await createHttpSession(credentials)
@@ -278,10 +264,40 @@ const searchSummonerInfo = async (name) => {
   }else{
     summoner.value = await returnSummonerData(credentials,res.summonerId)
     querySummonerId.value = summoner.value.summonerInfo.summonerId
-    page.value = 1
     return
   }
 }
+
+
+const queryPersonalGameDetails = async (index,position) => {
+  const personalGameDetails = summonersDataList.value[index][position]
+
+  const listItemData = [
+    ['物理伤害',personalGameDetails.physicalDamageDealtToChampions],
+    ['魔法伤害',personalGameDetails.magicDamageDealtToChampions],
+    ['真实伤害',personalGameDetails.trueDamageDealtToChampions],
+    ['伤害总和',personalGameDetails.totalDamageDealtToChampions],
+    ['承受伤害',personalGameDetails.totalDamageTaken],
+    ['击杀野怪',personalGameDetails.neutralMinionsKilled],
+    ['击杀小兵',personalGameDetails.totalMinionsKilled],
+    ['获得金钱',personalGameDetails.goldEarned],
+    ['花费金钱',personalGameDetails.goldSpent],
+    ['视野得分',personalGameDetails.visionScore],
+    ['放置守卫',personalGameDetails.wardsPlaced],
+  ]
+  const kda = personalGameDetails.kills+'-'+personalGameDetails.deaths +'-'+personalGameDetails.assists
+  const rankData = await returnRankData(appConfig.get('credentials'),personalGameDetails.accountId)
+  active.value = true
+  personalDetails.value =  {
+    name:personalGameDetails.name,champImgUrl:personalGameDetails.champImgUrl,
+    champLevel:personalGameDetails.champLevel,kda:kda,spell1Id:personalGameDetails.spell1Id,
+    spell2Id:personalGameDetails.spell2Id,runesList:personalGameDetails.runesList,
+    listItemData:listItemData,
+    rankData:rankData,
+    summonerId:personalGameDetails.accountId
+  }
+}
+
 
 // 改变数据显示的方式
 const changeShowWay = () => {

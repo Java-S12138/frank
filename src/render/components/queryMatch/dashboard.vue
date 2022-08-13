@@ -57,7 +57,6 @@ const store = queryStore()
 const {querySummonerId,summoner,begIndex,endIndex,page} = storeToRefs(store)
 const message = useMessage()
 const searchName = ref(null)
-let isSearch = false
 
 const searchSummonerInfo = async () => {
   if (searchName.value === null){
@@ -80,19 +79,13 @@ const searchSummonerInfo = async () => {
     summoner.value = await returnSummonerData(credentials,res.summonerId)
     querySummonerId.value = summoner.value.summonerInfo.summonerId
     searchName.value = null
-    page.value = 1
-    isSearch = true
     return
   }
 }
 
 const changePage = (page) => {
-  if (isSearch){
-    isSearch = false
-  }else {
-    endIndex.value = (page)*8
-    begIndex.value =(page-1)*8
-  }
+  endIndex.value = (page)*8
+  begIndex.value =(page-1)*8
 }
 
 const handldDrge = (pos) => {

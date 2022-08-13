@@ -72,7 +72,7 @@ import {appConfig} from "@/utils/main/config";
 import GameDetails from "./gameDetails.vue";
 
 const store = queryStore()
-const {querySummonerId,begIndex,endIndex} = storeToRefs(store)
+const {querySummonerId,begIndex,endIndex,page} = storeToRefs(store)
 const matchList = ref([])
 const credentials = appConfig.get('credentials')
 const currentGameId = ref(0)
@@ -80,14 +80,20 @@ const currentMatchIndex = ref(0)
 const message = useMessage()
 
 watch(querySummonerId,async () => {
+  if (page.value !==1){
+    page.value =1
+    return
+  }
+
   const matchDict = await dealMatchHistory(credentials,querySummonerId.value,0,8)
   if (matchDict === null){
     message.warning('当前页数战绩为空')
     return
+  }else {
+    currentGameId.value = matchDict[0].gameId
+    matchList.value =matchDict
+    currentMatchIndex.value = 0
   }
-  currentGameId.value = matchDict[0].gameId
-  matchList.value =matchDict
-  currentMatchIndex.value = 0
 })
 
 
@@ -96,10 +102,12 @@ watch(begIndex,async () => {
   if (matchDict === null){
     message.warning('当前页数战绩为空')
     return
+  }else {
+    currentGameId.value = matchDict[0].gameId
+    matchList.value =matchDict
+    currentMatchIndex.value = 0
   }
-  currentGameId.value = matchDict[0].gameId
-  matchList.value =matchDict
-  currentMatchIndex.value = 0
+
 })
 
 const showDetiledData = (gameId,index) => {
