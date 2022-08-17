@@ -51,10 +51,28 @@ export const queryMatchIpc = async (mainWindow,userHeader) => {
   })
 // 关闭游戏历史窗口
   ipcMain.on('query-match-close', () => {
-    for (const currentWindow of BrowserWindow.getAllWindows()) {
-      if (currentWindow.title === 'QueryMatch'){
-        currentWindow.close()
-      }
-    }
+    closeWin(false)
   })
+// 关闭查询游戏窗口, 回到主页
+  ipcMain.on('query-match-back-home',() => {
+    closeWin(true)
+  })
+}
+
+const closeWin = (showMain) => {
+  let queryMatchWin
+  let mainWin
+  for (const currentWindow of BrowserWindow.getAllWindows()) {
+    if (currentWindow.title === 'QueryMatch'){
+     queryMatchWin = currentWindow
+    }else if (currentWindow.title === 'Frank'){
+      mainWin = currentWindow
+    }
+  }
+  if (showMain){
+    queryMatchWin.close()
+    mainWin.show()
+  }else {
+    queryMatchWin.close()
+  }
 }

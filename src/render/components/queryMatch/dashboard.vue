@@ -1,6 +1,6 @@
 <template>
-  <header class="frankTitle">
-    <n-space class="frankTitle" v-mouse-drag="handldDrge" >
+  <header class="frankTitle" v-mouse-drag="handldDrge">
+    <n-space class="frankTitle"  >
       <img src="../../assets/icon/app-icon.png" draggable="false"  alt="" width="40" @click="handleMin">
       <img src="../../assets/icon/Frank.png" draggable="false"  style="margin-top: 4px">
       <n-space class="rightCorner">
@@ -17,6 +17,18 @@
           最小化
         </n-popover>
 
+        <n-popconfirm @positive-click="backHome" :show-icon="false"
+                      negative-text="取消" positive-text="确认">
+          <template #trigger>
+            <n-button text circle color="black" style="margin-right: 2px">
+              <n-icon size="24">
+                <smart-home/>
+              </n-icon>
+            </n-button>
+          </template>
+          是否回到软件主页
+        </n-popconfirm>
+
         <n-popconfirm @positive-click="handleClose" :show-icon="false"
                       negative-text="取消" positive-text="确认">
           <template #trigger>
@@ -30,21 +42,23 @@
         </n-popconfirm>
       </n-space>
     </n-space>
-    <n-space style="margin-top: -8px">
-      <n-space style="margin-right: 64px">
+    <n-space class="rightSpace">
+      <n-space style="margin-right: 65px">
         <n-input style="width: 153px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
         <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
       </n-space>
       <n-pagination :on-update-page="changePage(page)"
         v-model:page="page" :page-count="20" :page-slot="7" />
+
     </n-space>
+
   </header>
 </template>
 
 <script setup>
 import {NIcon, NSpace, NButton, NPopover,NPopconfirm,
   NInput,NPagination,useMessage} from 'naive-ui'
-import {ChevronsDownLeft,CircleX} from '@vicons/tabler'
+import {ChevronsDownLeft,CircleX,SmartHome} from '@vicons/tabler'
 import {ipcRenderer} from 'electron'
 import {ref} from "vue";
 import {appConfig} from "@/utils/main/config";
@@ -102,6 +116,12 @@ const handleMin = () => {
 const handleClose = () => {
   ipcRenderer.send('query-match-close')
 }
+const backHome = () => {
+  ipcRenderer.send('query-match-back-home')
+}
+
+
+
 
 </script>
 
@@ -114,11 +134,14 @@ header {
 
 .rightCorner {
   padding-top: 8px;
-  margin-left: 45px;
+  margin-left: 8px;
 }
 
 .frankTitle {
   align-items: center
+}
+.rightSpace {
+  margin-top: -8px;align-items: center
 }
 
 </style>
