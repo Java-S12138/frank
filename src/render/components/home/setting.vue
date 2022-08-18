@@ -61,6 +61,14 @@
             一切都将一去杳然
           </n-popconfirm>
         </n-space>
+
+        <n-space>
+          <n-tag :bordered="false" >赞助发电</n-tag>
+          <n-button size="small" type="success" style="width: 214px;"
+                    secondary @click="showModal = true">赞助作者持续开发
+          </n-button>
+        </n-space>
+
         <n-space class="alignCent">
           <n-tag :bordered="false">运行文件</n-tag>
 
@@ -75,6 +83,7 @@
             <span>例如 C:\LOL\英雄联盟\TCLS\Client.exe</span>
           </n-popover>
 
+
           <n-popover trigger="hover" v-else>
             <template #trigger>
               <n-tag :bordered="false" type="success" style="line-height: 28px !important;" @click="getGameDirectory">
@@ -88,6 +97,7 @@
           </n-popover>
 
         </n-space>
+
         <n-space>
           <n-tag :bordered="false">回到首页</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
@@ -96,14 +106,47 @@
         </n-space>
       </n-space>
     </n-card>
+    <n-modal v-model:show="showModal" >
+      <n-card
+        style="width: 356px"
+        :bordered="false"
+        size="small"
+        role="dialog"
+      >
 
+        <div>
+          <n-space justify="space-between" style="padding: 0px 4px 0px 4px">
+            <n-tag type="success" :bordered = false style="width: 142px;justify-content: center">
+              微信 ٩(◕‿◕｡)۶
+            </n-tag>
+            <n-tag type="info" :bordered = false style="width: 142px;justify-content: center">
+              支付宝(●'◡'●)
+            </n-tag>
+          </n-space>
+          <n-space justify="space-between">
+            <img style="width: 150px;" src="../../../render/assets/pay/wxpay.jpg">
+            <img style="width: 150px;" src="../../../render/assets/pay/zfbpay.jpg">
+          </n-space>
+        </div>
+        <template #footer>
+         <div style="margin-left: 4px">
+           <p>
+             Frank 全新的 LOL助手软件 [永久免费 代码开源]
+           </p>
+           <p>
+             您的赞助会使作者越做越好 感谢您的大力支持❤️
+           </p>
+         </div>
+        </template>
+      </n-card>
+    </n-modal>
   </div>
 </template>
 
 <script setup>
 import {
   NCard, NSpace, NTag, NButton, NEllipsis, NPopover,
-  NSelect, NSwitch, NSlider, useMessage, NPopconfirm
+  NSelect, NSwitch, NSlider, useMessage, NPopconfirm,NModal
 } from 'naive-ui'
 import {optionsChampion} from '@/utils/render/lolDataList'
 import {ref} from "vue";
@@ -123,6 +166,7 @@ let banChampion = ref(appConfig.get('autoBanChampion.championId'))
 const optionsChampionBan = optionsChampion
 let isAccept = ref(appConfig.get('autoAccept'))
 const message = useMessage()
+const showModal = ref(false)
 
 // 判断是否已经获取路径
 if (appConfig.get('gameDirectory') != '') {
@@ -193,6 +237,7 @@ const toReset = async () => {
   appConfig.set('blacklist',blacklist)
   message.success('设置已恢复默认, 建议重启Frank')
 }
+
 
 </script>
 

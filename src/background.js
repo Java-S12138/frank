@@ -13,7 +13,7 @@ import {
   createMainWindow,
   listenIpc,
   makeTray,
-  createMatchHistoryWindow,
+  matchHistoryIpc,
   queryMatchIpc
 } from "../frankElectron";
 const Store = require("electron-store");Store.initRenderer()
@@ -24,7 +24,7 @@ const iconPath = path.join(
   'app-icon.png',
 )
 const userHeader =userAgentList[Math.floor((Math.random()*userAgentList.length))]
-let credentials;let mainWindow;let assistWindow;let matchHistoryWindow;
+let credentials;let mainWindow;let assistWindow
 
 // -----------------------------main---------------------------- //
 
@@ -35,7 +35,7 @@ const init = async () => {
   await startClient() // 启动英雄联盟客户端
   listenIpc(mainWindow,assistWindow) // 监听主窗口和助手窗口的事件
   queryMatchIpc(mainWindow,userHeader) // 战绩查询窗口
-  mathcHistoryIpc()  // 战绩历史窗口
+  matchHistoryIpc(userHeader)  // 战绩历史窗口
 }
 
 app.whenReady().then(async () => {
@@ -78,12 +78,7 @@ const runLcu = async () => {
 
     }else if (data ==='GameStart') {
       // 选择英雄结束后,发送消息给渲染进程, 让渲染进程获取到敌方召唤师信息
-      if ( matchHistoryWindow != null) {
-        if (!matchHistoryWindow.isDestroyed()) {
-          matchHistoryWindow.webContents.send('query-enemy-summoner')
-        }
-      }
-
+      queryEnemyInfo()
       assistWindow.hide()
       assistWindow.webContents.send('query-enemy-summoner')
       clearInterval(idSetInterval)
@@ -151,26 +146,10 @@ const closeWin = (window) => {
     }
   }
 }
-
-const mathcHistoryIpc = async () => {
-  // 展示战力分析窗口
-  ipcMain.on('showCharts',async () => {
-    matchHistoryWindow = await createMatchHistoryWindow(userHeader)
-    // if (clientStatus === '"Matchmaking"' || clientStatus === '"GameStart"' || clientStatus==='"InProgress"'){
-    //   matchHistoryWindow.webContents.send('query-enemy-summoner')
-    // }
-  })
-// 移动游戏历史窗口
-  ipcMain.on('move-match-history-window', (event, pos) => {
-    matchHistoryWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
-  })
-// 最小化游戏历史窗口
-  ipcMain.on('match-history-window-min', () => {
-    matchHistoryWindow.minimize()
-  })
-// 关闭游戏历史窗口
-  ipcMain.on('close-match-history-window', () => {
-    closeWin('MatchHistory')
-  })
+const queryEnemyInfo  = () => {
+  for (const currentWindow of BrowserWindow.getAllWindows()) {
+    if (currentWindow.title === 'MatchHistory'){
+      currentWindow.webContents.send('query-enemy-summoner')
+    }
+  }
 }
-

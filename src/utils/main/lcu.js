@@ -11,11 +11,20 @@ const champSelectPatchAction = async (credentials, actionID, champId, type) => {
   }
 
   try {
-    const res = await createHttp1Request({
+    // const res = await createHttp1Request({
+    //   method: "PATCH",
+    //   url: `/lol-champ-select/v1/session/actions/${actionID}`,
+    //   body: localBody
+    // }, credentials)
+    // todo http2 PATCH
+    const session = await createHttpSession(credentials)
+    const res = await createHttp2Request({
       method: "PATCH",
       url: `/lol-champ-select/v1/session/actions/${actionID}`,
       body: localBody
-    }, credentials)
+    },session, credentials)
+    session.close()
+    console.log(res.raw)
     return res.status
   } catch (e) {
     console.log('Json Error Can Ignore')

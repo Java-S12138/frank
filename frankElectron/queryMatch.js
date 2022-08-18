@@ -39,7 +39,6 @@ export const queryMatchIpc = async (mainWindow,userHeader) => {
   ipcMain.on('show-query-match',async () => {
     queryMatchWindow = await createQueryMatchWindow(userHeader)
     mainWindow.hide()
-
   })
 // 移动游戏历史窗口
   ipcMain.on('move-query-match-window', (event, pos) => {
@@ -70,8 +69,9 @@ const closeWin = (showMain) => {
     }
   }
   if (showMain){
-    queryMatchWin.close()
     mainWin.show()
+    queryMatchWin.hide()
+    queryMatchWin.close()
   }else {
     queryMatchWin.close()
   }

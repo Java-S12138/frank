@@ -47,8 +47,10 @@
         <n-input style="width: 153px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
         <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
       </n-space>
-      <n-pagination :on-update-page="changePage(page)"
+      <n-pagination style="font-family: Arial"
+        :on-update-page="changePage(page)"
         v-model:page="page" :page-count="20" :page-slot="7" />
+
 
     </n-space>
 
