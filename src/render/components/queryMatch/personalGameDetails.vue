@@ -87,7 +87,7 @@
         查看详细战绩
       </n-button>
       <n-button :bordered="false" type="warning" @click="addBlacklist">
-        拉入排位笔记
+        导入排位笔记
       </n-button>
 
     </n-space>
