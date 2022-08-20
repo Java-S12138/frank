@@ -2,7 +2,7 @@
   <div>
     <n-card class="boxShadow" size="small">
       <n-space>
-        <n-tag type="info" :bordered="false" size="large">
+        <n-tag type="info" :bordered="false" size="large" style="border-radius: 5px">
           国服英雄数据排行
         </n-tag>
         <n-select v-model:value="tier" style="width: 118px"
@@ -113,7 +113,7 @@
               </n-space>
             </n-space>
           </template>
-          <n-scrollbar style="max-height: 372px">
+          <n-scrollbar style="max-height: 365px">
             <n-list-item v-for="champRes in restraintList">
               <n-space class=alignCenter>
                 <n-avatar
@@ -226,7 +226,7 @@ const isCheck = ref(1)
 let lane = ref(appConfig.get('champRankOption.lane'))
 let restraintActive = ref(false)
 let restraintList = ref([])
-let selectedList = ref([])
+const selectedList = ref([])
 let isRestraint = ref(true)
 let searchValue = ref(null)
 
@@ -327,7 +327,7 @@ const getRestraintData = async (champId, position, imgUrl, name, level, win, ban
   restraintList.value = []
   selectedList.value = [imgUrl, name, level, win, ban]
   restraintActive.value = true
-  const url = `https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_${champId}.js?ts=2760378`
+  const url = `https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_${champId}.js`
   const result = await request({
     'url': url,
     method: 'GET',
@@ -419,9 +419,6 @@ const handleChangePosition = (pos) => {
   width: auto;
 }
 
-.n-tag {
-  border-radius: 5px;
-}
 
 .isHover:hover {
   background-color: #ffffff;

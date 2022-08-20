@@ -16,7 +16,7 @@ export const useStore = defineStore('app', {
       currentQueryGameId:0,
       currentSummonerName:'',
       currentTeam:1, // 当前队伍
-      frankVersion:'1.20.1215'
+      frankVersion:'1.21.1215'
     }
   },
   actions:{

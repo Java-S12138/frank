@@ -2,24 +2,17 @@
   <div v-if="runeDataListFor.length !=0">
     <n-card class="boxShadow" size="small">
       <n-space justify="space-between">
-        <n-popconfirm :show-icon="false" positive-text="确认" negative-text="取消"
-                      @positive-click="setAutoRune" @negative-click="deleteAutoRune"
-        >
-          <template #trigger>
-            <n-badge :value="isAutoRune" color="#ff6666">
-              <n-avatar
-                round
-                :bordered="false"
-                :size="50"
-                :src="currentChampImgUrl"
-                fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-                style="display: block"
-              />
-            </n-badge>
-          </template>
-          设置自动配置符文
-        </n-popconfirm>
-
+        <n-badge :value="isAutoRune" color="#ff6666">
+          <n-avatar
+            round
+            :bordered="false"
+            :size="50"
+            :src="currentChampImgUrl"
+            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+            style="display: block"
+            @click="restraintActive = true"
+          />
+        </n-badge>
         <div>
           <n-tag type="success" :bordered="false" :round="true">
             {{ currentChampName }}
@@ -100,6 +93,14 @@
 
       </div>
     </n-card>
+
+    <n-drawer :auto-focus="false" v-model:show="restraintActive"
+              style="border-top-left-radius: 12px;border-top-right-radius: 12px"
+              :height="546" placement="bottom">
+      <n-drawer-content >
+        <restraint :champ="currentChamp" @autoRune="autoRune"></restraint>
+      </n-drawer-content>
+    </n-drawer>
   </div>
 
   <div v-else>
@@ -115,14 +116,16 @@
 <script setup>
 import {ipcRenderer} from "electron"
 import {
-  NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon, NBadge, NButton, NPopconfirm, useMessage
+  NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon,
+  NBadge, NButton, NPopconfirm, useMessage,NDrawer, NDrawerContent
 } from 'naive-ui'
 import {ref} from "vue";
 import {champDict, mapNameFromUrl} from '../../../utils/render/lolDataList'
 import {appConfig} from '../../../utils/main/config'
 import {ArrowBigRightLine, ArrowBigLeftLine} from '@vicons/tabler'
 import {request} from "../../../utils/render/request"
-import {applyRunePage,setAutoRuneFromChamp} from "@/utils/main/lcu";
+import {applyRunePage} from "@/utils/main/lcu";
+import Restraint from "./restraint.vue";
 
 const currentChamp = ref(null)
 const currentChampImgUrl = ref('')
@@ -138,11 +141,13 @@ const skillsAndItems = ref([])
 const itemCount = ref(1)
 const credentials = appConfig.get('credentials')
 let currentGameMode = ''
+const restraintActive = ref(false)
 
 const message = useMessage()
 
 ipcRenderer.on('show-other-summoner', () => {
   runeDataListFor.value.length = 0
+  currentChamp.value=null
 })
 ipcRenderer.on('query-other-summoner', () => {
   currentGameMode = ''
@@ -212,7 +217,9 @@ const getRuneData = async (gameMode) => {
   }
 
 }
-// getRuneData()
+
+
+
 
 // 切换不同的装备进行显示
 const changeItemsImg = () => {
@@ -319,16 +326,11 @@ const pageNext = () => {
   }
 }
 
-// 设置自动配置符文
-const setAutoRune = () => {
-  setAutoRuneFromChamp(credentials,currentChamp.value)
-  isAutoRune.value = 'auto'
-}
-// 删除自动配置符文
-const deleteAutoRune = () => {
-  if (appConfig.has(`autoRune.${currentChamp.value}`)) {
-    appConfig.delete(`autoRune.${currentChamp.value}`)
-    isAutoRune.value = 0
+const autoRune = (e) => {
+  if (e){
+    isAutoRune.value='auto'
+  }else {
+    isAutoRune.value=0
   }
 }
 </script>
