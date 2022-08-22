@@ -1,7 +1,6 @@
 // 查询本地召唤师信息
 import {createHttp1Request, createHttp2Request, createHttpSession} from "@/utils/league-connect";
 import {champDict} from "@/utils/render/lolDataList";
-import {run} from "@babel/core/lib/transformation";
 
 const queryCurrentSummonerId = async (credentials) => {
   const summonerInfo = (await createHttp1Request({
@@ -113,19 +112,19 @@ const queryGameType = (queueId) => {
 }
 
 // 根据召唤师ID查询战绩
-export const queryMatchHistory = async (credentials,summonerId,begIndex,endIdex) => {
+export const queryMatchHistory = async (credentials,summonerId,begIndex,endIndex) => {
   const session = await createHttpSession(credentials)
   const matchList = (await createHttp2Request({
     method: "GET",
-    url: `/lol-match-history/v3/matchlist/account/${summonerId}?begIndex=${begIndex}&endIndex=${endIdex}`,
+    url: `/lol-match-history/v3/matchlist/account/${summonerId}?begIndex=${begIndex}&endIndex=${endIndex}`,
   },session, credentials)).json()
   session.close()
   return matchList
 }
 
 // 处理战绩数据
-export const dealMatchHistory = async (credentials,summonerId,begIndex,endIdex) => {
-  const matchList = await queryMatchHistory(credentials,summonerId,begIndex,endIdex)
+export const dealMatchHistory = async (credentials,summonerId,begIndex,endIndex) => {
+  const matchList = await queryMatchHistory(credentials,summonerId,begIndex,endIndex)
   if (matchList['games']['games'].length ===0){return null}
   let simpleMatchList = []
   for (const matchListElement of matchList['games']['games'].reverse()) {

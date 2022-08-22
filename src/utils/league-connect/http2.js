@@ -62,6 +62,7 @@ function createHttp2Request(options, session, credentials) {
             Authorization: 'Basic ' + Buffer.from(`riot:${credentials.password}`).toString('base64')
         });
         request.setEncoding('utf8');
+
         if (options.body) {
             const data = JSON.stringify(options.body);
             const body = new util_1.TextEncoder().encode(data);

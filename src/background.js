@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, Notification} from 'electron'
+import {app, BrowserWindow, Notification} from 'electron'
 import {
   autoAcceptGame,
   champSelectSession,
@@ -36,6 +36,7 @@ const init = async () => {
   listenIpc(mainWindow,assistWindow) // 监听主窗口和助手窗口的事件
   queryMatchIpc(mainWindow,userHeader) // 战绩查询窗口
   matchHistoryIpc(userHeader)  // 战绩历史窗口
+
 }
 
 app.whenReady().then(async () => {
@@ -72,7 +73,6 @@ const runLcu = async () => {
           champSelectSession(credentials,idSetInterval)
         },1000)
       }
-
       // 监听英雄的选择
       listenChampSelect(ws,assistWindow,credentials)
 

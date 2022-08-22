@@ -78,6 +78,42 @@ const credentials = appConfig.get('credentials')
 const currentGameId = ref(0)
 const currentMatchIndex = ref(0)
 const message = useMessage()
+const specialMatchDict = ref([])
+let specialPageIndex = 0
+let specialEndIndex = 8
+
+const query160Match = async () => {
+  specialMatchDict.value =[]
+  while (specialMatchDict.value.length<8) {
+    const matchDict = await dealMatchHistory(credentials,querySummonerId.value,specialPageIndex,specialEndIndex)
+    console.log('while执行了')
+    // if (matchDict.length !== 0){
+    //   specialMatchDict.value = [...specialMatchDict.value,...matchDict]
+    // }
+    // for (const matchDictElement of matchDict) {
+    //   if (matchDictElement.queueId === '排位赛 单排/双排'){
+    //     specialMatchDict.value.push(matchDictElement)
+    //     if (specialMatchDict.value.length ===8){
+    //       break
+    //     }
+    //   }
+    // }
+    for (let i = 0; i < matchDict.length; i++) {
+      if (matchDict[i].queueId === '排位赛 单排/双排'){
+        specialMatchDict.value.push(matchDict[i])
+        specialPageIndex +=1
+        if (specialMatchDict.value.length ===8){
+          specialEndIndex +=8
+          break
+        }
+      }
+    }
+    specialEndIndex +=8
+  }
+  matchList.value = specialMatchDict.value
+  console.log(specialMatchDict.value)
+
+}
 
 watch(querySummonerId,async () => {
   if (page.value !==1){
