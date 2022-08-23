@@ -45,7 +45,8 @@ export const queryStore = defineStore('query',{
       begIndex : 0,
       endIndex : 8,
       currentQueryGameId:null,
-      page:1
+      page:1,
+      currentMode:'全部模式'
     }
 }
 })

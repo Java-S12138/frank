@@ -221,7 +221,7 @@ import PersonalGameDetails from "./personalGameDetails.vue";
 const active = ref(false)
 let gameDetalisList = []
 const store = queryStore()
-const {currentQueryGameId,querySummonerId,summoner,page} = storeToRefs(store)
+const {currentQueryGameId,querySummonerId,summoner,page,currentMode} = storeToRefs(store)
 let titleList = ref([])
 let summonersDataList = ref([])
 let otherData = ref(null)
@@ -264,6 +264,7 @@ const queryDetails = async (name) => {
   }else{
     summoner.value = await returnSummonerData(credentials,res.summonerId)
     querySummonerId.value = summoner.value.summonerInfo.summonerId
+    currentMode.value='全部模式'
     return
   }
 }

@@ -67,73 +67,79 @@ import {NCard,NLayout,NLayoutSider,NLayoutContent, NAvatar,NIcon, NSpace, NTag,
 import {queryStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia.esm-browser";
 import {ref, watch} from "vue";
-import {dealMatchHistory} from "@/utils/render/queryMatchLcu";
+import {dealMatchHistory,querySpecialMatchHistory} from "@/utils/render/queryMatchLcu";
 import {appConfig} from "@/utils/main/config";
 import GameDetails from "./gameDetails.vue";
 
 const store = queryStore()
-const {querySummonerId,begIndex,endIndex,page} = storeToRefs(store)
+const {querySummonerId,begIndex,endIndex,page,currentMode} = storeToRefs(store)
 const matchList = ref([])
 const credentials = appConfig.get('credentials')
 const currentGameId = ref(0)
 const currentMatchIndex = ref(0)
 const message = useMessage()
+let messageReactive = null
 const specialMatchDict = ref([])
-let specialPageIndex = 0
-let specialEndIndex = 8
-
-const query160Match = async () => {
-  specialMatchDict.value =[]
-  while (specialMatchDict.value.length<8) {
-    const matchDict = await dealMatchHistory(credentials,querySummonerId.value,specialPageIndex,specialEndIndex)
-    console.log('while执行了')
-    // if (matchDict.length !== 0){
-    //   specialMatchDict.value = [...specialMatchDict.value,...matchDict]
-    // }
-    // for (const matchDictElement of matchDict) {
-    //   if (matchDictElement.queueId === '排位赛 单排/双排'){
-    //     specialMatchDict.value.push(matchDictElement)
-    //     if (specialMatchDict.value.length ===8){
-    //       break
-    //     }
-    //   }
-    // }
-    for (let i = 0; i < matchDict.length; i++) {
-      if (matchDict[i].queueId === '排位赛 单排/双排'){
-        specialMatchDict.value.push(matchDict[i])
-        specialPageIndex +=1
-        if (specialMatchDict.value.length ===8){
-          specialEndIndex +=8
-          break
-        }
-      }
-    }
-    specialEndIndex +=8
-  }
-  matchList.value = specialMatchDict.value
-  console.log(specialMatchDict.value)
-
-}
 
 watch(querySummonerId,async () => {
   if (page.value !==1){
     page.value =1
     return
   }
+  initHomeData()
+})
 
-  const matchDict = await dealMatchHistory(credentials,querySummonerId.value,0,8)
-  if (matchDict === null){
-    message.warning('当前页数战绩为空')
-    return
-  }else {
-    currentGameId.value = matchDict[0].gameId
-    matchList.value =matchDict
-    currentMatchIndex.value = 0
+watch(begIndex,async () => {
+  if (currentMode.value ==='全部模式'){
+    initHomeData()
+  }else{
+    matchList.value =specialMatchDict.value.slice(begIndex.value,endIndex.value)
+    if (matchList.value.length===0){
+      message.warning('当前页数战绩为空')
+      currentGameId.value=0
+    }else {
+      currentMatchIndex.value = 0
+      currentGameId.value = matchList.value[0].gameId
+    }
   }
 })
 
-
-watch(begIndex,async () => {
+watch(currentMode,async () => {
+  let mode
+  switch (currentMode.value) {
+    case '全部模式' : mode='全部模式' ;break
+    case '单双排位' : mode='排位赛 单排/双排';break
+    case '灵活排位' : mode='排位赛 灵活排位';break
+    case '极地乱斗' : mode='极地大乱斗';break
+    case '匹配模式' : mode='匹配模式';break
+    case '其它模式' : mode='其它模式';break
+  }
+  if (mode!== '全部模式'){
+    createMessage(mode)
+    specialMatchDict.value = await querySpecialMatchHistory(credentials,querySummonerId.value,mode)
+    removeMessage()
+    if (page.value===1){
+      matchList.value =specialMatchDict.value.slice(0,8)
+      if (matchList.value.length===0){
+        message.warning('当前模式战绩为空')
+        currentGameId.value=0
+      }else {
+        currentMatchIndex.value = 0
+        currentGameId.value = matchList.value[0].gameId
+        message.success(`${mode} 数据加载成功!`)
+      }
+    }else {
+      page.value = 1
+    }
+  }else {
+    page.value = 1
+  }
+})
+const showDetiledData = (gameId,index) => {
+  currentGameId.value = gameId
+  currentMatchIndex.value = index
+}
+const initHomeData = async () => {
   const matchDict = await dealMatchHistory(credentials,querySummonerId.value,begIndex.value,endIndex.value)
   if (matchDict === null){
     message.warning('当前页数战绩为空')
@@ -143,12 +149,19 @@ watch(begIndex,async () => {
     matchList.value =matchDict
     currentMatchIndex.value = 0
   }
-
-})
-
-const showDetiledData = (gameId,index) => {
-  currentGameId.value = gameId
-  currentMatchIndex.value = index
+}
+const removeMessage = () => {
+  if (messageReactive) {
+    messageReactive.destroy();
+    messageReactive = null;
+  }
+};
+const createMessage=(mode) =>  {
+  if (!messageReactive) {
+    messageReactive = message.loading(`${mode} 数据加载中...`, {
+      duration: 0
+    });
+  }
 }
 </script>
 

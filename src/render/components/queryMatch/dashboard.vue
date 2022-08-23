@@ -1,7 +1,7 @@
 <template>
   <header class="frankTitle" v-mouse-drag="handldDrge">
     <n-space class="frankTitle"  >
-      <img src="../../assets/icon/app-icon.png" draggable="false"  alt="" width="40" @click="handleMin">
+      <img src="../../assets/icon/app-icon.png" draggable="false"  alt="" width="40" @click="refresh">
       <img src="../../assets/icon/Frank.png" draggable="false"  style="margin-top: 4px">
       <n-space class="rightCorner">
         <n-popover :show-arrow="false" trigger="hover" :delay="1000">
@@ -43,13 +43,15 @@
       </n-space>
     </n-space>
     <n-space class="rightSpace">
-      <n-space style="margin-right: 65px">
+      <n-space style="margin-right: 9px" :size="[19]">
         <n-input style="width: 153px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
+        <n-select v-model:value="currentMode"  :disabled="searchName.length !==0"
+                  :options="options" size="small" :show-arrow="true" />
         <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
       </n-space>
       <n-pagination style="font-family: Arial"
         :on-update-page="changePage(page)"
-        v-model:page="page" :page-count="20" :page-slot="7" />
+        v-model:page="page" :page-count="20" :page-slot="12" />
 
 
     </n-space>
@@ -59,7 +61,7 @@
 
 <script setup>
 import {NIcon, NSpace, NButton, NPopover,NPopconfirm,
-  NInput,NPagination,useMessage} from 'naive-ui'
+  NInput,NPagination,useMessage,NSelect} from 'naive-ui'
 import {ChevronsDownLeft,CircleX,SmartHome} from '@vicons/tabler'
 import {ipcRenderer} from 'electron'
 import {ref} from "vue";
@@ -70,9 +72,35 @@ import {queryStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 
 const store = queryStore()
-const {querySummonerId,summoner,begIndex,endIndex,page} = storeToRefs(store)
+const {querySummonerId,summoner,begIndex,endIndex,page,currentMode} = storeToRefs(store)
 const message = useMessage()
-const searchName = ref(null)
+const searchName = ref('')
+const options = [
+  {
+    label: '全部模式',
+    value: '全部模式'
+  },
+  {
+    label: '单双排位',
+    value: '单双排位'
+  },
+  {
+    label: '灵活排位',
+    value: '灵活排位'
+  },
+  {
+    label: '极地乱斗',
+    value: '极地乱斗'
+  },
+  {
+    label: '匹配模式',
+    value: '匹配模式'
+  },
+  {
+    label: '其它模式',
+    value: '其它模式'
+  },
+]
 
 const searchSummonerInfo = async () => {
   if (searchName.value === null){
@@ -94,10 +122,12 @@ const searchSummonerInfo = async () => {
   }else{
     summoner.value = await returnSummonerData(credentials,res.summonerId)
     querySummonerId.value = summoner.value.summonerInfo.summonerId
-    searchName.value = null
+    searchName.value = ''
+    currentMode.value= '全部模式'
     return
   }
 }
+
 
 const changePage = (page) => {
   endIndex.value = (page)*8
@@ -120,6 +150,9 @@ const handleClose = () => {
 }
 const backHome = () => {
   ipcRenderer.send('query-match-back-home')
+}
+const refresh = () => {
+  location.reload()
 }
 
 

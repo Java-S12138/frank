@@ -123,10 +123,11 @@ export const queryMatchHistory = async (credentials,summonerId,begIndex,endIndex
 }
 
 // 处理战绩数据
-export const dealMatchHistory = async (credentials,summonerId,begIndex,endIndex) => {
+export const dealMatchHistory = async (credentials,summonerId,begIndex,endIndex,mode) => {
   const matchList = await queryMatchHistory(credentials,summonerId,begIndex,endIndex)
   if (matchList['games']['games'].length ===0){return null}
   let simpleMatchList = []
+  let specialSimpleMatchList = []
   for (const matchListElement of matchList['games']['games'].reverse()) {
     // 本局游戏ID
     let gameId = matchListElement.gameId
@@ -144,12 +145,30 @@ export const dealMatchHistory = async (credentials,summonerId,begIndex,endIndex)
     let matchTime = timestampToDate(matchListElement.gameCreation)
     // 游戏模式
     let queueId = queryGameType(matchListElement.queueId)
-    simpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId})
+    if (queueId === mode){
+      specialSimpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId})
+    }
+    if (mode === undefined){
+      simpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId})
+    }
   }
-  return simpleMatchList
+  if (mode === undefined){
+    return simpleMatchList
+  }else {
+    return specialSimpleMatchList
+  }
 }
-
 const timestampToDate = (timestamp)  => {
   var date = new Date(timestamp)
   return (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1)+'-'+ date.getDate()
+}
+
+// 查看特定模式的战绩
+export const querySpecialMatchHistory = async (credentials,summonerId,mode) => {
+  let specialDict = []
+  for (let i = 0; i < 8; i++) {
+    const matchHistory = await dealMatchHistory(credentials,summonerId,20*i,20*(i+1),mode)
+   specialDict = [...specialDict,...matchHistory]
+  }
+  return specialDict
 }
