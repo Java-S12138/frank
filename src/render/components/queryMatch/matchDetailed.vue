@@ -2,7 +2,7 @@
   <div class="mainCard">
     <n-card class="boxShadow" size="small"
             :content-style="'padding:9px 12px 0px 16px'" style="height: 100%">
-      <n-layout has-sider >
+      <n-layout has-sider  v-if="!showChart">
         <n-layout-sider  :width="189">
           <n-list>
             <n-list-item v-for="(match,index) in matchList" style="width: 172px;">
@@ -49,6 +49,7 @@
           </n-layout-content>
         </n-layout>
       </n-layout>
+      <recent-echart v-if="matchList.length!==0 && showChart" :matchList="matchList"></recent-echart>
     </n-card>
 
   </div>
@@ -70,9 +71,10 @@ import {ref, watch} from "vue";
 import {dealMatchHistory,querySpecialMatchHistory} from "@/utils/render/queryMatchLcu";
 import {appConfig} from "@/utils/main/config";
 import GameDetails from "./gameDetails.vue";
+import RecentEchart from "./recentEchart.vue";
 
 const store = queryStore()
-const {querySummonerId,begIndex,endIndex,page,currentMode} = storeToRefs(store)
+const {querySummonerId,begIndex,endIndex,page,currentMode,showChart} = storeToRefs(store)
 const matchList = ref([])
 const credentials = appConfig.get('credentials')
 const currentGameId = ref(0)
@@ -118,21 +120,13 @@ watch(currentMode,async () => {
     createMessage(mode)
     specialMatchDict.value = await querySpecialMatchHistory(credentials,querySummonerId.value,mode)
     removeMessage()
+    renderSpecialMatch(mode)
+  }else {
     if (page.value===1){
-      matchList.value =specialMatchDict.value.slice(0,8)
-      if (matchList.value.length===0){
-        message.warning('当前模式战绩为空')
-        currentGameId.value=0
-      }else {
-        currentMatchIndex.value = 0
-        currentGameId.value = matchList.value[0].gameId
-        message.success(`${mode} 数据加载成功!`)
-      }
+      initHomeData()
     }else {
       page.value = 1
     }
-  }else {
-    page.value = 1
   }
 })
 const showDetiledData = (gameId,index) => {
@@ -161,6 +155,22 @@ const createMessage=(mode) =>  {
     messageReactive = message.loading(`${mode} 数据加载中...`, {
       duration: 0
     });
+  }
+}
+// 渲染其它模式的游戏数据
+const renderSpecialMatch = async (mode) => {
+  if (page.value===1){
+    matchList.value =specialMatchDict.value.slice(0,8)
+    if (matchList.value.length===0){
+      message.warning('当前模式战绩为空')
+      currentGameId.value=0
+    }else {
+      currentMatchIndex.value = 0
+      currentGameId.value = matchList.value[0].gameId
+      message.success(`${mode} 数据加载成功!`)
+    }
+  }else {
+    page.value = 1
   }
 }
 </script>

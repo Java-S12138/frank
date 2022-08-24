@@ -43,15 +43,19 @@
       </n-space>
     </n-space>
     <n-space class="rightSpace">
-      <n-space style="margin-right: 9px" :size="[19]">
+      <n-space style="margin-right: 10px" :size="[23]">
         <n-input style="width: 153px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
         <n-select v-model:value="currentMode"  :disabled="searchName.length !==0"
                   :options="options" size="small" :show-arrow="true" />
         <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
+        <n-button type="success" secondary size="small" @click="showChart =!showChart" >
+          <p v-if="!showChart">详细数据</p>
+          <p v-else="showChart">数据图表</p>
+        </n-button>
       </n-space>
       <n-pagination style="font-family: Arial"
         :on-update-page="changePage(page)"
-        v-model:page="page" :page-count="20" :page-slot="12" />
+        v-model:page="page" :page-count="20" :page-slot="9" />
 
 
     </n-space>
@@ -72,7 +76,7 @@ import {queryStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 
 const store = queryStore()
-const {querySummonerId,summoner,begIndex,endIndex,page,currentMode} = storeToRefs(store)
+const {querySummonerId,summoner,begIndex,endIndex,page,currentMode,showChart} = storeToRefs(store)
 const message = useMessage()
 const searchName = ref('')
 const options = [
@@ -103,7 +107,7 @@ const options = [
 ]
 
 const searchSummonerInfo = async () => {
-  if (searchName.value === null){
+  if (searchName.value === ''){
     message.error('召唤师昵称不能为空')
     return
   }

@@ -133,6 +133,7 @@ export const dealMatchHistory = async (credentials,summonerId,begIndex,endIndex,
     let gameId = matchListElement.gameId
     // 召唤师选择的英雄
     let champImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchListElement.participants[0].championId)].alias}.png`
+    let champ = champDict[String(matchListElement.participants[0].championId)].title
     // 是否取得胜利
     let isWin = matchListElement.participants[0].stats.win == true ? true :false
     // 击杀数目
@@ -146,10 +147,10 @@ export const dealMatchHistory = async (credentials,summonerId,begIndex,endIndex,
     // 游戏模式
     let queueId = queryGameType(matchListElement.queueId)
     if (queueId === mode){
-      specialSimpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId})
+      specialSimpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId,champ})
     }
     if (mode === undefined){
-      simpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId})
+      simpleMatchList.push({gameId,champImgUrl,isWin,kills,deaths,assists,matchTime,queueId,champ})
     }
   }
   if (mode === undefined){

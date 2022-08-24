@@ -10,7 +10,7 @@
           fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
           style="display:block"
         />
-        <n-space vertical :size="[2,10]">
+        <n-space vertical :size="[2,9]">
           <n-tag type="success" style="width: 150px;justify-content: center"
                  :bordered="false" :round="true">
             {{summoner.summonerInfo.name}}
@@ -80,7 +80,7 @@
         </n-list>
     </n-card>
     <n-card class="boxShadow" size="small" :content-style="'padding-right: 0px'"
-            style="margin-top: 14.3px">
+            style="margin-top: 15.5px">
         <!--        召唤师绝活英雄展示-->
       <n-scrollbar style="max-height: 263px">
         <n-space vertical style="" :size="[2,16]" >
