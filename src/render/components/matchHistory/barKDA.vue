@@ -285,7 +285,7 @@ const sendToChat = () => {
   let sendMessage = 'Powered By Frank \n'
   for (const summonerDatum of summonerName.value) {
     const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
-    let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] 评分:${echartsData.value['data'][currentSummonerIndex]} 最近战绩:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
+    let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] score:${echartsData.value['data'][currentSummonerIndex]} recent record:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
     sendMessage += sendInfo + '\n'
   }
   if (sendMessage.length > 18) {

@@ -39,7 +39,7 @@
     {
       name: '击杀',
       type: 'bar',
-      data: echartData.kills
+      data: echartData.kills,
     },
     {
       name: '死亡',
