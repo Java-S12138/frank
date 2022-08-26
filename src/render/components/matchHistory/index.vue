@@ -27,6 +27,8 @@ import {useStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {getSummonerNickName, queryMatchSummonerInfo} from "@/utils/main/lcu";
 import {appConfig} from "@/utils/main/config";
+import {createHttp1Request} from "@/utils/league-connect";
+import {querySummonerIDInProgress} from "@/utils/render/matchHistoryLcu";
 
 document.title = 'MatchHistory'
 
@@ -54,11 +56,21 @@ const getChartsData = (res) => {
   currentEchartData.value = echartsData.value
 }
 onBeforeMount(async () => {
-  const res = await getSummonerNickName(credentials)
+  const clientStatus = (await createHttp1Request({
+    method: "GET",
+    url: `/lol-gameflow/v1/gameflow-phase/`,
+  }, credentials)).json()
+
+  if (clientStatus === '"InProgress"'){
+    var summonerId = await querySummonerIDInProgress(credentials)
+    var res = await getSummonerNickName(credentials,summonerId)
+  }else {
+    var res = await getSummonerNickName(credentials)
+  }
+
   currentTeam.value = 1
   summonerInfo.value = []
   summonerInfo.value = res
-  console.log(summonerInfo.value)
   getChartsData(summonerInfo.value)
 })
 

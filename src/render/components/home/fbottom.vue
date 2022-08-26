@@ -66,11 +66,11 @@ import {BrandGithub, Help, Code, ArrowUpCircle} from '@vicons/tabler'
 import {shell} from 'electron'
 import {ref, onMounted} from "vue";
 import {request} from "@/utils/render/request";
-import {useStore} from "@/render/store";
+import {frankRelease} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 
 let showPopover = ref(false)
-const store = useStore()
+const store = frankRelease()
 const {frankVersion} = storeToRefs(store)
 
 // 检查版本更新

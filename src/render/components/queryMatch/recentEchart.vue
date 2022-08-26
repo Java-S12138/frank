@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-chart  class="chart" :option="
+    <v-chart  class="chart" @click="onClick" :option="
 {
   color: ['#7BD9A5','#F17D7D', '#F9C97D'],
   tooltip: {
@@ -67,6 +67,12 @@ export default {
 <script setup>
 import VChart from "vue-echarts";
 import {ref, watchEffect} from "vue";
+import {queryStore} from "@/render/store";
+import {storeToRefs} from "pinia";
+
+
+const store = queryStore()
+const {showChart,matchList,currentGameId,currentMatchIndex} = storeToRefs(store)
 const echartData = ref({champ:[],kills:[],deaths:[],assists:[]})
 
 const props = defineProps({
@@ -85,6 +91,12 @@ watchEffect(()=>{
   }
 })
 
+function onClick() {
+  const index = arguments[0].dataIndex
+  currentGameId.value = matchList.value[index].gameId
+  currentMatchIndex.value = index
+  showChart.value = false
+}
 
 </script>
 

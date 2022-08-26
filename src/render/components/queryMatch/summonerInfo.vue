@@ -131,10 +131,12 @@ import {storeToRefs} from 'pinia'
 
 const message = useMessage()
 const store = queryStore()
-const {querySummonerId,summoner,} = storeToRefs(store)
+const {querySummonerId,summoner,localSummoner} = storeToRefs(store)
 
 onMounted(async () => {
   summoner.value = await returnSummonerData(appConfig.get('credentials'),'')
+  localSummoner.value =summoner.value.summonerInfo.name
+
   querySummonerId.value = summoner.value.summonerInfo.summonerId
 })
 

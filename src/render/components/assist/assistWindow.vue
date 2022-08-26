@@ -116,10 +116,11 @@ const showMatch = async () => {
     url: `/lol-gameflow/v1/gameflow-phase/`,
   }, appConfig.get('credentials'))).json()
   // clientStatus == '"ChampSelect"' || clientStatus == '"GameStart"'
-  if (clientStatus == '"ChampSelect"' || clientStatus == '"GameStart"'){
-    ipcRenderer.send('showCharts')
+  if (clientStatus == '"ChampSelect"' ||  clientStatus == '"InProgress"'){
+    ipcRenderer.send('showCharts',clientStatus)
     message.success('获取战绩成功 !')
-  }else {
+  }
+  else {
     message.error('请先开始一局游戏哟 !')
   }
 }

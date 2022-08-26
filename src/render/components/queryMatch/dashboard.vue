@@ -2,7 +2,10 @@
   <header class="frankTitle" v-mouse-drag="handldDrge">
     <n-space class="frankTitle"  >
       <img src="../../assets/icon/app-icon.png" draggable="false"  alt="" width="40" @click="refresh">
-      <img src="../../assets/icon/Frank.png" draggable="false"  style="margin-top: 4px">
+      <n-button style="margin: 0px 5.5px 0px 5.5px"  v-if="summoner.summonerInfo.name !== localSummoner"
+                type="primary"  secondary size="small" :bordered="false"
+                @click="searchSummonerInfo(e,localSummoner)" >我就是我</n-button>
+      <img src="../../assets/icon/Frank.png" draggable="false" v-else  style="margin-top: 4px">
       <n-space class="rightCorner">
         <n-popover :show-arrow="false" trigger="hover" :delay="1000">
           <template #trigger>
@@ -76,7 +79,8 @@ import {queryStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 
 const store = queryStore()
-const {querySummonerId,summoner,begIndex,endIndex,page,currentMode,showChart} = storeToRefs(store)
+const {querySummonerId,summoner,begIndex,endIndex,
+  page,currentMode,showChart,localSummoner} = storeToRefs(store)
 const message = useMessage()
 const searchName = ref('')
 const options = [
@@ -106,12 +110,12 @@ const options = [
   },
 ]
 
-const searchSummonerInfo = async () => {
-  if (searchName.value === ''){
+const searchSummonerInfo = async (event,local) => {
+  if (searchName.value === '' && local === undefined){
     message.error('召唤师昵称不能为空')
     return
   }
-  const nickname = encodeURI(searchName.value)
+  const nickname = local !== undefined ? encodeURI(local) :encodeURI(searchName.value)
   const credentials = appConfig.get('credentials')
   const session = await createHttpSession(credentials)
 

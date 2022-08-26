@@ -211,7 +211,7 @@ import {NAvatar, NSpace, NTag, NPopover, NGrid, NGi,NDrawer,NDrawerContent,
   NBadge, NEllipsis, useMessage} from 'naive-ui'
 import {onMounted, ref} from "vue";
 import {queryStore} from "@/render/store";
-import {storeToRefs} from "pinia/dist/pinia";
+import {storeToRefs} from "pinia";
 import {appConfig} from "@/utils/main/config";
 import {queryGameDetailsData} from "@/utils/main/queryDetailedGame";
 import {createHttp2Request, createHttpSession} from "@/utils/league-connect";
@@ -221,7 +221,7 @@ import PersonalGameDetails from "./personalGameDetails.vue";
 const active = ref(false)
 let gameDetalisList = []
 const store = queryStore()
-const {currentQueryGameId,querySummonerId,summoner,page,currentMode} = storeToRefs(store)
+const {querySummonerId,summoner,page,currentMode} = storeToRefs(store)
 let titleList = ref([])
 let summonersDataList = ref([])
 let otherData = ref(null)

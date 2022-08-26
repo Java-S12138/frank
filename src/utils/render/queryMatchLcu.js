@@ -125,6 +125,7 @@ export const queryMatchHistory = async (credentials,summonerId,begIndex,endIndex
 // 处理战绩数据
 export const dealMatchHistory = async (credentials,summonerId,begIndex,endIndex,mode) => {
   const matchList = await queryMatchHistory(credentials,summonerId,begIndex,endIndex)
+  if ( matchList.httpStatus===500){return null}
   if (matchList['games']['games'].length ===0){return null}
   let simpleMatchList = []
   let specialSimpleMatchList = []

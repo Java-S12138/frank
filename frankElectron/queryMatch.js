@@ -6,7 +6,7 @@ const createQueryMatchWindow = async (userHeader) => {
     title: 'FrankQueryMatch',
     show: false,
     frame: false,
-    resizable: true,
+    resizable: false,
     width: 1166,
     height: 650,
     center: true,

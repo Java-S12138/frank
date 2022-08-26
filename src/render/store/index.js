@@ -16,7 +16,6 @@ export const useStore = defineStore('app', {
       currentQueryGameId:0,
       currentSummonerName:'',
       currentTeam:1, // 当前队伍
-      frankVersion:'1.21.1215'
     }
   },
   actions:{
@@ -44,10 +43,21 @@ export const queryStore = defineStore('query',{
       },
       begIndex : 0,
       endIndex : 8,
-      currentQueryGameId:null,
       page:1,
       currentMode:'全部模式',
-      showChart:false
+      showChart:false,
+      matchList:[],
+      currentGameId:0,
+      currentMatchIndex:0,
+      localSummoner:null
     }
 }
+})
+
+export const frankRelease = defineStore('version',{
+  state: () => {
+    return {
+      frankVersion:'1.21.1215'
+    }
+  }
 })

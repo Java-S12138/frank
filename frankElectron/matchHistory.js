@@ -36,11 +36,11 @@ const createMatchHistoryWindow = async (userHeader) => {
 export const matchHistoryIpc = (userHeader) => {
   let matchHistoryWindow
   // 展示战力分析窗口
-  ipcMain.on('showCharts',async () => {
+  ipcMain.on('showCharts',async (event,clientStatus) => {
     matchHistoryWindow = await createMatchHistoryWindow(userHeader)
-    // if (clientStatus === '"Matchmaking"' || clientStatus === '"GameStart"' || clientStatus==='"InProgress"'){
-    //   matchHistoryWindow.webContents.send('query-enemy-summoner')
-    // }
+    if (clientStatus==='"InProgress"'){
+      matchHistoryWindow.webContents.send('query-enemy-summoner')
+    }
   })
 // 移动游戏历史窗口
   ipcMain.on('move-match-history-window', (event, pos) => {
