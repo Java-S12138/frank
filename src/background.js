@@ -14,7 +14,8 @@ import {
   listenIpc,
   makeTray,
   matchHistoryIpc,
-  queryMatchIpc
+  queryMatchIpc,
+  creatMatchAfterStartGame
 } from "../frankElectron";
 const Store = require("electron-store");Store.initRenderer()
 const path = require('path')
@@ -83,6 +84,8 @@ const runLcu = async () => {
       assistWindow.webContents.send('query-enemy-summoner')
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
+    }else if (data==='InProgress'){
+      creatMatchAfterStartGame(userHeader) // 游戏对局开始后, 打开查询历史战绩窗口
     }else if(data ==='PreEndOfGame'){ // PreEndOfGame
       if (appConfig.get('isSwitchBlacklist')){assistWindow.show()}
       assistWindow.webContents.send('show-other-summoner')

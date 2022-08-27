@@ -1,7 +1,7 @@
 import {BrowserWindow, ipcMain} from "electron";
 import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
 
-const createMatchHistoryWindow = async (userHeader) => {
+export const createMatchHistoryWindow = async (userHeader) => {
   const matchHistoryWindow = new BrowserWindow({
     title: 'FrankMatchHistory',
     show: false,
@@ -49,6 +49,32 @@ export const matchHistoryIpc = (userHeader) => {
 // 最小化游戏历史窗口
   ipcMain.on('match-history-window-min', () => {
     matchHistoryWindow.minimize()
+  })
+// 关闭游戏历史窗口
+  ipcMain.on('close-match-history-window', () => {
+    for (const currentWindow of BrowserWindow.getAllWindows()) {
+      if (currentWindow.title === 'MatchHistory'){
+        currentWindow.close()
+      }
+    }
+  })
+}
+
+export const creatMatchAfterStartGame = async (userHeader) => {
+  for (const currentWindow of BrowserWindow.getAllWindows()) {
+    if (currentWindow.title === 'MatchHistory'){
+     return
+    }
+  }
+  const matchWin = await createMatchHistoryWindow(userHeader)
+  matchWin.webContents.send('query-enemy-summoner')
+  // 移动游戏历史窗口
+  ipcMain.on('move-match-history-window', (event, pos) => {
+    matchWin.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
+  })
+// 最小化游戏历史窗口
+  ipcMain.on('match-history-window-min', () => {
+    matchWin.minimize()
   })
 // 关闭游戏历史窗口
   ipcMain.on('close-match-history-window', () => {
