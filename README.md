@@ -8,7 +8,7 @@
 🚩[软件下载](https://www.yuque.com/java-s/frank/introduction#dZwDV)
 
 ## 项目介绍
-> Frank是一款基于Electron18+Vue3, 开发的一款桌面应用程序,主要功能如下所示:
+> Frank是一款基于Electron20+Vue3, 开发的一款桌面应用程序,主要功能如下所示:
 
 💡 	自动启动游戏|隐藏分查询|真实实力分析|秒选英雄|秒禁英雄|自动接受对局|国服数据排行榜
 
