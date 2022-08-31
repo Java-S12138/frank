@@ -3,7 +3,7 @@
     <n-space>
       <n-card class="boxShadow mainCard">
         <div>
-          <v-chart style="margin-top: 10px" class="chart" :key="refresh" :option="
+          <v-chart style="margin-top: 10px"  @click="onClick" class="chart" :key="refresh" :option="
 {
       title: {
         show: true,
@@ -233,7 +233,7 @@ import {
   NCard, NSpace, NTag, NIcon, NInput,
   NButton, NColorPicker, NPopover, NPopconfirm, NCheckbox, NCheckboxGroup
 } from 'naive-ui'
-import {onMounted, ref, watch} from "vue"
+import {onMounted, ref} from "vue"
 import {appConfig} from "@/utils/main/config"
 import {ChevronsDownLeft, CircleX, Ballon} from '@vicons/tabler'
 import {ipcRenderer} from "electron"
@@ -242,7 +242,7 @@ import {storeToRefs} from "pinia/dist/pinia";
 import {sendMessageToChat} from "@/utils/main/lcu";
 
 const store = useStore()
-const {echartsData, enemyEchartsData, currentTeam, currentEchartData} = storeToRefs(store)
+const {echartsData, enemyEchartsData, currentTeam, currentEchartData,summonerInfo} = storeToRefs(store)
 let refresh = ref(1)
 let topHorse = ref(appConfig.get("topHorse"))
 let midHorse = ref(appConfig.get("midHorse"))
@@ -254,12 +254,10 @@ let midHorseType = ref(horseType.value.mid)
 let botHorseType = ref(horseType.value.bot)
 let trashHorseType = ref(horseType.value.trash)
 const sendPopover = ref(false)
+const emits = defineEmits(['summonerId'])
 
 const summonerName = ref([])
 
-watch(currentTeam, () => {
-  currentEchartData.value = currentTeam.value === 1 ? echartsData.value : enemyEchartsData.value
-})
 onMounted(() => {
   let colorTitle = document.querySelectorAll('.n-color-picker-trigger__value')
   for (const colorTitleElement of colorTitle) {
@@ -323,6 +321,11 @@ const changeHorseType = (type, horse) => {
   }
 }
 
+function onClick() {
+  const index = arguments[0].dataIndex
+  emits('summonerId', {summonerId:currentEchartData.value.summonerId[index],
+    name:currentEchartData.value.name[index]})
+}
 </script>
 
 <style scoped>

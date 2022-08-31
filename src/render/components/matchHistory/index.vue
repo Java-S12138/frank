@@ -1,12 +1,12 @@
 <template>
   <div style="overflow: hidden;">
     <n-space>
-      <left-card @summonerId="getSummonerId($event)"></left-card>
+      <left-card @summonerId="getSummonerId($event)" @backHome="backHome"></left-card>
       <n-space>
-        <bar-k-d-a
+        <bar-k-d-a @summonerId="getSummonerId($event)"
           v-if="pageCount==1" class="slide-in-right"></bar-k-d-a>
         <standing :matchData="matchData"
-                  @changePage="() => {pageCount=1}"
+                  @changePage="backHome"
                   @toGameDetailsPage="toGameDetailsPage($event)"
                   v-else-if="pageCount==2" class="slide-in-right"></standing>
         <gameDetails v-else-if="pageCount==3" class="slide-in-right"
@@ -46,12 +46,13 @@ const {
 const credentials = appConfig.get('credentials')
 
 const getChartsData = (res) => {
-  echartsData.value = {name: [], data: [], kdaHistory: [], horse: []}
+  echartsData.value = {name: [], data: [], kdaHistory: [], horse: [],summonerId:[]}
   for (const re of res) {
     echartsData.value.name.push(re.name)
     echartsData.value.data.push(re.score)
     echartsData.value.kdaHistory.push(re.kdaHistory)
     echartsData.value.horse.push(re.horse)
+    echartsData.value.summonerId.push(re.summonerId)
   }
   currentEchartData.value = echartsData.value
 }
@@ -85,6 +86,12 @@ const toGameDetailsPage = (gameId) => {
   pageCount.value = 3
   currentQueryGameId.value = gameId
 }
+
+const backHome = () => {
+  pageCount.value=1
+  currentSummonerName.value = ''
+}
+
 </script>
 
 <style scoped>

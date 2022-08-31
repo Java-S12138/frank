@@ -85,7 +85,7 @@ const runLcu = async () => {
       clearInterval(idSetInterval)
       ws.unsubscribe('/lol-champ-select/v1/session')
     }else if (data==='InProgress'){
-      creatMatchAfterStartGame(userHeader) // 游戏对局开始后, 打开查询历史战绩窗口
+      await creatMatchAfterStartGame(userHeader) // 游戏对局开始后, 打开查询历史战绩窗口
     }else if(data ==='PreEndOfGame'){ // PreEndOfGame
       if (appConfig.get('isSwitchBlacklist')){assistWindow.show()}
       assistWindow.webContents.send('show-other-summoner')

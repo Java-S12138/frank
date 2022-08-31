@@ -10,9 +10,9 @@ export const useStore = defineStore('app', {
       endGameAfterInfo:[[],[]],// 当前对局敌我双方信息
       currentBlackList:[],// 当前对局中出现的黑名单队友
       showSummonerInfoModal:false,
-      echartsData:{name:[],data:[],kdaHistory:[],horse:[]},// 图表基础数据
-      enemyEchartsData:{name:[],data:[],kdaHistory:[],horse:[]},// 图表基础数据
-      currentEchartData:{name:[],data:[],kdaHistory:[],horse:[]},
+      echartsData:{name:[],data:[],kdaHistory:[],horse:[],summonerId:[]},// 图表基础数据
+      enemyEchartsData:{name:[],data:[],kdaHistory:[],horse:[],summonerId:[]},// 图表基础数据
+      currentEchartData:{name:[],data:[],kdaHistory:[],horse:[],summonerId:[]},
       currentQueryGameId:0,
       currentSummonerName:'',
       currentTeam:1, // 当前队伍
@@ -57,7 +57,7 @@ export const queryStore = defineStore('query',{
 export const frankRelease = defineStore('version',{
   state: () => {
     return {
-      frankVersion:'1.22.1216'
+      frankVersion:'1.221.1216'
     }
   }
 })
