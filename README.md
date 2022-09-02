@@ -1,22 +1,52 @@
 # Frank Project Introduction
-
-<img src="https://cdn.nlark.com/yuque/0/2022/png/29483996/1656926658431-4b200ede-3cde-46a9-bbef-a8200e33de90.png" height="400" /> 
+<img src="https://camo.githubusercontent.com/163c90665dcebea8429b19f75a086ac3f405baa7e9eaafbb47165cd3e110601e/68747470733a2f2f63646e2e6e6c61726b2e636f6d2f79757175652f302f323032322f706e672f32393438333939362f313635363932363635383433312d34623230306564652d336364652d343661392d626265662d6138323030653333646539302e706e67" height="400" /> 
 
 > ❤️ [使用教程](https://www.yuque.com/java-s/frank/introduction)
 🫰 [提供建议](https://www.yuque.com/java-s/frank/proposal)
 🚨[反馈BUG](https://www.yuque.com/java-s/frank/bug)
 🚩[软件下载](https://www.yuque.com/java-s/frank/introduction#dZwDV)
+📺[视频介绍](https://www.bilibili.com/video/BV1nU4y1D7FQ)
 
 ## 项目介绍
 > Frank是一款基于Electron20+Vue3, 开发的一款桌面应用程序,主要功能如下所示:
 
-💡 	自动启动游戏|隐藏分查询|真实实力分析|秒选英雄|秒禁英雄|自动接受对局|国服数据排行榜
+💡 	自动启动游戏 | 排位分查询 | 英雄熟练度展示 | 秒选英雄 | 秒禁英雄 | 自动接受对局 | 国服数据排行榜
 
-💡	查看英雄对位压制|查看英雄优势对线|符文配置|自动配置符文|匹马信息可视化展示
+💡	查看英雄对位压制 | 查看英雄优势对线 | 符文配置 | 自动配置符文 | 匹马信息可视化展示
 
-💡	发送匹马信息到聊天界面|查看召唤师战绩|查看召唤师绝活英雄|查看召唤师战绩详情|
+💡	发送匹马信息到聊天界面 | 查看召唤师战绩 | 查看召唤师绝活英雄 | 查看召唤师战绩详情 | 排位笔记 | 查看永恒星碑 | 查询(隐藏)战绩
 
-💡  排位笔记|查看永恒星碑|查询(隐藏)战绩
+💡  软件如果可以启动, 但是无法正常使用请到Feedback页面查看原因 [链接](https://www.yuque.com/java-s/frank/bug)👈
+
+🚨   Frank不要和WeGame同时使用, 会有几率封号
+
+🚨   如果你的电脑是wegame强制登录英雄联盟客户端, 使用wegame登录游戏后,退出wegame即可, 然后管理员权限打开Frank
+
+> 🤤下载完成后, 双击 Frank Setup.exe安装到本地
+> 打开的时候, 右键管理员权限打开
+> 如果你觉得软件做得不错 ,可以赞助一下作者❤️
+
+![](https://img1.imgtp.com/2022/09/02/aSYxGZhB.png)
+
+
+## 软件首页
+|                                      个人生涯                                      |                                      英雄数据                                      |                                      永恒星碑                                      |
+|:------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|
+| <img src="https://img1.imgtp.com/2022/09/02/x9UE1aN6.png" width="320" alt=""/> | <img src="https://img1.imgtp.com/2022/09/02/QhEUihjj.png" width="320" alt=""/> | <img src="https://img1.imgtp.com/2022/09/02/tXeyTPos.png" width="320" alt=""/> |
+
+## 助手窗口
+|                                      英雄排行                                      |                                      英雄反制                                      |                                      符文配置                                      |
+|:------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|:------------------------------------------------------------------------------:|
+| <img src="https://img1.imgtp.com/2022/09/02/6uM7LjCu.png" width="320" alt=""/> | <img src="https://img1.imgtp.com/2022/09/02/ImlBxCLt.png" width="320" alt=""/> | <img src="https://img1.imgtp.com/2022/09/02/W4pj9ogG.png" width="320" alt=""/> |
+
+## 查询战绩
+
+![Snipaste_2022-09-02_21-54-14.png](https://img1.imgtp.com/2022/09/02/OB1a3r66.png)
+
+![Snipaste_2022-09-02_22-01-09.png](https://img1.imgtp.com/2022/09/02/Dcvu3uRA.png)
+
+![屏幕截图 2022-09-02 220049.png](https://img1.imgtp.com/2022/09/02/p2xpz1m8.png)
+
 
 
 
@@ -42,57 +72,99 @@ yarn electron:build
 ```
 ## 目录结构
 ```
-project
-│
+├─frankElectron
+│      assist.js 助手窗口
+│      home.js   首页窗口
+│      index.js  暴露函数
+│      listenCommonIpc.js 共用的监听
+│      makeTray.js        系统托盘
+│      matchHistory.js    历史战绩窗口
+│      queryMatch.js      查询战绩窗口
+│      
 ├─resources
 │      app-icon.png  项目图标
 │      riotgames.pem HTTP2验证文件
+│      
 └─src
-    │─background.js 主进程
-    │
-    ├─render 渲染进程
+    │  background.js 主进程
+    │  
+    ├─render         渲染进程
     │  │  App.vue
     │  │  main.js
-    │  │
-    │  ├─assets 资源
-    │  │  ├─css
-    │  │  ├─fonts
-    │  │  ├─icon
-    │  │  ├─runes 符文图标
-    │  │  └─tLevel英雄梯度图标
-    │  │
-    │  ├─components 组件
-    │  │  ├─assist 助手
-    │  │  │      assistWindow.vue 助手组件入口文件
-    │  │  │      champRank.vue    国服榜单页面
-    │  │  │      rune.vue         符文配置页面
-    │  │  │
-    │  │  ├─home 主页
-    │  │  │      appMain.vue 首页
-    │  │  │      dashboard.vue header
-    │  │  │      fbottom.vue bottom
-    │  │  │      index.vue 主页组件入口文件
-    │  │  │      realPower.vue 真实实力分析
-    │  │  │      setting.vue 设置界面
-    │  │  │
-    │  │  └─matchHistory 战绩查询
-    │  │         barKDA.vue 匹马信息可视化图表
-    │  │         gameDetails.vue 游戏对局详细数据
-    │  │         index.vue 战绩查询组件入口文件
-    │  │         leftCard.vue 左侧召唤师基本信息
-    │  │         standing.vue 召唤师历史战绩
-    │  │
-    │  ├─directives 窗口拖动
-    │  │
-    │  ├─router 路由
-    │  │
-    │  └─store pinia
-    │
+    │  │  
+    │  ├─assets      资源文件
+    │  │          
+    │  ├─components
+    │  │  ├─assist   助手窗口
+    │  │  │      addBlacklist.vue
+    │  │  │      assistWindow.vue
+    │  │  │      blacklist.vue
+    │  │  │      blacklistContent.vue
+    │  │  │      champRank.vue
+    │  │  │      pickSummoner.vue
+    │  │  │      restraint.vue
+    │  │  │      rune.vue
+    │  │  │      
+    │  │  ├─home  首页窗口
+    │  │  │      appMain.vue
+    │  │  │      dashboard.vue
+    │  │  │      fbottom.vue
+    │  │  │      index.vue
+    │  │  │      realPower.vue
+    │  │  │      setting.vue
+    │  │  │      
+    │  │  ├─matchHistory  历史战绩窗口
+    │  │  │      barKDA.vue
+    │  │  │      gameDetails.vue
+    │  │  │      index.vue
+    │  │  │      leftCard.vue
+    │  │  │      standing.vue
+    │  │  │      
+    │  │  └─queryMatch   查询战绩窗口
+    │  │          dashboard.vue
+    │  │          gameDetails.vue
+    │  │          index.vue
+    │  │          matchDetailed.vue
+    │  │          personalGameDetails.vue
+    │  │          recentEchart.vue
+    │  │          summonerInfo.vue
+    │  │          
+    │  ├─directives    窗口拖动
+    │  │      index.js
+    │  │      mouseDrag.js
+    │  │      
+    │  ├─router       路由文件
+    │  │      index.js
+    │  │      
+    │  └─store        状态管理 pinia
+    │          index.js
+    │          
     └─utils
-        ├─league-connect 连接英雄联盟客户端
-        │
-        ├─main 主进程工具函数
-        │
-        └─render 渲染进程工具函数
+        ├─league-connect       连接英雄联盟客户端
+        │      authentication.js
+        │      client.js
+        │      http.js
+        │      http2.js
+        │      index.js
+        │      request.js
+        │      request_deprecated.js
+        │      websocket.js
+        │      
+        ├─main                主进程工具函数
+        │      clientStart.js
+        │      config.js
+        │      gameScore.js
+        │      lcu.js
+        │      queryDetailedGame.js
+        │      
+        └─render              渲染进程工具函数
+                blacklistUtils.js
+                echarts.js
+                getUserInfo.js
+                lolDataList.js
+                matchHistoryLcu.js
+                queryMatchLcu.js
+                renderLcu.js
+                request.js
+                RIOT.js
 ```
-

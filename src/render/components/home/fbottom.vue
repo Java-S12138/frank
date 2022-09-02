@@ -47,18 +47,20 @@
           <n-button text v-else>
             <n-popover trigger="hover" :show-arrow="false">
               <template #trigger>
-                <n-icon size="20">
+                <n-icon size="20" @click="openUpdate">
                   <ArrowUpCircle></ArrowUpCircle>
                 </n-icon>
               </template>
-              <span>Frank当前版本V {{ frankVersion }}</span>
+              <span>当前版本 {{ frankVersion }}</span>
             </n-popover>
           </n-button>
         </n-space>
       </n-space>
     </n-card>
+
   </div>
 </template>
+
 
 <script setup>
 import {NCard, NSpace, NButton, NIcon, NPopover} from 'naive-ui'
@@ -78,7 +80,7 @@ onMounted(async () => {
   const onLineFrankVersion = (await request({
     url: ' https://unpkg.com/@java_s/op.gg/package.json'
   })).data.frankVersion
-  if (frankVersion.value != onLineFrankVersion) {
+  if (frankVersion.value !== onLineFrankVersion) {
     showPopover.value = true
   }
 })

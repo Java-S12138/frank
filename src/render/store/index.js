@@ -57,7 +57,7 @@ export const queryStore = defineStore('query',{
 export const frankRelease = defineStore('version',{
   state: () => {
     return {
-      frankVersion:'1.221.1216'
+      frankVersion:'1.23.1216'
     }
   }
 })
