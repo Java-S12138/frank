@@ -22,13 +22,12 @@
 
 🚨   Frank不要和WeGame同时使用, 会有几率封号
 
-🚨   如果你的电脑是wegame强制登录英雄联盟客户端, 使用wegame登录游戏后,退出wegame即可, 然后管理员权限打开Frank
+🚨   如果你的电脑是wegame强制登录英雄联盟客户端
+
+🚨   使用wegame登录游戏后,退出wegame即可, 然后管理员权限打开Frank
 
 > 🤤下载完成后, 双击 Frank Setup.exe安装到本地
 > 打开的时候, 右键管理员权限打开
-> 如果你觉得软件做得不错 ,可以赞助一下作者❤️
-
-![](https://img1.imgtp.com/2022/09/02/aSYxGZhB.png)
 
 
 ## 软件首页
