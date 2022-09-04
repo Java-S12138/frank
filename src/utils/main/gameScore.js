@@ -1,28 +1,92 @@
-import {queryMatchHistory} from "@/utils/main/lcu";
 import {appConfig} from "@/utils/main/config";
+import {createHttp1Request, createHttp2Request, createHttpSession} from "@/utils/league-connect";
 
+
+// 查询当前游戏模式
+const queryCurrentGameMode = async (credentials) => {
+// 获取当前游戏模式信息
+  const currentGameInfo = (await createHttp1Request({
+    method: "GET",
+    url: '/lol-gameflow/v1/session',
+  }, credentials)).json()
+  try {
+    return currentGameInfo.gameData.queue.id
+  } catch (e) {
+    return null
+  }
+}
+
+// 获取最近的比赛记录
+const getRencentMatchHistoty = async (credentials,session,summonerId) => {
+  const matchList = (await createHttp2Request({
+    method: "GET",
+    url: `/lol-match-history/v3/matchlist/account/${summonerId}`,
+  }, session, credentials)).json()['games']['games'].reverse()
+  return matchList.slice(0,10)
+}
+
+// 查询比赛记录 (最近5场排位)
+const queryMatchHistory = async (credentials,session,summonerId) => {
+  const currentGameMode = await queryCurrentGameMode(credentials)
+  console.log('当前游戏模式:', currentGameMode)
+  // if (currentGameMode === null){
+  //   return await getRencentMatchHistoty(credentials,session,summonerId)
+  // }
+
+  let classicMode = []
+  let matchCount = 0
+  for (let i = 0; i < 100; i += 20) {
+    console.log(123)
+    const matchList = (await createHttp2Request({
+      method: "GET",
+      url: `/lol-match-history/v3/matchlist/account/${summonerId}?begIndex=${i}&endIndex=${i + 20}`,
+    }, session, credentials)).json()['games']['games'].reverse()
+
+    for (const matchListElement of matchList) {
+      if (matchListElement.queueId == '450' && matchCount < 10) {
+        matchCount += 1
+        classicMode.push(matchListElement)
+      }
+    }
+    if (matchCount === 10) {
+      break
+    }
+  }
+  return classicMode
+}
 
 // 获取召唤师游戏评分分数
-export const getGameScore = async (credentials,summonerId) => {
-    let classicModeGames = await queryMatchHistory(credentials,summonerId)
-    let gameScore = 0
-    let gameCount = classicModeGames.length
-    let kdaHistory = ''
-    for (const modeGame of classicModeGames) {
-      gameScore += analyseSingleMatch(modeGame.participants[0].stats)
-      let tempKad = `${modeGame.participants[0].stats.kills}/${modeGame.participants[0].stats.deaths}/${modeGame.participants[0].stats.assists}  `
-      kdaHistory +=tempKad
-    }
-    gameScore = parseInt(gameScore/gameCount)
-    return {score:gameScore,horse:jundgeHorse(gameScore),kdaHistory:kdaHistory}
+export const getGameScore = async (credentials, summonerId,session) => {
+  let classicModeGames = await queryMatchHistory(credentials,session, summonerId)
+  console.log(classicModeGames)
+  let gameScore = 0
+  let gameCount = classicModeGames.length
+  let kdaHistory = ''
+  for (const modeGame of classicModeGames) {
+    gameScore += analyseSingleMatch(modeGame.participants[0].stats)
+    let tempKad = `${modeGame.participants[0].stats.kills}/${modeGame.participants[0].stats.deaths}/${modeGame.participants[0].stats.assists}  `
+    kdaHistory += tempKad
+  }
+  gameScore = parseInt(gameScore / gameCount)
+  return {score: gameScore, horse: jundgeHorse(gameScore), kdaHistory: kdaHistory}
 }
 // 通过分析单场数据得出单场得分情况
 const analyseSingleMatch = (match) => {
   let score = 100
-  if (match['firstBloodKill']){score+=10} // 一血 加10分
-  if (match['firstBloodAssist']){score+=5}// 一血助攻 加5分
-  if (match['causedEarlySurrender']){score-=10} // 15投发起者 扣10分
-  if (match['win']){score+=5} else {score-=5}// 游戏胜利 加5分
+  if (match['firstBloodKill']) {
+    score += 10
+  } // 一血 加10分
+  if (match['firstBloodAssist']) {
+    score += 5
+  }// 一血助攻 加5分
+  if (match['causedEarlySurrender']) {
+    score -= 10
+  } // 15投发起者 扣10分
+  if (match['win']) {
+    score += 5
+  } else {
+    score -= 5
+  }// 游戏胜利 加5分
   score += match['doubleKills'] * 2 // 一次双杀加2分
   score += match['tripleKills'] * 5 // 一次三杀加5分
   score += match['quadraKills'] * 10 // 一次四杀加10分
@@ -33,13 +97,13 @@ const analyseSingleMatch = (match) => {
 }
 // 判断是否为 上等马或者下等马
 const jundgeHorse = (score) => {
-  if (score>=120){
+  if (score >= 120) {
     return appConfig.get('horseType.top')
-  }else if (score>=110){
+  } else if (score >= 110) {
     return appConfig.get('horseType.mid')
-  }else if(score>=100){
+  } else if (score >= 100) {
     return appConfig.get('horseType.bot')
-  }else if (score<100){
+  } else if (score < 100) {
     return appConfig.get('horseType.trash')
   }
 }

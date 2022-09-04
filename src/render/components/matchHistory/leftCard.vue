@@ -111,7 +111,7 @@ const getEnemyInfo = async () => {
   enemySummonerInfo.value = await getSummonerNickName(credentials, enemyIdList)
   getEnemyChartsData(enemySummonerInfo.value)
 }
-getEnemyInfo()
+// getEnemyInfo()
 
 const getEnemyChartsData = (res) => {
   enemyEchartsData.value = {name: [], data: [], kdaHistory: [], horse: [], summonerId: []}

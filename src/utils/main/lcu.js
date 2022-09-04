@@ -187,47 +187,24 @@ export const getChatSelectChampId = async (credentials) => {
 }
 // 查询对局中的所有召唤师的Id
 export const queryAllSummonerId = async (credentials) => {
-  let summonerIdList = []
-  const chatId = await getChatSelectChampId(credentials)
-  if (chatId == null){return null}
-
-  const summonersId = (await createHttp1Request({
-    method: "GET",
-    url: `/lol-chat/v1/conversations/${chatId}/messages`,
-  }, credentials)).json()
-  for (const summonersIdElement of summonersId) {
-    summonerIdList.push(summonersIdElement.fromSummonerId)
-  }
-  // 数组去重
-  summonerIdList = [... new Set(summonerIdList)]
+  // let summonerIdList = []
+  // const chatId = await getChatSelectChampId(credentials)
+  // if (chatId == null){return null}
+  //
+  // const summonersId = (await createHttp1Request({
+  //   method: "GET",
+  //   url: `/lol-chat/v1/conversations/${chatId}/messages`,
+  // }, credentials)).json()
+  // for (const summonersIdElement of summonersId) {
+  //   summonerIdList.push(summonersIdElement.fromSummonerId)
+  // }
+  // // 数组去重
+  // summonerIdList = [... new Set(summonerIdList)]
   // todo 测试
-  // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
+  let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return summonerIdList
 }
-// 查询比赛记录 (最近5场排位)
-export const queryMatchHistory = async (credentials,summonerId) => {
-  let classicMode = []
-  let matchCount = 0
-  const currentGameMode = await queryCurrentGameMode(credentials)
-  console.log('当前游戏模式:',currentGameMode)
-  const session = await createHttpSession(credentials)
-  const matchList = (await createHttp2Request({
-    method: "GET",
-    url: `/lol-match-history/v3/matchlist/account/${summonerId}`,
-  },session, credentials)).json()['games']['games'].reverse()
-  session.close()
-  for (const matchListElement of matchList) {
-    //matchListElement.queueId == currentGameMode &&
-    if (matchListElement.queueId == currentGameMode && matchCount < 5){
-      matchCount +=1
-      classicMode.push(matchListElement)
-    }else if (matchCount <5) {
-      matchCount +=1
-      classicMode.push(matchListElement)
-    }
-  }
-  return classicMode
-}
+
 // 根据召唤师ID查询信息
 const querySummonerInfo = async (credentials,summonerId) => {
   const summonerInfo = (await createHttp1Request({
@@ -239,6 +216,7 @@ const querySummonerInfo = async (credentials,summonerId) => {
 // 获取召唤师昵称和等级和头像
 export const getSummonerNickName = async (credentials,enemyIdList) => {
   console.log('[info] 获取召唤师昵称和等级和头像...')
+  const session = await createHttpSession(credentials)
   let allSummonerId
   if (enemyIdList != null){
     allSummonerId = enemyIdList
@@ -256,7 +234,7 @@ export const getSummonerNickName = async (credentials,enemyIdList) => {
     let iconId = summonerInfo.profileIconId
     let level = summonerInfo.summonerLevel
     // 通过召唤师ID查询最近5场排位进行分数分析 得出匹马信息
-    let gameSocreInfo = await getGameScore(credentials,summonerId)
+    let gameSocreInfo = await getGameScore(credentials,summonerId,session)
     let rankPoint = await queryRankPoint(credentials,summonerInfo.puuid)
     if (rankPoint === null){
       rankPoint = `Lv: ${level}`
@@ -267,6 +245,8 @@ export const getSummonerNickName = async (credentials,enemyIdList) => {
       rankPoint:rankPoint
     })
   }
+  console.log(allSummonerNickName)
+  session.close()
   return allSummonerNickName
 }
 // 获取当前排位模式的段位分数

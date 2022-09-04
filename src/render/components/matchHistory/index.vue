@@ -3,14 +3,15 @@
     <n-space>
       <left-card @summonerId="getSummonerId($event)" @backHome="backHome"></left-card>
       <n-space>
-        <bar-k-d-a @summonerId="getSummonerId($event)"
-          v-if="pageCount==1" class="slide-in-right"></bar-k-d-a>
-        <standing :matchData="matchData"
-                  @changePage="backHome"
-                  @toGameDetailsPage="toGameDetailsPage($event)"
-                  v-else-if="pageCount==2" class="slide-in-right"></standing>
-        <gameDetails v-else-if="pageCount==3" class="slide-in-right"
-                     @changePageSencond="() => {pageCount=2}"></gameDetails>
+<!--        <bar-k-d-a @summonerId="getSummonerId($event)"-->
+<!--          v-if="pageCount==1" class="slide-in-right"></bar-k-d-a>-->
+<!--        <standing :matchData="matchData"-->
+<!--                  @changePage="backHome"-->
+<!--                  @toGameDetailsPage="toGameDetailsPage($event)"-->
+<!--                  v-else-if="pageCount==2" class="slide-in-right"></standing>-->
+<!--        <gameDetails v-else-if="pageCount==3" class="slide-in-right"-->
+<!--                     @changePageSencond="() => {pageCount=2}"></gameDetails>-->
+        <recent-game></recent-game>
       </n-space>
     </n-space>
   </div>
@@ -21,6 +22,7 @@ import LeftCard from "@/render/components/matchHistory/leftCard";
 import BarKDA from "@/render/components/matchHistory/barKDA";
 import Standing from "@/render/components/matchHistory/standing";
 import GameDetails from "@/render/components/matchHistory/gameDetails";
+import RecentGame from "@/render/components/matchHistory/recentGame";
 import {NSpace} from "naive-ui";
 import {onBeforeMount, ref} from "vue";
 import {useStore} from "@/render/store";
