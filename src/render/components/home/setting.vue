@@ -65,7 +65,7 @@
         <n-space>
           <n-tag :bordered="false" >赞助发电</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
-                    secondary @click="showModal = true">赞助作者持续开发
+                    secondary @click="() => {showModal = true}">赞助作者持续开发
           </n-button>
         </n-space>
 
@@ -151,12 +151,11 @@ import {
 import {optionsChampion} from '@/utils/render/lolDataList'
 import {ref} from "vue";
 import {appConfig} from "@/utils/main/config"
-import {useStore} from "@/render/store";
 import {ipcRenderer} from "electron";
 
+const emits = defineEmits(['changePage'])
 let isExist = ref(false)
 let directory = ref('')
-const store = useStore()
 let isAutoPick = ref(appConfig.get('autoPickChampion.isAuto'))
 let pickChampion = ref(appConfig.get('autoPickChampion.championId'))
 const optionsChampionPick = optionsChampion
@@ -167,6 +166,11 @@ const optionsChampionBan = optionsChampion
 let isAccept = ref(appConfig.get('autoAccept'))
 const message = useMessage()
 const showModal = ref(false)
+
+
+const toHomePage = () => {
+  emits('changePage')
+}
 
 // 判断是否已经获取路径
 if (appConfig.get('gameDirectory') != '') {
@@ -225,10 +229,6 @@ const handleUpdateAccept = () => {
   appConfig.set('autoAccept', isAccept.value)
 }
 
-// 回到首页
-const toHomePage = () => {
-  store.pageIncrease()
-}
 
 // 恢复默认设置
 const toReset = async () => {

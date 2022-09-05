@@ -194,6 +194,14 @@
           <n-space>
             <n-button
               text
+              @click="() => {pageCount=1}" color="black">
+              <n-icon size="25">
+                <PictureInPictureTop/>
+              </n-icon>
+            </n-button>
+
+            <n-button
+              text
               @click="handleMin" color="black">
               <n-icon size="25">
                 <ChevronsDownLeft/>
@@ -235,14 +243,14 @@ import {
 } from 'naive-ui'
 import {onMounted, ref} from "vue"
 import {appConfig} from "@/utils/main/config"
-import {ChevronsDownLeft, CircleX, Ballon} from '@vicons/tabler'
+import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from '@vicons/tabler'
 import {ipcRenderer} from "electron"
-import {useStore} from "@/render/store";
+import {matchStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {sendMessageToChat} from "@/utils/main/lcu";
 
-const store = useStore()
-const {echartsData, enemyEchartsData, currentTeam, currentEchartData,summonerInfo} = storeToRefs(store)
+const store = matchStore()
+const {echartsData, enemyEchartsData, currentTeam, currentEchartData,summonerInfo,pageCount} = storeToRefs(store)
 let refresh = ref(1)
 let topHorse = ref(appConfig.get("topHorse"))
 let midHorse = ref(appConfig.get("midHorse"))
@@ -254,7 +262,7 @@ let midHorseType = ref(horseType.value.mid)
 let botHorseType = ref(horseType.value.bot)
 let trashHorseType = ref(horseType.value.trash)
 const sendPopover = ref(false)
-const emits = defineEmits(['summonerId'])
+const emits = defineEmits(['summonerId','changePage'])
 
 const summonerName = ref([])
 
@@ -277,7 +285,6 @@ const closeWindow = () => {
 const handleMin = () => {
   ipcRenderer.send('match-history-window-min')
 }
-
 const sendToChat = () => {
   if (summonerName.value.length ===0){sendPopover.value = !sendPopover.value; return}
   let sendMessage = 'Powered By Frank \n'
@@ -347,8 +354,8 @@ function onClick() {
 
 .suspension {
   position: absolute;
-  top: 30px;
-  right: 25px;
+  top: 7px;
+  right: 3px;
 }
 
 .n-popconfirm__action {

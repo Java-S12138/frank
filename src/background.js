@@ -17,6 +17,7 @@ import {
   queryMatchIpc,
   creatMatchAfterStartGame
 } from "../frankElectron";
+
 const Store = require("electron-store");Store.initRenderer()
 const path = require('path')
 

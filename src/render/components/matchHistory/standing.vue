@@ -1,13 +1,14 @@
 <template>
   <div>
-    <n-card class="mainCard boxShadow">
+    <n-card class="mainCard boxShadow" content-style="padding-right:0px">
       <n-space>
-        <n-list style="margin-left: 20px;margin-top: 20px;width: 440px">
-        <n-scrollbar style="max-height: 460px">
-          <n-list-item v-for="match in matchData.slice(0,matchData.length-1)" >
+        <n-list style="margin-left: 20px;margin-top: 20px;width: 440px;" >
+        <n-scrollbar style="max-height: 490px">
+          <n-list-item style="padding: 0px;width: 390px;"
+            v-for="match in matchData.slice(0,matchData.length-1)" >
             <n-space vertical style="margin-top: 10px" >
               <!--        头像 技能 模式-->
-              <n-space  @click="toGameDetailsPage(match.gameId)">
+              <n-space  @click="toGameDetailsPage(match.gameId)" >
                 <n-avatar
                   round
                   :bordered="false"
@@ -70,31 +71,35 @@
         </n-list>
 
 <!--        召唤师绝活英雄展示-->
-        <n-space vertical style="margin-top: 40px;margin-left: 20px" :size="[2,44.5]">
-          <n-space v-for="superChamp in matchData[matchData.length-1]">
-            <n-avatar
-              round
-              :bordered="false"
-              :size="50"
-              :src="superChamp.champImgUrl"
-              fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-              style="display: block"
-            />
-            <n-space vertical :size="[2,5]">
-              <n-tag size="small" round  type="warning" :bordered="false">
-                熟练度: {{ superChamp.championPoints }}
-              </n-tag>
-              <n-tag size="small" round  type="default" :bordered="false" style="">
-                <p style="color: #9AA4AF"> 英雄等级: {{ superChamp.champLevel }}</p>
-              </n-tag>
+        <n-scrollbar style="max-height: 490px;margin-top: 20px">
+          <n-space vertical :size="[2,20]"
+                   style="margin-left: 20px;padding-top: 10px;padding-right: 15px" >
+            <n-space v-for="superChamp in matchData[matchData.length-1]">
+              <n-avatar
+                round
+                :bordered="false"
+                :size="50"
+                :src="superChamp.champImgUrl"
+                fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+                style="display: block"
+              />
+              <n-space vertical :size="[2,5]">
+                <n-tag size="small" round  type="warning" :bordered="false">
+                  熟练度: {{ superChamp.championPoints }}
+                </n-tag>
+                <n-tag size="small" round  type="default" :bordered="false" style="">
+                  <p style="color: #9AA4AF"> 英雄等级: {{ superChamp.champLevel }}</p>
+                </n-tag>
+              </n-space>
             </n-space>
           </n-space>
-        </n-space>
+        </n-scrollbar>
+
       </n-space>
 
       <div class="suspension">
         <n-space>
-          <n-tag :bordered="false">点击英雄头像查看完整战绩</n-tag>
+          <n-tag :bordered="false" style="color: #9AA4AF">点击英雄头像查看完整战绩</n-tag>
           <n-button
             text
             @click="handleMin" color="black">
@@ -155,10 +160,10 @@ export default {
       emit('changePage')
     }
     const toGameDetailsPage = (gameId) => {
-      emit('toGameDetailsPage',gameId)
+      emit('toGameDetailsPage',{gameId:gameId,lastPage:2})
     }
     const handleMin = () => {
-      ipcRenderer.send('mainwin-min')
+      ipcRenderer.send('match-history-window-min')
     }
     return {
       handleChangePosition,backPage,handleMin,toGameDetailsPage
@@ -182,7 +187,7 @@ export default {
 }
 .suspension {
   position: absolute;
-  bottom: 5px;
-  right: 60px;
+  top: 7px;
+  right: 3px;
 }
 </style>

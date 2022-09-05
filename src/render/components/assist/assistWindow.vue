@@ -25,7 +25,7 @@ import {onMounted, ref} from "vue";
 import {ipcRenderer} from "electron";
 import {createHttp1Request} from "@/utils/league-connect";
 import {appConfig} from "@/utils/main/config";
-import {useStore} from "@/render/store";
+import {assistStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName} from "@/utils/render/blacklistUtils";
 
@@ -50,7 +50,7 @@ onMounted(() => {
 const tabsInstRef = ref(['champRank', 'rune','blacklist'])
 let transValue = ref('champRank')
 const message = useMessage()
-const store = useStore()
+const store = assistStore()
 const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo} = storeToRefs(store)
 const isSwitchBlacklist = appConfig.get('isSwitchBlacklist')
 

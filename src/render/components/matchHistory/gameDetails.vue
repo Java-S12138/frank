@@ -1,6 +1,6 @@
 <template>
   <div>
-    <n-card class="mainCard boxShadow">
+    <n-card class="mainCard boxShadow" content-style="padding-top:30px">
       <n-space vertical>
         <n-grid :cols="7">
           <n-gi>
@@ -56,7 +56,7 @@
           </n-gi>
         </n-grid>
       </n-space>
-      <n-space vertical  style="margin-top: 25px" :size="[2,21]" >
+      <n-space vertical  style="margin-top: 25px" :size="[2,25]" >
         <!--        队伍一-->
         <n-space justify="space-around" v-for="(singleData,index) in summonersDataList">
           <n-space vertical :size="[2,0]">
@@ -246,7 +246,7 @@ import {
 } from 'naive-ui'
 import {ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
 import {onMounted,ref} from "vue";
-import {useStore} from "@/render/store";
+import {matchStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {appConfig} from "@/utils/main/config";
 import {queryGameDetailsData} from "@/utils/main/queryDetailedGame";
@@ -258,10 +258,15 @@ export default {
     NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,NEllipsis,
     NPopover,NList, NListItem,NScrollbar,NGrid,NGi,NBadge,ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon
   },
-  setup(props,{emit}){
+  props: {
+    lastPage: {
+      type: Number
+    }
+  },
+  setup(props){
     let gameDetalisList = []
-    const store = useStore()
-    const {currentQueryGameId,currentSummonerName} = storeToRefs(store)
+    const store = matchStore()
+    const {currentQueryGameId,currentSummonerName,pageCount} = storeToRefs(store)
     let titleList = ref([])
     let summonersDataList = ref([])
     let otherData = ref(null)
@@ -365,10 +370,14 @@ export default {
       })
     }
     const backPageSencond = () => {
-      emit('changePageSencond')
+      if (props.lastPage===1){
+        pageCount.value = 1
+      }else {
+        pageCount.value = 2
+      }
     }
     const handleMin = () => {
-      ipcRenderer.send('mainwin-min')
+      ipcRenderer.send('match-history-window-min')
     }
 
     // 图片不存在显示默认图片
@@ -413,8 +422,8 @@ export default {
 }
 .suspension {
   position: absolute;
-  bottom: 5px;
-  right: 60px;
+  top: 7px;
+  right: 3px;
 }
 .scale-in-hor-left {
   -webkit-animation: scale-in-hor-left 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;

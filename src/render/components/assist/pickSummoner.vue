@@ -79,14 +79,14 @@ import {CircleX} from '@vicons/tabler'
 import AddBlacklist from './addBlacklist.vue'
 import {ref} from "vue";
 import {ipcRenderer} from "electron";
-import {useStore} from "@/render/store";
+import {assistStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 
 
 const active = ref(false)
 const summonersList = ref([])
 const enemySummonersList = ref([])
-const store = useStore()
+const store = assistStore()
 const {endGameAfterInfo, showSummonerInfoModal} = storeToRefs(store)
 const blacklistName = ref('')
 const blacklistId = ref('')

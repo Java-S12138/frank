@@ -130,7 +130,7 @@ import {onMounted, reactive, ref,watch} from "vue"
 import PickSummoner from "./pickSummoner.vue"
 import {appConfig} from "@/utils/main/config";
 import AddBlacklist from "./addBlacklist.vue"
-import {useStore} from "@/render/store";
+import {assistStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 
 const active = ref(false)
@@ -139,7 +139,7 @@ const blacklist = ref([])
 const detialsJson = reactive({name:'',date:'',content:'',tag:'',summonerId:''})
 const message = useMessage()
 let localBlacklist
-const store = useStore()
+const store = assistStore()
 const {currentBlackList} = storeToRefs(store)
 
 watch(currentBlackList.value,() => {

@@ -21,7 +21,7 @@
       </n-popover>
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
         <template #trigger>
-          <n-button text circle color="black" @click="toSettingPage">
+          <n-button text circle color="black" @click="changePage">
             <n-icon size="24">
               <settings/>
             </n-icon>
@@ -38,7 +38,7 @@
             </n-icon>
           </n-button>
         </template>
-        是否退出Frank
+        是否退出Frank?
       </n-popconfirm>
     </n-space>
   </header>
@@ -47,17 +47,15 @@
 <script setup>
 import {NIcon, NSpace, NButton, NPopover,NPopconfirm} from 'naive-ui'
 import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
-import {useStore} from "@/render/store";
 import {ipcRenderer} from 'electron'
 import {ref} from "vue";
 import {appConfig} from "@/utils/main/config";
 
-
-const store = useStore()
+const emits = defineEmits(['changePage'])
 let isConnectSuccess = ref(appConfig.get('credentials.port'))
 
-const toSettingPage = () => {
-  store.pageIncrease()
+const changePage = () => {
+  emits('changePage')
 }
 
 const handldDrge = (pos) => {

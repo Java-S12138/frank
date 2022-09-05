@@ -63,7 +63,7 @@
           </n-space>
         </n-space>
 
-        <n-space style="margin-top: 12px;width: 200px" v-if="enemySummonerInfo.length != 0" justify="space-between">
+        <n-space style="margin-top: 30px;width: 200px" v-if="enemySummonerInfo.length != 0" justify="space-between">
           <n-button size="small" :bordered="currentTeam===1" @click="changeCurrentTeam"
                     type="success" dashed>我方召唤师
           </n-button>
@@ -90,17 +90,16 @@
 import {NCard, NAvatar, NSpace, NTag, NButton, NSpin} from 'naive-ui'
 import {appConfig} from "@/utils/main/config";
 import {queryEnemySummonerId} from "@/utils/render/renderLcu";
-import {ref} from "vue";
 import {getSummonerNickName} from "@/utils/main/lcu";
 import {storeToRefs} from "pinia/dist/pinia";
-import {useStore} from "@/render/store";
+import {matchStore} from "@/render/store";
 import {ipcRenderer} from "electron";
 const emits = defineEmits(['summonerId','backHome'])
 
 const horseType = appConfig.get('horseType')
-const enemySummonerInfo = ref([])
-const store = useStore()
-const {enemyEchartsData, currentEchartData,echartsData,currentTeam,currentSummonerName, summonerInfo} = storeToRefs(store)
+const store = matchStore()
+const {enemyEchartsData, currentEchartData,echartsData,currentTeam,
+  currentSummonerName, summonerInfo,enemySummonerInfo} = storeToRefs(store)
 
 ipcRenderer.on('query-enemy-summoner', () => {
   getEnemyInfo()
@@ -111,7 +110,7 @@ const getEnemyInfo = async () => {
   enemySummonerInfo.value = await getSummonerNickName(credentials, enemyIdList)
   getEnemyChartsData(enemySummonerInfo.value)
 }
-// getEnemyInfo()
+getEnemyInfo()
 
 const getEnemyChartsData = (res) => {
   enemyEchartsData.value = {name: [], data: [], kdaHistory: [], horse: [], summonerId: []}
