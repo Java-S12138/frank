@@ -1,7 +1,7 @@
 <template>
   <div>
-    <n-card class="boxShadow mainCard" content-style="padding:20px 10px 20px 10px">
-      <n-grid x-gap="20" :cols="5" style="margin-top: 15px">
+    <n-card class="boxShadow mainCard" content-style="padding:20px 10px 20px 10px" >
+      <n-grid x-gap="20" :cols="5" style="margin-top: 15px" v-if="summonerInfo.length!==0">
         <n-gi v-for="summoner in (currentTeam === 1 ? summonerInfo:enemySummonerInfo)">
           <n-space vertical :size="[10,4]" class="alignCenter">
             <n-avatar
@@ -39,9 +39,8 @@
             </div>
           </n-space>
         </n-gi>
-
       </n-grid>
-
+      <loading-anime v-else></loading-anime>
       <div class="suspension">
         <n-space>
           <n-button
@@ -82,8 +81,8 @@
           </n-popover>
         </n-space>
       </div>
-
     </n-card>
+
   </div>
 </template>
 
@@ -102,6 +101,7 @@ import {matchStore} from "@/render/store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from '@vicons/tabler'
 import {ipcRenderer} from "electron";
+import LoadingAnime from "@/render/components/matchHistory/loadingAnime";
 
 const emits = defineEmits(['changePage','summonerId','toGameDetailsPage'])
 const store = matchStore()

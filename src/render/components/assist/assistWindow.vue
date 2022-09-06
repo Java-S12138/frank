@@ -1,5 +1,6 @@
 <template>
-  <n-tabs type="segment" :animated=true ref="tabsInstRef" :value="transValue">
+  <n-tabs type="segment" :animated=true
+          ref="tabsInstRef" :value="transValue">
     <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'"></n-tab>
     <n-tab name="match" tab="查看战绩" @click="showMatch"></n-tab>
     <n-tab v-if="isSwitchBlacklist" name="blacklist" tab="排位笔记" @click="transValue='blacklist'"></n-tab>
@@ -115,7 +116,6 @@ const showMatch = async () => {
     method: "GET",
     url: `/lol-gameflow/v1/gameflow-phase/`,
   }, appConfig.get('credentials'))).json()
-  // clientStatus == '"ChampSelect"' || clientStatus == '"GameStart"'
   if (clientStatus == '"ChampSelect"' ||  clientStatus == '"InProgress"'){
     ipcRenderer.send('showCharts',clientStatus)
     message.success('获取战绩成功 !')

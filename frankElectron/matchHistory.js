@@ -34,21 +34,28 @@ export const createMatchHistoryWindow = async (userHeader) => {
 }
 
 export const matchHistoryIpc = (userHeader) => {
-  let matchHistoryWindow
   // 展示战力分析窗口
   ipcMain.on('showCharts',async (event,clientStatus) => {
-    matchHistoryWindow = await createMatchHistoryWindow(userHeader)
+    const matchHistoryWindow = await createMatchHistoryWindow(userHeader)
     if (clientStatus==='"InProgress"'){
       matchHistoryWindow.webContents.send('query-enemy-summoner')
     }
   })
 // 移动游戏历史窗口
   ipcMain.on('move-match-history-window', (event, pos) => {
-    matchHistoryWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
+    for (const currentWindow of BrowserWindow.getAllWindows()) {
+      if (currentWindow.title === 'MatchHistory'){
+        currentWindow.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
+      }
+    }
   })
 // 最小化游戏历史窗口
   ipcMain.on('match-history-window-min', () => {
-    matchHistoryWindow.minimize()
+    for (const currentWindow of BrowserWindow.getAllWindows()) {
+      if (currentWindow.title === 'MatchHistory'){
+        currentWindow.minimize()
+      }
+    }
   })
 // 关闭游戏历史窗口
   ipcMain.on('close-match-history-window', () => {
@@ -68,20 +75,4 @@ export const creatMatchAfterStartGame = async (userHeader) => {
   }
   const matchWin = await createMatchHistoryWindow(userHeader)
   matchWin.webContents.send('query-enemy-summoner')
-  // 移动游戏历史窗口
-  ipcMain.on('move-match-history-window', (event, pos) => {
-    matchWin.setBounds({ x: pos.x, y: pos.y, width: 1024, height: 576 })
-  })
-// 最小化游戏历史窗口
-  ipcMain.on('match-history-window-min', () => {
-    matchWin.minimize()
-  })
-// 关闭游戏历史窗口
-  ipcMain.on('close-match-history-window', () => {
-    for (const currentWindow of BrowserWindow.getAllWindows()) {
-      if (currentWindow.title === 'MatchHistory'){
-        currentWindow.close()
-      }
-    }
-  })
 }

@@ -15,7 +15,6 @@ const createQueryMatchWindow = async (userHeader) => {
       contextIsolation: false,
       enableRemoteModule: true,
       webSecurity: false,
-      // devTools:false
     }
   })
   queryMatchWindow.on('ready-to-show', () => {
@@ -37,8 +36,8 @@ export const queryMatchIpc = async (mainWindow,userHeader) => {
   let queryMatchWindow
   // 展示查询战绩窗口
   ipcMain.on('show-query-match',async () => {
-    queryMatchWindow = await createQueryMatchWindow(userHeader)
     mainWindow.hide()
+    queryMatchWindow = await createQueryMatchWindow(userHeader)
   })
 // 移动游戏历史窗口
   ipcMain.on('move-query-match-window', (event, pos) => {
