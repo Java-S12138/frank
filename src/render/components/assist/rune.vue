@@ -1,5 +1,5 @@
 <template>
-  <div v-if="runeDataListFor.length !=0">
+  <div v-if="runeDataListFor.length !==0">
     <n-card class="boxShadow" size="small">
       <n-space justify="space-between">
         <n-badge :value="isAutoRune" color="#ff6666">
@@ -117,7 +117,7 @@
 import {ipcRenderer} from "electron"
 import {
   NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon,
-  NBadge, NButton, NPopconfirm, useMessage,NDrawer, NDrawerContent
+  NBadge, NButton, useMessage,NDrawer, NDrawerContent
 } from 'naive-ui'
 import {ref} from "vue";
 import {champDict, mapNameFromUrl} from '../../../utils/render/lolDataList'
@@ -170,6 +170,8 @@ ipcRenderer.on('current-champ-select', (event, data) => {
   if (currentGameMode === ''){currentGameMode = data.mode}
 })
 
+
+
 const getRuneData = async (gameMode) => {
   // 判断当前英雄是否配置看自动符文
   if (appConfig.has(`autoRune.${currentChamp.value}` )){
@@ -217,9 +219,11 @@ const getRuneData = async (gameMode) => {
   }
 
 }
-
-
-
+// const test = () => {
+//   currentChampAlias.value = 'Akali'
+//   getRuneData('')
+// }
+// test()
 
 // 切换不同的装备进行显示
 const changeItemsImg = () => {
@@ -233,8 +237,9 @@ const changeItemsImg = () => {
 // 获取装备图片链接数组
 const getItemImgUrl = (blocks) => {
   for (const blocksElement of blocks) {
-    if (blocksElement.type.indexOf('Recommended') != -1) {
+    if (blocksElement.type.indexOf('Core')!==-1) {
       var currentItemList = []
+      if (blocksElement.items.length > 3){blocksElement.items = blocksElement.items.slice(1)}
       for (const items of blocksElement.items) {
         const itemImgUrl = `https://game.gtimg.cn/images/lol/act/img/item/${items.id}.png`
         currentItemList.push(itemImgUrl)
@@ -301,7 +306,7 @@ const pageBack = () => {
     pageStart = pageStart - 4
     pageEnd = pageEnd - 4
     runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
-  } else if (pageEnd == runeDataList.length) {
+  } else if (pageEnd == runeDataList.length && pageStart!==0) {
     pageEnd = pageStart
     pageStart = pageStart - 4
     runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
