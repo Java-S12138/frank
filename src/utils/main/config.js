@@ -34,7 +34,8 @@ export const appConfig = new Store({
       'lane':'mid'
     },
     'isSwitchBlacklist':true,
-    'blacklist':{}
+    'blacklist':{},
+    'runeType':'国服数据'
   }
 })
 

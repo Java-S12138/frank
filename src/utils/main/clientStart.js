@@ -46,3 +46,21 @@ export const startClientExe = (exe) => {
     false,
   )
 }
+
+export const deleteWegame = async () => {
+  try {
+    var wegameProcess = await execCmd(
+      `wmic process where name='wegame.exe' get ProcessId`,
+      false,
+    )
+  }catch (e){
+    wegameProcess = 'disprocess'
+  }
+
+  if (wegameProcess.indexOf('ProcessId') !== -1 ){
+    execCmd(
+      `wmic process where name='wegame.exe' delete`,
+      false,
+    )
+  }
+}

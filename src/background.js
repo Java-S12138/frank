@@ -6,7 +6,7 @@ import {
 } from './utils/main/lcu'
 import {createWebSocketConnection} from './utils/league-connect'
 import {appConfig, userAgentList} from './utils/main/config'
-import {getAuthFromCmd, startClientExe} from './utils/main/clientStart'
+import {deleteWegame, getAuthFromCmd, startClientExe} from './utils/main/clientStart'
 import {returnRankData} from "@/utils/render/renderLcu";
 import {
   createAssistWindow,
@@ -51,10 +51,11 @@ app.whenReady().then(async () => {
 })
 
 const runLcu = async () => {
+  deleteWegame()
+
   const ws = await createWebSocketConnection(credentials)
   const isAutoAccept = appConfig.get('autoAccept')
   let idSetInterval
-
   const homeData = await returnRankData(credentials)
   mainWindow.webContents.send('init-home',homeData)
   mainWindow.webContents.send('client-connect-success')

@@ -13,13 +13,9 @@
             @click="restraintActive = true"
           />
         </n-badge>
-        <div>
-          <n-tag type="success" :bordered="false" :round="true">
-            {{ currentChampName }}
-          </n-tag>
-        </div>
+
         <div class="buttonSwitch">
-          <n-space>
+          <n-space >
             <n-button text style="font-size: 2em" @click="pageBack">
               <n-icon>
                 <arrow-big-left-line></arrow-big-left-line>
@@ -32,6 +28,8 @@
             </n-button>
           </n-space>
         </div>
+        <n-select @update:value="changeRuneType($event)"
+                  v-model:value="runeValue" :options="runeOptions" />
       </n-space>
     </n-card>
     <n-grid :cols="2" >
@@ -89,8 +87,14 @@
             <span>{{ skillsAndItems.length - 1 }}</span>
           </div>
         </n-space>
-
-
+      </div>
+      <div class="runesTotal slide-in-bottom" v-if="skillsAndItems.length !=0">
+        <n-space>
+          <n-button size="tiny" text text-color="#9aa4af">
+            符文数量
+            <p style="font-size: 14px;margin-left: 8px">{{runeDataCount}}</p>
+          </n-button>
+        </n-space>
       </div>
     </n-card>
 
@@ -106,7 +110,7 @@
   <div v-else>
     <n-card class="boxShadow" size="small">
       <n-space justify="center" vertical>
-        <p style="color: #9aa4af;">符文来源 OP.GG</p>
+        <p style="color: #9aa4af;">符文来源 OP.GG or 101.QQ.com</p>
         <p style="color: #9aa4af;">英雄选择阶段才可以使用符文配置功能</p>
       </n-space>
     </n-card>
@@ -117,7 +121,7 @@
 import {ipcRenderer} from "electron"
 import {
   NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon,
-  NBadge, NButton, useMessage,NDrawer, NDrawerContent
+  NBadge, NButton, useMessage,NDrawer, NDrawerContent,NSelect
 } from 'naive-ui'
 import {ref} from "vue";
 import {champDict, mapNameFromUrl} from '../../../utils/render/lolDataList'
@@ -126,12 +130,13 @@ import {ArrowBigRightLine, ArrowBigLeftLine} from '@vicons/tabler'
 import {request} from "../../../utils/render/request"
 import {applyRunePage} from "@/utils/main/lcu";
 import Restraint from "./restraint.vue";
+import {get101Runes} from "@/utils/render/get101Runes";
 
 const currentChamp = ref(null)
 const currentChampImgUrl = ref('')
-const currentChampName = ref('请先选择英雄')
 const currentChampAlias = ref('')
 let runeDataList = []
+const runeDataCount = ref(0)
 const runeDataListFor = ref([])
 let pageStart = 0
 let pageEnd = 0
@@ -142,6 +147,16 @@ const itemCount = ref(1)
 const credentials = appConfig.get('credentials')
 let currentGameMode = ''
 const restraintActive = ref(false)
+const runeValue =  ref(appConfig.get('runeType'))
+const runeOptions =  [
+  {
+    label: '国服数据',
+    value: '国服数据'
+  },
+  {
+    label: "韩服数据",
+    value: '韩服数据',
+  }]
 
 const message = useMessage()
 
@@ -171,27 +186,30 @@ ipcRenderer.on('current-champ-select', (event, data) => {
 })
 
 
+// 获取英雄数据
+const getChampInfo = async (gameMode) => {
+  if (gameMode === 'aram' && currentGameMode === 'aram') {
+    return (await request({
+      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json`,
+      method: 'GET',
+    })).data
+  } else {
+    return  (await request({
+      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json `,
+      method: 'GET',
+    })).data
+  }
+}
 
+// 获取符文数据
 const getRuneData = async (gameMode) => {
   // 判断当前英雄是否配置看自动符文
   if (appConfig.has(`autoRune.${currentChamp.value}` )){
     applyRunePage(credentials,appConfig.get(`autoRune.${currentChamp.value}`))
   }
-  let champInfo
+
   try {
-    if (gameMode === 'aram' && currentGameMode === 'aram') {
-      champInfo = (await request({
-        // `https://unpkg.com/@java_s/op.gg-aram/${currentChampAlias.value}.json`
-        url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json`,
-        method: 'GET',
-      })).data
-    } else {
-      // https://unpkg.com/@java_s/op.gg/${currentChampAlias.value}.json`
-      champInfo = (await request({
-        url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json `,
-        method: 'GET',
-      })).data
-    }
+    const champInfo = await getChampInfo(gameMode)
     // 技能
     getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
 
@@ -206,10 +224,14 @@ const getRuneData = async (gameMode) => {
       // 装备
       getItemImgUrl(champ.itemBuilds[0].blocks)
     }
-
+    if (runeValue.value ==='国服数据' && gameMode !== 'aram'){
+      runeDataList = await get101Runes(currentChamp.value)
+    }
+    runeDataCount.value = runeDataList.length
     pageStart = 0
     pageEnd = runeDataList.length > 4 ? 4 : runeDataList.length
     runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
+
     if (appConfig.has(`autoRune.${currentChamp.value}`)) {
       message.success('自动配置符文成功')
     }
@@ -219,8 +241,27 @@ const getRuneData = async (gameMode) => {
   }
 
 }
+
+// 切换不同服务器的符文数据
+const changeRuneType = (type) => {
+  if (type==='国服数据'){
+    runeValue.value ='国服数据'
+    appConfig.set('runeType','国服数据')
+  }else {
+    runeValue.value ='韩服数据'
+    appConfig.set('runeType','韩服数据')
+  }
+  runeDataList =[]
+  runeDataListFor.value = []
+  skillsAndItems.value = []
+  itemCount.value = 1
+  getRuneData(currentGameMode)
+}
+
 // const test = () => {
-//   currentChampAlias.value = 'Akali'
+//   currentChampAlias.value = 'Viktor'
+//   currentChamp.value = 112
+//   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
 //   getRuneData('')
 // }
 // test()
@@ -279,12 +320,13 @@ const getPosition = (pos) => {
       return '射手';
     case 'aram':
       return '极地';
+    case 'mid':
+      return '中单';
   }
 }
 // 通过英雄ID获取部分信息
 const mapChamp = (champId) => {
   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[champId].alias}.png`
-  currentChampName.value = champDict[champId].label
   currentChampAlias.value = champDict[champId].alias
 }
 // 应用符文
@@ -372,10 +414,14 @@ const autoRune = (e) => {
 }
 
 .buttonSwitch {
-  margin-top: 5px;
-  margin-left: -5px;
+  margin-top: 10px;
 }
-
+.runeSelect {
+  width: 95px;
+  position: absolute;
+  bottom: -25px;
+  right: -10px;
+}
 .bottomTip {
   margin-bottom: 0px;
   height: 80px;
@@ -411,9 +457,14 @@ const autoRune = (e) => {
 }
 
 .itemsTotal {
-  float: right;
   position: absolute;
   right: 4px;
+  bottom: -2px;
+  color: #9aa4af
+}
+.runesTotal {
+  position: absolute;
+  left: 18px;
   bottom: -2px;
   color: #9aa4af
 }

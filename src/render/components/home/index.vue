@@ -16,6 +16,7 @@ import {ref} from "vue";
 
 document.title = 'Frank'
 const pageCount = ref(1)
+
 </script>
 
 <style scoped>
