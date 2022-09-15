@@ -37,7 +37,6 @@ const queryMatchHistory = async (credentials, session, summonerId) => {
   let classicMode = []
   let matchCount = 0
   for (let i = 0; i < 100; i += 20) {
-    console.log(123)
     const matchList = (await createHttp2Request({
       method: "GET",
       url: `/lol-match-history/v3/matchlist/account/${summonerId}?begIndex=${i}&endIndex=${i + 20}`,

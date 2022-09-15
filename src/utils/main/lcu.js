@@ -121,7 +121,7 @@ const queryCurrentGameMode = async (credentials) => {
   try {
     return currentGameInfo.gameData.queue.id
   }catch (e){
-    return null
+    return 
   }
 }
 // 应用符文页面
@@ -200,8 +200,8 @@ export const queryAllSummonerId = async (credentials) => {
   }
   // 数组去重
   summonerIdList = [... new Set(summonerIdList)]
-  // todo 测试
-  // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
+  // // todo 测试
+  // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2932246721]
   return summonerIdList
 }
 
@@ -267,7 +267,7 @@ const accordingToRankModeQueryRankPoint = async (credentials,mode,puuid) => {
   },credentials)).json().queueMap[matchType]
 
   const tier = englishToChinese(rankData.tier)
-  const division = rankData.division
+  const division = rankData.division === 'NA' ? '' : rankData.division
   const leaguePoints = rankData.leaguePoints
 
   return `${tier}${division}  ${leaguePoints}`

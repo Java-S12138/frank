@@ -67,19 +67,17 @@ import {BrandGithub, Help, Code, ArrowUpCircle} from '@vicons/tabler'
 import {shell} from 'electron'
 import {ref, onMounted} from "vue";
 import {request} from "@/utils/render/request";
-import {frankRelease} from "@/render/store";
-import {storeToRefs} from "pinia/dist/pinia";
+import config from "../../../../package.json"
 
 let showPopover = ref(false)
-const store = frankRelease()
-const {frankVersion} = storeToRefs(store)
+
 
 // 检查版本更新
 onMounted(async () => {
   const onLineFrankVersion = (await request({
     url: ' https://unpkg.com/@java_s/op.gg/package.json'
   })).data.frankVersion
-  if (frankVersion.value !== onLineFrankVersion) {
+  if (config.version !== onLineFrankVersion) {
     showPopover.value = true
   }
 })
