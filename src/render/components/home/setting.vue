@@ -2,6 +2,7 @@
   <div class="mainCard">
     <n-card class="boxShadow">
       <n-space vertical :size="[2,20]">
+<!--        秒选英雄-->
         <n-space>
           <n-tag :bordered="false">秒选英雄</n-tag>
           <n-select
@@ -17,6 +18,7 @@
           <n-switch v-model:value="isAutoPick" @click="changePick"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
+<!--        秒禁英雄-->
         <n-space>
           <n-tag :bordered="false">秒禁英雄</n-tag>
           <n-select
@@ -32,6 +34,7 @@
           <n-switch v-model:value="isAutoBan" @click="changeBan"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
+<!--        排位笔记-->
         <n-space>
           <n-tag :bordered="false">排位笔记</n-tag>
           <n-tag :bordered="false" type="success"
@@ -40,11 +43,22 @@
           <n-switch v-model:value="isSwitchBlacklist" @click="changeBlacklist"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
+<!--        关闭WeGame-->
+        <n-space>
+          <n-tag :bordered="false">关闭助手</n-tag>
+          <n-tag :bordered="false" type="success"
+                 style="width: 140px;justify-content: center">自动关闭腾讯助手</n-tag>
+
+          <n-switch v-model:value="isAutoDeleteWGProcess" @click="changeAutoDeleteWG"
+                    style="margin-left:22px;margin-top: 3px"/>
+        </n-space>
+<!--        秒接对局-->
         <n-space>
           <n-tag :bordered="false">秒接对局</n-tag>
           <n-slider v-model:value="isAccept" :step="10" @update:value="handleUpdateAccept"
                     style="width: 213px;margin-top: 5px"/>
         </n-space>
+<!--        默认设置-->
         <n-space>
           <n-tag :bordered="false">默认设置</n-tag>
           <n-popconfirm
@@ -61,14 +75,14 @@
             一切都将一去杳然
           </n-popconfirm>
         </n-space>
-
+<!--        赞助发电-->
         <n-space>
           <n-tag :bordered="false" >赞助发电</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
                     secondary @click="() => {showModal = true}">赞助作者持续开发
           </n-button>
         </n-space>
-
+<!--        运行文件-->
         <n-space class="alignCent">
           <n-tag :bordered="false">运行文件</n-tag>
 
@@ -97,7 +111,7 @@
           </n-popover>
 
         </n-space>
-
+<!--        回到首页-->
         <n-space>
           <n-tag :bordered="false">回到首页</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
@@ -161,6 +175,7 @@ let pickChampion = ref(appConfig.get('autoPickChampion.championId'))
 const optionsChampionPick = optionsChampion
 let isAutoBan = ref(appConfig.get('autoBanChampion.isAuto'))
 const isSwitchBlacklist = ref(appConfig.get('isSwitchBlacklist'))
+const isAutoDeleteWGProcess = ref(appConfig.get('isAutoDeleteWGProcess'))
 let banChampion = ref(appConfig.get('autoBanChampion.championId'))
 const optionsChampionBan = optionsChampion
 let isAccept = ref(appConfig.get('autoAccept'))
@@ -216,6 +231,15 @@ const changeBlacklist = () => {
   }
   ipcRenderer.send('setting-page-refresh-assist')
 }
+// 设置是否开启自动关闭wegame进程
+const changeAutoDeleteWG = () => {
+  if (appConfig.get('isAutoDeleteWGProcess') != true) {
+    appConfig.set('isAutoDeleteWGProcess', true)
+  } else {
+    appConfig.set('isAutoDeleteWGProcess', false)
+  }
+}
+
 // 通过选择器选择英雄后, 执行的函数 选择
 const handleUpdatePick = () => {
   appConfig.set('autoPickChampion.championId', pickChampion.value)

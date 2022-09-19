@@ -47,7 +47,8 @@ export const startClientExe = (exe) => {
   )
 }
 
-export const deleteWegame = async () => {
+export const deleteWegame = async (isAutoDeleteWGProcess) => {
+  if (!isAutoDeleteWGProcess){return}
   try {
     var wegameProcess = await execCmd(
       `wmic process where name='wegame.exe' get ProcessId`,

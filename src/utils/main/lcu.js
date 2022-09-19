@@ -35,15 +35,21 @@ export const autoBanChampion = async (credentials, actionID, type) => {
 }
 // 自动接受对局
 export const autoAcceptGame = async (credentials) => {
-  try {
-    await createHttp1Request({
-      method: "POST",
-      url: '/lol-matchmaking/v1/ready-check/accept',
-      body: null
-    }, credentials)
-  } catch (e) {
-    console.log(e)
-  }
+  const isAutoAccept = appConfig.get('autoAccept')
+  if (isAutoAccept<50){return}
+
+  const setTime = (isAutoAccept-50)*200
+  setTimeout( async ()=>{
+    try {
+      await createHttp1Request({
+        method: "POST",
+        url: '/lol-matchmaking/v1/ready-check/accept',
+        body: null
+      }, credentials)
+    } catch (e) {
+      console.log(e)
+    }
+  },setTime)
 }
 // 获取选人会话
 export const champSelectSession = async (credentials,idSetInterval) => {
@@ -121,7 +127,7 @@ const queryCurrentGameMode = async (credentials) => {
   try {
     return currentGameInfo.gameData.queue.id
   }catch (e){
-    return 
+    return
   }
 }
 // 应用符文页面

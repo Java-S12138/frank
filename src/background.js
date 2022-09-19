@@ -51,10 +51,9 @@ app.whenReady().then(async () => {
 })
 
 const runLcu = async () => {
-  deleteWegame()
+  deleteWegame(appConfig.get('isAutoDeleteWGProcess'))
 
   const ws = await createWebSocketConnection(credentials)
-  const isAutoAccept = appConfig.get('autoAccept')
   let idSetInterval
   const homeData = await returnRankData(credentials)
   mainWindow.webContents.send('init-home',homeData)
@@ -94,7 +93,7 @@ const runLcu = async () => {
       closeWin('MatchHistory')
     }
     // 自动接受对局
-    if (data =='ReadyCheck' && isAutoAccept>=50){
+    if (data =='ReadyCheck'){
       autoAcceptGame(credentials)
     }
   })
