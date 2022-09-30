@@ -72,6 +72,7 @@ function DEPRECATED_request(options, credentials) {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
+                'Connection':'keep-alive',
                 Authorization: 'Basic ' + Buffer.from(`riot:${credentials === null || credentials === void 0 ? void 0 : credentials.password}`).toString('base64')
             },
             agent: new https_1.default.Agent(typeof (credentials === null || credentials === void 0 ? void 0 : credentials.certificate) === 'undefined'
