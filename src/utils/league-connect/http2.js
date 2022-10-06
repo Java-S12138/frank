@@ -31,7 +31,8 @@ function createHttpSession(credentials) {
         const RIOT_GAMES_CERT = RiotJs.RIOT_GAMES_CERT
         const certificate = (_a = credentials.certificate) !== null && _a !== void 0 ? _a : RIOT_GAMES_CERT;
         return http2_1.default.connect(`https://127.0.0.1:${credentials.port}`, {
-            ca: certificate
+            ca: certificate,
+            Connection:'keep-alive',
         });
     });
 }
@@ -55,14 +56,16 @@ function createHttp2Request(options, session, credentials) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, assert_1.default)(!session.closed, 'createHttp2Request called on closed session');
         const request = session.request({
-            ':path': '/' + (0, http_1.trim)(options.url),
-            ':method': options.method,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: 'Basic ' + Buffer.from(`riot:${credentials.password}`).toString('base64')
+          ':path': '/' + (0, http_1.trim)(options.url),
+          ':method': options.method,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'headers': {
+            'Connection':'keep-alive',
+          },
+          Authorization: 'Basic ' + Buffer.from("riot:" + credentials.password).toString('base64')
         });
         request.setEncoding('utf8');
-
         if (options.body) {
             const data = JSON.stringify(options.body);
             const body = new util_1.TextEncoder().encode(data);

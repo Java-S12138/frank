@@ -36,7 +36,8 @@ export const appConfig = new Store({
     'isSwitchBlacklist':true,
     'blacklist':{},
     'runeType':'国服数据',
-    'isAutoDeleteWGProcess':true
+    'isAutoDeleteWGProcess':false,
+    'is101':true
   }
 })
 

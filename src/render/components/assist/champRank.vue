@@ -2,11 +2,14 @@
   <div>
     <n-card class="boxShadow" size="small">
       <n-space>
-        <n-tag type="info" :bordered="false" size="large" style="border-radius: 5px">
-          国服英雄数据排行
+        <n-tag type="info" :bordered="false" size="large"
+               style="border-radius: 5px;cursor:pointer" @click="changeServe">
+          <p v-if="is101">国服英雄数据排行</p>
+          <p v-else>韩服英雄数据排行</p>
         </n-tag>
-        <n-select v-model:value="tier" style="width: 118px"
-                  :options="options" @update:value="getChampRankData(tier,lane)"/>
+
+        <n-select v-model:value="tier" style="width:118px"
+                  :options="is101 ? options : krOptions" @update:value="queryChampRankData"/>
       </n-space>
       <n-space>
         <n-button :bordered=false ghost @click="getComprehensiveRankData"
@@ -149,10 +152,11 @@ import {request} from "../../../utils/render/request"
 import {champDict} from "@/utils/render/lolDataList";
 import {ipcRenderer} from "electron";
 import {appConfig} from "@/utils/main/config";
+import {queryKoreaServe} from "@/utils/render/getLOLPS";
 
-
-let tier = ref(appConfig.get('champRankOption.tier'))
-let champSliceList = ref([])
+const tier = ref(appConfig.get('champRankOption.tier'))
+const lane = ref(appConfig.get('champRankOption.lane'))
+const champSliceList = ref([])
 const options = [
   {
     label: '王者',
@@ -167,7 +171,7 @@ const options = [
     value: 6
   },
   {
-    label: '砖石',
+    label: '钻石',
     value: 10
   },
   {
@@ -199,6 +203,24 @@ const options = [
     value: 311
   },
 ]
+const krOptions = [
+  {
+    label: '铂金以上',
+    value: 2
+  },
+  {
+    label: '钻石以上',
+    value: 13
+  },
+  {
+    label: '大师以上',
+    value: 3
+  },
+  {
+    label: '青铜~黄金',
+    value: 1
+  },
+]
 const positionOptions = [
   {
     label: '上路',
@@ -223,25 +245,48 @@ const positionOptions = [
 
 ]
 const isCheck = ref(1)
-let lane = ref(appConfig.get('champRankOption.lane'))
-let restraintActive = ref(false)
-let restraintList = ref([])
+const restraintActive = ref(false)
+const restraintList = ref([])
 const selectedList = ref([])
-let isRestraint = ref(true)
-let searchValue = ref(null)
+const isRestraint = ref(true)
+const searchValue = ref(null)
+const is101 = ref(appConfig.get('is101'))
 
 const message = useMessage()
 
 onMounted(() => {
   let rankSetDiv = document.querySelector('#app > div.slide-in-bottom > div:nth-child(1) > div')
   rankSetDiv.style['padding-bottom'] = '6px'
-  getChampRankData(tier.value, lane.value, getLacalDateStr()).then(() => {
-    if (champSliceList.value.length == 0) {
-
-      message.success('数据获取成功 !')
-    }
-  })
+  queryChampRankData()
 })
+
+// 获取不同服务器的数据
+const queryChampRankData = async () => {
+  if (is101.value){
+    getChampRankData(tier.value, lane.value, getLacalDateStr())
+  }else {
+    let laneKr
+    switch (lane.value) {
+      case lane.value = 'top':
+        laneKr = '0';
+        break;
+      case lane.value = 'jungle':
+        laneKr = '1';
+        break;
+      case lane.value = 'mid':
+        laneKr = '2';
+        break;
+      case lane.value = 'bottom':
+        laneKr = '3';
+        break;
+      case lane.value = 'support':
+        laneKr = '4';
+        break;
+    }
+    champSliceList.value = await queryKoreaServe(tier.value,'2')
+  }
+}
+
 // 转换百分数
 const toPercent = (point) => {
   var str = Number(point * 100).toFixed(1);
@@ -255,8 +300,10 @@ const getLacalDateStr = () => {
   dateList[1] = dateList[1].length == 1 ? '0' + dateList[1] : dateList[1]
   return parseInt(dateList.join('')) - 2
 }
+
 // 获取国服英雄数据排行
 const getChampRankData = async (tier, lane, time) => {
+  if (!is101.value) {return }
   appConfig.set('champRankOption.tier',tier)
   let partUrl = 'https://x1-6833.native.qq.com/x1/6833/1061021&3af49f?championid=666'
   let championdetails
@@ -409,6 +456,16 @@ const handleChangePosition = (pos) => {
     y: pos.y,
     isWindow: 'horse'
   })
+}
+
+// 改变不同服务器的数据排行
+const changeServe = () => {
+  is101.value = !is101.value
+  tier.value = is101.value ? 200 : 2
+  queryChampRankData()
+  appConfig.set('champRankOption.tier',tier.value)
+  appConfig.set('is101',is101.value)
+
 }
 </script>
 
