@@ -152,7 +152,6 @@ import {request} from "../../../utils/render/request"
 import {champDict} from "@/utils/render/lolDataList";
 import {ipcRenderer} from "electron";
 import {appConfig} from "@/utils/main/config";
-import {queryKoreaServe} from "@/utils/render/getLOLPS";
 
 const tier = ref(appConfig.get('champRankOption.tier'))
 const lane = ref(appConfig.get('champRankOption.lane'))
@@ -283,8 +282,33 @@ const queryChampRankData = async () => {
         laneKr = '4';
         break;
     }
-    champSliceList.value = await queryKoreaServe(tier.value,'2')
+    champSliceList.value = await queryKoreaServe(tier.value,laneKr)
   }
+}
+
+// 查询韩服数据
+const queryKoreaServe = async (tier,lane) => {
+  appConfig.set('champRankOption.tier',tier)
+  const url = `https://lol.ps/lol/get_lane_champion_tier_list/?region=0&tier=${tier}&lane=${lane}&region=0&order_by=-op_score`
+  const res = await request({
+    url:url,
+    method:"GET"
+  })
+
+  const champList = res.data.results.reduce((res,item,index) => {
+    const currentChamp = {
+      appearance: Number(item.pick_rate).toFixed(1) +'%',
+      ban: Number(item.ban_rate).toFixed(1) +'%',
+      champId: item.champion__data_key,
+      imgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.champion__data_key)].alias}.png`,
+      name: item.champion__name_cn,
+      tLevel: item.is_op === true ? '0' : item.op_tier,
+      win: Number(item.win_rate).toFixed(1) +'%',
+      sortId: index
+    }
+    return res.concat(currentChamp)
+  },[])
+  return champList
 }
 
 // 转换百分数
@@ -303,7 +327,6 @@ const getLacalDateStr = () => {
 
 // 获取国服英雄数据排行
 const getChampRankData = async (tier, lane, time) => {
-  if (!is101.value) {return }
   appConfig.set('champRankOption.tier',tier)
   let partUrl = 'https://x1-6833.native.qq.com/x1/6833/1061021&3af49f?championid=666'
   let championdetails
@@ -419,7 +442,7 @@ const handleSelect = (pos) => {
   isCheck.value = 1
   appConfig.set('champRankOption.lane',pos)
   lane.value = pos
-  getChampRankData(tier.value, pos, getLacalDateStr())
+  queryChampRankData()
   switch (pos) {
     case pos = 'top':
       message.success('上单数据更新成功 !');
@@ -460,12 +483,12 @@ const handleChangePosition = (pos) => {
 
 // 改变不同服务器的数据排行
 const changeServe = () => {
+  isCheck.value = 1
   is101.value = !is101.value
   tier.value = is101.value ? 200 : 2
   queryChampRankData()
   appConfig.set('champRankOption.tier',tier.value)
   appConfig.set('is101',is101.value)
-
 }
 </script>
 
@@ -523,6 +546,14 @@ const changeServe = () => {
   width: 24px;
   height: 24px;
   background-image: url('../../assets/tLevel/t4.svg');
+  display: inline-block;
+  background-repeat: no-repeat;
+}
+.imgT5 {
+  font-size: 0px;
+  width: 24px;
+  height: 24px;
+  background-image: url('../../assets/tLevel/t5.svg');
   display: inline-block;
   background-repeat: no-repeat;
 }
