@@ -1,0 +1,60 @@
+{
+  "type": "WebApp",
+  "meta": {
+    "name": "Sample App",
+    "author": "Cube",
+    "icon": "icon.png",
+    "window_icon": "icon.ico"
+  },
+  "data": {
+    "game_in_hotkeys": {
+      "show_main": {
+        "title": "显示隐藏主窗口",
+        "default": "CTRL+TAB",
+        "passthrough": false
+      },
+      "show_maim_osr": {
+        "title": "显示隐藏主窗口",
+        "default": "`",
+        "passthrough": false,
+        "hold": true
+      }
+    },
+
+    "launcher_hotkeys": {
+      "show_main": {
+        "title": "显示隐藏主窗口",
+        "default": "CTRL+[",
+        "passthrough": false
+      },
+      "show_maim_osr": {
+        "title": "显示隐藏主窗口",
+        "default": "`",
+        "passthrough": false,
+        "hold": true
+      }
+    },
+    "start_window": "main",
+    "windows": {
+      "main": {
+        "file": "src/pages/main/index.html",
+        "frame": false,
+        "width": 400,
+        "height": 650,
+        "min_width": 200,
+        "min_height": 200,
+        "resizable": false
+      }
+    }
+  },
+  "game_targeting": {
+    "type": "dedicated",
+    "game_ids": [5426]
+  },
+  "game_events": [5426],
+  "launcher_targeting": {
+    "type": "dedicated",
+    "game_ids": [10902]
+  },
+  "launcher_events": [10902]
+}
