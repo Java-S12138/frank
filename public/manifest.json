@@ -43,6 +43,18 @@
         "height": 650,
         "min_width": 200,
         "min_height": 200,
+        "resizable": false,
+        "keep_window_location": false
+      },
+      "background": {
+        "file": "src/pages/background/index.html",
+        "is_background_page": true
+      },
+      "queryMatch": {
+        "file": "src/pages/main/#/querymatch",
+        "frame": false,
+        "width": 1166,
+        "height": 650,
         "resizable": false
       }
     }

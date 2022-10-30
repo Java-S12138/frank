@@ -46,45 +46,44 @@ const querySummonerHonorLevel = async ():Promise<[string,string]> => {
 
 // 处理本地召唤师英雄熟练度数据
 const dealSuperChamp = (summonerSuperChampData:any,index:number,end:number) => {
-  let superChampList = []
-  for (const summonerSuperChampDatum of summonerSuperChampData.slice(index,end)) {
-    // @ts-ignore
-    let champImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(summonerSuperChampDatum.championId)].alias}.png`
-    let championPoints = summonerSuperChampDatum.championPoints
-    let champLevel = summonerSuperChampDatum.championLevel
-    let championId = summonerSuperChampDatum.championId
-    superChampList.push([champImgUrl,champLevel,championPoints,championId])
-  }
+  const superChampList = summonerSuperChampData.slice(index,end).reduce((res:any,item:any) => {
+    res.push([
+      // @ts-ignore
+      `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
+      item.championLevel,
+      item.championPoints,
+      item.championId
+    ])
+    return res
+  },[])
   return superChampList
 }
 
 // 处理英雄永恒星碑数据
 const dealChampStatstones = (statstones:any) => {
-  let simpleStatstonesList = []
-  for (const statstone of statstones) {
-    let name = statstone.name
-    let value = statstone.formattedValue
-    let imgUrl = (statstone.imageUrl).split('LCU/')[1]
-    let milestoneLevel = statstone.formattedMilestoneLevel
-    simpleStatstonesList.push({name,value,imgUrl,milestoneLevel})
-  }
+  const simpleStatstonesList = statstones.reduce((res:any,item:any) => {
+    return res.concat({
+      name:item.name,
+      value:item.formattedValue,
+      imgUrl:(item.imageUrl).split('LCU/')[1],
+      milestoneLevel: item.formattedMilestoneLevel
+    })
+  },[])
   return simpleStatstonesList
 }
 
 // 获取永痕星碑数据
 const queryStatstones = async (puuid:string) => {
-  const statstones = await invokeLcu('get',`/lol-statstones/v1/profile-summary/${puuid}`)
-  let statstonesList = []
-  for (const statstonesElement of statstones) {
-    const imgUrl = (statstonesElement.imageUrl).split('LCU/')[1]
-    statstonesList.push({
-      // @ts-ignore
-      championId:`${champDict[String(statstonesElement.championId)].label}`,
-      name:statstonesElement.name,
-      imgUrl,
-      value:statstonesElement.value
+  const statstones:Array<Object> = await invokeLcu('get',`/lol-statstones/v1/profile-summary/${puuid}`)
+  const statstonesList = statstones.reduce((res:any,item:any) => {
+    return res.concat({
+          // @ts-ignore
+          championId:`${champDict[String(item.championId)].label}`,
+          name:item.name,
+          imgUrl:(item.imageUrl).split('LCU/')[1],
+          value:item.value
     })
-  }
+  },[])
   return statstonesList
 }
 
@@ -107,13 +106,14 @@ export const getCurrentSummonerInfo = async ():Promise<CurrentSummonerInfo> => {
 // 查看指定英雄的永恒星碑
 export const queryCurrentChampStatstones = async (champId:any) => {
   try {
-    const champSta = await invokeLcu("get", `/lol-statstones/v2/player-statstones-self/${champId}`)
-    let champStatstonesList = []
-    for (const champStaElement of champSta) {
-      let name = champStaElement.name
-      let simpleStatstonesList = dealChampStatstones(champStaElement.statstones)
-      champStatstonesList.push({name,simpleStatstonesList})
-    }
+    const champSta:Array<Object> = await invokeLcu("get", `/lol-statstones/v2/player-statstones-self/${champId}`)
+    const champStatstonesList = champSta.reduce((res:any,item:any) => {
+      return res.concat({
+        name: item.name,
+        simpleStatstonesList:dealChampStatstones(item.statstones)
+      })
+    },[])
+
     if (champStatstonesList[0].simpleStatstonesList[0].value ==='' &&champStatstonesList[1].simpleStatstonesList[1].value ==='' ){
       // @ts-ignore
       return `${champDict[champId].label} 暂无永恒星碑`

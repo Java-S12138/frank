@@ -57,7 +57,7 @@
             <n-list>
               <n-list-item>
                 <n-space justify="space-between">
-                  <n-tag type="success" :bordered="false" class="tagWidth" v-if="rankData.length !=0"
+                  <n-tag type="success" :bordered="false" class="tagWidth" v-if="rankData.length !==0"
                          :round="false" size="large">
                     单双排位
                   </n-tag>
@@ -73,7 +73,7 @@
               </n-list-item>
               <n-list-item>
                 <n-space justify="space-between">
-                  <n-tag type="success" :bordered="false" class="tagWidth" v-if="rankData.length !=0" :round="false"
+                  <n-tag type="success" :bordered="false" class="tagWidth" v-if="rankData.length !==0" :round="false"
                          size="large">
                     灵活排位
                   </n-tag>
@@ -87,7 +87,7 @@
               </n-list-item>
               <n-list-item>
                 <n-space justify="space-between">
-                  <n-tag type="success" :bordered="false" class="tagWidth" v-if="rankData.length !=0" :round="false"
+                  <n-tag type="success" :bordered="false" class="tagWidth" v-if="rankData.length !==0" :round="false"
                          size="large">
                     云顶排位
                   </n-tag>
@@ -266,7 +266,8 @@ onMounted(async () => {
 })
 
 const queryMatch = () => {
-  console.log('打开查询战绩窗口')
+  cube.windows.obtainDeclaredWindow('queryMatch')
+  cube.windows.hide(cube.windows.current.id())
 }
 const getImaUrl = (imgUrl:any) => {
   return `../../assets/statstones/${imgUrl.toLowerCase()}`

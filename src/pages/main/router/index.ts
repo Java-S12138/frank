@@ -9,6 +9,11 @@ const routes = [
     path: '/index',
     name: 'Index',
     component: () => import('../view/home/index.vue')
+  },
+  {
+    path: '/queryMatch',
+    name: 'QueryMatch',
+    component: () => import('../view/queryMatch/index.vue')
   }
   ]
 

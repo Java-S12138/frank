@@ -18,6 +18,7 @@
     "@vicons/tabler": "^0.12.0",
     "@vitejs/plugin-vue": "^3.2.0",
     "naive-ui": "^2.33.5",
+    "pinia": "^2.0.23",
     "prettier": "^2.7.1",
     "typescript": "^4.6.4",
     "vite": "^3.2.0",

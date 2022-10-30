@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {NMessageProvider} from 'naive-ui'
+// cube.windows.obtainDeclaredWindow('background')
 </script>
 
 <template>
