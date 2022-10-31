@@ -19,7 +19,7 @@ const queryCurrentSummonerInfo = async ():Promise<summonerInfo> => {
 }
 
 // 查询召唤师排位分数
-const queryCurrentRankPoint = async ():Promise<[string,string,string]> => {
+export const queryCurrentRankPoint = async ():Promise<[string,string,string]> => {
   const rankPoint = (await invokeLcu("get", '/lol-ranked/v1/current-ranked-stats')).queues
   // 单双排位/ 灵活排位/ 云顶之亦
   let rankSolo = rankPoint.find((i:any) => i.queueType==="RANKED_SOLO_5x5")
@@ -123,6 +123,5 @@ export const queryCurrentChampStatstones = async (champId:any) => {
     console.log(e)
     return null
   }
-
 }
 

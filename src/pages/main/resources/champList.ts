@@ -161,3 +161,654 @@ export const champDict = {
   '888': {'champId': '888', 'label': '炼金男爵', 'alias': 'Renata', 'title': '烈娜塔 · 戈拉斯克'},
   '895': {'champId': '895', 'label': '不羁之悦', 'alias': 'Nilah', 'title': '尼菈'}
 }
+export const optionsChampion = [
+  {
+    'value': '1',
+    'label': '黑暗之女'
+  }, {
+    'value': '2',
+    'label': '狂战士'
+  }, {
+    'value': '3',
+    'label': '正义巨像'
+  }, {
+    'value': '4',
+    'label': '卡牌大师'
+  }, {
+    'value': '5',
+    'label': '德邦总管'
+  }, {
+    'value': '6',
+    'label': '无畏战车'
+  }, {
+    'value': '7',
+    'label': '诡术妖姬'
+  }, {
+    'value': '8',
+    'label': '猩红收割者'
+  }, {
+    'value': '9',
+    'label': '远古恐惧'
+  }, {
+    'value': '10',
+    'label': '正义天使'
+  }, {
+    'value': '11',
+    'label': '无极剑圣'
+  }, {
+    'value': '12',
+    'label': '牛头酋长'
+  }, {
+    'value': '13',
+    'label': '符文法师'
+  }, {
+    'value': '14',
+    'label': '亡灵战神'
+  }, {
+    'value': '15',
+    'label': '战争女神'
+  }, {
+    'value': '16',
+    'label': '众星之子'
+  }, {
+    'value': '17',
+    'label': '迅捷斥候'
+  }, {
+    'value': '18',
+    'label': '麦林炮手'
+  }, {
+    'value': '19',
+    'label': '祖安怒兽'
+  }, {
+    'value': '20',
+    'label': '雪原双子'
+  }, {
+    'value': '21',
+    'label': '赏金猎人'
+  }, {
+    'value': '22',
+    'label': '寒冰射手'
+  }, {
+    'value': '23',
+    'label': '蛮族之王'
+  }, {
+    'value': '24',
+    'label': '武器大师'
+  }, {
+    'value': '25',
+    'label': '堕落天使'
+  }, {
+    'value': '26',
+    'label': '时光守护者'
+  }, {
+    'value': '27',
+    'label': '炼金术士'
+  }, {
+    'value': '28',
+    'label': '痛苦之拥'
+  }, {
+    'value': '29',
+    'label': '瘟疫之源'
+  }, {
+    'value': '30',
+    'label': '死亡颂唱者'
+  }, {
+    'value': '31',
+    'label': '虚空恐惧'
+  }, {
+    'value': '32',
+    'label': '殇之木乃伊'
+  }, {
+    'value': '33',
+    'label': '披甲龙龟'
+  }, {
+    'value': '34',
+    'label': '冰晶凤凰'
+  }, {
+    'value': '35',
+    'label': '恶魔小丑'
+  }, {
+    'value': '36',
+    'label': '祖安狂人'
+  }, {
+    'value': '37',
+    'label': '琴瑟仙女'
+  }, {
+    'value': '38',
+    'label': '虚空行者'
+  }, {
+    'value': '39',
+    'label': '刀锋舞者'
+  }, {
+    'value': '40',
+    'label': '风暴之怒'
+  }, {
+    'value': '41',
+    'label': '海洋之灾'
+  }, {
+    'value': '42',
+    'label': '英勇投弹手'
+  }, {
+    'value': '43',
+    'label': '天启者'
+  }, {
+    'value': '44',
+    'label': '瓦洛兰之盾'
+  }, {
+    'value': '45',
+    'label': '邪恶小法师'
+  }, {
+    'value': '48',
+    'label': '巨魔之王'
+  }, {
+    'value': '50',
+    'label': '诺克萨斯统领'
+  }, {
+    'value': '51',
+    'label': '皮城女警'
+  }, {
+    'value': '53',
+    'label': '蒸汽机器人'
+  }, {
+    'value': '54',
+    'label': '熔岩巨兽'
+  }, {
+    'value': '55',
+    'label': '不祥之刃'
+  }, {
+    'value': '56',
+    'label': '永恒梦魇'
+  }, {
+    'value': '57',
+    'label': '扭曲树精'
+  }, {
+    'value': '58',
+    'label': '荒漠屠夫'
+  }, {
+    'value': '59',
+    'label': '德玛西亚皇子'
+  }, {
+    'value': '60',
+    'label': '蜘蛛女皇'
+  }, {
+    'value': '61',
+    'label': '发条魔灵'
+  }, {
+    'value': '62',
+    'label': '齐天大圣'
+  }, {
+    'value': '63',
+    'label': '复仇焰魂'
+  }, {
+    'value': '64',
+    'label': '盲僧'
+  }, {
+    'value': '67',
+    'label': '暗夜猎手'
+  }, {
+    'value': '68',
+    'label': '机械公敌'
+  }, {
+    'value': '69',
+    'label': '魔蛇之拥'
+  }, {
+    'value': '72',
+    'label': '水晶先锋'
+  }, {
+    'value': '74',
+    'label': '大发明家'
+  }, {
+    'value': '75',
+    'label': '沙漠死神'
+  }, {
+    'value': '76',
+    'label': '狂野女猎手'
+  }, {
+    'value': '77',
+    'label': '兽灵行者'
+  }, {
+    'value': '78',
+    'label': '圣锤之毅'
+  }, {
+    'value': '79',
+    'label': '酒桶'
+  }, {
+    'value': '80',
+    'label': '不屈之枪'
+  }, {
+    'value': '81',
+    'label': '探险家'
+  }, {
+    'value': '82',
+    'label': '铁铠冥魂'
+  }, {
+    'value': '83',
+    'label': '牧魂人'
+  }, {
+    'value': '84',
+    'label': '离群之刺'
+  }, {
+    'value': '85',
+    'label': '狂暴之心'
+  }, {
+    'value': '86',
+    'label': '德玛西亚之力'
+  }, {
+    'value': '89',
+    'label': '曙光女神'
+  }, {
+    'value': '90',
+    'label': '虚空先知'
+  }, {
+    'value': '91',
+    'label': '刀锋之影'
+  }, {
+    'value': '92',
+    'label': '放逐之刃'
+  }, {
+    'value': '96',
+    'label': '深渊巨口'
+  }, {
+    'value': '98',
+    'label': '暮光之眼'
+  }, {
+    'value': '99',
+    'label': '光辉女郎'
+  }, {
+    'value': '101',
+    'label': '远古巫灵'
+  }, {
+    'value': '102',
+    'label': '龙血武姬'
+  }, {
+    'value': '103',
+    'label': '九尾妖狐'
+  }, {
+    'value': '104',
+    'label': '法外狂徒'
+  }, {
+    'value': '105',
+    'label': '潮汐海灵'
+  }, {
+    'value': '106',
+    'label': '不灭狂雷'
+  }, {
+    'value': '107',
+    'label': '傲之追猎者'
+  }, {
+    'value': '110',
+    'label': '惩戒之箭'
+  }, {
+    'value': '111',
+    'label': '深海泰坦'
+  }, {
+    'value': '112',
+    'label': '机械先驱'
+  }, {
+    'value': '113',
+    'label': '北地之怒'
+  }, {
+    'value': '114',
+    'label': '无双剑姬'
+  }, {
+    'value': '115',
+    'label': '爆破鬼才'
+  }, {
+    'value': '117',
+    'label': '仙灵女巫'
+  }, {
+    'value': '119',
+    'label': '荣耀行刑官'
+  }, {
+    'value': '120',
+    'label': '战争之影'
+  }, {
+    'value': '121',
+    'label': '虚空掠夺者'
+  }, {
+    'value': '122',
+    'label': '诺克萨斯之手'
+  }, {
+    'value': '126',
+    'label': '未来守护者'
+  }, {
+    'value': '127',
+    'label': '冰霜女巫'
+  }, {
+    'value': '131',
+    'label': '皎月女神'
+  }, {
+    'value': '133',
+    'label': '德玛西亚之翼'
+  }, {
+    'value': '134',
+    'label': '暗黑元首'
+  }, {
+    'value': '136',
+    'label': '铸星龙王'
+  }, {
+    'value': '141',
+    'label': '影流之镰'
+  }, {
+    'value': '142',
+    'label': '暮光星灵'
+  }, {
+    'value': '143',
+    'label': '荆棘之兴'
+  }, {
+    'value': '145',
+    'label': '虚空之女'
+  }, {
+    'value': '147',
+    'label': '星籁歌姬'
+  }, {
+    'value': '150',
+    'label': '迷失之牙'
+  }, {
+    'value': '154',
+    'label': '生化魔人'
+  }, {
+    'value': '157',
+    'label': '疾风剑豪'
+  }, {
+    'value': '161',
+    'label': '虚空之眼'
+  }, {
+    'value': '163',
+    'label': '岩雀'
+  }, {
+    'value': '164',
+    'label': '青钢影'
+  }, {
+    'value': '166',
+    'label': '影哨'
+  }, {
+    'value': '200',
+    'label': '虚空女皇'
+  }, {
+    'value': '201',
+    'label': '弗雷尔卓德之心'
+  }, {
+    'value': '202',
+    'label': '戏命师'
+  }, {
+    'value': '203',
+    'label': '永猎双子'
+  }, {
+    'value': '221',
+    'label': '祖安花火'
+  }, {
+    'value': '222',
+    'label': '暴走萝莉'
+  }, {
+    'value': '223',
+    'label': '河流之王'
+  }, {
+    'value': '234',
+    'label': '破败之王'
+  }, {
+    'value': '235',
+    'label': '涤魂圣枪'
+  }, {
+    'value': '236',
+    'label': '圣枪游侠'
+  }, {
+    'value': '238',
+    'label': '影流之主'
+  }, {
+    'value': '240',
+    'label': '暴怒骑士'
+  }, {
+    'value': '245',
+    'label': '时间刺客'
+  }, {
+    'value': '246',
+    'label': '元素女皇'
+  }, {
+    'value': '254',
+    'label': '皮城执法官'
+  }, {
+    'value': '266',
+    'label': '暗裔剑魔'
+  }, {
+    'value': '267',
+    'label': '唤潮鲛姬'
+  }, {
+    'value': '268',
+    'label': '沙漠皇帝'
+  }, {
+    'value': '350',
+    'label': '魔法猫咪'
+  }, {
+    'value': '360',
+    'label': '沙漠玫瑰'
+  }, {
+    'value': '412',
+    'label': '魂锁典狱长'
+  }, {
+    'value': '420',
+    'label': '海兽祭司'
+  }, {
+    'value': '421',
+    'label': '虚空遁地兽'
+  }, {
+    'value': '427',
+    'label': '翠神'
+  }, {
+    'value': '429',
+    'label': '复仇之矛'
+  }, {
+    'value': '432',
+    'label': '星界游神'
+  }, {
+    'value': '497',
+    'label': '幻翎'
+  }, {
+    'value': '498',
+    'label': '逆羽'
+  }, {
+    'value': '516',
+    'label': '山隐之焰'
+  }, {
+    'value': '517',
+    'label': '解脱者'
+  }, {
+    'value': '518',
+    'label': '万花通灵'
+  }, {
+    'value': '523',
+    'label': '残月之肃'
+  }, {
+    'value': '526',
+    'label': '镕铁少女'
+  }, {
+    'value': '555',
+    'label': '血港鬼影'
+  }, {
+    'value': '711',
+    'label': '愁云使者'
+  }, {
+    'value': '777',
+    'label': '封魔剑魂'
+  }, {
+    'value': '875',
+    'label': '腕豪'
+  }, {
+    'value': '876',
+    'label': '含羞蓓蕾'
+  }, {
+    'value': '887',
+    'label': '灵罗娃娃'
+  }, {
+    'value': '888',
+    'label': '炼金男爵'
+  },
+  {
+    'value': '895',
+    'label': '不羁之悦'
+  }
+]
+export const mapNameFromUrl = {
+  'Annie': {'label': '黑暗之女', 'name': '安妮'},
+  'Olaf': {'label': '狂战士', 'name': '奥拉夫'},
+  'Galio': {'label': '正义巨像', 'name': '加里奥'},
+  'TwistedFate': {'label': '卡牌大师', 'name': '崔斯特'},
+  'XinZhao': {'label': '德邦总管', 'name': '赵信'},
+  'Urgot': {'label': '无畏战车', 'name': '厄加特'},
+  'Leblanc': {'label': '诡术妖姬', 'name': '乐芙兰'},
+  'Vladimir': {'label': '猩红收割者', 'name': '弗拉基米尔'},
+  'FiddleSticks': {'label': '远古恐惧', 'name': '费德提克'},
+  'Fiddlesticks': {'label': '远古恐惧', 'name': '费德提克'},
+  'Kayle': {'label': '正义天使', 'name': '凯尔'},
+  'MasterYi': {'label': '无极剑圣', 'name': '易'},
+  'Alistar': {'label': '牛头酋长', 'name': '阿利斯塔'},
+  'Ryze': {'label': '符文法师', 'name': '瑞兹'},
+  'Sion': {'label': '亡灵战神', 'name': '赛恩'},
+  'Sivir': {'label': '战争女神', 'name': '希维尔'},
+  'Soraka': {'label': '众星之子', 'name': '索拉卡'},
+  'Teemo': {'label': '迅捷斥候', 'name': '提莫'},
+  'Tristana': {'label': '麦林炮手', 'name': '崔丝塔娜'},
+  'Warwick': {'label': '祖安怒兽', 'name': '沃里克'},
+  'Nunu': {'label': '雪原双子', 'name': '努努和威朗普'},
+  'MissFortune': {'label': '赏金猎人', 'name': '厄运小姐'},
+  'Ashe': {'label': '寒冰射手', 'name': '艾希'},
+  'Tryndamere': {'label': '蛮族之王', 'name': '泰达米尔'},
+  'Jax': {'label': '武器大师', 'name': '贾克斯'},
+  'Morgana': {'label': '堕落天使', 'name': '莫甘娜'},
+  'Zilean': {'label': '时光守护者', 'name': '基兰'},
+  'Singed': {'label': '炼金术士', 'name': '辛吉德'},
+  'Evelynn': {'label': '痛苦之拥', 'name': '伊芙琳'},
+  'Twitch': {'label': '瘟疫之源', 'name': '图奇'},
+  'Karthus': {'label': '死亡颂唱者', 'name': '卡尔萨斯'},
+  'Chogath': {'label': '虚空恐惧', 'name': '科加斯'},
+  'Amumu': {'label': '殇之木乃伊', 'name': '阿木木'},
+  'Rammus': {'label': '披甲龙龟', 'name': '拉莫斯'},
+  'Anivia': {'label': '冰晶凤凰', 'name': '艾尼维亚'},
+  'Shaco': {'label': '恶魔小丑', 'name': '萨科'},
+  'DrMundo': {'label': '祖安狂人', 'name': '蒙多医生'},
+  'Sona': {'label': '琴瑟仙女', 'name': '娑娜'},
+  'Kassadin': {'label': '虚空行者', 'name': '卡萨丁'},
+  'Irelia': {'label': '刀锋舞者', 'name': '艾瑞莉娅'},
+  'Janna': {'label': '风暴之怒', 'name': '迦娜'},
+  'Gangplank': {'label': '海洋之灾', 'name': '普朗克'},
+  'Corki': {'label': '英勇投弹手', 'name': '库奇'},
+  'Karma': {'label': '天启者', 'name': '卡尔玛'},
+  'Taric': {'label': '瓦洛兰之盾', 'name': '塔里克'},
+  'Veigar': {'label': '邪恶小法师', 'name': '维迦'},
+  'Trundle': {'label': '巨魔之王', 'name': '特朗德尔'},
+  'Swain': {'label': '诺克萨斯统领', 'name': '斯维因'},
+  'Caitlyn': {'label': '皮城女警', 'name': '凯特琳'},
+  'Blitzcrank': {'label': '蒸汽机器人', 'name': '布里茨'},
+  'Malphite': {'label': '熔岩巨兽', 'name': '墨菲特'},
+  'Katarina': {'label': '不祥之刃', 'name': '卡特琳娜'},
+  'Nocturne': {'label': '永恒梦魇', 'name': '魔腾'},
+  'Maokai': {'label': '扭曲树精', 'name': '茂凯'},
+  'Renekton': {'label': '荒漠屠夫', 'name': '雷克顿'},
+  'JarvanIV': {'label': '德玛西亚皇子', 'name': '嘉文四世'},
+  'Elise': {'label': '蜘蛛女皇', 'name': '伊莉丝'},
+  'Orianna': {'label': '发条魔灵', 'name': '奥莉安娜'},
+  'MonkeyKing': {'label': '齐天大圣', 'name': '孙悟空'},
+  'Brand': {'label': '复仇焰魂', 'name': '布兰德'},
+  'LeeSin': {'label': '盲僧', 'name': '李青'},
+  'Vayne': {'label': '暗夜猎手', 'name': '薇恩'},
+  'Rumble': {'label': '机械公敌', 'name': '兰博'},
+  'Cassiopeia': {'label': '魔蛇之拥', 'name': '卡西奥佩娅'},
+  'Skarner': {'label': '水晶先锋', 'name': '斯卡纳'},
+  'Heimerdinger': {'label': '大发明家', 'name': '黑默丁格'},
+  'Nasus': {'label': '沙漠死神', 'name': '内瑟斯'},
+  'Nidalee': {'label': '狂野女猎手', 'name': '奈德丽'},
+  'Udyr': {'label': '兽灵行者', 'name': '乌迪尔'},
+  'Poppy': {'label': '圣锤之毅', 'name': '波比'},
+  'Gragas': {'label': '酒桶', 'name': '古拉加斯'},
+  'Pantheon': {'label': '不屈之枪', 'name': '潘森'},
+  'Ezreal': {'label': '探险家', 'name': '伊泽瑞尔'},
+  'Mordekaiser': {'label': '铁铠冥魂', 'name': '莫德凯撒'},
+  'Yorick': {'label': '牧魂人', 'name': '约里克'},
+  'Akali': {'label': '离群之刺', 'name': '阿卡丽'},
+  'Kennen': {'label': '狂暴之心', 'name': '凯南'},
+  'Garen': {'label': '德玛西亚之力', 'name': '盖伦'},
+  'Leona': {'label': '曙光女神', 'name': '蕾欧娜'},
+  'Malzahar': {'label': '虚空先知', 'name': '玛尔扎哈'},
+  'Talon': {'label': '刀锋之影', 'name': '泰隆'},
+  'Riven': {'label': '放逐之刃', 'name': '锐雯'},
+  'KogMaw': {'label': '深渊巨口', 'name': '克格莫'},
+  'Shen': {'label': '暮光之眼', 'name': '慎'},
+  'Lux': {'label': '光辉女郎', 'name': '拉克丝'},
+  'Xerath': {'label': '远古巫灵', 'name': '泽拉斯'},
+  'Shyvana': {'label': '龙血武姬', 'name': '希瓦娜'},
+  'Ahri': {'label': '九尾妖狐', 'name': '阿狸'},
+  'Graves': {'label': '法外狂徒', 'name': '格雷福斯'},
+  'Fizz': {'label': '潮汐海灵', 'name': '菲兹'},
+  'Volibear': {'label': '不灭狂雷', 'name': '沃利贝尔'},
+  'Rengar': {'label': '傲之追猎者', 'name': '雷恩加尔'},
+  'Varus': {'label': '惩戒之箭', 'name': '韦鲁斯'},
+  'Nautilus': {'label': '深海泰坦', 'name': '诺提勒斯'},
+  'Viktor': {'label': '机械先驱', 'name': '维克托'},
+  'Sejuani': {'label': '北地之怒', 'name': '瑟庄妮'},
+  'Fiora': {'label': '无双剑姬', 'name': '菲奥娜'},
+  'Ziggs': {'label': '爆破鬼才', 'name': '吉格斯'},
+  'Lulu': {'label': '仙灵女巫', 'name': '璐璐'},
+  'Draven': {'label': '荣耀行刑官', 'name': '德莱文'},
+  'Hecarim': {'label': '战争之影', 'name': '赫卡里姆'},
+  'Khazix': {'label': '虚空掠夺者', 'name': '卡兹克'},
+  'Darius': {'label': '诺克萨斯之手', 'name': '德莱厄斯'},
+  'Jayce': {'label': '未来守护者', 'name': '杰斯'},
+  'Lissandra': {'label': '冰霜女巫', 'name': '丽桑卓'},
+  'Diana': {'label': '皎月女神', 'name': '黛安娜'},
+  'Quinn': {'label': '德玛西亚之翼', 'name': '奎因'},
+  'Syndra': {'label': '暗黑元首', 'name': '辛德拉'},
+  'AurelionSol': {'label': '铸星龙王', 'name': '奥瑞利安索尔'},
+  'Kayn': {'label': '影流之镰', 'name': '凯隐'},
+  'Zoe': {'label': '暮光星灵', 'name': '佐伊'},
+  'Zyra': {'label': '荆棘之兴', 'name': '婕拉'},
+  'Kaisa': {'label': '虚空之女', 'name': '卡莎'},
+  'Seraphine': {'label': '星籁歌姬', 'name': '萨勒芬妮'},
+  'Gnar': {'label': '迷失之牙', 'name': '纳尔'},
+  'Zac': {'label': '生化魔人', 'name': '扎克'},
+  'Yasuo': {'label': '疾风剑豪', 'name': '亚索'},
+  'Velkoz': {'label': '虚空之眼', 'name': '维克兹'},
+  'Taliyah': {'label': '岩雀', 'name': '塔莉垭'},
+  'Camille': {'label': '青钢影', 'name': '卡蜜尔'},
+  'Akshan': {'label': '影哨', 'name': '阿克尚'},
+  'Belveth': {'label': '虚空女皇', 'name': '卑尔维斯'},
+  'Braum': {'label': '弗雷尔卓德之心', 'name': '布隆'},
+  'Jhin': {'label': '戏命师', 'name': '烬'},
+  'Kindred': {'label': '永猎双子', 'name': '千珏'},
+  'Zeri': {'label': '祖安花火', 'name': '泽丽'},
+  'Jinx': {'label': '暴走萝莉', 'name': '金克丝'},
+  'TahmKench': {'label': '河流之王', 'name': '塔姆'},
+  'Viego': {'label': '破败之王', 'name': '佛耶戈'},
+  'Senna': {'label': '涤魂圣枪', 'name': '赛娜'},
+  'Lucian': {'label': '圣枪游侠', 'name': '卢锡安'},
+  'Zed': {'label': '影流之主', 'name': '劫'},
+  'Kled': {'label': '暴怒骑士', 'name': '克烈'},
+  'Ekko': {'label': '时间刺客', 'name': '艾克'},
+  'Qiyana': {'label': '元素女皇', 'name': '奇亚娜'},
+  'Vi': {'label': '皮城执法官', 'name': '蔚'},
+  'Aatrox': {'label': '暗裔剑魔', 'name': '亚托克斯'},
+  'Nami': {'label': '唤潮鲛姬', 'name': '娜美'},
+  'Azir': {'label': '沙漠皇帝', 'name': '阿兹尔'},
+  'Yuumi': {'label': '魔法猫咪', 'name': '悠米'},
+  'Samira': {'label': '沙漠玫瑰', 'name': '莎弥拉'},
+  'Thresh': {'label': '魂锁典狱长', 'name': '锤石'},
+  'Illaoi': {'label': '海兽祭司', 'name': '俄洛伊'},
+  'RekSai': {'label': '虚空遁地兽', 'name': '雷克塞'},
+  'Ivern': {'label': '翠神', 'name': '艾翁'},
+  'Kalista': {'label': '复仇之矛', 'name': '卡莉丝塔'},
+  'Bard': {'label': '星界游神', 'name': '巴德'},
+  'Rakan': {'label': '幻翎', 'name': '洛'},
+  'Xayah': {'label': '逆羽', 'name': '霞'},
+  'Ornn': {'label': '山隐之焰', 'name': '奥恩'},
+  'Sylas': {'label': '解脱者', 'name': '塞拉斯'},
+  'Neeko': {'label': '万花通灵', 'name': '妮蔻'},
+  'Aphelios': {'label': '残月之肃', 'name': '厄斐琉斯'},
+  'Rell': {'label': '镕铁少女', 'name': '芮尔'},
+  'Pyke': {'label': '血港鬼影', 'name': '派克'},
+  'Vex': {'label': '愁云使者', 'name': '薇古丝'},
+  'Yone': {'label': '封魔剑魂', 'name': '永恩'},
+  'Sett': {'label': '腕豪', 'name': '瑟提'},
+  'Lillia': {'label': '含羞蓓蕾', 'name': '莉莉娅'},
+  'Gwen': {'label': '灵罗娃娃', 'name': '格温'},
+  'Renata': {'label': '炼金男爵', 'name': '烈娜塔 · 戈拉斯克'},
+  'Nilah': {'label': '不羁之悦', 'name': '尼菈'}
+}

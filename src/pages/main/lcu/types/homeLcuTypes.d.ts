@@ -13,6 +13,7 @@ export interface lcuSummonerInfo {
   unnamed: boolean;
   xpSinceLastLevel: number;
   xpUntilNextLevel: number;
+  httpStatus?:number
 }
 
 interface IRerollPoint {
@@ -26,7 +27,7 @@ interface IRerollPoint {
 export interface summonerInfo {
   name:string,
   imgUrl:string,
-  lv:string,
+  lv:string|number,
   xpSL:number,
   xpNL:number,
   puuid:string,

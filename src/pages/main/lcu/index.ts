@@ -16,6 +16,6 @@ export const invokeLcu = (method:string, uri:string,args?:any) => {
       return v
     })
     .catch((err) => {
-      return  err
+      return err
     });
 }

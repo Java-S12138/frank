@@ -1,12 +1,16 @@
 import { createApp } from 'vue';
 import '../../style.css';
 import App from './Main.vue';
-import router from './router'
-import { createPinia } from 'pinia'
+import router from './router';
+import { createPinia } from 'pinia';
+import './utils/echarts';
+import './utils/config'
+
 createApp(App)
   .use(router)
   .use(createPinia())
   .mount('#app');
+
 
 // cube.windows.getMainWindow().then((v) => {
 //   cube.windows.message.send(v.id, 'hell', 'hello world');

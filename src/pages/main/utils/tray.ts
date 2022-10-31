@@ -1,3 +1,4 @@
+// @ts-ignore
 cube.os.tray.setMenu(
   (e, ...args) => {
     if (e == 'item-click') {

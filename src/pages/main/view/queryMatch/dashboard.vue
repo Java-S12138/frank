@@ -74,6 +74,9 @@ import {ref} from "vue";
 // @ts-ignore
 import {queryStore} from "@/pages/main/store";
 import {storeToRefs} from "pinia";
+import {lcuSummonerInfo} from "../../lcu/types/homeLcuTypes";
+import {returnSummonerData} from "../../lcu/queryMatchLcu";
+import {invokeLcu} from "../../lcu";
 
 const store = queryStore()
 const {querySummonerId,summoner,begIndex,endIndex,
@@ -108,30 +111,23 @@ const options = [
 ]
 
 const searchSummonerInfo = async (event:any,local:any) => {
-  console.log('searchSUmmonerInfo')
-  // if (searchName.value === '' && local === undefined){
-  //   message.error('召唤师昵称不能为空')
-  //   return
-  // }
-  // const nickname = local !== undefined ? encodeURI(local) :encodeURI(searchName.value)
-  // const credentials = appConfig.get('credentials')
-  // const session = await createHttpSession(credentials)
-  //
-  // const res = (await createHttp2Request({
-  //   method:"GET",
-  //   url:`/lol-summoner/v1/summoners/?name=${nickname}`
-  // },session,credentials)).json()
-  // session.close()
-  // if (res.httpStatus === 404){
-  //   message.error('当前召唤师不存在')
-  //   return
-  // }else{
-  //   summoner.value = await returnSummonerData(credentials,res.summonerId)
-  //   querySummonerId.value = summoner.value.summonerInfo.summonerId
-  //   searchName.value = ''
-  //   currentMode.value= '全部模式'
-  //   return
-  // }
+  if (searchName.value === '' && local === undefined){
+    message.error('召唤师昵称不能为空')
+    return
+  }
+  const nickname = local !== undefined ? local :searchName.value
+  const res:lcuSummonerInfo = await invokeLcu('get',`/lol-summoner/v1/summoners`,[nickname])
+
+  if (res.httpStatus === 404){
+    message.error('当前召唤师不存在')
+    return
+  }else{
+    summoner.value = await returnSummonerData(res.summonerId)
+    querySummonerId.value = summoner.value.summonerInfo.currentId
+    searchName.value = ''
+    currentMode.value= '全部模式'
+    return
+  }
 }
 
 
