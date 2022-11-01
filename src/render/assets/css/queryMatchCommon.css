@@ -1,0 +1,12 @@
+.mainCard {
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-top: -8px;
+    height: 88.4vh;
+    display: flex;
+    flex-direction: column
+}
+.n-card {
+    border-radius: 10px;
+    /*height: 100%;*/
+}
