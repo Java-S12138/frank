@@ -1,5 +1,6 @@
 {
   "name": "frank",
+  "author": "Java_S",
   "private": true,
   "version": "0.0.0",
   "type": "module",
