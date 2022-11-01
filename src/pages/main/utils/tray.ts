@@ -11,7 +11,7 @@ cube.os.tray.setMenu(
     }
   },
   [
-    { type: 'checkbox', label: '显示主页', id: 'check', checked: true },
+    { type: 'normal', label: '显示主页', id: 'check'},
     { type: 'normal', label: '退出软件', id: 'quit' },
   ],
   'Frank',

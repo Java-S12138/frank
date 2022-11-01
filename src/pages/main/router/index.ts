@@ -14,7 +14,12 @@ const routes = [
     path: '/queryMatch',
     name: 'QueryMatch',
     component: () => import('../view/queryMatch/index.vue')
-  }
+  },
+  {
+    path: '/assist',
+    name: 'Assist',
+    component: () => import('../view/assist/index.vue')
+  },
   ]
 
 const router = createRouter({

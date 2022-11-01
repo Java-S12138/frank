@@ -63,11 +63,13 @@ const dragMove = () => {
 const handleMin = () => {
   cube.windows.minimize(cube.windows.current.id())
 }
-const handleMinimize = () => {
-  cube.windows.hide(cube.windows.current.id())
+const handleMinimize =  () => {
+  // cube.windows.hide(cube.windows.current.id())
+  cube.windows.obtainDeclaredWindow('assist')
 }
-const handleClose = () => {
-  cube.windows.close(cube.windows.current.id())
+const handleClose = async () => {
+  const background = await cube.windows.getWindowByName('background')
+  cube.windows.close(background.id)
 }
 
 </script>

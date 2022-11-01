@@ -7,7 +7,6 @@
     championId: "101",
     isAuto: false
   },
-  'autoRune': {},
   'autoAccept': 50,
   'horseColor':{
     'topHorse': '#7BD9A5',

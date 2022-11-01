@@ -34,7 +34,7 @@
         "hold": true
       }
     },
-    "start_window": "main",
+    "start_window": "background",
     "windows": {
       "main": {
         "file": "src/pages/main/index.html",
@@ -56,6 +56,14 @@
         "width": 1166,
         "height": 650,
         "resizable": false
+      },
+      "assist": {
+        "file": "src/pages/main/#/assist",
+        "show": true,
+        "frame": false,
+        "resizable": false,
+        "width": 320,
+        "height": 720
       }
     }
   },

@@ -1,5 +1,5 @@
 <template>
-  <header class="frankTitle" >
+  <header class="frankTitle" @mousedown="handldDrge()" >
     <n-space class="frankTitle"  >
       <img src="@/assets/icon/app-icon.png" draggable="false"  alt="" width="40" @click="refresh">
       <n-button style="margin: 0px 5.5px 0px 5.5px"  v-if="summoner.summonerInfo.name !== localSummoner"
@@ -47,7 +47,7 @@
     </n-space>
     <n-space class="rightSpace">
       <n-space style="margin-right: 10px" :size="[23,0]">
-        <n-input style="width: 153px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
+        <n-input style="width: 147.5px;" size="small" v-model:value="searchName" @keydown.enter="searchSummonerInfo" placeholder="仅支持当前大区玩家"/>
         <n-select v-model:value="currentMode"  :disabled="searchName.length !==0"
                   :options="options" size="small" :show-arrow="true" style="width: 100px;" />
         <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
@@ -141,11 +141,11 @@ const handldDrge = () => {
 }
 
 const handleMin = () => {
-  console.log('handleMin')
+  cube.windows.minimize(cube.windows.current.id())
 }
 
 const handleClose = () => {
-  console.log('handleColse')
+  cube.windows.close(cube.windows.current.id())
 }
 const backHome = async () => {
   cube.windows.close(cube.windows.current.id())

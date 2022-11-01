@@ -120,7 +120,6 @@ import {optionsChampion} from '../../resources/champList'
 import {ref,reactive} from "vue";
 
 const emits = defineEmits(['changePage'])
-// @ts-ignore
 const config = reactive(JSON.parse(localStorage.getItem('config')))
 const showModal = ref(false)
 

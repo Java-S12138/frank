@@ -23,3 +23,14 @@ export const queryStore = defineStore('query',{
     }
   }
 })
+
+export const assistStore = defineStore('assist', {
+  state: () => {
+    return {
+      summonerInfo:[],// 当前对局中队友的信息
+      endGameAfterInfo:[[],[]],// 当前对局敌我双方信息
+      currentBlackList:[],// 当前对局中出现的黑名单队友
+      showSummonerInfoModal:false,
+    }
+  }
+})

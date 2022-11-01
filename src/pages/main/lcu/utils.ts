@@ -27,3 +27,14 @@ export const queryGameType = (queueId:number) => {
   }
   return '其它模式'
 }
+// 判断localStorage是否存在某个值
+export const isStoreageHas = (key:string,value:string) => {
+  const storeageJson = JSON.parse(localStorage.getItem(key))
+  if (storeageJson === null){
+    return false
+  }
+  if (value !== 'null' && storeageJson[value] === undefined){
+    return false
+  }
+  return true
+}
