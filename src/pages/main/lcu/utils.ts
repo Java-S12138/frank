@@ -38,3 +38,4 @@ export const isStoreageHas = (key:string,value:string) => {
   }
   return true
 }
+

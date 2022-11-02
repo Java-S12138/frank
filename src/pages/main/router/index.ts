@@ -20,6 +20,11 @@ const routes = [
     name: 'Assist',
     component: () => import('../view/assist/index.vue')
   },
+  {
+    path: '/matchHistory',
+    name: 'MatchHistory',
+    component: () => import('@/render/components/matchHistory/index.vue')
+  },
   ]
 
 const router = createRouter({

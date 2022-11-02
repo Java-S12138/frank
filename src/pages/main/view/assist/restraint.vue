@@ -24,7 +24,7 @@
                 :default-value="0">
           <n-tab-pane v-for="(restraint,index) in restraintList"
             :tab="restraint.position" :name="index">
-            <n-scrollbar style="max-height: 385px">
+            <n-scrollbar style="max-height: 380px">
               <n-list-item v-for="champRes in restraint.restraint">
                 <n-space class=aligncenter>
                   <n-avatar

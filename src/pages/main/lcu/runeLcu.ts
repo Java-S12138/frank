@@ -19,3 +19,14 @@ export const applyRunePage = async (data: {}) => {
     return false
   }
 }
+
+// 自动接收对局
+export const autoAcceptGame = async () => {
+  const isAutoAccept = JSON.parse(localStorage.getItem('config')).autoAccept
+  if (isAutoAccept<50){return}
+
+  const setTime = (isAutoAccept-50)*200
+  setTimeout( async ()=>{
+    invokeLcu('post','/lol-matchmaking/v1/ready-check/accept')
+  },setTime)
+}

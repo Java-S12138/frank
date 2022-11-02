@@ -48,7 +48,8 @@
       },
       "background": {
         "file": "src/pages/background/index.html",
-        "is_background_page": true
+        "is_background_page": true,
+        "open_dev_tools": false
       },
       "queryMatch": {
         "file": "src/pages/main/#/querymatch",
@@ -59,11 +60,20 @@
       },
       "assist": {
         "file": "src/pages/main/#/assist",
-        "show": true,
+        "show": false,
         "frame": false,
         "resizable": false,
         "width": 320,
-        "height": 720
+        "height": 720,
+        "show_in_taskbar": false
+      },
+      "matchHistory": {
+        "file": "src/pages/main/#/matchHistory",
+        "frame": false,
+        "width": 1024,
+        "height": 576,
+        "resizable": false,
+        "keep_window_location": false
       }
     }
   },

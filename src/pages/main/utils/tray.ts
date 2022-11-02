@@ -1,17 +1,28 @@
 // @ts-ignore
+const showWin = async (win) => {
+  const window = await cube.windows.getWindowByName(win)
+  if (window.show){
+    cube.windows.hide(window.id)
+  }else {
+    cube.windows.show(window.id)
+  }
+}
+
 cube.os.tray.setMenu(
-  (e, ...args) => {
-    if (e == 'item-click') {
-      cube.windows.obtainDeclaredWindow('main').then((v) => {
-        cube.windows.show(v.id);
-      });
+  async (e, ...args) => {
+    if (e == 'item-click'&& args[0]?.id == 'showMain') {
+      showWin('main')
     }
     if (e == 'item-click' && args[0]?.id == 'quit') {
       cube.extensions.terminate();
     }
+    if (e == 'item-click' && args[0]?.id == 'showAssist') {
+      showWin('assist')
+    }
   },
   [
-    { type: 'normal', label: '显示主页', id: 'check'},
+    { type: 'normal', label: '显示主页', id: 'showMain'},
+    { type: 'normal', label: '显示助手', id: 'showAssist'},
     { type: 'normal', label: '退出软件', id: 'quit' },
   ],
   'Frank',

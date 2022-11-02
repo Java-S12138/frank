@@ -10,60 +10,95 @@
     <champ-rank v-show="transValue==='champRank'" class="slide-in-bottom"></champ-rank>
     <rune v-show="transValue==='rune'"  @changePage="changePage"
           class="slide-in-bottom" ></rune>
-<!--    <div v-if="isSwitchBlacklist" >-->
-<!--      <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>-->
-<!--    </div>-->
-  <n-button @click="test">按我</n-button>
+    <div v-if="isSwitchBlacklist" >
+      <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>
+    </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
-  NTabs, NTab, useMessage,NButton
+  NTabs, NTab, useMessage
 } from "naive-ui";
 import Rune from './rune.vue'
 import ChampRank from './champRank.vue'
-// import Blacklist from "./blacklist.vue"
+import Blacklist from "./blacklist.vue"
 import {onMounted, ref} from "vue";
 import {assistStore} from "../../store";
 import {storeToRefs} from "pinia";
-import {invokeLcu} from "../../lcu/"
-
-const test = async () => {
-  console.log(await invokeLcu('post','/lol-matchmaking/v1/ready-check/accept'))
-}
+import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName} from "../../utils/blacklistUtils"
+import {invokeLcu} from "../../lcu";
 
 onMounted(() => {
   let nTabsRail = document.querySelector('.n-tabs-rail')
   let champRank = document.querySelector('#app > div.n-tabs.n-tabs--segment-type.n-tabs--medium-size > div > div > div:nth-child(1) > div')
   let rune = document.querySelector('#app > div.n-tabs.n-tabs--segment-type.n-tabs--medium-size > div > div > div:nth-child(2) > div.n-tabs-tab')
-  nTabsRail.style.margin = "12px 12px 0 12px"
-  champRank.style['border-radius'] = '5px'
-  champRank.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' +
-    ' color 1s var(--n-bezier),\n' +
-    ' background-color 1s var(--n-bezier),\n' +
-    ' border-color 1s var(--n-bezier)'
-  rune.style['border-radius'] = '5px'
-  rune.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' +
-    ' color 1s var(--n-bezier),\n' +
-    ' background-color 1s var(--n-bezier),\n' +
-    ' border-color 1s var(--n-bezier)'
+  // @ts-ignore
+  nTabsRail.style.margin = "12px 12px 0 12px";champRank.style['border-radius'] = '5px';champRank.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' + ' color 1s var(--n-bezier),\n' + ' background-color 1s var(--n-bezier),\n' + ' border-color 1s var(--n-bezier)';rune.style['border-radius'] = '5px';rune.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' + ' color 1s var(--n-bezier),\n' + ' background-color 1s var(--n-bezier),\n' + ' border-color 1s var(--n-bezier)'
 })
 const tabsInstRef = ref(['champRank', 'rune','blacklist'])
 const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
-const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo} = storeToRefs(store)
-const isSwitchBlacklist = true
+const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo}:any = storeToRefs(store)
+const isSwitchBlacklist = JSON.parse(localStorage.getItem('config')).isSwitchBlacklist
+
+cube.windows.message.on('received',async (id) => {
+  // 查询我方召唤师
+  if (id==='query-other-summoner' && isSwitchBlacklist){
+    showSummonerInfoModal.value = false
+    transValue.value = 'champRank'
+    setTimeout( async () => {
+      const res =  await querySummonerIdAndSummonerName()
+      summonerInfo.value = []
+      summonerInfo.value = res
+      getCurrentBlacklist(summonerInfo.value)
+    },1500)
+  }else if (id==='query-enemy-summoner'&& isSwitchBlacklist){
+    // 查询敌方召唤师
+    setTimeout(async () => {
+      const res = await queryEnemySummonerIdAndSummonerName()
+      endGameAfterInfo.value = [[], []]
+      endGameAfterInfo.value = res
+    }, 1500)
+  }else if (id==='query-enemy-summoner'&& isSwitchBlacklist){
+    currentBlackList.value.length = 0
+    transValue.value = 'blacklist'
+  }
+})
 
 
-const getCurrentBlacklist = () => {
-  console.log('getCurrentBlacklist')
+const getCurrentBlacklist = (summonerInfo:any) => {
+  let summonerList = []
+
+  for (const summoner of summonerInfo) {
+    summonerList.push(`${summoner.summonerId}`)
+  }
+  if (localStorage.getItem('blacklist') !== null && localStorage.getItem('blacklist') !=='{}'){
+    const blacklistIds = Object.keys(JSON.parse(localStorage.getItem('blacklist')))
+    for (const blacklistId of blacklistIds) {
+      if (summonerList.indexOf(blacklistId) !=-1){
+        currentBlackList.value.push(blacklistId)
+      }
+    }
+    if (currentBlackList.value.length > 1){
+      transValue.value = 'blacklist'
+    }
+  }
 }
 
+// 显示队伍战绩历史窗口
 const showMatch = async () => {
-  console.log('showmatch')
+  const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
+  if (clientStatus == 'ChampSelect' ||  clientStatus == 'InProgress'){
+    // ipcRenderer.send('showCharts',clientStatus)
+    message.success('获取战绩成功 !')
+  }
+  else {
+    message.error('请先开始一局游戏哟 !')
+  }
 }
-const changePage = (e) => {
+
+const changePage = (e:string) => {
   if (e){
     transValue.value = 'rune'
   }else {

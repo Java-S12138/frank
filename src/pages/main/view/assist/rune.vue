@@ -28,7 +28,7 @@
             </n-button>
           </n-space>
         </div>
-        <n-select @update:value="changeRuneType($event)"
+        <n-select @update:value="changeRuneType($event)" style="width: 100px"
                   v-model:value="runeValue" :options="runeOptions" />
       </n-space>
     </n-card>
@@ -157,41 +157,35 @@ const runeOptions =  [
     value: '韩服数据',
   }]
 const emits = defineEmits(['changePage'])
-
 const message = useMessage()
 
-// ipcRenderer.on('show-other-summoner', () => {
-//   runeDataListFor.value.length = 0
-//   currentChamp.value=null
-// })
-// ipcRenderer.on('query-other-summoner', () => {
-//   currentGameMode = ''
-// })
-//
 cube.windows.message.on('received',async (id, content) => {
-  const champ = JSON.parse(content.value)
-  let gameMode
+  if (id==='champion'){
+    const champ = JSON.parse(content.value)
+    let gameMode
 
-  if (champ.data === 0) {
-    currentChamp.value = 0
-    currentGameMode = ''
-    runeDataListFor.value.length = 0
-    emits('changePage',false)
-    return
+    if (champ.data === 0) {
+      currentChamp.value = 0
+      currentGameMode = ''
+      runeDataListFor.value.length = 0
+      emits('changePage',false)
+      return
+    }
+    if (champ.data !== currentChamp.value) {
+      emits('changePage',true)
+      gameMode = await getGameMode()
+      runeDataList = []
+      skillsAndItems.value = []
+      itemCount.value = 1
+      isAutoRune.value = isStoreageHas('autoRunes',String(champ.data)) == true ? 'auto' : ''
+      currentChamp.value = champ.data
+      mapChamp(champ.data)
+      getRuneData(gameMode)
+    }
+    // 设置当前游戏模式
+    if (currentGameMode === ''){currentGameMode = gameMode}
   }
-  if (champ.data !== currentChamp.value) {
-    emits('changePage',true)
-    gameMode = await getGameMode()
-    runeDataList = []
-    skillsAndItems.value = []
-    itemCount.value = 1
-    isAutoRune.value = isStoreageHas('autoRunes',String(champ.data)) == true ? 'auto' : ''
-    currentChamp.value = champ.data
-    mapChamp(champ.data)
-    getRuneData(gameMode)
-  }
-  // 设置当前游戏模式
-  if (currentGameMode === ''){currentGameMode = gameMode}
+
 })
 
 
