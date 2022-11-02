@@ -86,33 +86,34 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {NCard, NAvatar, NSpace, NTag, NButton, NSpin} from 'naive-ui'
-import {appConfig} from "@/utils/main/config";
-import {queryEnemySummonerId} from "@/utils/render/renderLcu";
-import {getSummonerNickName} from "@/utils/main/lcu";
-import {storeToRefs} from "pinia/dist/pinia";
-import {matchStore} from "@/render/store";
-import {ipcRenderer} from "electron";
+import {queryEnemySummonerId,getSummonerNickName} from "../../lcu/matchHistoryLcu";
+import {storeToRefs} from "pinia";
+import {matchStore} from "../../store";
 const emits = defineEmits(['summonerId','backHome'])
 
-const horseType = appConfig.get('horseType')
+const config = JSON.parse(String(localStorage.getItem('config')))
+const horseType:any = config.horseType
 const store = matchStore()
 const {enemyEchartsData, currentEchartData,echartsData,currentTeam,
-  currentSummonerName, summonerInfo,enemySummonerInfo} = storeToRefs(store)
+  currentSummonerName, summonerInfo,enemySummonerInfo}:any = storeToRefs(store)
 
-ipcRenderer.on('query-enemy-summoner', () => {
-  getEnemyInfo()
+
+cube.windows.message.on('received',async (id) => {
+  if (id==='query-enemy-summoner'){
+    getEnemyInfo()
+  }
 })
+
 const getEnemyInfo = async () => {
-  const credentials = appConfig.get('credentials')
-  const enemyIdList = await queryEnemySummonerId(credentials)
-  enemySummonerInfo.value = await getSummonerNickName(credentials, enemyIdList)
+  const enemyIdList = await queryEnemySummonerId()
+  enemySummonerInfo.value = await getSummonerNickName(enemyIdList)
   getEnemyChartsData(enemySummonerInfo.value)
 }
 // getEnemyInfo()
 
-const getEnemyChartsData = (res) => {
+const getEnemyChartsData = (res:any) => {
   enemyEchartsData.value = {name: [], data: [], kdaHistory: [], horse: [], summonerId: []}
   for (const re of res) {
     enemyEchartsData.value.name.push(re.name)
@@ -129,7 +130,7 @@ const changeCurrentTeam = () => {
   emits('backHome')
 }
 
-const clickCurrentSummoner = (e, summonerId, name) => {
+const clickCurrentSummoner = (e:any, summonerId:number, name:string) => {
   emits('summonerId', {summonerId, name})
 }
 

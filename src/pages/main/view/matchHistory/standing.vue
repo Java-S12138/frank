@@ -3,9 +3,9 @@
     <n-card class="mainCard boxShadow" content-style="padding-right:0px">
       <n-space>
         <n-list style="margin-left: 20px;margin-top: 20px;width: 440px;" >
-        <n-scrollbar style="max-height: 490px">
+        <n-scrollbar style="max-height: 480px">
           <n-list-item style="padding: 0px;width: 390px;"
-            v-for="match in matchData.slice(0,matchData.length-1)" >
+            v-for="match in props.matchData.slice(0,props.matchData.length-1)" >
             <n-space vertical style="margin-top: 10px" >
               <!--        头像 技能 模式-->
               <n-space  @click="toGameDetailsPage(match.gameId)" >
@@ -19,7 +19,7 @@
 
                 />
                 <n-space vertical :size="[10,-2.4]">
-                  <n-space :size="[5]">
+                  <n-space :size="[5,0]">
                     <n-tag type="success" :bordered="false" v-if="match.isWin == '胜利'">{{match.isWin}}</n-tag>
                     <n-tag type="error" :bordered="false" v-else>{{match.isWin}}</n-tag>
                     <img class="itemClass"
@@ -31,7 +31,7 @@
                 </n-space>
                 <!--          装备 战绩 补兵 经济-->
                 <n-space style="" :size="[2,-2]" vertical>
-                  <n-space :size="[2]">
+                  <n-space :size="[2,0]">
                     <img class="itemClass"
                          :src="match.item0" >
                     <img class="itemClass"
@@ -47,19 +47,17 @@
                     <img class="itemClass"
                          :src="match.item6" >
                   </n-space>
-                  <n-space :size="[9]">
+                  <n-space :size="[9,0]" justify="space-between">
                     <span style="color: #2080f0">{{ match.lane }}</span>
-                    <n-icon size="19" color="#18a058" v-if="((match.kills+match.assists)/match.deaths)*3 >=10" >
+                    <n-icon size="16" color="#18a058"
+                            v-if="((match.kills+match.assists)/match.deaths)*3 >=10" >
                       <ThumbUp/>
                     </n-icon>
-                    <n-icon size="19" color="#ff6666" v-else >
+                    <n-icon size="16" color="#ff6666" v-else >
                       <ThumbDown/>
                     </n-icon>
-                    <div style="color: #9AA4AF;font-size: 13px;width:32px">{{match.kills }}/{{match.deaths }}/{{match.assists }}</div>
-                    <n-space style="margin-left: 8px" :size="[1]">
-                      <n-icon size="19" color="#9AA4AF" >
-                        <World/>
-                      </n-icon>
+                    <div style="color: #9AA4AF;font-size: 13px;width:50px">{{match.kills }}/{{match.deaths }}/{{match.assists }}</div>
+                    <n-space style="margin-left: 8px" :size="[1,0]">
                       <span style="color: #9AA4AF;font-size: 13px">{{match.matchTime}}</span>
                     </n-space>
                   </n-space>
@@ -74,7 +72,7 @@
         <n-scrollbar style="max-height: 490px;margin-top: 20px">
           <n-space vertical :size="[2,20]"
                    style="margin-left: 20px;padding-top: 10px;padding-right: 15px" >
-            <n-space v-for="superChamp in matchData[matchData.length-1]">
+            <n-space v-for="superChamp in props.matchData[props.matchData.length-1]">
               <n-avatar
                 round
                 :bordered="false"
@@ -119,7 +117,7 @@
           </n-popover>
           <n-popover :show-arrow="false" trigger="hover" :delay="2000">
             <template #trigger>
-              <n-icon size="24" v-mouse-drag="handleChangePosition">
+              <n-icon size="24">
                 <Ballon/>
               </n-icon>
             </template>
@@ -131,45 +129,32 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
-  NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,
-  NPopover,NList, NListItem,NScrollbar,
+  NCard, NAvatar, NSpace, NTag, NIcon, NButton, NPopover,NList, NListItem,NScrollbar,
 } from 'naive-ui'
 import {ThumbUp,World,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
-import {ipcRenderer} from "electron";
-export default {
-  name: "standing",
-  components: {
-    NCard, NAvatar, NSpace, NTag, NIcon, NButton, NColorPicker,
-    NPopover,ThumbUp,ThumbDown,World,NList, NListItem,NScrollbar,ChevronsDownLeft, ArrowBackUp, Ballon
-  },
-  props: {
-    matchData: {
-      type: Array
-    }
-  },
-  setup(props,{emit}){
-    const handleChangePosition = (pos) => {
-      ipcRenderer.send('move-match-history-window', {
-        x: pos.x,
-        y: pos.y,
-      })
-    }
-    const backPage = () => {
-      emit('changePage')
-    }
-    const toGameDetailsPage = (gameId) => {
-      emit('toGameDetailsPage',{gameId:gameId,lastPage:2})
-    }
-    const handleMin = () => {
-      ipcRenderer.send('match-history-window-min')
-    }
-    return {
-      handleChangePosition,backPage,handleMin,toGameDetailsPage
-    }
+
+const props = defineProps({
+  matchData: {
+    type: Array
   }
+})
+const emits = defineEmits(['changePage','toGameDetailsPage'])
+
+const handleChangePosition = () => {
+  console.log('handleChangePosition')
 }
+const backPage = () => {
+  emits('changePage')
+}
+const toGameDetailsPage = (gameId:any) => {
+  emits('toGameDetailsPage',{gameId:gameId,lastPage:2})
+}
+const handleMin = () => {
+  console.log('handleMin')
+}
+
 </script>
 
 <style scoped>

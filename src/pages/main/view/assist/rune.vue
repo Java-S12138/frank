@@ -145,7 +145,7 @@ const skillsAndItems:Ref<any> = ref([])
 const itemCount = ref(1)
 let currentGameMode:any = ""
 const restraintActive = ref(false)
-const config = JSON.parse(localStorage.getItem('config'))
+const config = JSON.parse(String(localStorage.getItem('config')))
 const runeValue =  ref(config.runeType)
 const runeOptions =  [
   {

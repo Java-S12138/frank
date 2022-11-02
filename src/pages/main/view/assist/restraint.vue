@@ -50,12 +50,12 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   NAvatar, NList, NScrollbar,NSwitch,NPopover,
   NListItem, NSpace, NTag,NTabs,NTabPane
 } from "naive-ui";
-import {ref,onMounted} from "vue";
+import {ref,onMounted,Ref} from "vue";
 import {champDict} from "../../resources/champList";
 import {request} from "../../utils/request";
 import {isStoreageHas} from "../../lcu/utils";
@@ -69,13 +69,14 @@ const props = defineProps({
 const emits = defineEmits(['autoRune'])
 
 const isAutoRune = ref(false)
-const imgUrl = ref(null)
-const restraintList = ref([])
+const imgUrl = ref('')
+const restraintList:Ref<any> = ref([])
 
 
 onMounted(() => {
+  // @ts-ignore
   imgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[props.champ].alias}.png`
-  isAutoRune.value = isStoreageHas('autoRunes',props.champ) === true ? true : false
+  isAutoRune.value = isStoreageHas('autoRunes',String(props.champ)) === true ? true : false
   getRestraintData()
 })
 
@@ -97,7 +98,7 @@ const getRestraintData = async () => {
 }
 
 // 获取位置信息
-const getPosition = (pos) => {
+const getPosition = (pos:string) => {
   switch (pos) {
     case 'mid':
       return '中单';
@@ -114,12 +115,14 @@ const getPosition = (pos) => {
   }
 }
 // 获取压制英雄数据
-const getDetailsData =  (restraint) => {
+const getDetailsData =  (restraint:any) => {
   let resList = []
 
   for (const restraintListElement of restraint) {
     const chapmId = restraintListElement.championid2
+    // @ts-ignore
     const label = champDict[chapmId].label
+    // @ts-ignore
     const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
     const winRate = 10000 - Number(restraintListElement.winrate)
     resList.push([label, imgUrl, winRate])
@@ -135,7 +138,7 @@ const setIsAutoRune = async () => {
   if (autoRunesList ===null){
     localStorage.setItem('autoRunes','{}')
   }
-  const autoRunesJson = JSON.parse(autoRunesList)
+  const autoRunesJson:any = JSON.parse(autoRunesList)
   if (!isAutoRune.value){
     const currentRuneList = await invokeLcu('get','/lol-perks/v1/pages')
     const current = currentRuneList.find((i) => i.current && i.isDeletable)

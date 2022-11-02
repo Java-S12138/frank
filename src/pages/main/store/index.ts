@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-
 export const queryStore = defineStore('query',{
   state: () => {
     return {
@@ -34,3 +33,20 @@ export const assistStore = defineStore('assist', {
     }
   }
 })
+
+export const matchStore = defineStore('matchHistory',{
+  state: () => {
+    return {
+      pageCount:1,// 首页页面切换计数器
+      summonerInfo:[],// 当前对局中队友的信息
+      enemySummonerInfo:[], // 敌方信息
+      echartsData:{name:[],data:[],kdaHistory:[],horse:[],summonerId:[]},// 图表基础数据
+      enemyEchartsData:{name:[],data:[],kdaHistory:[],horse:[],summonerId:[]},// 图表基础数据
+      currentEchartData:{name:[],data:[],kdaHistory:[],horse:[],summonerId:[]},
+      currentQueryGameId:0,
+      currentSummonerName:'',
+      currentTeam:1, // 当前队伍
+    }
+  }
+})
+

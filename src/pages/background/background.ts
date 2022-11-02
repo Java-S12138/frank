@@ -18,8 +18,10 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
     }else if (info.value  ==='GameStart'){
       // 选择英雄结束后,发送消息给渲染进程, 让渲染进程获取到敌方召唤师信息
       const assistWin = await cube.windows.getWindowByName('assist')
+      const matchHistoryWin = await  cube.windows.getWindowByName('matchHistory')
       cube.windows.hide(assistWin.id)
       cube.windows.message.send(assistWin.id, 'query-enemy-summoner','')
+      cube.windows.message.send(matchHistoryWin.id, 'query-enemy-summoner','')
     }else if (info.value ==='PreEndOfGame'){
       // 游戏结束后,弹出拉黑召唤师的抽屉
       const assistWin = await cube.windows.getWindowByName('assist')

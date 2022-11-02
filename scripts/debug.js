@@ -8,7 +8,7 @@ const manifest = JSON.parse(readFileSync(path.resolve(__dirname, '../public/mani
 
 Object.values(manifest.data.windows).forEach((w) => {
   w.debug_url = 'http://localhost:5173';
-  w.open_dev_tools = true;
+  w.open_dev_tools = false;
 });
 
 try {

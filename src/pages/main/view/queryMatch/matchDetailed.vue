@@ -72,7 +72,7 @@ import {Ref, ref, watch} from "vue";
 import {dealMatchHistory, querySpecialMatchHistory} from "../../lcu/queryMatchLcu";
 import {MatchList} from "../../lcu/types/queryMatchLcuTypes"
 
-import GameDetails from "./gameDetails.vue";
+import GameDetails from "../components/gameDetails.vue";
 import RecentEchart from "./recentEchart.vue";
 
 const store = queryStore()

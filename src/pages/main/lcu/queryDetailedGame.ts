@@ -1,6 +1,6 @@
 import {champDict} from "../resources/champList";
 import {invokeLcu} from "./index";
-import {queryGameType} from "./utils"
+import {queryGameType,getspellImgUrl,getItemImgUrl} from "./utils"
 import {GameDetailedInfo} from  "./types/queryDetailedGameTypes"
 
 export const queryGameDetailsData = async (gameId:number)  => {
@@ -12,7 +12,7 @@ export const queryGameDetailsData = async (gameId:number)  => {
 const getParticipantsDetails = (res:any,participants:any, participantIdentities:any) => {
   const nameList = getparticipantIdAndName(participantIdentities)
   let titleList = getDetailsTitle(res)
-  let detalisList = []
+  let datalisList = []
   let team100Kills = 0
   let team200Kills = 0
   let team100GoldEarned = 0
@@ -23,12 +23,13 @@ const getParticipantsDetails = (res:any,participants:any, participantIdentities:
     team100GoldEarned += participants[i].stats.goldEarned
     team200GoldEarned += participants[i+5].stats.goldEarned
 
-    detalisList.push([analyticalData(participants[i],nameList[i].name,nameList[i].summonerId),
+    datalisList.push([analyticalData(participants[i],nameList[i].name,nameList[i].summonerId),
       analyticalData(participants[i+5],nameList[i+5].name,nameList[i+5].summonerId)])
   }
   titleList.push(String(team100Kills),String(team200Kills),String(goldToStr(team100GoldEarned)),String(goldToStr(team200GoldEarned)))
-  detalisList.push(titleList)
-  return detalisList
+  datalisList.push(titleList)
+  console.log(datalisList)
+  return datalisList
 }
 // 解析对局数据
 const analyticalData  = (participant:any,nameList:any,accountIdList:any) => {
@@ -105,35 +106,4 @@ const getDetailsTitle = (gameInfo:any) => {
 }
 const goldToStr = (gold:number) => {
   return Number((gold/1000).toFixed(1))
-}
-
-// 通过召唤师id获取召唤师图片地址
-const getspellImgUrl = (spellId:number) => {
-  switch (spellId) {
-    case 4:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png';
-    case 14:return 'https://game.gtimg.cn/images/lol/act/img/spell/SummonerIgnite.png';
-    case 11:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_smite.png';
-    case 6:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_haste.png';
-    case 12:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_teleport.png';
-    case 21:return 'https://game.gtimg.cn/images/lol/act/img/spell/SummonerBarrier.png';
-    case 3:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_exhaust.png';
-    case 1:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_boost.png';
-    case 7:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_heal.png';
-    case 32:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_Mark.png'
-  }
-  return 'https://game.gtimg.cn/images/lol/act/img/spell/SummonerMana.png'
-}
-
-// 通过物品id获取图片地址
-const getItemImgUrl = (item:number) => {
-  if (item == 7013){
-    return `https://game.gtimg.cn/images/lol/act/img/item/3802.png`
-  }else if (item== 7004){
-    return `https://game.gtimg.cn/images/lol/act/img/item/3068.png`
-  }
-  if (item == 0){
-    return 'https://gw.alipayobjects.com/zos/rmsportal/wYnHWSXDmBhiEmuwXsym.png?x-oss-process=image%2Fresize%2Cm_fill%2Cw_64%2Ch_64%2Fformat%2Cpng'
-  }else {
-    return `https://game.gtimg.cn/images/lol/act/img/item/${item}.png`
-  }
 }

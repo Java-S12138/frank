@@ -50,7 +50,7 @@
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import {NCard, NSpace, NButton, NIcon, NPopover} from 'naive-ui'
 import {BrandGithub, Help, Code, ArrowUpCircle} from '@vicons/tabler'
 

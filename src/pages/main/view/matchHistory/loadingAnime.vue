@@ -5,12 +5,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "loadingAnime"
-}
-</script>
-
 <style scoped>
 i {
   position: absolute;

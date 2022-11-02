@@ -21,25 +21,24 @@
   </div>
 </template>
 
-<script setup>
-import LeftCard from "@/render/components/matchHistory/leftCard";
-import BarKDA from "@/render/components/matchHistory/barKDA";
-import Standing from "@/render/components/matchHistory/standing";
-import GameDetails from "@/render/components/matchHistory/gameDetails";
-import RecentGame from "@/render/components/matchHistory/recentGame";
+<script setup lang="ts">
+import LeftCard from "./leftCard.vue";
+import BarKDA from "./barKDA.vue";
+import Standing from "./standing.vue";
+import GameDetails from "../components/gameDetails.vue";
+import RecentGame from "./recentGame.vue";
 import {NSpace} from "naive-ui";
-import {onBeforeMount, ref} from "vue";
-import {matchStore} from "@/render/store";
+import {onBeforeMount, Ref, ref} from "vue";
+import {matchStore} from "../../store";
 import {storeToRefs} from "pinia/dist/pinia";
-import {getSummonerNickName, queryMatchSummonerInfo} from "@/utils/main/lcu";
-import {appConfig} from "@/utils/main/config";
-import {createHttp1Request} from "@/utils/league-connect";
-import {querySummonerIDInProgress} from "@/utils/render/matchHistoryLcu";
+import {getSummonerNickName} from "../../lcu/matchHistoryLcu";
+import {querySummonerIDInProgress} from "../../lcu/matchHistoryLcu";
+import {invokeLcu} from "../../lcu";
+import {queryMatchSummonerInfo} from "../../lcu/matchHistoryLcu";
 
-document.title = 'MatchHistory'
 
-let matchData = ref([])
-let lastPage = ref(0)
+const matchData:Ref<any> = ref([])
+const lastPage = ref(0)
 const store = matchStore()
 const {
   summonerInfo,
@@ -49,11 +48,10 @@ const {
   currentTeam,
   currentEchartData,
   pageCount
-} = storeToRefs(store)
-const credentials = appConfig.get('credentials')
+}:any = storeToRefs(store)
 
 // 获取对应的图表数据
-const getChartsData = (res) => {
+const getChartsData = (res:any) => {
   echartsData.value = {name: [], data: [], kdaHistory: [], horse: [],summonerId:[]}
   for (const re of res) {
     echartsData.value.name.push(re.name)
@@ -66,32 +64,31 @@ const getChartsData = (res) => {
 }
 
 onBeforeMount(async () => {
-  const clientStatus = (await createHttp1Request({
-    method: "GET",
-    url: `/lol-gameflow/v1/gameflow-phase/`,
-  }, credentials)).json()
+
+  const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
 
   if (clientStatus === '"InProgress"'){
-    var summonerId = await querySummonerIDInProgress(credentials)
-    var res = await getSummonerNickName(credentials,summonerId)
+    var summonerId = await querySummonerIDInProgress()
+    var res = await getSummonerNickName(summonerId)
   }else {
-    var res = await getSummonerNickName(credentials)
+    var res = await getSummonerNickName()
   }
 
   currentTeam.value = 1
   summonerInfo.value = []
   summonerInfo.value = res
+  console.log(summonerInfo.value)
   getChartsData(summonerInfo.value)
 })
 // 查询指定召唤师历史战绩
-const querySpecialSummoner = async (summonerData) => {
+const querySpecialSummoner = async (summonerData:any) => {
   pageCount.value = 2
   currentSummonerName.value = summonerData.name
-  const res = await queryMatchSummonerInfo(credentials, summonerData.summonerId)
+  const res = await queryMatchSummonerInfo(summonerData.summonerId)
   matchData.value = res
 }
 // 进入战绩详情页面
-const toGameDetailsPage = (pageInfo) => {
+const toGameDetailsPage = (pageInfo:any) => {
   lastPage.value= pageInfo.lastPage
   pageCount.value = 3
   currentQueryGameId.value = pageInfo.gameId
@@ -106,5 +103,5 @@ const backHome = () => {
 </script>
 
 <style scoped>
-@import url(../../assets/css/animationCommon.css);
+@import url(@/assets/css/animationCommon.css);
 </style>

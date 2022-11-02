@@ -98,7 +98,7 @@ const getChatSelectChampId = async () => {
   }
 }
 // 查询对局中的所有召唤师的Id
-const queryAllSummonerId = async () => {
+export const queryAllSummonerId = async () => {
   let summonerIdList = []
   const chatId = await getChatSelectChampId()
   if (chatId == null){return null}

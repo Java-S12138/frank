@@ -73,7 +73,7 @@
 
           <n-popover :show-arrow="false" trigger="hover" :delay="1000">
             <template #trigger>
-              <n-icon size="24" v-mouse-drag="handleChangePosition">
+              <n-icon size="24">
                 <Ballon/>
               </n-icon>
             </template>
@@ -86,22 +86,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "recentGame"
-}
-</script>
-
-<script setup>
+<script setup lang="ts">
 import {
-  NCard, NSpace, NTag,NIcon, NAvatar, NGrid, NGi,
-  NButton, NPopover, NPopconfirm
+  NCard, NSpace, NTag,NIcon, NAvatar, NGrid, NGi,NButton, NPopover, NPopconfirm
 } from 'naive-ui'
-import {matchStore} from "@/render/store";
-import {storeToRefs} from "pinia/dist/pinia";
-import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from '@vicons/tabler'
-import {ipcRenderer} from "electron";
-import LoadingAnime from "@/render/components/matchHistory/loadingAnime";
+import {matchStore} from "../../store";
+import {storeToRefs} from "pinia";
+import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from "@vicons/tabler"
+import LoadingAnime from "./loadingAnime.vue";
 
 const emits = defineEmits(['changePage','summonerId','toGameDetailsPage'])
 const store = matchStore()
@@ -109,26 +101,25 @@ const {
   summonerInfo,currentTeam,enemySummonerInfo,currentSummonerName,pageCount
 } = storeToRefs(store)
 
-const clickCurrentSummoner = (e, summonerId, name) => {
+const clickCurrentSummoner = (e:any, summonerId:number, name:string) => {
   emits('summonerId', {summonerId, name})
 }
 
-const toGameDetailsPage = (gameId,summoneName) => {
+const toGameDetailsPage = (gameId:any,summoneName:string) => {
   currentSummonerName.value = summoneName
   emits('toGameDetailsPage',{gameId:gameId,lastPage:1})
 }
 
-const handleChangePosition = (pos) => {
-  ipcRenderer.send('move-match-history-window', {
-    x: pos.x,
-    y: pos.y,
-  })
+const handleChangePosition = () => {
+  console.log('handleChangePosition')
 }
-const closeWindow = () => {
-  ipcRenderer.send('close-match-history-window')
+
+const closeWindow = async () => {
+ cube.windows.close((await cube.windows.getCurrentWindow()).id)
 }
 const handleMin = () => {
-  ipcRenderer.send('match-history-window-min')
+  console.log('handleMin')
+
 }
 
 </script>
@@ -146,7 +137,7 @@ const handleMin = () => {
   height: 20px;
   margin-top: 3px;
   background-size:20px;
-  background-image: url('../../assets/tLevel/top.svg');
+  background-image: url('@/assets/tLevel/top.svg');
   display: inline-block;
 }
 
@@ -155,7 +146,7 @@ const handleMin = () => {
   height: 20px;
   margin-top: 3px;
   background-size:20px;
-  background-image: url('../../assets/tLevel/mid.svg');
+  background-image: url('@/assets/tLevel/mid.svg');
   display: inline-block;
   background-repeat: no-repeat;
 }
@@ -165,7 +156,7 @@ const handleMin = () => {
   height: 20px;
   margin-top: 3px;
   background-size:20px;
-  background-image: url('../../assets/tLevel/jug.svg');
+  background-image: url('@/assets/tLevel/jug.svg');
   display: inline-block;
   background-repeat: no-repeat;
 }
@@ -175,7 +166,7 @@ const handleMin = () => {
   height: 20px;
   margin-top: 3px;
   background-size:20px;
-  background-image: url('../../assets/tLevel/bot.svg');
+  background-image: url('@/assets/tLevel/bot.svg');
   display: inline-block;
   background-repeat: no-repeat;
 }
@@ -184,7 +175,7 @@ const handleMin = () => {
   height: 20px;
   margin-top: 3px;
   background-size:20px;
-  background-image: url('../../assets/tLevel/bot.svg');
+  background-image: url('@/assets/tLevel/bot.svg');
   display: inline-block;
   visibility: hidden;
   background-repeat: no-repeat;
@@ -202,5 +193,4 @@ const handleMin = () => {
   top: 7px;
   right: 3px;
 }
-
 </style>

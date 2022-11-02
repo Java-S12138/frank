@@ -23,7 +23,7 @@ const routes = [
   {
     path: '/matchHistory',
     name: 'MatchHistory',
-    component: () => import('@/render/components/matchHistory/index.vue')
+    component: () => import('../view/matchHistory/index.vue')
   },
   ]
 

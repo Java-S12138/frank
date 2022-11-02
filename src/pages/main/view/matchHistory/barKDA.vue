@@ -2,22 +2,21 @@
   <div>
     <n-space>
       <n-card class="boxShadow mainCard">
-        <div>
-          <v-chart style="margin-top: 10px"  @click="onClick" class="chart" :key="refresh" :option="
-{
+<div>
+          <v-chart style="margin-top: 10px"  @click="onClick" class="chart" :key="refresh" :option="{
       title: {
         show: true,
         text: '召唤师 实力排行',
         subtext: '选取最近5场本局游戏模式进行分析',
         textStyle: { //主标题文本样式
-          fontFamily: 'bom',
           fontSize: 20,
+          fontFamily: 'FZBenMoYueYiTiS',
           fontStyle: 'normal',
           fontWeight: 'normal',
         },
         subtextStyle: {//副标题文本样式
-          fontFamily: 'bom',
           fontSize: 12,
+          fontFamily: 'FZBenMoYueYiTiS',
           fontStyle: 'normal',
           fontWeight: 'normal',
         },
@@ -30,7 +29,10 @@
       },
       xAxis: {
         type: 'category',
-        data: currentEchartData.name
+        data: currentEchartData.name,
+          axisLabel: {
+            fontFamily: 'FZBenMoYueYiTiS'
+        }
       },
       yAxis: {
         type: 'value',
@@ -41,36 +43,32 @@
           data: currentEchartData.data,
           type: 'bar',
           itemStyle: {
-            emphasis: {
-              barBorderRadius: 30
+            color: function(params) {
+                    if (params.data>=120){
+                      return config.horseColor.topHorse
+                    }else if (params.data>=110){
+                      return config.horseColor.midHorse
+                    }else if(params.data>=100){
+                      return config.horseColor.bottomHorse
+                    }else if (params.data<100){
+                      return config.horseColor.trashHorse
+                    }
             },
-            normal: {
-              color: function(params) {
-                      if (params.data>=120){
-                        return appConfig.get('topHorse')
-                      }else if (params.data>=110){
-                        return appConfig.get('midHorse')
-                      }else if(params.data>=100){
-                        return appConfig.get('bottomHorse')
-                      }else if (params.data<100){
-                        return appConfig.get('trashHorse')
-                      }
-              },
-              barBorderRadius: [5, 5, 0, 0],
-              label: {//这里是设置label的样式
-                show: true,
-                textStyle: {
-                  fontWeight: 'bolder',
-                  fontSize: '15',
-                  color: '#fff'
-                }
-              }
-            },
+            borderRadius: [5, 5, 0, 0],
+          },
+          //这里是设置label的样式
+          label: {
+            position: 'inside',
+            show: true,
+              fontWeight: 'normal',
+              fontSize: '15',
+              color: '#fff',
+              fontFamily: 'FZBenMoYueYiTiS',
           }
         },
       ]
     }"/>
-        </div>
+</div>
 
         <n-space justify="space-between">
           <n-space>
@@ -79,7 +77,7 @@
               :show-icon="false" positive-text="修改" negative-text="取消"
             >
               <template #trigger>
-                <n-tag :bordered="false" style="margin-top: 3px">
+                <n-tag style="height:34px">
                   {{ horseType.top }}
                 </n-tag>
               </template>
@@ -102,7 +100,7 @@
               :show-icon="false" positive-text="修改" negative-text="取消"
             >
               <template #trigger>
-                <n-tag :bordered="false" style="margin-top: 3px">
+                <n-tag  style="height:34px">
                   {{ horseType.mid }}
                 </n-tag>
               </template>
@@ -125,7 +123,7 @@
               :show-icon="false" positive-text="修改" negative-text="取消"
             >
               <template #trigger>
-                <n-tag :bordered="false" style="margin-top: 3px">
+                <n-tag style="height:34px">
                   {{ horseType.bot }}
                 </n-tag>
               </template>
@@ -146,7 +144,7 @@
               :show-icon="false" positive-text="修改" negative-text="取消"
             >
               <template #trigger>
-                <n-tag :bordered="false" style="margin-top: 3px">
+                <n-tag  style="height:34px">
                   {{ horseType.trash }}
                 </n-tag>
               </template>
@@ -222,7 +220,7 @@
 
             <n-popover :show-arrow="false" trigger="hover" :delay="1000">
               <template #trigger>
-                <n-icon size="24" v-mouse-drag="handleChangePosition">
+                <n-icon size="24" >
                   <Ballon/>
                 </n-icon>
               </template>
@@ -235,68 +233,66 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import VChart from "vue-echarts";
 import {
   NCard, NSpace, NTag, NIcon, NInput,
   NButton, NColorPicker, NPopover, NPopconfirm, NCheckbox, NCheckboxGroup
 } from 'naive-ui'
 import {onMounted, ref} from "vue"
-import {appConfig} from "@/utils/main/config"
 import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from '@vicons/tabler'
-import {ipcRenderer} from "electron"
-import {matchStore} from "@/render/store";
-import {storeToRefs} from "pinia/dist/pinia";
-import {sendMessageToChat} from "@/utils/main/lcu";
+import {matchStore} from "../../store";
+import {storeToRefs} from "pinia";
 
+const config = JSON.parse(String(localStorage.getItem('config')))
 const store = matchStore()
-const {echartsData, enemyEchartsData, currentTeam, currentEchartData,summonerInfo,pageCount} = storeToRefs(store)
-let refresh = ref(1)
-let topHorse = ref(appConfig.get("topHorse"))
-let midHorse = ref(appConfig.get("midHorse"))
-let bottomHorse = ref(appConfig.get("bottomHorse"))
-let trashHorse = ref(appConfig.get("trashHorse"))
-const horseType = ref(appConfig.get('horseType'))
-let topHorseType = ref(horseType.value.top)
-let midHorseType = ref(horseType.value.mid)
-let botHorseType = ref(horseType.value.bot)
-let trashHorseType = ref(horseType.value.trash)
-const sendPopover = ref(false)
-const emits = defineEmits(['summonerId','changePage'])
 
+const {currentEchartData,summonerInfo,pageCount} = storeToRefs(store)
+const refresh = ref(1)
+const topHorse = ref(config.horseColor.topHorse)
+const midHorse = ref(config.horseColor.midHorse)
+const bottomHorse = ref(config.horseColor.bottomHorse)
+const trashHorse = ref(config.horseColor.trashHorse)
+const horseType = ref(config.horseType)
+const topHorseType = ref(horseType.value.top)
+const midHorseType = ref(horseType.value.mid)
+const botHorseType = ref(horseType.value.bot)
+const trashHorseType = ref(horseType.value.trash)
+const sendPopover = ref(false)
 const summonerName = ref([])
+
+const emits = defineEmits(['summonerId','changePage'])
 
 onMounted(() => {
   let colorTitle = document.querySelectorAll('.n-color-picker-trigger__value')
+  // @ts-ignore
   for (const colorTitleElement of colorTitle) {
     colorTitleElement.remove()
   }
 
 })
-const handleChangePosition = (pos) => {
-  ipcRenderer.send('move-match-history-window', {
-    x: pos.x,
-    y: pos.y,
-  })
+const handleChangePosition = () => {
+  console.log('handleChangePosition')
 }
-const closeWindow = () => {
-  ipcRenderer.send('close-match-history-window')
+const closeWindow = async () => {
+  cube.windows.close((await cube.windows.getCurrentWindow()).id)
 }
 const handleMin = () => {
-  ipcRenderer.send('match-history-window-min')
+  console.log('handleMin')
 }
 const sendToChat = () => {
-  if (summonerName.value.length ===0){sendPopover.value = !sendPopover.value; return}
-  let sendMessage = 'Powered By Frank \n'
-  for (const summonerDatum of summonerName.value) {
-    const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
-    let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] score:${echartsData.value['data'][currentSummonerIndex]} recent record:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
-    sendMessage += sendInfo + '\n'
-  }
-  if (sendMessage.length > 18) {
-    sendMessageToChat(appConfig.get('credentials'), sendMessage)
-  }
-  sendPopover.value = !sendPopover.value
+  console.log('sendToChat')
+  // if (summonerName.value.length ===0){sendPopover.value = !sendPopover.value; return}
+  // let sendMessage = 'Powered By Frank \n'
+  // for (const summonerDatum of summonerName.value) {
+  //   const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
+  //   let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] score:${echartsData.value['data'][currentSummonerIndex]} recent record:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
+  //   sendMessage += sendInfo + '\n'
+  // }
+  // if (sendMessage.length > 18) {
+  //   sendMessageToChat(appConfig.get('credentials'), sendMessage)
+  // }
+  // sendPopover.value = !sendPopover.value
 }
 // 多选框组全选按钮
 const allSelect = () => {
@@ -308,23 +304,27 @@ const allSelect = () => {
 }
 
 // 多选框组,数据改变
-const handleUpdateValue = (value) => {
+const handleUpdateValue = (value:any) => {
   summonerName.value = value
 }
+
+// 改变马匹类型共用函数
+const changeHorse = (type:string, horse:string) => {
+  config.horseType[type] = horse
+  localStorage.setItem('config',JSON.stringify(config))
+  location.reload()
+}
+
 // 改变马匹类型
-const changeHorseType = (type, horse) => {
+const changeHorseType = (type:string, horse:string) => {
   if (type === 'top') {
-    appConfig.set('horseType.top', horse)
-    location.reload()
+    changeHorse('top',horse)
   } else if (type === 'mid') {
-    appConfig.set('horseType.mid', horse)
-    location.reload()
+    changeHorse('mid',horse)
   } else if (type === 'bot') {
-    appConfig.set('horseType.bot', horse)
-    location.reload()
+    changeHorse('bot',horse)
   } else if (type === 'trash') {
-    appConfig.set('horseType.trash', horse)
-    location.reload()
+    changeHorse('trash',horse)
   }
 }
 

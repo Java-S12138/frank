@@ -40,7 +40,7 @@ const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
 const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo}:any = storeToRefs(store)
-const isSwitchBlacklist = JSON.parse(localStorage.getItem('config')).isSwitchBlacklist
+const isSwitchBlacklist = JSON.parse(String(localStorage.getItem('config'))).isSwitchBlacklist
 
 cube.windows.message.on('received',async (id) => {
   // 查询我方召唤师
@@ -74,7 +74,7 @@ const getCurrentBlacklist = (summonerInfo:any) => {
     summonerList.push(`${summoner.summonerId}`)
   }
   if (localStorage.getItem('blacklist') !== null && localStorage.getItem('blacklist') !=='{}'){
-    const blacklistIds = Object.keys(JSON.parse(localStorage.getItem('blacklist')))
+    const blacklistIds = Object.keys(JSON.parse(String(localStorage.getItem('blacklist'))))
     for (const blacklistId of blacklistIds) {
       if (summonerList.indexOf(blacklistId) !=-1){
         currentBlackList.value.push(blacklistId)
@@ -88,9 +88,12 @@ const getCurrentBlacklist = (summonerInfo:any) => {
 
 // 显示队伍战绩历史窗口
 const showMatch = async () => {
+  // todo dev game mode
+  // cube.windows.obtainDeclaredWindow('matchHistory')
+  // return
   const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
   if (clientStatus == 'ChampSelect' ||  clientStatus == 'InProgress'){
-    // ipcRenderer.send('showCharts',clientStatus)
+    cube.windows.obtainDeclaredWindow('matchHistory')
     message.success('获取战绩成功 !')
   }
   else {

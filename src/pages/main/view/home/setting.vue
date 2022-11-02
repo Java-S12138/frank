@@ -120,7 +120,7 @@ import {optionsChampion} from '../../resources/champList'
 import {ref,reactive} from "vue";
 
 const emits = defineEmits(['changePage'])
-const config = reactive(JSON.parse(localStorage.getItem('config')))
+const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
 const showModal = ref(false)
 
 const toHomePage = () => {

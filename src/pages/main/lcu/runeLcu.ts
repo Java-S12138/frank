@@ -22,7 +22,7 @@ export const applyRunePage = async (data: {}) => {
 
 // 自动接收对局
 export const autoAcceptGame = async () => {
-  const isAutoAccept = JSON.parse(localStorage.getItem('config')).autoAccept
+  const isAutoAccept = JSON.parse(String(localStorage.getItem('config'))).autoAccept
   if (isAutoAccept<50){return}
 
   const setTime = (isAutoAccept-50)*200
