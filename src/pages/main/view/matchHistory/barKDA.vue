@@ -2,74 +2,8 @@
   <div>
     <n-space>
       <n-card class="boxShadow mainCard">
-<div>
-          <v-chart style="margin-top: 10px"  @click="onClick" class="chart" :key="refresh" :option="{
-      title: {
-        show: true,
-        text: '召唤师 实力排行',
-        subtext: '选取最近5场本局游戏模式进行分析',
-        textStyle: { //主标题文本样式
-          fontSize: 20,
-          fontFamily: 'FZBenMoYueYiTiS',
-          fontStyle: 'normal',
-          fontWeight: 'normal',
-        },
-        subtextStyle: {//副标题文本样式
-          fontSize: 12,
-          fontFamily: 'FZBenMoYueYiTiS',
-          fontStyle: 'normal',
-          fontWeight: 'normal',
-        },
-      },
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'shadow'
-        }
-      },
-      xAxis: {
-        type: 'category',
-        data: currentEchartData.name,
-          axisLabel: {
-            fontFamily: 'FZBenMoYueYiTiS'
-        }
-      },
-      yAxis: {
-        type: 'value',
-        show: false
-      },
-      series: [
-        {
-          data: currentEchartData.data,
-          type: 'bar',
-          itemStyle: {
-            color: function(params) {
-                    if (params.data>=120){
-                      return config.horseColor.topHorse
-                    }else if (params.data>=110){
-                      return config.horseColor.midHorse
-                    }else if(params.data>=100){
-                      return config.horseColor.bottomHorse
-                    }else if (params.data<100){
-                      return config.horseColor.trashHorse
-                    }
-            },
-            borderRadius: [5, 5, 0, 0],
-          },
-          //这里是设置label的样式
-          label: {
-            position: 'inside',
-            show: true,
-              fontWeight: 'normal',
-              fontSize: '15',
-              color: '#fff',
-              fontFamily: 'FZBenMoYueYiTiS',
-          }
-        },
-      ]
-    }"/>
-</div>
-
+        <v-chart style="margin-top: 10px"
+                 @click="onClick" class="chart" :key="refresh" :option="option"/>
         <n-space justify="space-between">
           <n-space>
             <n-popconfirm
@@ -87,10 +21,7 @@
 
             <n-color-picker :modes="['hex']" v-model:value="topHorse"
                             :actions="['confirm']"
-                            @confirm="(value) => {
-                                appConfig.set('topHorse',value)
-                                refresh +=1
-                              }"
+                            @confirm="(value) => {changeBarColor(value,'topHorse')}"
                             class="pickerWidth"/>
           </n-space>
           <n-space>
@@ -110,10 +41,7 @@
 
             <n-color-picker :modes="['hex']" v-model:value="midHorse"
                             :actions="['confirm']"
-                            @confirm="(value) => {
-                                appConfig.set('midHorse',value)
-                                refresh +=1
-                              }"
+                            @confirm="(value) => {changeBarColor(value,'midHorse')}"
                             class="pickerWidth"/>
           </n-space>
           <n-space>
@@ -132,10 +60,7 @@
             </n-popconfirm>
             <n-color-picker :modes="['hex']" v-model:value="bottomHorse"
                             :actions="['confirm']"
-                            @confirm="(value) => {
-                                appConfig.set('bottomHorse',value)
-                                refresh +=1
-                              }"
+                            @confirm="(value) => {changeBarColor(value,'bottomHorse')}"
                             class="pickerWidth"/>
           </n-space>
           <n-space>
@@ -153,40 +78,42 @@
             </n-popconfirm>
             <n-color-picker :modes="['hex']" v-model:value="trashHorse"
                             :actions="['confirm']"
-                            @confirm="(value) => {
-                                appConfig.set('trashHorse',value)
-                                refresh +=1
-                              }"
+                            @confirm="(value) => {changeBarColor(value,'trashHorse')}"
                             class="pickerWidth"/>
           </n-space>
 
-          <n-popover :show-arrow="false" style="bottom: 5px"
-                     trigger="click" :show="sendPopover">
-            <template #trigger>
-              <n-button type="info" size="small" style="margin-top: 3px;margin-left: 5px"
-                        strong secondary @click="sendPopover = !sendPopover">
-                <p v-if="sendPopover === false">发送</p>
-                <p v-else>取消</p>
-              </n-button>
-            </template>
-            <n-space vertical>
-              <n-checkbox-group :value="summonerName" @update:value="handleUpdateValue">
-                <n-space vertical item-style="display: flex">
-                  <n-checkbox
-                    v-for="summoner in currentEchartData.name"
-                    :value="summoner" :label="summoner"/>
-                </n-space>
-              </n-checkbox-group>
-              <n-space justify="space-between">
-                <n-button size="small" type="success" secondary  @click="allSelect">
-                  <p v-if="summonerName.length ===0">全选</p>
-                  <p v-else>归零</p>
-                </n-button>
-                <n-button size="small" type="success" @click="sendToChat">确定</n-button>
+          <n-button type="info" size="small" style="height:34px ;"
+                    strong secondary @click="sendToChat">
+            复制发送
+          </n-button>
+
+        </n-space>
+
+        <n-modal v-model:show="sendPopover" :auto-focus="false">
+          <n-card
+            style="width: 600px"
+            :bordered="false"
+            size="medium"
+            role="dialog"
+            aria-modal="true"
+          >
+            <n-space :size="[0,20]">
+              <n-space style="align-items: center"
+                       v-for="index in [0,1,2,3,4]">
+                <n-input
+                  v-model:value="summonerMatchList[index]"
+                  autosize
+                  type="textarea"
+                  placeholder="基本的 Textarea"
+                  style="width: 450px;"
+                />
+
+                <n-button type="success" dashed @click="copyContent(summonerMatchList[index])">复制内容</n-button>
               </n-space>
             </n-space>
-          </n-popover>
-        </n-space>
+
+          </n-card>
+        </n-modal>
 
         <div class="suspension">
           <n-space>
@@ -220,7 +147,7 @@
 
             <n-popover :show-arrow="false" trigger="hover" :delay="1000">
               <template #trigger>
-                <n-icon size="24" >
+                <n-icon size="24" @mousedown="handleChangePosition">
                   <Ballon/>
                 </n-icon>
               </template>
@@ -236,18 +163,19 @@
 <script setup lang="ts">
 import VChart from "vue-echarts";
 import {
-  NCard, NSpace, NTag, NIcon, NInput,
-  NButton, NColorPicker, NPopover, NPopconfirm, NCheckbox, NCheckboxGroup
+  NCard, NSpace, NTag, NIcon, NInput,useMessage,
+  NButton, NColorPicker, NPopover, NPopconfirm,NModal
 } from 'naive-ui'
-import {onMounted, ref} from "vue"
+import {onMounted, reactive, Ref, ref} from "vue"
 import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from '@vicons/tabler'
 import {matchStore} from "../../store";
 import {storeToRefs} from "pinia";
 
+const message = useMessage()
 const config = JSON.parse(String(localStorage.getItem('config')))
 const store = matchStore()
 
-const {currentEchartData,summonerInfo,pageCount} = storeToRefs(store)
+const {currentEchartData,summonerInfo,pageCount,echartsData}:any = storeToRefs(store)
 const refresh = ref(1)
 const topHorse = ref(config.horseColor.topHorse)
 const midHorse = ref(config.horseColor.midHorse)
@@ -259,7 +187,73 @@ const midHorseType = ref(horseType.value.mid)
 const botHorseType = ref(horseType.value.bot)
 const trashHorseType = ref(horseType.value.trash)
 const sendPopover = ref(false)
-const summonerName = ref([])
+const summonerMatchList:Ref<any[]> = ref([])
+
+const option = reactive({
+  title: {
+    show: true,
+    text: '召唤师 实力排行',
+    subtext: '选取最近5场本局游戏模式进行分析',
+    textStyle: { //主标题文本样式
+      fontSize: 20,
+      fontFamily: 'FZBenMoYueYiTiS',
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+    },
+    subtextStyle: {//副标题文本样式
+      fontSize: 12,
+      fontFamily: 'FZBenMoYueYiTiS',
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+    },
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    }
+  },
+  xAxis: {
+    type: 'category',
+    data: currentEchartData.value.name,
+    axisLabel: {
+      fontFamily: 'FZBenMoYueYiTiS'
+    }
+  },
+  yAxis: {
+    type: 'value',
+    show: false
+  },
+  series: [
+    {
+      data: currentEchartData.value.data,
+      type: 'bar',
+      itemStyle: {
+        color: function(params:any){
+          if (params.data>=120){
+            return config.horseColor.topHorse
+          }else if (params.data>=110){
+            return config.horseColor.midHorse
+          }else if(params.data>=100){
+            return config.horseColor.bottomHorse
+          }else if (params.data<100){
+            return config.horseColor.trashHorse
+          }
+        },
+        borderRadius: [5, 5, 0, 0],
+      },
+      //这里是设置label的样式
+      label: {
+        position: 'inside',
+        show: true,
+        fontWeight: 'normal',
+        fontSize: '15',
+        color: '#fff',
+        fontFamily: 'FZBenMoYueYiTiS',
+      }
+    },
+  ]
+})
 
 const emits = defineEmits(['summonerId','changePage'])
 
@@ -272,40 +266,22 @@ onMounted(() => {
 
 })
 const handleChangePosition = () => {
-  console.log('handleChangePosition')
+  cube.windows.current.dragMove()
 }
 const closeWindow = async () => {
   cube.windows.close((await cube.windows.getCurrentWindow()).id)
 }
-const handleMin = () => {
-  console.log('handleMin')
+const handleMin =async () => {
+  cube.windows.minimize( (await cube.windows.getCurrentWindow()).id)
 }
 const sendToChat = () => {
-  console.log('sendToChat')
-  // if (summonerName.value.length ===0){sendPopover.value = !sendPopover.value; return}
-  // let sendMessage = 'Powered By Frank \n'
-  // for (const summonerDatum of summonerName.value) {
-  //   const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
-  //   let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] score:${echartsData.value['data'][currentSummonerIndex]} recent record:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
-  //   sendMessage += sendInfo + '\n'
-  // }
-  // if (sendMessage.length > 18) {
-  //   sendMessageToChat(appConfig.get('credentials'), sendMessage)
-  // }
-  // sendPopover.value = !sendPopover.value
-}
-// 多选框组全选按钮
-const allSelect = () => {
-  if (summonerName.value.length === 0){
-    summonerName.value=currentEchartData.value.name
-  }else {
-    summonerName.value = []
+  sendPopover.value = true
+  summonerMatchList.value.length = 0
+  for (const summonerDatum of echartsData.value.name) {
+    const currentSummonerIndex = echartsData.value.name.indexOf(summonerDatum)
+    let sendInfo = `${summonerDatum}: [ ${echartsData.value['horse'][currentSummonerIndex]} ] 评分:${echartsData.value['data'][currentSummonerIndex]} 最近战绩:${echartsData.value['kdaHistory'][currentSummonerIndex]}`
+    summonerMatchList.value.push(sendInfo)
   }
-}
-
-// 多选框组,数据改变
-const handleUpdateValue = (value:any) => {
-  summonerName.value = value
 }
 
 // 改变马匹类型共用函数
@@ -333,6 +309,18 @@ function onClick() {
   emits('summonerId', {summonerId:currentEchartData.value.summonerId[index],
     name:currentEchartData.value.name[index]})
 }
+
+const changeBarColor = (value:string,type:string) => {
+  config.horseColor[type] = value
+  localStorage.setItem('config',JSON.stringify(config))
+  refresh.value +=1
+}
+
+const copyContent = (content:string) => {
+  cube.utils.placeOnClipboard(content)
+  message.success('复制召唤师信息成功 !')
+}
+
 </script>
 
 <style scoped>

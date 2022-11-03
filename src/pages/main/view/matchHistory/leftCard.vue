@@ -72,10 +72,12 @@
           </n-button>
         </n-space>
 
-        <n-space style="margin-top: 12px;width: 200px"
+        <n-space style="margin-top: 15px;width: 200px"
                  v-else-if="summonerInfo !=null && enemySummonerInfo.length === 0">
-          <n-tag :bordered="false" size="small" class="tipTag">进入游戏后可查看敌方信息</n-tag>
-          <n-tag :bordered="false" size="small" class="tipTag">点击召唤师的头像查看战绩</n-tag>
+          <n-tag :bordered="false" round :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+                 size="small" class="tipTag">进入游戏后可查看敌方信息</n-tag>
+          <n-tag :bordered="false" round :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+                 size="small" class="tipTag">点击召唤师的头像查看战绩</n-tag>
         </n-space>
       </n-space>
       <n-space v-else style="align-items: center;margin-top: 220px;margin-left: 30px">

@@ -3,6 +3,7 @@
     <n-card class="boxShadow" size="small">
       <n-space justify="space-between">
         <n-avatar
+          class="imgFull"
           round
           :bordered="false"
           :size="60"

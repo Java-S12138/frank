@@ -10,7 +10,7 @@ const showWin = async (win) => {
 
 cube.os.tray.setMenu(
   async (e, ...args) => {
-    if (e == 'item-click'&& args[0]?.id == 'showMain') {
+    if ((e == 'item-click'&& args[0]?.id == 'showMain')||e=='click') {
       showWin('main')
     }
     if (e == 'item-click' && args[0]?.id == 'quit') {

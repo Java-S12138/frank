@@ -64,8 +64,7 @@ const handleMin = () => {
   cube.windows.minimize(cube.windows.current.id())
 }
 const handleMinimize =  () => {
-  // cube.windows.hide(cube.windows.current.id())
-  cube.windows.obtainDeclaredWindow('assist')
+  cube.windows.hide(cube.windows.current.id())
 }
 const handleClose = async () => {
   const background = await cube.windows.getWindowByName('background')

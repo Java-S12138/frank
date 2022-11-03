@@ -94,7 +94,7 @@
                   </n-space>
                   <!--                召唤师昵称-->
                   <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
-                              v-if="singleData[0].accountId!=querySummonerId">
+                              v-if="singleData[0].accountId!=curSummonerId">
                     {{ singleData[0].name }}
                   </n-ellipsis>
                   <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
@@ -153,7 +153,7 @@
                   </n-space>
                   <!--                召唤师昵称-->
                   <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
-                              v-if="singleData[1].accountId!=querySummonerId">
+                              v-if="singleData[1].accountId!=curSummonerId">
                     {{ singleData[1].name }}
                   </n-ellipsis>
                   <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
@@ -191,7 +191,7 @@
       <n-drawer-content :body-content-style="'padding:12px'">
         <personal-game-details
           @queryDetails="queryDetails"
-          :personalDetails="personalDetails"></personal-game-details>
+          :personalDetails="personalDetails" :parentPage="parentPage"></personal-game-details>
       </n-drawer-content>
     </n-drawer>
     </div>
@@ -202,7 +202,7 @@
 import {NAvatar, NSpace, NTag, NPopover, NGrid, NGi,NDrawer,NDrawerContent,
   NBadge, NEllipsis, useMessage} from 'naive-ui'
 import {onMounted, Ref, ref} from "vue";
-import {queryStore} from "../../store";
+import {matchStore, queryStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {queryGameDetailsData} from "../../lcu/queryDetailedGame";
 import {returnSummonerData,returnRankData} from "../../lcu/queryMatchLcu";
@@ -223,7 +223,8 @@ const otherDataCount:Ref<any> = ref(1)
 const otherDataPercent = []
 const message = useMessage()
 const personalDetails:Ref<any> = ref(null)
-
+const parentPage = ref('')
+const curSummonerId = ref(0) //当前召唤师ID
 
 const props = defineProps({
   currentGameId: {
@@ -232,7 +233,16 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-  gameDetalisList = await queryGameDetailsData(Number(props.currentGameId))
+  if (props.currentGameId ===undefined){
+    const {currentQueryGameId,querySummonerId}:any = storeToRefs(matchStore())
+    gameDetalisList = await queryGameDetailsData(Number(currentQueryGameId.value))
+    curSummonerId.value = querySummonerId.value
+    parentPage.value = 'match'
+  }else {
+    gameDetalisList = await queryGameDetailsData(Number(props.currentGameId))
+    curSummonerId.value = querySummonerId.value
+    parentPage.value = 'query'
+  }
   queryOtherMax(gameDetalisList)
   titleList.value = gameDetalisList[5]
   summonersDataList.value = gameDetalisList.slice(0, 5)

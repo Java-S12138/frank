@@ -9,7 +9,7 @@ export const queryCurrentGameMode = async () => {
 
 
   // 获取当前游戏模式信息
-  const currentGameInfo = await invokeLcu('get','/lol-gameflow/v1/session')
+  const currentGameInfo = await invokeLcu('get', '/lol-gameflow/v1/session')
   try {
     return currentGameInfo.gameData.queue.id
   } catch (e) {
@@ -18,13 +18,13 @@ export const queryCurrentGameMode = async () => {
 }
 
 // 获取最近的比赛记录
-const getRencentMatchHistoty = async (summonerId:number) => {
-  const matchList = await invokeLcu('get',`/lol-match-history/v3/matchlist/account/${summonerId}`,[0,10])
+const getRencentMatchHistoty = async (summonerId: number) => {
+  const matchList = await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [0, 10])
   return matchList['games']['games'].reverse()
 }
 
 // 查询比赛记录 (最近10场排位)
-const queryMatchHistory = async (summonerId:number) => {
+const queryMatchHistory = async (summonerId: number) => {
   const currentGameMode = await queryCurrentGameMode()
   console.log('当前游戏模式:', currentGameMode)
   if (currentGameMode === null) {
@@ -34,7 +34,7 @@ const queryMatchHistory = async (summonerId:number) => {
   let classicMode = []
   let matchCount = 0
   for (let i = 0; i < 100; i += 20) {
-    const matchList = await invokeLcu('get',`/lol-match-history/v3/matchlist/account/${summonerId}`,[i,i+20])
+    const matchList = await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20])
     for (const matchListElement of matchList['games']['games'].reverse()) {
       if (matchListElement.queueId === currentGameMode && matchCount < 10) {
         matchCount += 1
@@ -48,28 +48,28 @@ const queryMatchHistory = async (summonerId:number) => {
 }
 
 // 获取召唤师游戏评分分数
-export const getGameScore = async (summonerId:number) => {
+export const getGameScore = async (summonerId: number) => {
   let classicModeGames = await queryMatchHistory(summonerId)
   const simpleMatchHistory = getSimpleMatchHistory(classicModeGames)
   let gameScore = 0
-  let gameCount = classicModeGames.slice(0,5).length
+  let gameCount = classicModeGames.slice(0, 10).length
   let kdaHistory = ''
-  for (const modeGame of classicModeGames.slice(0,5)) {
+  for (const modeGame of classicModeGames.slice(0, 10)) {
     gameScore += analyseSingleMatch(modeGame.participants[0].stats)
     let tempKad = `${modeGame.participants[0].stats.kills}/${modeGame.participants[0].stats.deaths}/${modeGame.participants[0].stats.assists}  `
     kdaHistory += tempKad
   }
   gameScore = parseInt(String(gameScore / gameCount))
   return {
-    score: gameScore,
+    score: isNaN(gameScore)===true ? 0 : gameScore,
     horse: jundgeHorse(gameScore),
-    kdaHistory: kdaHistory,
+    kdaHistory: kdaHistory==='' ? '无':kdaHistory,
     simpleMatchHistory: simpleMatchHistory
   }
 }
 
 // 获取简单的历史战绩信息
-const getSimpleMatchHistory = (matchList:any) => {
+const getSimpleMatchHistory = (matchList: any) => {
   let position = []
   let winOrLoss = []
   let simpleMatch = []
@@ -93,7 +93,7 @@ const getSimpleMatchHistory = (matchList:any) => {
 }
 
 // 判断最近战绩情况
-const inferMatchWinRat = (arr:any) => {
+const inferMatchWinRat = (arr: any) => {
   const firstMatch = arr[0]
   let count = 0
   for (const arrElement of arr) {
@@ -116,10 +116,10 @@ const inferMatchWinRat = (arr:any) => {
 }
 
 // 判断常玩位置
-const inferRegularPosition = (arr:any) => {
+const inferRegularPosition = (arr: any) => {
   if (!arr) return false
   if (arr.length === 1) return 1
-  let res:any = {}
+  let res: any = {}
   let maxNum = 0
   let maxValue = null
   for (let i = 0; i < arr.length; i++) {
@@ -134,7 +134,7 @@ const inferRegularPosition = (arr:any) => {
 }
 
 // 通过分析单场数据得出单场得分情况
-const analyseSingleMatch = (match:any) => {
+const analyseSingleMatch = (match: any) => {
   let score = 100
   if (match['firstBloodKill']) {
     score += 10
@@ -159,7 +159,7 @@ const analyseSingleMatch = (match:any) => {
   return score
 }
 // 判断是否为 上等马或者下等马
-const jundgeHorse = (score:number) => {
+const jundgeHorse = (score: number) => {
   const config = JSON.parse(String(localStorage.getItem('config')))
 
   if (score >= 120) {
@@ -174,7 +174,7 @@ const jundgeHorse = (score:number) => {
   return config.horseType.bot
 }
 // 判断玩家位置
-const querySummonerPosition = (lane:any) => {
+const querySummonerPosition = (lane: any) => {
   switch (lane) {
     case 'MIDDLE' :
       return '中单';

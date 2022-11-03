@@ -5,7 +5,7 @@
       <n-button style="margin: 0px 5.5px 0px 5.5px"  v-if="summoner.summonerInfo.name !== localSummoner"
                 type="primary"  secondary size="small" :bordered="false"
                 @click="searchSummonerInfo(e,localSummoner)" >我就是我</n-button>
-      <img src="@/assets/icon/Frank.png" draggable="false" v-else  style="margin-top: 4px">
+      <img src="@/assets/icon/Frank.png" draggable="false" v-else  style="margin-top: 4px;margin-left: 3px">
       <n-space class="rightCorner">
         <n-popover :show-arrow="false" trigger="hover" :delay="1000">
           <template #trigger>
@@ -168,7 +168,7 @@ header {
 
 .rightCorner {
   padding-top: 8px;
-  margin-left: 8px;
+  margin-left: 5px;
 }
 
 .frankTitle {

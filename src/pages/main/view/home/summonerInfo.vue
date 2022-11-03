@@ -1,7 +1,7 @@
 <template>
   <div class="mainCard">
     <n-card class="boxShadow" size="small">
-      <n-avatar
+      <n-avatar  class="imgFull"
         round
         :bordered="false"
         :size="60"
@@ -54,7 +54,7 @@
     <n-card class="boxShadow pointCard" size="small">
       <n-tabs type="segment" :animated="true">
         <n-tab-pane  style="padding-top: 3px" name="chap1" tab="个人生涯">
-            <n-list>
+            <n-list style="margin-left: 2px">
               <n-list-item>
                 <n-space justify="space-between">
                   <n-tag type="success" :bordered="false" class="tagWidth" v-if="rankData.length !==0"
@@ -111,7 +111,6 @@
                   </n-tag>
                 </n-space>
               </n-list-item>
-
             </n-list>
         </n-tab-pane>
         <n-tab-pane  style="padding-top: 8px" name="chap2" tab="英雄数据">

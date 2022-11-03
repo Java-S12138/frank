@@ -1,17 +1,22 @@
 <template>
   <div>
-    <n-card class="boxShadow" size="small">
+    <n-card class="boxShadow rankDiv"  size="small">
       <n-space>
-        <n-tag type="info" :bordered="false" size="large"
-               style="border-radius: 5px;cursor:pointer" @click="changeServe">
-          <p v-if="is101">国服英雄数据排行</p>
-          <p v-else>韩服英雄数据排行</p>
-        </n-tag>
-
-        <n-select v-model:value="tier" style="width:118px"
+        <n-popover :show-arrow="false" trigger="hover">
+          <template #trigger>
+            <n-tag type="info" :bordered="false" size="large"
+                   style="border-radius: 4px;cursor:pointer;margin-left: 7px"
+                   @click="changeServe">
+              <p v-if="is101">国服英雄数据排行</p>
+              <p v-else>韩服英雄数据排行</p>
+            </n-tag>
+          </template>
+          点击切换数据排行
+        </n-popover>
+        <n-select v-model:value="tier" style="width:102px" :show-checkmark="false"
                   :options="is101 ? options : krOptions" @update:value="queryChampRankData"/>
       </n-space>
-      <n-space>
+      <n-space class="tagSpace">
         <n-button :bordered=false ghost @click="getComprehensiveRankData"
                   :type="isCheck ==1 ? 'info' : 'default'" size="small" class="isHover">
           综合
@@ -68,7 +73,7 @@
                 style="display: block"
 
               />
-              <n-space vertical>
+              <n-space vertical :size=[0,10]>
                 <n-space style="margin-bottom: -12px" justify="space-between">
                   <p>{{ chapm.name }}</p>
                   <div :class="'imgT'+chapm.tLevel"></div>
@@ -78,13 +83,11 @@
                   <p>禁用 {{ chapm.ban }} </p>
                 </n-space>
               </n-space>
-
             </n-space>
           </n-list-item>
         </n-scrollbar>
       </n-list>
     </n-card>
-
 
     <n-drawer v-model:show="restraintActive"
               style="border-top-left-radius: 12px;border-top-right-radius: 12px"
@@ -633,5 +636,13 @@ const changeServe = () => {
 
 .alignCenter {
   align-items: center;
+}
+.rankDiv {
+  padding-top: 2px;
+  height: 85px;
+}
+.tagSpace {
+  position: absolute;
+  bottom: 2px;
 }
 </style>

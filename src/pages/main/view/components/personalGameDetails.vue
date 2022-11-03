@@ -33,7 +33,8 @@
 
     <!--    其他数据-->
     <n-list>
-      <n-scrollbar style="max-height: 452px;padding-right: 12px">
+      <n-scrollbar style="padding-right: 12px"
+                   :style="props.parentPage==='query' ? 'max-height: 452px' : 'max-height: 413px'">
 
         <!--    排位数据-->
         <n-list-item >
@@ -81,7 +82,8 @@
       </n-scrollbar>
     </n-list>
 
-    <n-space justify="space-between" style="margin-top: 5px">
+    <n-space v-if="props.parentPage==='query'"
+      justify="space-between" style="margin-top: 5px">
       <n-button :bordered="false" type="success" @click="queryDetails">
         查看详细战绩
       </n-button>
@@ -102,6 +104,9 @@ import {NAvatar, NSpace, NTag,NList,NListItem,NButton,NScrollbar,useMessage} fro
 const props = defineProps({
   personalDetails: {
     type: Object,
+  },
+  parentPage:{
+    type:String
   }
 });
 // 向夫组件传输数据
@@ -154,7 +159,7 @@ header {
   border-radius: 3px;
 }
 .runeSpace {
-  background: #eee;
+  background: #fafafc;
   border-radius: 3px;
   padding: 2px 5px 2px 5px;
   width: 96%;

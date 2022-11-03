@@ -38,3 +38,31 @@
 html {
   background: #f5f5f5;
 }
+.imgFull {
+  animation: light 4s ease-in-out infinite;
+  transition: 0.5s;
+}
+@keyframes light {
+  0% {
+    box-shadow: 0 0 4px #ff6666;
+  }
+
+  25% {
+    box-shadow: 0 0 16px #18a058;
+  }
+
+  50% {
+    box-shadow: 0 0 4px #2080f0;
+  }
+
+  75% {
+    box-shadow: 0 0 16px #f0a020;
+  }
+
+  100% {
+    box-shadow: 0 0 4px #d03050;
+  }
+}
+.imgFull:hover {
+  transform: scale(1.15) rotate(720deg);
+}

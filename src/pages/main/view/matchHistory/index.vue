@@ -25,7 +25,7 @@
 import LeftCard from "./leftCard.vue";
 import BarKDA from "./barKDA.vue";
 import Standing from "./standing.vue";
-import GameDetails from "../components/gameDetails.vue";
+import GameDetails from "./matchGameDetils.vue";
 import RecentGame from "./recentGame.vue";
 import {NSpace} from "naive-ui";
 import {onBeforeMount, Ref, ref} from "vue";
@@ -47,7 +47,8 @@ const {
   currentSummonerName,
   currentTeam,
   currentEchartData,
-  pageCount
+  pageCount,
+  querySummonerId
 }:any = storeToRefs(store)
 
 // 获取对应的图表数据
@@ -77,13 +78,13 @@ onBeforeMount(async () => {
   currentTeam.value = 1
   summonerInfo.value = []
   summonerInfo.value = res
-  console.log(summonerInfo.value)
   getChartsData(summonerInfo.value)
 })
 // 查询指定召唤师历史战绩
 const querySpecialSummoner = async (summonerData:any) => {
   pageCount.value = 2
   currentSummonerName.value = summonerData.name
+  querySummonerId.value = summonerData.summonerId
   const res = await queryMatchSummonerInfo(summonerData.summonerId)
   matchData.value = res
 }

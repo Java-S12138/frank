@@ -13,7 +13,7 @@
               style="display: block"
               @click="clickCurrentSummoner($event,summoner.summonerId,summoner.name)"
             />
-            <n-tag type="default" :bordered="false"
+            <n-tag type="default" :bordered="false" :color="{ color: '#fafafc'}"
                    round size="small" style="width: 120px;justify-content: center">{{summoner.name}}
             </n-tag>
             <n-tag type="info" :bordered="false"
@@ -74,7 +74,7 @@
           <n-popover :show-arrow="false" trigger="hover" :delay="1000">
             <template #trigger>
               <n-icon size="24">
-                <Ballon/>
+                <Ballon @mousedown="handleChangePosition"/>
               </n-icon>
             </template>
             移动窗口位置
@@ -111,15 +111,14 @@ const toGameDetailsPage = (gameId:any,summoneName:string) => {
 }
 
 const handleChangePosition = () => {
-  console.log('handleChangePosition')
+  cube.windows.current.dragMove()
 }
 
 const closeWindow = async () => {
  cube.windows.close((await cube.windows.getCurrentWindow()).id)
 }
-const handleMin = () => {
-  console.log('handleMin')
-
+const handleMin =async () => {
+  cube.windows.minimize((await cube.windows.getCurrentWindow()).id)
 }
 
 </script>

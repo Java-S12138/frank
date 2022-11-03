@@ -28,7 +28,6 @@ const getParticipantsDetails = (res:any,participants:any, participantIdentities:
   }
   titleList.push(String(team100Kills),String(team200Kills),String(goldToStr(team100GoldEarned)),String(goldToStr(team200GoldEarned)))
   datalisList.push(titleList)
-  console.log(datalisList)
   return datalisList
 }
 // 解析对局数据
