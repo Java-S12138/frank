@@ -40,7 +40,7 @@
                   <ArrowUpCircle></ArrowUpCircle>
                 </n-icon>
               </template>
-              <span>当前版本 1.21.12.20</span>
+              <span>Version {{config.version}}</span>
             </n-popover>
           </n-button>
         </n-space>
@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import {NCard, NSpace, NButton, NIcon, NPopover} from 'naive-ui'
 import {BrandGithub, Help, Code, ArrowUpCircle} from '@vicons/tabler'
-
+import config from "../../../../../package.json"
 
 const openUpdate = () => {
   cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/update')

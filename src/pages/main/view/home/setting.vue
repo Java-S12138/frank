@@ -43,18 +43,33 @@
           <n-switch v-model:value="config.isSwitchBlacklist" @click="changeBlacklist"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
-<!--        关闭WeGame-->
+<!--        游戏窗口-->
         <n-space>
-          <n-tag :bordered="false">关闭助手</n-tag>
-          <n-tag :bordered="false" type="success"
-                 style="width: 140px;justify-content: center">自动关闭腾讯助手</n-tag>
+          <n-popover :show-arrow="false" trigger="hover">
+            <template #trigger>
+              <n-tag :bordered="false">游戏窗口</n-tag>
+            </template>
+            游戏内显示战绩历史窗口 隐藏|显示 SHIFT+TAB
+          </n-popover>
+          <n-popover :show-arrow="false" trigger="hover">
+            <template #trigger>
+              <n-tag :bordered="false" type="success"
+                     style="width: 140px;justify-content: center">自动打开游戏窗口</n-tag>
+            </template>
+            修改快捷键  请到Cube平台里面设置
+          </n-popover>
 
-          <n-switch v-model:value="config.isAutoDeleteWGProcess" @click="changeAutoDeleteWG"
+          <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
 <!--        秒接对局-->
         <n-space>
-          <n-tag :bordered="false">秒接对局</n-tag>
+          <n-popover :show-arrow="false" trigger="hover">
+            <template #trigger>
+              <n-tag :bordered="false">秒接对局</n-tag>
+            </template>
+            数值=50-->秒接, 数值=60-->延迟2秒, 以此类推
+          </n-popover>
           <n-slider v-model:value="config.autoAccept" :step="10" @update:value="handleUpdateAccept"
                     style="width: 213px;margin-top: 5px"/>
         </n-space>
@@ -70,9 +85,27 @@
         <n-space>
           <n-tag :bordered="false">回到首页</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
-                    secondary @click="toHomePage">因为热爱 所以联盟 BY: Java_S
+                    secondary @click="toHomePage">Cube On Frank BY: Java_S
           </n-button>
         </n-space>
+
+        <div>
+          <n-carousel autoplay :interval="2000"
+                      style="border-radius: 6px;width: 98.5%;">
+            <img @click="openCubeSite"
+              class="carousel-img"
+              src="../../../../assets/cube/cube1.png"
+            >
+            <img @click="openCubeSite"
+              class="carousel-img"
+              src="../../../../assets/cube/cube2.png"
+            >
+            <img @click="openCubeSite"
+              class="carousel-img"
+              src="../../../../assets/cube/cube3.png"
+            >
+          </n-carousel>
+        </div>
       </n-space>
     </n-card>
     <n-modal v-model:show="showModal" >
@@ -110,11 +143,12 @@
       </n-card>
     </n-modal>
   </div>
+
 </template>
 
 <script setup lang="ts">
 import {
-  NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NModal
+  NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NModal,NPopover,NCarousel
 } from 'naive-ui'
 import {optionsChampion} from '../../resources/champList'
 import {ref,reactive} from "vue";
@@ -159,9 +193,9 @@ const changeBan = () => {
 const changeBlacklist = () => {
   commoneChnage('isSwitchBlacklist')
 }
-// 设置是否开启自动关闭wegame进程
-const changeAutoDeleteWG = () => {
-  commoneChnage('isAutoDeleteWGProcess')
+// 设置是否开启自动打开游戏内窗口
+const changeAutoGameInWin = () => {
+  commoneChnage('isGameInWindow')
 }
 // 通过选择器选择英雄后, 执行的函数 选择
 const handleUpdatePick = () => {
@@ -175,7 +209,9 @@ const handleUpdateBan = () => {
 const handleUpdateAccept = () => {
   localStorage.setItem('config',JSON.stringify(config))
 }
-
+const openCubeSite = () => {
+  cube.utils.openUrlInDefaultBrowser('https://cubedao.cn/')
+}
 </script>
 
 <style scoped>
@@ -195,5 +231,10 @@ const handleUpdateAccept = () => {
 .alignCent {
   align-items: center;
 }
+.carousel-img {
+  width: 100%;
+  height: 172px;
+  object-fit: cover;
 
+}
 </style>

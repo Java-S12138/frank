@@ -94,9 +94,11 @@ export const getSummonerNickName = async (enemyIdList?:any) => {
 
 // 查询敌方召唤师ID
 export const queryEnemySummonerId= async () => {
+  // todo test
   const mactchSession =  await invokeLcu('get','/lol-gameflow/v1/session')
+  const curSummoner = await queryLoaclSummoner()
   let enemyId = []
-  if (mactchSession.gameData.teamOne.find(async (i:any) =>i.accountId === await queryLoaclSummoner() )){
+  if (mactchSession.gameData.teamOne.find((i:any) =>i.accountId === curSummoner )){
     var enemyInfo = mactchSession.gameData.teamTwo
   }else{
     var enemyInfo = mactchSession.gameData.teamOne

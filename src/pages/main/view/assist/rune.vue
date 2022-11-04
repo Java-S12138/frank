@@ -14,6 +14,9 @@
           />
         </n-badge>
 
+        <n-select @update:value="changeRuneType($event)" style="width: 100px"
+                  v-model:value="runeValue" :options="runeOptions" />
+
         <div class="buttonSwitch">
           <n-space >
             <n-button text style="font-size: 2em" @click="pageBack">
@@ -28,8 +31,6 @@
             </n-button>
           </n-space>
         </div>
-        <n-select @update:value="changeRuneType($event)" style="width: 100px"
-                  v-model:value="runeValue" :options="runeOptions" />
       </n-space>
     </n-card>
     <n-grid :cols="2" >
@@ -185,14 +186,13 @@ cube.windows.message.on('received',async (id, content) => {
     // 设置当前游戏模式
     if (currentGameMode === ''){currentGameMode = gameMode}
   }
-
 })
 
 
 // 判断当前游戏模式
 const getGameMode = async () => {
   const session = await invokeLcu('get','/lol-champ-select/v1/session')
-  if (session.timer?.phase === 'FINALIZATION'){
+  if (session.timer?.totalTimeInPhase === 70000){
     return 'aram'
   }else {
     return 'other'
@@ -218,7 +218,7 @@ const getChampInfo = async (gameMode:string) => {
 const getRuneData = async (gameMode:string) => {
   // 判断当前英雄是否配置看自动符文
   if (isStoreageHas('autoRunes',String(currentChamp.value))){
-    const runeData = JSON.parse(localStorage.getItem('autoRunes'))[String(currentChamp.value)]
+    const runeData = JSON.parse(String(localStorage.getItem('autoRunes')))[String(currentChamp.value)]
     applyRunePage(runeData)
   }
 
@@ -319,7 +319,7 @@ const getSkillsImgUrl = (skillsImg:any, skills:any) => {
 
 // 获取图片地址
 const getImaUrl = (imgId:any) => {
-  return `../../assets/runes/${imgId}.png`
+  return  new URL(`/src/assets/runes/${imgId}.png`, import.meta.url).href
 }
 // 获取位置信息
 const getPosition = (pos:string) => {

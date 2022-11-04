@@ -159,7 +159,8 @@ export const champDict = {
   '876': {'champId': '876', 'label': '含羞蓓蕾', 'alias': 'Lillia', 'title': '莉莉娅'},
   '887': {'champId': '887', 'label': '灵罗娃娃', 'alias': 'Gwen', 'title': '格温'},
   '888': {'champId': '888', 'label': '炼金男爵', 'alias': 'Renata', 'title': '烈娜塔 · 戈拉斯克'},
-  '895': {'champId': '895', 'label': '不羁之悦', 'alias': 'Nilah', 'title': '尼菈'}
+  '895': {'champId': '895', 'label': '不羁之悦', 'alias': 'Nilah', 'title': '尼菈'},
+  '897': {'champId': '897', 'label': '纳祖芒荣耀', 'alias': 'KSante', 'title': '奎桑提'}
 }
 export const optionsChampion = [
   {
@@ -646,6 +647,10 @@ export const optionsChampion = [
   {
     'value': '895',
     'label': '不羁之悦'
+  },
+  {
+    'value': '897',
+    'label': '纳祖芒荣耀'
   }
 ]
 export const mapNameFromUrl = {
@@ -810,5 +815,6 @@ export const mapNameFromUrl = {
   'Lillia': {'label': '含羞蓓蕾', 'name': '莉莉娅'},
   'Gwen': {'label': '灵罗娃娃', 'name': '格温'},
   'Renata': {'label': '炼金男爵', 'name': '烈娜塔 · 戈拉斯克'},
-  'Nilah': {'label': '不羁之悦', 'name': '尼菈'}
+  'Nilah': {'label': '不羁之悦', 'name': '尼菈'},
+  'KSante': {'label': '纳祖芒荣耀', 'name': '奎桑提'}
 }

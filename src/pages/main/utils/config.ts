@@ -21,14 +21,13 @@
     'trash': '操作抽象',
   },
   'champRankOption': {
-    'tier': 200,
+    'tier': 2,
     'lane': 'mid'
   },
   'isSwitchBlacklist': true,
-  'blacklist': {},
-  'runeType': '国服数据',
-  'isAutoDeleteWGProcess': false,
-  'is101': true
+  'runeType': '韩服数据',
+  'isGameInWindow': true,
+  'is101': false
 }
 if (localStorage.getItem('config')===null){
   localStorage.setItem('config',JSON.stringify(config))

@@ -1,5 +1,5 @@
 <template>
-  <n-tabs type="segment" :animated=true
+  <n-tabs type="segment" :animated=true @mousedown="handldDrge"
           ref="tabsInstRef" :value="transValue">
     <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'"></n-tab>
     <n-tab name="match" tab="查看战绩" @click="showMatch"></n-tab>
@@ -60,7 +60,7 @@ cube.windows.message.on('received',async (id) => {
       endGameAfterInfo.value = [[], []]
       endGameAfterInfo.value = res
     }, 1500)
-  }else if (id==='query-enemy-summoner'&& isSwitchBlacklist){
+  }else if (id==='show-other-summoner'&& isSwitchBlacklist){
     currentBlackList.value.length = 0
     transValue.value = 'blacklist'
   }
@@ -108,7 +108,9 @@ const changePage = (e:string) => {
     transValue.value = 'champRank'
   }
 }
-
+const handldDrge = () => {
+  cube.windows.current.dragMove()
+}
 </script>
 
 <style scoped>

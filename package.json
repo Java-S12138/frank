@@ -2,11 +2,11 @@
   "name": "frank",
   "author": "Java_S",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.5.1221",
   "type": "module",
   "scripts": {
     "dev": "node ./scripts/debug && vite",
-    "build": "vue-tsc --noEmit && vite build && node ./scripts/pack",
+    "build": "vite build && node ./scripts/pack",
     "preview": "vite preview",
     "pretty": "prettier --write \"src/**/*.ts\""
   },

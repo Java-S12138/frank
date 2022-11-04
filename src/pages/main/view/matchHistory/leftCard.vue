@@ -63,7 +63,7 @@
           </n-space>
         </n-space>
 
-        <n-space style="margin-top: 30px;width: 200px" v-if="enemySummonerInfo.length != 0" justify="space-between">
+        <n-space style="margin-top: 35px;width: 200px" v-if="enemySummonerInfo.length != 0" justify="space-between">
           <n-button size="small" :bordered="currentTeam===1" @click="changeCurrentTeam"
                     type="success" dashed>我方召唤师
           </n-button>
@@ -93,6 +93,7 @@ import {NCard, NAvatar, NSpace, NTag, NButton, NSpin} from 'naive-ui'
 import {queryEnemySummonerId,getSummonerNickName} from "../../lcu/matchHistoryLcu";
 import {storeToRefs} from "pinia";
 import {matchStore} from "../../store";
+import {onMounted} from "vue";
 const emits = defineEmits(['summonerId','backHome'])
 
 const config = JSON.parse(String(localStorage.getItem('config')))
@@ -101,11 +102,12 @@ const store = matchStore()
 const {enemyEchartsData, currentEchartData,echartsData,currentTeam,
   currentSummonerName, summonerInfo,enemySummonerInfo}:any = storeToRefs(store)
 
-
-cube.windows.message.on('received',async (id) => {
-  if (id==='query-enemy-summoner'){
-    getEnemyInfo()
-  }
+onMounted(() => {
+  cube.windows.getCurrentWindow().then((v) => {
+    if (v.type===2){
+      getEnemyInfo()
+    }
+  })
 })
 
 const getEnemyInfo = async () => {

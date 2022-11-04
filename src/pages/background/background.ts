@@ -1,12 +1,14 @@
 import '../main/utils/tray.ts'
 import { GameFlow } from '../main/utils/gameFlow'
 
-cube.extensions.on('launch-triggered', (s) => {
+cube.extensions.on('launch-triggered', async (s) => {
+  const currentScreen = (await cube.utils.getPrimaryDisplay()).size
   cube.windows.obtainDeclaredWindow('main')
-  cube.windows.obtainDeclaredWindow('assist')
+  cube.windows.obtainDeclaredWindow('assist',{x:currentScreen.width -320,y:(currentScreen.height -770)/2})
 })
 
 const gameFlow = new GameFlow()
+gameFlow.initGameInWindow()
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
   if (info.category === 'game_flow') {
@@ -16,12 +18,12 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
       gameFlow.autoPickBanChamp()
     } else if (info.value === 'GameStart') {
       // 选择英雄结束后,发送消息给渲染进程, 让渲染进程获取到敌方召唤师信息
-      gameFlow.queryEnemyInfo()
+      gameFlow.showOrHideAssist(false,'query-enemy-summoner')
     } else if (info.value === 'PreEndOfGame') {
       // 游戏结束后,根据用户设置判断是否弹出拉黑召唤师的抽屉
       gameFlow.isShowBlack()
     } else if (info.value === 'ReadyCheck') {
-      // 自动结束对局
+      // 自动接收对局
       gameFlow.autoAcceptGame()
     }
   }
@@ -61,3 +63,4 @@ cube.games.launchers.on('stopped', (classId) => {
     cube.extensions.relaunch()
   }
 })
+

@@ -68,7 +68,7 @@ onBeforeMount(async () => {
 
   const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
 
-  if (clientStatus === '"InProgress"'){
+  if (clientStatus === 'InProgress' ||clientStatus === 'GameStart'){
     var summonerId = await querySummonerIDInProgress()
     var res = await getSummonerNickName(summonerId)
   }else {

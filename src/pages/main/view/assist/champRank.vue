@@ -50,12 +50,12 @@
 
             <n-popover :show-arrow="false" trigger="hover">
               <template #trigger>
-                <n-icon color="#9AA4AF" style="margin-right: 5px"
+                <n-icon :color=" isTopWin === false ? '#9AA4AF':'#2080f0'" style="margin-right: 5px"
                         size="30" @mousedown="handleChangePosition">
                   <Ballon/>
                 </n-icon>
               </template>
-              移动窗口位置
+              窗口是否置顶
             </n-popover>
           </n-space>
 
@@ -253,6 +253,7 @@ const selectedList:Ref<string[]> = ref([])
 const isRestraint = ref(true)
 const searchValue = ref(null)
 const is101 = ref(config.is101)
+const isTopWin = ref(false)
 
 const message = useMessage()
 
@@ -487,9 +488,15 @@ const searchChampData = () => {
     message.error('当前输入不存在')
   }
 }
-// 移动窗口
-const handleChangePosition = () => {
-  cube.windows.current.dragMove()
+// 窗口是否置顶
+const handleChangePosition =async () => {
+ if (!isTopWin.value){
+   cube.windows.setTopmost((await cube.windows.getCurrentWindow()).id,true)
+   isTopWin.value = true
+ }else {
+   cube.windows.setTopmost((await cube.windows.getCurrentWindow()).id,false)
+   isTopWin.value = false
+ }
 }
 
 // 改变不同服务器的数据排行

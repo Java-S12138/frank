@@ -244,7 +244,6 @@ import {
 import {Diamond} from '@vicons/tabler'
 import {getCurrentSummonerInfo,queryCurrentChampStatstones} from "../../lcu/homeLcu";
 
-
 const rankData:Ref<any[]> = ref([])
 const summonerHonor:Ref<any[]> = ref([])
 const summonerChampLevel:Ref<any[]> = ref([])
@@ -269,7 +268,7 @@ const queryMatch = () => {
   cube.windows.hide(cube.windows.current.id())
 }
 const getImaUrl = (imgUrl:any) => {
-  return `../../assets/statstones/${imgUrl.toLowerCase()}`
+  return new URL(`/src/assets/statstones/${imgUrl.toLowerCase()}`, import.meta.url).href
 }
 const showCurrentChampstatstones = async (champId:any,champIndex:any) => {
   const champStatstones  =  await queryCurrentChampStatstones(champId)
