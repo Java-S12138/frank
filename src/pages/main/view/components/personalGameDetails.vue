@@ -101,7 +101,7 @@ import {NAvatar, NSpace, NTag,NList,NListItem,NButton,NScrollbar,useMessage} fro
 
 
 // 从父组件获取的数据
-const props = defineProps({
+const props:any = defineProps({
   personalDetails: {
     type: Object,
   },
@@ -123,23 +123,28 @@ const queryCurrenDate = () => {
 
 const message = useMessage()
 
-const addBlacklist = () => {
-  console.log('拉黑到黑名单')
-  // const currentDate = queryCurrenDate()
-  // appConfig.set(`blacklist.${props.personalDetails.summonerId}`,{
-  //   nickname:props.personalDetails.name,
-  //   date:currentDate,
-  //   timestamp:Date.now(),
-  //   content:'战绩查询中添加的召唤师',
-  //   tag:'战绩查询',
-  // })
-  // message.success(`${props.personalDetails.name}   拉黑成功😡`)
-  // ipcRenderer.send('setting-page-refresh-assist')
-}
+const addBlacklist = async () => {
+  try {
+    const currentDate = queryCurrenDate()
+    const localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
+    localBlacklist[`${props.personalDetails.summonerId}`] = {
+      nickname:props.personalDetails.name,
+      date:currentDate,
+      timestamp:Date.now(),
+      content:'战绩查询中添加的召唤师',
+      tag:'战绩查询',
+    }
+    localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
+    message.success(`${props.personalDetails.name}   拉黑成功😡`)
+    cube.windows.message.send((await cube.windows.getWindowByName('assist')).id,'updataBL','')
+  }catch (e) {
+    message.error(`${props.personalDetails.name}   拉黑失败 !`)
+  }
+ }
 
 // 获取符文图片地址
 const getImaUrl = (imgId:string) => {
-  return `../../assets/runes/${imgId}.png`
+  return new URL(`/src/assets/runes/${imgId}.png`, import.meta.url).href
 }
 </script>
 

@@ -35,13 +35,17 @@ const queryMatchHistory = async (summonerId: number) => {
   let matchCount = 0
   for (let i = 0; i < 100; i += 20) {
     const matchList = await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20])
-    for (const matchListElement of matchList['games']['games'].reverse()) {
-      if (matchListElement.queueId === currentGameMode && matchCount < 10) {
-        matchCount += 1
-        classicMode.push(matchListElement)
-      } else if (matchCount === 10) {
-        return classicMode
+    try {
+      for (const matchListElement of matchList['games']['games'].reverse()) {
+        if (matchListElement.queueId === currentGameMode && matchCount < 10) {
+          matchCount += 1
+          classicMode.push(matchListElement)
+        } else if (matchCount === 10) {
+          return classicMode
+        }
       }
+    }catch (e) {
+      continue
     }
   }
   return classicMode

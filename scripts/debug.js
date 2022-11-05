@@ -10,6 +10,8 @@ Object.values(manifest.data.windows).forEach((w) => {
   w.debug_url = 'http://localhost:5173';
   w.file = w.file.replace('index.html/#/','#/')
 });
+manifest.meta.name = 'Sample App'
+manifest.meta.author = 'Cube'
 
 try {
   mkdirSync(path.resolve(__dirname, '../dist/'));

@@ -137,7 +137,7 @@ const addBlacklistActive = ref(false)
 const blacklist:Ref<any> = ref([])
 const detialsJson = reactive({name:'',date:'',content:'',tag:'',summonerId:''})
 const message = useMessage()
-let localBlacklist:any = JSON.parse(localStorage.getItem('blacklist'))
+let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist')))
 const store = assistStore()
 const {currentBlackList}:any = storeToRefs(store)
 
@@ -180,7 +180,7 @@ const shiftFirst = (currentSummonerId:number) => {
 
 // 从本地查询黑名单列表
 const queryBlacklist = () => {
-  localBlacklist = JSON.parse(localStorage.getItem('blacklist'))
+  localBlacklist = JSON.parse(String(localStorage.getItem('blacklist')))
   blacklist.value = []
   // 获取黑名单数据
   for (const black in localBlacklist) {
@@ -236,6 +236,13 @@ const addBlacklistFunc = () => {
   queryBlacklist()
   addBlacklistActive.value=false
 }
+// 更新排位日记
+cube.windows.message.on('received',(id:any) => {
+  if (id==='updataBL'){
+    queryBlacklist()
+  }
+})
+
 </script>
 
 <style scoped>

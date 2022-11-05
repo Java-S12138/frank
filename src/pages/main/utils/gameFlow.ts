@@ -2,9 +2,6 @@ import {champSelectSession} from "../lcu/autoBP";
 import {invokeLcu} from "../lcu";
 
 export class GameFlow {
-
-  public config = JSON.parse(String(localStorage.getItem('config')))
-
   // 显示或者隐藏助手窗口
   public showOrHideAssist = async (isShow: boolean, message: string) => {
     const assistWin = await cube.windows.getWindowByName('assist')
@@ -17,7 +14,8 @@ export class GameFlow {
   }
   // 游戏结束后,根据用户设置判断是否弹出拉黑召唤师的抽屉
   public isShowBlack = async () => {
-    if (this.config.isSwitchBlacklist) {
+    const config = JSON.parse(String(localStorage.getItem('config')))
+    if (config.isSwitchBlacklist) {
       const assistWin = await cube.windows.getWindowByName('assist')
       cube.windows.show(assistWin.id)
       cube.windows.message.send(assistWin.id, 'show-other-summoner', '')
@@ -36,7 +34,7 @@ export class GameFlow {
         cube.windows.close(v.id)
       }).catch(() => {})
       cube.windows.obtainDeclaredWindow('matchHistory', { gamein: true}).then((v) => {
-        if (!this.config.isGameInWindow){
+        if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow){
           cube.windows.hide(v.id)
         }
       })
@@ -55,7 +53,8 @@ export class GameFlow {
   }
   // 自动(禁用)选择英雄
   public autoPickBanChamp = () => {
-    if (this.config.autoPickChampion.isAuto || this.config.autoBanChampion.isAuto) {
+    const config = JSON.parse(String(localStorage.getItem('config')))
+    if (config.autoPickChampion.isAuto || config.autoBanChampion.isAuto) {
       const idSetInterval = setInterval(async () => {
         champSelectSession(idSetInterval)
       }, 1000)
@@ -63,7 +62,8 @@ export class GameFlow {
   }
   // 自动接收对局
   public autoAcceptGame = async () => {
-    const isAutoAccept = this.config.autoAccept
+    const config = JSON.parse(String(localStorage.getItem('config')))
+    const isAutoAccept = config.autoAccept
     if (isAutoAccept < 50) {
       return
     }
