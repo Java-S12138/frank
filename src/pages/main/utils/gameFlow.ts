@@ -30,15 +30,29 @@ export class GameFlow {
   public initGameInWindow = () => {
   //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
     cube.games.on('launched', () => {
+      //游戏启动关闭桌面窗口，打开游戏内窗口
+      cube.windows.getWindowByName('main', false).then((v) => {
+        cube.windows.close(v.id);
+      });
       cube.windows.getWindowByName('matchHistory', false).then((v) => {
         cube.windows.close(v.id)
       }).catch(() => {})
-      cube.windows.obtainDeclaredWindow('matchHistory', { gamein: true}).then((v) => {
-        if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow){
-          cube.windows.hide(v.id)
-        }
+      cube.windows.obtainDeclaredWindow('matchHistory', { gamein: true,show:false}).then((v) => {
+        cube.windows.hide(v.id).then(() => {
+          setTimeout(() => {
+            if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow){
+              return
+            }else {
+              cube.windows.show(v.id)
+            }
+          },3000)
+        })
       })
     })
+    cube.games.on('stopped', () => {
+      //游戏结束创建桌面窗口
+      cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
+    });
 
     cube.settings.hotkeys.game.on('pressed',async (hotKeyName:string) => {
       if (hotKeyName==='show_matchHistory') {

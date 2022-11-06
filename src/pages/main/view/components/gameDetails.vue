@@ -170,10 +170,10 @@
             <n-popover trigger="hover" :show-arrow="false">
               <template #trigger>
                 <p class="scale-in-hor-left" :key="otherDataCount"
-                   :style="'width:'+otherDataPercent[index][0][otherDataKey]" style="height: 7px;border-radius: 2px;
+                   :style="'width:'+otherDataPercent[index][1][otherDataKey]" style="height: 7px;border-radius: 2px;
         background-color:#4098fc;"></p>
               </template>
-              <span>{{ otherDataText }}: {{ otherData[index][0][otherDataKey] }}</span>
+              <span>{{ otherDataText }}: {{ otherData[index][1][otherDataKey] }}</span>
             </n-popover>
 
           </n-space>

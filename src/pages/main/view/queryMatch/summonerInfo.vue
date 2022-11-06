@@ -32,7 +32,10 @@
                     style="width: 85px;"
                     :height="10"
                   />
-                  <span style="padding-top: 2px">{{parseInt((summoner.summonerInfo.xpSL/summoner.summonerInfo.xpNL)*100)}} %</span>
+                  <span style="padding-top: 2px" v-if="summoner.summonerInfo.xpSL !== undefined">
+                    {{parseInt((summoner.summonerInfo.xpSL/summoner.summonerInfo.xpNL)*100)}} %</span>
+                  <span style="padding-top: 2px" v-else>
+                    0%</span>
                 </n-space>
               </n-tag>
             </template>

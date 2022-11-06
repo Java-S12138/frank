@@ -1,11 +1,14 @@
 // @ts-ignore
-const showWin = async (win) => {
-  const window = await cube.windows.getWindowByName(win)
-  if (window.show){
-    cube.windows.hide(window.id)
-  }else {
-    cube.windows.show(window.id)
-  }
+import WindowInfo = cube.windows.WindowInfo;
+
+const showWin =  (win:string) => {
+  cube.windows.getWindowByName(win).then((v:WindowInfo) => {
+    if (v.show){
+      cube.windows.hide(v.id)
+    }else {
+      cube.windows.show(v.id)
+    }
+  }).catch(() => {})
 }
 
 cube.os.tray.setMenu(
