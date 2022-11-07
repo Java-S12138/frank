@@ -5,9 +5,9 @@
     "author": "Java_S",
     "icon": "icon.png",
     "window_icon": "icon.ico",
-    "version": "1.5.1221",
+    "version": "1.51.1221",
     "display_name": "Frank",
-    "description": "A bran-new League of Legends assistant software, Powered By Cube"
+    "description": "A bran-new League of Legends assistant software, Powered By Cube."
   },
   "data": {
     "game_in_hotkeys": {

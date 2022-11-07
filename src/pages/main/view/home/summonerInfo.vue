@@ -46,8 +46,9 @@
           </n-popover>
 
         </n-space>
-        <n-tag v-else type="warning" size="small" round style="width: 241px"
-               :bordered="false"></n-tag>
+        <n-tag v-else type="warning"  size="small" @click="refresh"
+               round style="width: 241px;justify-content: center"
+               :bordered="false">首页没数据 ? 点我刷新页面 ~</n-tag>
       </n-space>
     </n-card>
 
@@ -253,9 +254,15 @@ const message = useMessage()
 const active = ref(false)
 const currentChampStatstones:Ref<any[]> = ref([])
 const currentChampIndex = ref(0)
+const refreshHome = ref(false)
 
 onMounted(async () => {
   const homeData = await getCurrentSummonerInfo()
+  if (homeData === null){
+    refreshHome.value = true
+    message.warning('请先启动英雄联盟客户端',{ duration: 5000 })
+    return
+  }
   rankData.value = homeData.rank
   summonerHonor.value = homeData.honorData
   summonerChampLevel.value = homeData.champLevel
@@ -284,7 +291,9 @@ const showCurrentChampstatstones = async (champId:any,champIndex:any) => {
   currentChampStatstones.value = champStatstones
   currentChampIndex.value = champIndex
 }
-
+const refresh = () => {
+  location.reload()
+}
 </script>
 
 <style scoped>

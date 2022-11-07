@@ -99,6 +99,9 @@ const getChatSelectChampId = async () => {
 }
 // 查询对局中的所有召唤师的Id
 export const queryAllSummonerId = async () => {
+  // todo 测试
+  // const summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
+  // return summonerIdList
   let summonerIdList = []
   const chatId = await getChatSelectChampId()
   if (chatId == null){return null}
@@ -110,8 +113,6 @@ export const queryAllSummonerId = async () => {
   }
   // 数组去重
   summonerIdList = [... new Set(summonerIdList)]
-  // todo 测试
-  // let summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
   return summonerIdList
 }
 

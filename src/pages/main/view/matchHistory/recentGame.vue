@@ -43,6 +43,13 @@
       <loading-anime v-else></loading-anime>
       <div class="suspension">
         <n-space>
+          <n-space v-if="isType2===2">
+            <n-tag :bordered="false" style="margin-top: -2px"
+                   :color="{ color: '#fafafc'}">游戏内是否自动打开此窗口</n-tag>
+            <n-switch size="small"  v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"
+                      style="margin-right: 2px;margin-top: 2px"/>
+          </n-space>
+
           <n-button
             text
             @click="() => {pageCount=4}" color="black">
@@ -88,18 +95,25 @@
 
 <script setup lang="ts">
 import {
-  NCard, NSpace, NTag,NIcon, NAvatar, NGrid, NGi,NButton, NPopover, NPopconfirm
+  NCard, NSpace, NTag,NIcon, NAvatar, NGrid, NGi,NButton, NPopover, NPopconfirm,NSwitch
 } from 'naive-ui'
 import {matchStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from "@vicons/tabler"
 import LoadingAnime from "./loadingAnime.vue";
+import {onMounted, reactive, ref} from "vue";
 
+const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
+const isType2 = ref()
 const emits = defineEmits(['changePage','summonerId','toGameDetailsPage'])
 const store = matchStore()
 const {
   summonerInfo,currentTeam,enemySummonerInfo,currentSummonerName,pageCount
 } = storeToRefs(store)
+
+onMounted(async () => {
+  isType2.value = (await cube.windows.getCurrentWindow()).type
+})
 
 const clickCurrentSummoner = (e:any, summonerId:number, name:string) => {
   emits('summonerId', {summonerId, name})
@@ -121,6 +135,15 @@ const handleMin =async () => {
   cube.windows.minimize((await cube.windows.getCurrentWindow()).id)
 }
 
+const changeAutoGameInWin = () => {
+  if (config['isGameInWindow'] !== true) {
+    config['isGameInWindow'] = false
+    localStorage.setItem('config',JSON.stringify(config))
+  } else {
+    config['isGameInWindow'] = true
+    localStorage.setItem('config',JSON.stringify(config))
+  }
+}
 </script>
 
 <style scoped>

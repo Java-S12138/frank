@@ -95,6 +95,8 @@ export const getSummonerNickName = async (enemyIdList?:any) => {
 // 查询敌方召唤师ID
 export const queryEnemySummonerId= async () => {
   // todo test
+  // const enemyId =[4000557119,4009650116,2935173990,2928803974,4004032333]
+  // return enemyId
   const mactchSession =  await invokeLcu('get','/lol-gameflow/v1/session')
   const curSummoner = await queryLoaclSummoner()
   let enemyId = []
@@ -106,7 +108,6 @@ export const queryEnemySummonerId= async () => {
   for (const enemy of enemyInfo) {
     enemyId.push(enemy.accountId)
   }
-  // const enemyId =[4000557119,4009650116,2935173990,2928803974,4004032333]
   return enemyId
 }
 
