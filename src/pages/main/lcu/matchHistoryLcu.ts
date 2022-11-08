@@ -17,8 +17,10 @@ const querySummonerInfo = async (summonerId:Number):Promise<lcuSummonerInfo> => 
 
 // 查询敌方召唤师ID和昵称
 export const querySummonerIDInProgress= async () => {
-  const currentId = await queryLoaclSummoner()
-  const mactchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+  const [currentId,mactchSession] = await Promise.all([
+    queryLoaclSummoner(),
+    invokeLcu('get','/lol-gameflow/v1/session')
+  ])
 
   let friendInfoList = []
 
@@ -75,8 +77,11 @@ export const getSummonerNickName = async (enemyIdList?:any) => {
   let allSummonerNickName:any[] = []
   for (const summonerId of allSummonerId) {
     const summonerInfo = await querySummonerInfo(summonerId)
-    const gameSocreInfo = await getGameScore(summonerId)
-    const rankPoint = await queryRankPoint(summonerInfo.puuid)
+    const [gameSocreInfo,rankPoint] = await Promise.all([
+      getGameScore(summonerId),
+      queryRankPoint(summonerInfo.puuid)
+    ])
+
     allSummonerNickName.push({
       summonerId:summonerId,
       name: summonerInfo.displayName,
@@ -97,8 +102,11 @@ export const queryEnemySummonerId= async () => {
   // todo test
   // const enemyId =[4000557119,4009650116,2935173990,2928803974,4004032333]
   // return enemyId
-  const mactchSession =  await invokeLcu('get','/lol-gameflow/v1/session')
-  const curSummoner = await queryLoaclSummoner()
+
+  const [mactchSession,curSummoner] = await Promise.all([
+    invokeLcu('get','/lol-gameflow/v1/session'),
+    queryLoaclSummoner()
+  ])
   let enemyId = []
   if (mactchSession.gameData.teamOne.find((i:any) =>i.accountId === curSummoner )){
     var enemyInfo = mactchSession.gameData.teamTwo

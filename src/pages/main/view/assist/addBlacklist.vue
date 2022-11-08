@@ -48,7 +48,7 @@ import {ref,onBeforeMount} from "vue";
 import {isStoreageHas} from "../../lcu/utils";
 import {invokeLcu} from "../../lcu";
 
-let localBlacklist:any = JSON.parse(localStorage.getItem('blacklist')) === null ? {}: JSON.parse(localStorage.getItem('blacklist'))
+let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
 const props = defineProps({
   name:{
     type:String,

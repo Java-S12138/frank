@@ -89,21 +89,20 @@ const queryStatstones = async (puuid:string) => {
 
 
 // 返回首页最终需要的数据
-export const getCurrentSummonerInfo = async ():Promise<CurrentSummonerInfo> => {
+export const getCurrentSummonerInfo = async ():Promise<CurrentSummonerInfo | null> => {
   const summonerInfo =  await queryCurrentSummonerInfo()
   if (summonerInfo.currentId===undefined && summonerInfo.name===undefined){
-    // @ts-ignore
     return null
   }
-  const rankList = await queryCurrentRankPoint()
+  const [rankList,summonerSuperChampData,honorData,statstones] = await Promise.all([
+    queryCurrentRankPoint(),
+    queryCurrentChamp(summonerInfo.currentId),
+    querySummonerHonorLevel(),
+    queryStatstones(summonerInfo.puuid)
+  ])
+  const champLevel = dealSuperChamp(summonerSuperChampData,0,15)
   const rank=  [summonerInfo.name,summonerInfo.lv,rankList[0],rankList[1],rankList[2],
     "S12季前赛",[summonerInfo.xpSL,summonerInfo.xpNL],summonerInfo.imgUrl]
-
-  const summonerSuperChampData = await queryCurrentChamp(summonerInfo.currentId)
-
-  const honorData = await querySummonerHonorLevel()
-  const champLevel = dealSuperChamp(summonerSuperChampData,0,15)
-  const statstones = await queryStatstones(summonerInfo.puuid)
   return {rank,honorData,champLevel,statstones}
 }
 

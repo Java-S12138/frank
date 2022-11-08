@@ -1,6 +1,9 @@
 <template>
   <div style="overflow: hidden;">
-    <n-space>
+    <n-space v-if="isNull">
+      <null-page/>
+    </n-space>
+    <n-space v-else>
       <left-card @summonerId="querySpecialSummoner($event)" @backHome="backHome"></left-card>
       <n-space>
         <bar-k-d-a @summonerId="querySpecialSummoner($event)"
@@ -27,6 +30,7 @@ import BarKDA from "./barKDA.vue";
 import Standing from "./standing.vue";
 import GameDetails from "./matchGameDetils.vue";
 import RecentGame from "./recentGame.vue";
+import NullPage from "./nullPage.vue";
 import {NSpace} from "naive-ui";
 import {onBeforeMount, Ref, ref} from "vue";
 import {matchStore} from "../../store";
@@ -35,8 +39,9 @@ import {getSummonerNickName} from "../../lcu/matchHistoryLcu";
 import {querySummonerIDInProgress} from "../../lcu/matchHistoryLcu";
 import {invokeLcu} from "../../lcu";
 import {queryMatchSummonerInfo} from "../../lcu/matchHistoryLcu";
+document.title = 'MatchHistory'
 
-
+const isNull = ref(false)
 const matchData:Ref<any> = ref([])
 const lastPage = ref(0)
 const store = matchStore()
@@ -53,6 +58,7 @@ const {
 
 // 获取对应的图表数据
 const getChartsData = (res:any) => {
+  if (res === null){return}
   echartsData.value = {name: [], data: [], kdaHistory: [], horse: [],summonerId:[]}
   for (const re of res) {
     echartsData.value.name.push(re.name)
@@ -74,7 +80,10 @@ onBeforeMount(async () => {
   }else {
     var res = await getSummonerNickName()
   }
-
+  if (res===null){
+    isNull.value = true
+    return
+  }
   currentTeam.value = 1
   summonerInfo.value = []
   summonerInfo.value = res

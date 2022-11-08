@@ -64,8 +64,11 @@ export const returnSummonerData = async (summonerId?: number) => {
     summonerId = await queryCurrentSummonerId()
   }
   const summonerInfo: summonerInfo = await querySummonerInfo(summonerId)
-  const rankData = await queryCurrentRankPoint(summonerInfo.puuid)
-  const superChampList = await querySummonerSuperChampData(summonerId)
+  const [rankData,superChampList] = await Promise.all([
+    queryCurrentRankPoint(summonerInfo.puuid),
+    querySummonerSuperChampData(summonerId)
+  ])
+
   return {summonerInfo, rankData, superChampList}
 }
 
