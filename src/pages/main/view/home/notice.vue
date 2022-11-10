@@ -1,11 +1,11 @@
 <template>
   <div>
-    <n-space justify="center" style="margin-top: 5px">
-      <n-tag :type="notice.type" :bordered="false">
-        {{ notice.content }}
+    <n-space justify="center" style="margin-top: 6px">
+      <n-tag :type="props.notice.type" :bordered="false">
+        {{ props.notice.content }}
       </n-tag>
-      <n-button v-if="notice.isButton" @click="toUrl" size="small" :type="notice.type">
-        {{ notice.buttonContent }}
+      <n-button v-if="props.notice.isButton" @click="toUrl" size="small" :type="props.notice.type">
+        {{ props.notice.buttonContent }}
       </n-button>
     </n-space>
   </div>
@@ -14,16 +14,22 @@
 <script setup lang="ts">
 import {NTag, NButton, NSpace} from 'naive-ui'
 
-const notice = {
-  type: 'success',
-  content: '1.51.1221版本更新啦!',
-  isButton: true,
-  buttonContent: '点击查看',
-  url: 'https://syjun.vip'
-}
+const props:any = defineProps({
+  notice:{
+    type:Object,
+    defaule:{
+      isShow:false,
+      type: 'success',
+      content: '',
+      isButton: false,
+      buttonContent: '',
+      url: ''
+    }
+  }
+})
 
 const toUrl = () => {
-  cube.utils.openUrlInDefaultBrowser(notice.url)
+  cube.utils.openUrlInDefaultBrowser(props.notice.url)
 }
 </script>
 

@@ -3,7 +3,6 @@ import {lcuSummonerInfo, summonerInfo} from "./types/homeLcuTypes";
 import {Game, LcuMatchList,MatchList} from "./types/queryMatchLcuTypes"
 import {champDict} from "../resources/champList";
 import {dealDivsion, englishToChinese, queryGameType} from "./utils"
-import {watermarkDark} from "naive-ui";
 
 // 查询本地召唤师Id
 const queryCurrentSummonerId = async () => {
