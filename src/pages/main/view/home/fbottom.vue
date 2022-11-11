@@ -67,7 +67,7 @@ import {request} from "../../utils/request";
 const notice = ref('')
 const page = ref(1)
 onMounted(async () => {
-  const res = await request.get('https://frank-notice-1304009809.cos.ap-chongqing.myqcloud.com/notice.json')
+  const res = await request.get('https://frank-notice-1302853015.cos.ap-chongqing.myqcloud.com/notice.json')
   if (res.status === 200 && res.data.isShow) {
     notice.value = res.data
     page.value = 2
