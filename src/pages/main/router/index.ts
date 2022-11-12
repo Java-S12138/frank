@@ -25,6 +25,11 @@ const routes = [
     name: 'MatchHistory',
     component: () => import('../view/matchHistory/index.vue')
   },
+  {
+    path: '/recentMatch',
+    name: 'RecentMatch',
+    component: () => import('../view/recentMatch/index.vue')
+  },
   ]
 
 const router = createRouter({

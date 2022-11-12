@@ -43,6 +43,16 @@
               <span>Version {{ config.version }}</span>
             </n-popover>
           </n-button>
+          <n-button text>
+            <n-popover trigger="hover" :show-arrow="false">
+              <template #trigger>
+                <n-icon size="20" @click="test">
+                  <ArrowUpCircle></ArrowUpCircle>
+                </n-icon>
+              </template>
+              <span>Version {{ config.version }}</span>
+            </n-popover>
+          </n-button>
         </n-space>
       </n-space>
       <Notice class="fade-in" v-else :notice=notice></Notice>
@@ -88,6 +98,10 @@ const openFrank = () => {
 }
 const changePage = () => {
   page.value = page.value === 2 ? 1 : 2
+}
+
+const test = () => {
+  cube.windows.obtainDeclaredWindow('recentMatch')
 }
 
 </script>
