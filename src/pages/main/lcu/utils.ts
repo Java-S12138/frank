@@ -79,3 +79,14 @@ export const querySummonerPosition = (lane:string) => {
     case 'NONE': return '未知'
   }
 }
+// 获取位置序号, 方便排序
+export const getPosition = (selectedPosition:string) => {
+  switch (selectedPosition) {
+    case 'BOTTOM': return 4;
+    case 'JUNGLE': return 2;
+    case 'TOP': return 1;
+    case 'MIDDLE': return 3;
+    case 'UTILITY': return 5;
+    case 'NONE':return 0;
+  }
+}
