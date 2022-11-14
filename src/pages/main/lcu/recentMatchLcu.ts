@@ -10,27 +10,27 @@ export class recentMatch {
   public gameType: number = 420
 
   public init = async () => {
-    // this.matchSession = (await request({
-    //   'url': 'https://cdn.syjun.vip/frank/session.json',
-    //   method: 'GET',
-    // })).data
+    this.matchSession = (await request({
+      'url': 'https://cdn.syjun.vip/frank/session.json',
+      method: 'GET',
+    })).data
 
-    this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+    // this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
     this.gameType = this.matchSession.gameData.queue.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
     this.matchSession.gameData.playerChampionSelections.forEach((res: any) => {
       this.playerChampionSelections[(res.summonerInternalName)] = res.championId
     })
-    console.log(this.playerChampionSelections)
   }
 
   public simplifySummonerInfo = async (summonerList: {}[]) => {
     const info: any = await summonerList.reduce(async (res: any, item: any) => {
-      console.log(item.summonerName.toLowerCase())
+      const matchHistory = await this.queryMatchHistory(item.summonerId)
       return (await res).concat({
         rankPoint: await this.queryRankPoint(item.puuid),
         summonerName: item.summonerName,
-        mathcHistory: await this.queryMatchHistory(item.summonerId),
+        mathcHistory: matchHistory.classicMode,
+        rateCount:matchHistory.rateCount,
         index: getPosition(item.selectedPosition),
         // @ts-ignore
         championUrl: this.gameType === (420||440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
@@ -71,15 +71,17 @@ export class recentMatch {
   public queryMatchHistory = async (summonerId: number) => {
     let classicMode: any = []
     let matchCount = 0
+    let winCount = 0
     mainfor:
     for (let i = 0; i < 100; i += 20) {
       const matchList = (await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20]))['games']['games'].reverse()
       for (let j = 0; j < matchList.length; j++) {
-        if (matchList[j].queueId === this.gameType) {
+        // if (matchList[j].queueId === this.gameType) {
           if (matchCount === 10) {
             break mainfor
           }
           matchCount += 1
+          winCount = matchList[j].participants[0].stats.win ===true ? winCount+1:winCount
           classicMode.push({
             // @ts-ignore
             champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList[j].participants[0].championId)].alias}.png`,
@@ -88,9 +90,9 @@ export class recentMatch {
             assists: matchList[j].participants[0].stats.assists,
             isWin: matchList[j].participants[0].stats.win,
           })
-        }
+        // }
       }
     }
-    return classicMode
+    return {classicMode:classicMode,rateCount:{win:winCount,defeate:classicMode.length-winCount}}
   }
 }

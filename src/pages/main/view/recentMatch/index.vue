@@ -1,9 +1,11 @@
 <template>
   <div class="mainDiv">
-    <dashboard/>
+    <dashboard @changeChampImg="changeChampImg"/>
     <div class="matchs">
-      <match :matchList="isTeamOne===true?friendList:enemyList" :is-team-one="true"></match>
-      <match :matchList="isTeamOne===false?friendList:enemyList" :is-team-one="false"></match>
+      <match :matchList="isTeamOne===true?friendList:enemyList"
+             :is-team-one="true" ref="teamOne"></match>
+      <match :matchList="isTeamOne===false?friendList:enemyList"
+             :is-team-one="false" ref="teamTwo"></match>
     </div>
   </div>
 </template>
@@ -17,6 +19,8 @@ import {onMounted, ref} from "vue";
 const friendList = ref([])
 const enemyList = ref([])
 const isTeamOne = ref(true)
+const teamOne = ref(false)
+const teamTwo = ref(false)
 
 onMounted(async () => {
   const RecentMatch: any = new recentMatch()
@@ -26,7 +30,10 @@ onMounted(async () => {
   isTeamOne.value = matchList.isTeamOne
 })
 
-
+const changeChampImg = (e:Boolean) => {
+  // @ts-ignore
+  teamOne.value.isShowChamp = e;teamTwo.value.isShowChamp = e
+}
 </script>
 
 <style scoped>
