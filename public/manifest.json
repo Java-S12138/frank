@@ -32,7 +32,7 @@
       "background": {
         "file": "src/pages/background/index.html",
         "is_background_page": true,
-        "open_dev_tools": true
+        "open_dev_tools": false
       },
       "queryMatch": {
         "file": "src/pages/main/index.html/#/querymatch",
