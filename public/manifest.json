@@ -26,18 +26,20 @@
         "width": 400,
         "height": 650,
         "resizable": false,
+        "desktop_only": true,
         "keep_window_location": false
       },
       "background": {
         "file": "src/pages/background/index.html",
         "is_background_page": true,
-        "open_dev_tools": false
+        "open_dev_tools": true
       },
       "queryMatch": {
         "file": "src/pages/main/index.html/#/querymatch",
         "frame": false,
         "width": 1166,
         "height": 650,
+        "desktop_only": true,
         "resizable": false
       },
       "assist": {
@@ -47,6 +49,7 @@
         "resizable": false,
         "width": 320,
         "height": 720,
+        "desktop_only": true,
         "show_in_taskbar": false
       },
       "matchHistory": {
@@ -55,6 +58,7 @@
         "width": 1024,
         "height": 576,
         "resizable": false,
+        "desktop_only": true,
         "keep_window_location": false
       },
       "recentMatch": {
@@ -63,6 +67,7 @@
         "width": 1127,
         "height": 473,
         "resizable": false,
+        "in_game_only": false,
         "keep_window_location": false
       }
     }

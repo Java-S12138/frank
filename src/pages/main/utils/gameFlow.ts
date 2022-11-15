@@ -20,11 +20,6 @@ export class GameFlow {
       cube.windows.show(assistWin.id)
       cube.windows.message.send(assistWin.id, 'show-other-summoner', '')
     }
-    // 游戏结束后, 关闭游戏内的窗口
-    cube.windows.getWindowByName('matchHistory', true).then((v) => {
-      cube.windows.close(v.id)
-    }).catch(() => {
-    })
   }
   // 选择英雄阶段结束后执行的操作
   public initGameInWindow = () => {
@@ -32,37 +27,46 @@ export class GameFlow {
     cube.games.on('launched', () => {
       //游戏启动关闭桌面窗口，打开游戏内窗口
       cube.windows.getWindowByName('main', false).then((v) => {
-        cube.windows.close(v.id);
-      });
+        cube.windows.close(v.id)
+      })
       cube.windows.getWindowByName('matchHistory', false).then((v) => {
         cube.windows.close(v.id)
       }).catch(() => {})
-      cube.windows.obtainDeclaredWindow('matchHistory', { gamein: true,show:false}).then((v) => {
-        cube.windows.hide(v.id).then(() => {
-          setTimeout(() => {
-            if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow){
-              return
-            }else {
-              cube.windows.show(v.id)
-            }
-          },3000)
-        })
+      cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
+        cube.windows.hide(v.id)
       })
+    })
+    cube.windows.message.on('received',(id:string, content:string) => {
+      if (id==='initDone'){
+       cube.windows.getWindowByName('recentMatch',true).then((win) => {
+         if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow){
+           return
+         }else {
+           cube.windows.show(win.id)
+         }
+       })
+      }
     })
     cube.games.on('stopped', () => {
       //游戏结束创建桌面窗口
       cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
     });
-
+    // 游戏内监听按键, 显示或隐藏游戏内窗口
     cube.settings.hotkeys.game.on('pressed',async (hotKeyName:string) => {
       if (hotKeyName==='show_matchHistory') {
-        const matchWin = await cube.windows.getWindowByName('matchHistory',true)
-        if (matchWin.show){
-          cube.windows.hide(matchWin.id)
+        const recentMatch = await cube.windows.getWindowByName('recentMatch',true)
+        if (recentMatch.show){
+          cube.windows.hide(recentMatch.id)
         }else {
-          cube.windows.show(matchWin.id)
+          cube.windows.show(recentMatch.id)
         }
       }
+    })
+    // 检测到进入英雄联盟大厅后, 获取首页数据
+    cube.games.launchers.on('launched', () => {
+      cube.windows.getWindowByName('main').then((win) => {
+        cube.windows.message.send(win.id,'initHome','')
+      })
     })
   }
   // 自动(禁用)选择英雄

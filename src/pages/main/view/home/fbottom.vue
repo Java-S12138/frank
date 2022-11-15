@@ -76,12 +76,17 @@ import {request} from "../../utils/request";
 
 const notice = ref('')
 const page = ref(1)
-onMounted(async () => {
-  const res = await request.get('https://frank-notice-1302853015.cos.ap-chongqing.myqcloud.com/notice.json')
-  if (res.status === 200 && res.data.isShow) {
-    notice.value = res.data
-    page.value = 2
-  }
+onMounted(() => {
+  cube.windows.getWindowByName('main').then(async (win) => {
+    if (win.show){
+      const timestamp = new Date().getTime()
+      const res = await request.get(`https://frank-notice-1302853015.cos.ap-chongqing.myqcloud.com/notice.json?date=${timestamp}`)
+      if (res.status === 200 && res.data.isShow) {
+        notice.value = res.data
+        page.value = 2
+      }
+    }
+  })
 })
 
 const openUpdate = () => {

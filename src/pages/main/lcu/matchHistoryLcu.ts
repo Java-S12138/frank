@@ -6,38 +6,9 @@ import {getGameScore,queryCurrentGameMode} from "../utils/gameScore"
 import {englishToChinese,queryGameType,getspellImgUrl,getItemImgUrl,querySummonerPosition} from "./utils"
 import {champDict} from "../resources/champList"
 
-const queryLoaclSummoner = async () => {
-  const summonerInfo:lcuSummonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
-  return  summonerInfo.summonerId
-}
 // 根据召唤师ID查询信息
 const querySummonerInfo = async (summonerId:Number):Promise<lcuSummonerInfo> => {
   return await invokeLcu('get',`/lol-summoner/v1/summoners/${summonerId}`)
-}
-
-// 查询敌方召唤师ID和昵称
-export const querySummonerIDInProgress= async () => {
-  const [currentId,mactchSession] = await Promise.all([
-    queryLoaclSummoner(),
-    invokeLcu('get','/lol-gameflow/v1/session')
-  ])
-
-  let friendInfoList = []
-
-  if (mactchSession.gameData.teamOne.find((i:any) =>i.accountId === currentId )){
-    var friendInfo = mactchSession.gameData.teamOne
-  }else{
-    var friendInfo = mactchSession.gameData.teamTwo
-  }
-
-  for (let i = 0; i < friendInfo.length; i++) {
-    try {
-      friendInfoList.push(friendInfo[i].accountId)
-    } catch (e) {
-      break
-    }
-  }
-  return friendInfoList
 }
 
 // 查询不同排位模式的段位分数
@@ -95,28 +66,6 @@ export const getSummonerNickName = async (enemyIdList?:any) => {
     })
   }
   return allSummonerNickName
-}
-
-// 查询敌方召唤师ID
-export const queryEnemySummonerId= async () => {
-  // todo test
-  // const enemyId =[4000557119,4009650116,2935173990,2928803974,4004032333]
-  // return enemyId
-
-  const [mactchSession,curSummoner] = await Promise.all([
-    invokeLcu('get','/lol-gameflow/v1/session'),
-    queryLoaclSummoner()
-  ])
-  let enemyId = []
-  if (mactchSession.gameData.teamOne.find((i:any) =>i.accountId === curSummoner )){
-    var enemyInfo = mactchSession.gameData.teamTwo
-  }else{
-    var enemyInfo = mactchSession.gameData.teamOne
-  }
-  for (const enemy of enemyInfo) {
-    enemyId.push(enemy.accountId)
-  }
-  return enemyId
 }
 
 //----- standing page functions

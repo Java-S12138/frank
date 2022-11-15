@@ -1,4 +1,3 @@
-import {request} from "../utils/request";
 import {invokeLcu} from "./index";
 import {englishToChinese, getPosition} from "./utils";
 import {champDict} from "../resources/champList";
@@ -10,15 +9,16 @@ export class recentMatch {
   public gameType: number = 420
 
   public init = async () => {
-    this.matchSession = (await request({
-      'url': 'https://cdn.syjun.vip/frank/session.json',
-      method: 'GET',
-    })).data
+    // this.matchSession = (await request({
+    //   'url': 'https://cdn.syjun.vip/frank/session.json',
+    //   method: 'GET',
+    // })).data
 
-    // this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
-    this.gameType = this.matchSession.gameData.queue.id
+    this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+
+    this.gameType = this.matchSession?.gameData?.queue?.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
-    this.matchSession.gameData.playerChampionSelections.forEach((res: any) => {
+    this.matchSession?.gameData?.playerChampionSelections.forEach((res: any) => {
       this.playerChampionSelections[(res.summonerInternalName)] = res.championId
     })
   }
@@ -44,6 +44,7 @@ export class recentMatch {
 
   public queryAllSummonerInfo = async () => {
     await this.init()
+    if (this.gameType===undefined){return {friendList: []}}
     const isTeamOne = this.matchSession.gameData.teamOne.find((i: any) => i.accountId === this.currentId) !== undefined?true:false
     const friendList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamOne) : await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo)
     const enemyList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo) : await this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
@@ -76,7 +77,7 @@ export class recentMatch {
     for (let i = 0; i < 100; i += 20) {
       const matchList = (await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20]))['games']['games'].reverse()
       for (let j = 0; j < matchList.length; j++) {
-        // if (matchList[j].queueId === this.gameType) {
+        if (matchList[j].queueId === this.gameType) {
           if (matchCount === 10) {
             break mainfor
           }
@@ -90,7 +91,7 @@ export class recentMatch {
             assists: matchList[j].participants[0].stats.assists,
             isWin: matchList[j].participants[0].stats.win,
           })
-        // }
+        }
       }
     }
     return {classicMode:classicMode,rateCount:{win:winCount,defeate:classicMode.length-winCount}}

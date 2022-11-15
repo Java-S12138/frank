@@ -1,9 +1,6 @@
 <template>
   <div style="overflow: hidden;">
-    <n-space v-if="isNull">
-      <null-page/>
-    </n-space>
-    <n-space v-else>
+    <n-space>
       <left-card @summonerId="querySpecialSummoner($event)" @backHome="backHome"></left-card>
       <n-space>
         <bar-k-d-a @summonerId="querySpecialSummoner($event)"
@@ -30,18 +27,13 @@ import BarKDA from "./barKDA.vue";
 import Standing from "./standing.vue";
 import GameDetails from "./matchGameDetils.vue";
 import RecentGame from "./recentGame.vue";
-import NullPage from "./nullPage.vue";
 import {NSpace} from "naive-ui";
 import {onBeforeMount, Ref, ref} from "vue";
 import {matchStore} from "../../store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {getSummonerNickName} from "../../lcu/matchHistoryLcu";
-import {querySummonerIDInProgress} from "../../lcu/matchHistoryLcu";
-import {invokeLcu} from "../../lcu";
 import {queryMatchSummonerInfo} from "../../lcu/matchHistoryLcu";
-document.title = 'MatchHistory'
 
-const isNull = ref(false)
 const matchData:Ref<any> = ref([])
 const lastPage = ref(0)
 const store = matchStore()
@@ -50,8 +42,6 @@ const {
   echartsData,
   currentQueryGameId,
   currentSummonerName,
-  currentTeam,
-  currentEchartData,
   pageCount,
   querySummonerId
 }:any = storeToRefs(store)
@@ -67,24 +57,10 @@ const getChartsData = (res:any) => {
     echartsData.value.horse.push(re.horse)
     echartsData.value.summonerId.push(re.summonerId)
   }
-  currentEchartData.value = echartsData.value
 }
 
 onBeforeMount(async () => {
-
-  const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
-
-  if (clientStatus === 'InProgress' ||clientStatus === 'GameStart'){
-    var summonerId = await querySummonerIDInProgress()
-    var res = await getSummonerNickName(summonerId)
-  }else {
-    var res = await getSummonerNickName()
-  }
-  if (res===null){
-    isNull.value = true
-    return
-  }
-  currentTeam.value = 1
+  const res = await getSummonerNickName()
   summonerInfo.value = []
   summonerInfo.value = res
   getChartsData(summonerInfo.value)
@@ -102,7 +78,6 @@ const toGameDetailsPage = (pageInfo:any) => {
   lastPage.value= pageInfo.lastPage
   pageCount.value = 3
   currentQueryGameId.value = pageInfo.gameId
-
 }
 // 回到首页
 const backHome = () => {

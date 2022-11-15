@@ -1,13 +1,20 @@
 <template>
   <div class="mainCard">
     <n-card class="boxShadow" size="small">
-      <n-avatar  class="imgFull"
+      <n-avatar  class="imgFull" v-if="xp!==null"
         round
         :bordered="false"
         :size="60"
         :src="rankData[7]"
         fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
       />
+      <n-avatar  class="imgFull" v-else
+         round
+         :bordered="false"
+         :size="60"
+         src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+      />
+
       <n-space vertical :size="[2,10]">
         <n-space justify="space-between">
           <!--                昵称-->
@@ -46,9 +53,9 @@
           </n-popover>
 
         </n-space>
-        <n-tag v-else type="warning"  size="small" @click="refresh"
+        <n-tag v-else type="info"  size="small"
                round style="width: 241px;justify-content: center"
-               :bordered="false">首页没数据 ? 点我刷新页面 ~</n-tag>
+               :bordered="false">进入英雄联盟大厅后⌛自动获取数据</n-tag>
       </n-space>
     </n-card>
 
@@ -254,13 +261,24 @@ const message = useMessage()
 const active = ref(false)
 const currentChampStatstones:Ref<any[]> = ref([])
 const currentChampIndex = ref(0)
-const refreshHome = ref(false)
 
 onMounted(async () => {
+ init()
+})
+
+const init = async () => {
   const homeData = await getCurrentSummonerInfo()
   if (homeData === null){
-    refreshHome.value = true
-    message.warning('请先启动英雄联盟客户端',{ duration: 5000 })
+    message.loading('英雄联盟客户端启动中...',{ duration: 5000 })
+    cube.utils.launchGame(54261).then(() => {
+      cube.windows.message.on('received',(id) => {
+        if (id==='initHome'){
+          setTimeout(() => {
+            init()
+          },3000)
+        }
+      })
+    })
     return
   }
   rankData.value = homeData.rank
@@ -268,7 +286,7 @@ onMounted(async () => {
   summonerChampLevel.value = homeData.champLevel
   xp.value = parseInt(String((homeData.rank[6][0]/homeData.rank[6][1])*100))
   statstonesList.value = homeData.statstones
-})
+}
 
 const queryMatch = () => {
   cube.windows.obtainDeclaredWindow('queryMatch')
@@ -291,9 +309,7 @@ const showCurrentChampstatstones = async (champId:any,champIndex:any) => {
   currentChampStatstones.value = champStatstones
   currentChampIndex.value = champIndex
 }
-const refresh = () => {
-  location.reload()
-}
+
 </script>
 
 <style scoped>

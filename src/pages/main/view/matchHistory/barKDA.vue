@@ -175,7 +175,7 @@ const message = useMessage()
 const config = JSON.parse(String(localStorage.getItem('config')))
 const store = matchStore()
 
-const {currentEchartData,summonerInfo,pageCount,echartsData}:any = storeToRefs(store)
+const {echartsData,summonerInfo,pageCount}:any = storeToRefs(store)
 const refresh = ref(1)
 const topHorse = ref(config.horseColor.topHorse)
 const midHorse = ref(config.horseColor.midHorse)
@@ -215,7 +215,7 @@ const option = reactive({
   },
   xAxis: {
     type: 'category',
-    data: currentEchartData.value.name,
+    data: echartsData.value.name,
     axisLabel: {
       fontFamily: 'FZBenMoYueYiTiS'
     }
@@ -226,7 +226,7 @@ const option = reactive({
   },
   series: [
     {
-      data: currentEchartData.value.data,
+      data: echartsData.value.data,
       type: 'bar',
       itemStyle: {
         color: function(params:any){
@@ -306,8 +306,8 @@ const changeHorseType = (type:string, horse:string) => {
 
 function onClick() {
   const index = arguments[0].dataIndex
-  emits('summonerId', {summonerId:currentEchartData.value.summonerId[index],
-    name:currentEchartData.value.name[index]})
+  emits('summonerId', {summonerId:echartsData.value.summonerId[index],
+    name:echartsData.value.name[index]})
 }
 
 const changeBarColor = (value:string,type:string) => {

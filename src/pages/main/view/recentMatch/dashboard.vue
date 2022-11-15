@@ -1,5 +1,5 @@
 <template>
-  <header class="frankTitle" @mousedown="handldDrge()" >
+  <header class="frankTitle">
     <n-space class="frankTitle">
       <img src="@/assets/icon/app-icon.png" draggable="false"  alt="" width="40">
       <img src="@/assets/icon/Frank.png" draggable="false" style="margin-top: 4px">
@@ -12,7 +12,7 @@
       <div style="display: flex">
         <p class="headerP">
           游戏内自动打开此窗口</p>
-        <n-switch/>
+        <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"/>
       </div>
 
       <div style="display: flex">
@@ -35,8 +35,9 @@
 <script setup lang="ts">
 import {NIcon, NSpace, NButton,NSwitch} from 'naive-ui'
 import {ChevronsDownLeft} from '@vicons/tabler'
-import {ref} from "vue"
+import {reactive, ref} from "vue"
 
+const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
 const emits = defineEmits(['changeChampImg'])
 const active = ref(false)
 
@@ -44,13 +45,21 @@ const changeActive = () => {
   emits('changeChampImg',active.value)
 }
 
-const handldDrge = () => {
-  cube.windows.current.dragMove()
-}
+// const handldDrge = () => {
+//   cube.windows.current.dragMove()
+// }
 const handleMin = () => {
-
+  cube.windows.hide(cube.windows.current.id())
 }
-
+const changeAutoGameInWin = () => {
+  if (config['isGameInWindow'] !== true) {
+    config['isGameInWindow'] = false
+    localStorage.setItem('config',JSON.stringify(config))
+  } else {
+    config['isGameInWindow'] = true
+    localStorage.setItem('config',JSON.stringify(config))
+  }
+}
 </script>
 
 <style scoped>
