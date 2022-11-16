@@ -85,7 +85,7 @@
         <n-space>
           <n-tag :bordered="false">回到首页</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
-                    secondary @click="toHomePage">Cube On Frank BY: Java_S
+                    secondary @click="toHomePage">Frank On Cube BY: Java_S
           </n-button>
         </n-space>
 
