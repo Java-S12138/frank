@@ -22,11 +22,10 @@
           </n-gi>
 
           <n-gi>
-            <n-space vertical class="alignCent">
+            <n-space vertical class="alignCent" style="margin-left: 2px">
               <span class="spanTitle">数据显示</span>
-              <n-tag :bordered="false" type="success" style="cursor:pointer"
-                     @click="changeShowWay">{{ otherDataText }}
-              </n-tag>
+              <span style="font-size: 15px;cursor:pointer;color: #18a058"
+                    @click="changeShowWay">{{ otherDataText }}</span>
             </n-space>
           </n-gi>
 
@@ -57,7 +56,7 @@
         </n-grid>
       </n-space>
       <n-space vertical
-               style="margin-top: 30px;margin-left: 20px;" :size="[2,31]">
+               style="margin-top: 33px;margin-left: 20px;" :size="[2,31]">
 
         <n-space :size="[45,0]" v-for="(singleData,index) in summonersDataList">
             <!--        队伍一-->

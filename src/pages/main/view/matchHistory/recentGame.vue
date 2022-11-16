@@ -93,7 +93,7 @@ import {
 import {matchStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from "@vicons/tabler"
-import LoadingAnime from "./loadingAnime.vue";
+import LoadingAnime from "../components/loadingAnime.vue";
 import {reactive} from "vue";
 
 const config = reactive(JSON.parse(String(localStorage.getItem('config'))))

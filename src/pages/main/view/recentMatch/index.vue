@@ -1,6 +1,6 @@
 <template>
   <div class="mainDiv" v-if="!isPageNull">
-    <dashboard @changeChampImg="changeChampImg"/>
+    <dashboard @changeChampImg="changeChampImg" @changeKDA="changeKDA"/>
     <div class="matchs">
       <match :matchList="isTeamOne===true?friendList:enemyList"
              :is-team-one="true" ref="teamOne"></match>
@@ -44,6 +44,10 @@ onMounted(async () => {
 const changeChampImg = (e:Boolean) => {
   // @ts-ignore
   teamOne.value.isShowChamp = e;teamTwo.value.isShowChamp = e
+}
+const changeKDA = (e:Boolean) => {
+  // @ts-ignore
+  teamOne.value.isShowKda = e;teamTwo.value.isShowKda = e
 }
 </script>
 

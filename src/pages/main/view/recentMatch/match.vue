@@ -23,9 +23,16 @@
                 type="info">胜利 {{match.rateCount.win}} 失败 {{match.rateCount.defeate}}</n-tag>
         </n-space>
         <n-space :size="[5,0]" style="width: 445px;"
+                 :class="props.isTeamOne!==false?'avatarOne':'avatarTwo'"
                  :style="props.isTeamOne===false?'flex-direction: row-reverse':''">
-          <div class="avatarCommon" :class="champ.isWin===true? 'avatarWin' :'avatarDefeat'"
+          <div class="avatarCommon"
+               :class="champ.isWin===true? 'avatarWin' :'avatarDefeat'"
                v-for="champ in match.mathcHistory">
+            <div v-if="isShowKda">
+              <p class="one_">{{champ.kill}}</p>
+              <p class="two_">{{champ.deaths}}</p>
+              <p class="three_">{{champ.assists}}</p>
+            </div>
             <n-avatar
               v-if="isShowChamp"
               :size="30"
@@ -55,7 +62,8 @@ const props:any = defineProps({
 })
 
 const isShowChamp = ref(false)
-defineExpose({isShowChamp})
+const isShowKda = ref(false)
+defineExpose({isShowChamp,isShowKda})
 
 watch(props,() => {
   console.log(props.matchList)
@@ -78,6 +86,27 @@ watch(props,() => {
   width: 36px;
   height: 36px;
   border-radius: 3px;
+  position: relative;
+  font-size: 11px;
+}
+.avatarOne > div > div > div > p{
+  color: #ffffff;
+  position: absolute;
+  left: 8px;
+}
+.avatarTwo > div > div > div > p{
+  color: #ffffff;
+  position: absolute;
+  right: 8px;
+}
+.one_ {
+  top: -2px;
+}
+.two_ {
+  top: 10px;
+}
+.three_ {
+  top: 22px;
 }
 .avatarDefeat {
   border:2px solid rgba(255, 102, 102, 0.8);

@@ -3,12 +3,13 @@
     <n-space class="frankTitle">
       <img src="@/assets/icon/app-icon.png" draggable="false"  alt="" width="40">
       <img src="@/assets/icon/Frank.png" draggable="false" style="margin-top: 4px">
+      <div style="display: flex;margin-left: 5px">
+        <p class="headerP">
+          窗口快捷键 Shift + Tab</p>
+      </div>
     </n-space>
     <n-space style="margin-top: 15px">
-      <div style="display: flex">
-        <p class="headerP">
-          窗口快捷键 Shift+Tab</p>
-      </div>
+
       <div style="display: flex">
         <p class="headerP">
           游戏内自动打开此窗口</p>
@@ -19,6 +20,11 @@
         <p class="headerP">
           显示英雄头像</p>
         <n-switch v-model:value="active" @click="changeActive"/>
+      </div>
+      <div style="display: flex">
+        <p class="headerP">
+          显示战绩数据</p>
+        <n-switch v-model:value="activeKda" @click="changeActiveKad"/>
       </div>
 
       <n-button
@@ -38,11 +44,15 @@ import {ChevronsDownLeft} from '@vicons/tabler'
 import {reactive, ref} from "vue"
 
 const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
-const emits = defineEmits(['changeChampImg'])
+const emits = defineEmits(['changeChampImg','changeKDA'])
 const active = ref(false)
+const activeKda = ref(false)
 
 const changeActive = () => {
   emits('changeChampImg',active.value)
+}
+const changeActiveKad = () => {
+  emits('changeKDA',activeKda.value)
 }
 
 // const handldDrge = () => {
@@ -75,6 +85,6 @@ header {
 .headerP {
   padding-top: 1px;
   color: #9AA4AF;
-  margin-right: 10.4px
+  margin-right: 14.2px
 }
 </style>

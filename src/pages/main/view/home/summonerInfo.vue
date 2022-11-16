@@ -8,12 +8,9 @@
         :src="rankData[7]"
         fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
       />
-      <n-avatar  class="imgFull" v-else
-         round
-         :bordered="false"
-         :size="60"
-         src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-      />
+      <div v-else class="spinnerDiv" >
+        <div  class="spinner"></div>
+      </div>
 
       <n-space vertical :size="[2,10]">
         <n-space justify="space-between">
@@ -21,7 +18,7 @@
           <n-tag type="success" :bordered="false" :round="true">
             {{ rankData[0] }}
           </n-tag>
-          <!--                大区-->
+          <!--                          查询战绩-->
           <n-tag  type="success" style="cursor:pointer"
                  :bordered="false" :round="true" @click = "queryMatch">
            <p v-if="xp!==null">查询战绩</p>
@@ -30,28 +27,21 @@
         <n-space justify="space-between" v-if="xp!==null">
           <n-tag type="warning" size="small" round style="width: 56px;justify-content: center"
                  :bordered="false" > {{ rankData[1] }}</n-tag>
-          <n-popover
-            trigger="hover" :show-arrow="false" placement="bottom">
-            <template #trigger>
-              <n-tag type="warning" size="small"  style="width: 173px;justify-content: center"
-                     :bordered="false" :round="true">
-                <n-space class="alignCenter" justify="space-between">
-                  <n-progress
-                    type="line"
-                    :show-indicator="false"
-                    :percentage="xp"
-                    status="warning"
-                    processing
-                    style="width:100px"
-                    :height="10"
-                  />
-                  <div style="font-size: 13px;">{{xp}} %</div>
-                </n-space>
-              </n-tag>
-            </template>
-            <span>升级还差 {{rankData[6][1]}} - {{rankData[6][0]}} 经验</span>
-          </n-popover>
-
+            <n-tag type="warning" size="small"  style="width: 173px;justify-content: center"
+                   :bordered="false" :round="true">
+              <n-space class="alignCenter" justify="space-between">
+                <n-progress
+                  type="line"
+                  :show-indicator="false"
+                  :percentage="xp"
+                  status="warning"
+                  processing
+                  style="width:100px"
+                  :height="10"
+                />
+                <div style="font-size: 13px;">{{xp}} %</div>
+              </n-space>
+            </n-tag>
         </n-space>
         <n-tag v-else type="info"  size="small"
                round style="width: 241px;justify-content: center"
@@ -251,7 +241,7 @@ import {
 } from 'naive-ui'
 import {Diamond} from '@vicons/tabler'
 import {getCurrentSummonerInfo,queryCurrentChampStatstones} from "../../lcu/homeLcu";
-
+import LoadingAnime from "../components/loadingAnime.vue";
 const rankData:Ref<any[]> = ref([])
 const summonerHonor:Ref<any[]> = ref([])
 const summonerChampLevel:Ref<any[]> = ref([])
@@ -314,35 +304,5 @@ const showCurrentChampstatstones = async (champId:any,champIndex:any) => {
 
 <style scoped>
 @import url(@/assets/css/animationCommon.css);
-.mainCard {
-  margin-left: 20px;
-  margin-right: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.n-card {
-  border-radius: 10px;
-  padding: 5px;
-}
-
-.n-avatar {
-  float: left;
-  margin-right: 15px;
-  margin-top: 1px;
-}
-
-.pointCard {
-  margin-top: 37px;
-  height: 300px;
-}
-
-.alignCenter {
-  align-items: center;
-}
-
-.tagWidth {
-  width: 85px;
-  justify-content: center;
-}
+@import url(@/assets/css/homeLoader.css);
 </style>
