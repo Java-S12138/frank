@@ -8,7 +8,7 @@
           窗口快捷键 Shift + Tab</p>
       </div>
     </n-space>
-    <n-space style="margin-top: 15px">
+    <n-space style="margin-top: 15px;width: 545px" justify="space-between">
 
       <div style="display: flex">
         <p class="headerP">
@@ -55,9 +55,6 @@ const changeActiveKad = () => {
   emits('changeKDA',activeKda.value)
 }
 
-// const handldDrge = () => {
-//   cube.windows.current.dragMove()
-// }
 const handleMin = () => {
   cube.windows.hide(cube.windows.current.id())
 }
@@ -85,6 +82,6 @@ header {
 .headerP {
   padding-top: 1px;
   color: #9AA4AF;
-  margin-right: 14.2px
+  margin-right: 15px
 }
 </style>
