@@ -1,7 +1,7 @@
 <template>
   <div class="mainCard">
     <n-card class="boxShadow" size="small">
-      <n-space class="fade-in" v-if="page===1" justify="center">
+      <n-space class="fade-in" v-if="props.page===1" justify="center">
         <n-space :size="[40,0]" justify="center" style="margin-top: 10px;margin-bottom: 0px">
           <n-button text>
             <n-popover trigger="hover" :show-arrow="false">
@@ -45,11 +45,11 @@
           </n-button>
         </n-space>
       </n-space>
-      <Notice class="fade-in" v-else :notice=notice></Notice>
-      <div class="transform" v-if="notice!==''">
+      <Notice class="fade-in" v-else :notice=props.notice></Notice>
+      <div class="transform" v-if="props.notice?.isShow!==undefined">
         <div class="circle">
-          <span :class="page===1?'active':''" @click="changePage"></span>
-          <span :class="page===2?'active':''" @click="changePage"></span>
+          <span :class="props.page===1?'active':''" @click="changePage"></span>
+          <span :class="props.page===2?'active':''" @click="changePage"></span>
         </div>
       </div>
     </n-card>
@@ -61,23 +61,17 @@ import {NCard, NSpace, NButton, NIcon, NPopover} from 'naive-ui'
 import {BrandGithub, Help, Code, ArrowUpCircle} from '@vicons/tabler'
 import config from "../../../../../package.json"
 import Notice from "./notice.vue"
-import {onMounted, ref} from "vue";
-import {request} from "../../utils/request";
 
-const notice = ref('')
-const page = ref(1)
-onMounted(() => {
-  cube.windows.getWindowByName('main').then(async (win) => {
-    if (win.show){
-      const timestamp = new Date().getTime()
-      const res = await request.get(`https://frank-notice-1302853015.cos.ap-chongqing.myqcloud.com/notice.json?date=${timestamp}`)
-      if (res.status === 200 && res.data.isShow) {
-        notice.value = res.data
-        page.value = 2
-      }
-    }
-  })
+const props:any = defineProps({
+  notice:{
+    type:Object
+  },
+  page:{
+    type:Number,
+    defaule:1
+  }
 })
+const emits = defineEmits(['changePage'])
 
 const openUpdate = () => {
   cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/update')
@@ -92,13 +86,8 @@ const openFrank = () => {
   cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank')
 }
 const changePage = () => {
-  page.value = page.value === 2 ? 1 : 2
+  emits('changePage')
 }
-
-const test = () => {
-  cube.windows.obtainDeclaredWindow('recentMatch')
-}
-
 </script>
 
 <style scoped>
