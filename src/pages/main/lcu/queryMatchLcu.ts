@@ -28,7 +28,7 @@ const querySummonerInfo = async (summonerId: number): Promise<summonerInfo> => {
 const querySummonerSuperChampData = async (summonerId: number) => {
   try {
     const summonerSuperChampData: any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
-    const superChampList = summonerSuperChampData.slice(0, 20).reduce((res: any, item: any) => {
+    return  summonerSuperChampData.slice(0, 20).reduce((res: any, item: any) => {
       return res.concat({
         // @ts-ignore
         champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
@@ -36,7 +36,6 @@ const querySummonerSuperChampData = async (summonerId: number) => {
         championPoints: item.championPoints
       })
     }, [])
-    return superChampList
   } catch (e) {
     return []
   }
@@ -73,8 +72,7 @@ export const returnSummonerData = async (summonerId?: number) => {
 
 export const returnRankData = async (summonerId: number) => {
   const summonerInfo = await querySummonerInfo(summonerId)
-  const rankData = await queryCurrentRankPoint(summonerInfo.puuid)
-  return rankData
+  return await queryCurrentRankPoint(summonerInfo.puuid)
 }
 
 // matchDetailed Page ==================================================================== //

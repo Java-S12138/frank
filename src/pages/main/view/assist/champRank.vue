@@ -512,6 +512,7 @@ const changeServe = () => {
 </script>
 
 <style scoped>
+@import url(@/assets/css/assistCommon.css);
 .n-card {
   margin: 15px;
   border-radius: 10px;
@@ -573,53 +574,6 @@ const changeServe = () => {
   width: 24px;
   height: 24px;
   background-image: url('@/assets/tLevel/t5.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-
-
-.top {
-  font-size: 0px;
-  width: 30px;
-  height: 30px;
-  background-image: url('@/assets/tLevel/top.svg');
-  display: inline-block;
-}
-
-.mid {
-  font-size: 0px;
-  width: 30px;
-  height: 30px;
-  background-image: url('@/assets/tLevel/mid.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-  color: #4098fc;
-
-}
-
-.jungle {
-  font-size: 0px;
-  width: 30px;
-  height: 30px;
-  background-image: url('@/assets/tLevel/jug.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-
-.bottom {
-  font-size: 0px;
-  width: 30px;
-  height: 30px;
-  background-image: url('@/assets/tLevel/bot.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-
-.support {
-  font-size: 0px;
-  width: 30px;
-  height: 30px;
-  background-image: url('@/assets/tLevel/sup.svg');
   display: inline-block;
   background-repeat: no-repeat;
 }

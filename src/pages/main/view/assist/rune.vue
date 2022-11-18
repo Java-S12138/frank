@@ -56,7 +56,7 @@
                 <img :src="getImaUrl(rune.selectedPerkIds[8])" alt="" class="runImgseSondary">
               </div>
               <div style="margin-top: 12px">
-                <n-tag :bordered="false" type="success"
+                <n-tag :bordered="false" type="success" style="cursor:pointer"
                        size="medium" @click="applyRune(rune)">
                   应用
                 </n-tag>
