@@ -525,58 +525,6 @@ const changeServe = () => {
   color: #4098fc;
 }
 
-.imgT0 {
-  font-size: 0px;
-  width: 24px;
-  height: 24px;
-  background-image: url('@/assets/tLevel/t0.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-
-.imgT1 {
-  font-size: 0px;
-  width: 24px;
-  height: 24px;
-  background-image: url('@/assets/tLevel/t1.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-
-.imgT2 {
-  font-size: 0px;
-  width: 24px;
-  height: 24px;
-  background-image: url('@/assets/tLevel/t2.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-
-.imgT3 {
-  font-size: 0px;
-  width: 24px;
-  height: 24px;
-  background-image: url('@/assets/tLevel/t3.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-
-.imgT4 {
-  font-size: 0px;
-  width: 24px;
-  height: 24px;
-  background-image: url('@/assets/tLevel/t4.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
-.imgT5 {
-  font-size: 0px;
-  width: 24px;
-  height: 24px;
-  background-image: url('@/assets/tLevel/t5.svg');
-  display: inline-block;
-  background-repeat: no-repeat;
-}
 
 .addMargin {
   margin-top: -1.5px;
