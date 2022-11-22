@@ -3,30 +3,21 @@
     <n-space class="frankTitle">
       <img src="@/assets/icon/app-icon.png" draggable="false"  alt="" width="40">
       <img src="@/assets/icon/Frank.png" draggable="false" style="margin-top: 4px">
-      <div style="display: flex;margin-left: 5px">
-        <p class="headerP">
-          窗口快捷键 Shift + Tab</p>
-      </div>
+      <n-space style="margin-left: 23px">
+        <div style="display: flex;margin-right: 8px">
+          <p class="headerP">
+            窗口快捷键 Shift + Tab</p>
+        </div>
+        <div style="display: flex">
+          <p class="headerP">
+            游戏内自动打开此窗口</p>
+          <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"/>
+        </div>
+      </n-space>
     </n-space>
-    <n-space style="margin-top: 15px;width: 545px" justify="space-between">
-
-      <div style="display: flex">
-        <p class="headerP">
-          游戏内自动打开此窗口</p>
-        <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"/>
-      </div>
-
-      <div style="display: flex">
-        <p class="headerP">
-          显示英雄头像</p>
-        <n-switch v-model:value="active" @click="changeActive"/>
-      </div>
-      <div style="display: flex">
-        <p class="headerP">
-          显示战绩数据</p>
-        <n-switch v-model:value="activeKda" @click="changeActiveKad"/>
-      </div>
-
+    <n-space style="margin-top: 15px;" justify="space-between">
+      <p class="headerP">我方胜利次数:23/50次</p>
+      <p class="headerP">敌方胜利次数:22/50次</p>
       <n-button
         text
         @click="handleMin" color="black">
@@ -41,19 +32,9 @@
 <script setup lang="ts">
 import {NIcon, NSpace, NButton,NSwitch} from 'naive-ui'
 import {ChevronsDownLeft} from '@vicons/tabler'
-import {reactive, ref} from "vue"
+import {reactive} from "vue"
 
 const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
-const emits = defineEmits(['changeChampImg','changeKDA'])
-const active = ref(false)
-const activeKda = ref(false)
-
-const changeActive = () => {
-  emits('changeChampImg',active.value)
-}
-const changeActiveKad = () => {
-  emits('changeKDA',activeKda.value)
-}
 
 const handleMin = () => {
   cube.windows.hide(cube.windows.current.id())
@@ -73,7 +54,7 @@ const changeAutoGameInWin = () => {
 header {
   display: flex;
   justify-content: space-between;
-  margin: 12px;
+  margin: 10.5px 12px;
 }
 .frankTitle {
   align-items: center;

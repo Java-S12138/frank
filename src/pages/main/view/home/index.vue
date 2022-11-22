@@ -7,6 +7,7 @@
     <setting v-else-if="pageCount===2"
              class="slide-in-right" @changePage="() => { pageCount = 1}"/>
   </div>
+  <span @click="test">打开Recent</span>
 </template>
 
 <script setup lang="ts" >
@@ -37,7 +38,9 @@ onMounted(() => {
 const changePage = () => {
   page.value = page.value === 2 ? 1 : 2
 }
-
+const test = () => {
+  cube.windows.obtainDeclaredWindow('recentMatch')
+}
 </script>
 
 

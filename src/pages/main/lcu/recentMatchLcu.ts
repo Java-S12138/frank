@@ -1,6 +1,7 @@
 import {invokeLcu} from "./index";
 import {englishToChinese, getPosition} from "./utils";
 import {champDict} from "../resources/champList";
+import {request} from "../utils/request";
 
 export class recentMatch {
   public matchSession: any
@@ -57,10 +58,8 @@ export class recentMatch {
       return ['RANKED_SOLO_5x5', 'RANKED_FLEX_SR'].reduce((res: any, item: string) => {
         const tier = rankData[item].tier === "NONE" ? '未定级' : englishToChinese(rankData[item].tier)
         const division = rankData[item].division === 'NA' ? '' : rankData[item].division
-        const leaguePoints = rankData[item].leaguePoints
-        const winCount = rankData[item].wins
         return res.concat([
-          tier === '未定级' ? `${tier}${division} [${winCount}]` : `${tier}${division} ${leaguePoints} [${winCount}]`
+          tier !== '未定级' ? `${tier}${division}`: '未定级'
         ])
       }, [])
     }).catch(() => {

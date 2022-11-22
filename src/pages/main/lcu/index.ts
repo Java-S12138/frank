@@ -9,6 +9,7 @@
 //   console.log('update info ', classId, info);
 // });
 
+
 export const invokeLcu = (method:string, uri:string,args?:any) => {
   return cube.games.launchers
     .invokeLEP(10902, 'lcuRequest', { method: method, uri: uri,args:args })

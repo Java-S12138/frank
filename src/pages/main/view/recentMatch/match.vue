@@ -1,46 +1,39 @@
 <template>
   <div class="boxShadow match">
-    <n-space style="margin: 12px" :style="props.isTeamOne===false?'flex-direction: row-reverse':''"
-             v-for="match in props.matchList">
-      <n-avatar
-        :size="65"
-        :src="match.championUrl"
-        fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-        style="display:block;"
-      />
-      <n-space vertical :size="[0,6.5]">
-        <n-space style="width:445px;margin-top: -4px"
-                 :style="props.isTeamOne===false?'flex-direction: row-reverse':''" justify="space-between">
-         <n-tag size="tiny" style="width: 119px;padding: 0px"
-                :style="props.isTeamOne===false?'flex-direction: row-reverse':''"
-                :bordered="false" :color="{ color: '#ffffff', textColor: '#2080f0' }">{{match.summonerName}}</n-tag>
-         <n-tag size="tiny" :bordered="false" style="width: 96px;justify-content: center"
-                :color="{ color: '#f5f5f5', textColor: '#9AA4AF' }">{{ match.rankPoint[0] }}</n-tag>
-         <n-tag size="tiny" :bordered="false" style="width: 96px;justify-content: center"
-                :color="{ color: '#f5f5f5', textColor: '#9AA4AF' }">{{ match.rankPoint[1] }}</n-tag>
-         <n-tag size="tiny" :type="match.rateCount.win>match.rateCount.defeate ?'success' : 'error'"
-                :bordered="false"  style="width: 85px;justify-content: center"
-                type="info">胜利 {{match.rateCount.win}} 失败 {{match.rateCount.defeate}}</n-tag>
-        </n-space>
-        <n-space :size="[5,0]" style="width: 445px;"
-                 :class="props.isTeamOne!==false?'avatarOne':'avatarTwo'"
-                 :style="props.isTeamOne===false?'flex-direction: row-reverse':''">
-          <div class="avatarCommon"
-               :class="champ.isWin===true? 'avatarWin' :'avatarDefeat'"
-               v-for="champ in match.mathcHistory">
-            <div v-if="isShowKda">
-              <p class="one_">{{champ.kill}}</p>
-              <p class="two_">{{champ.deaths}}</p>
-              <p class="three_">{{champ.assists}}</p>
+    <n-space style="margin:8px"  :size="[8,0]" >
+      <n-space vertical style="width: 100px;" :size="[0,8]"
+               v-for="match in props.matchList">
+        <n-space :size="[5,0]" @click="active = !active">
+          <n-avatar
+            :size="50"
+            :src="match.championUrl"
+            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+            style="display:block"
+          />
+          <n-space style="width: 45px;height: 50px;border-radius:3px ;
+          background-color: rgba(32, 128, 240, 0.12);"
+                   vertical justify="space-between">
+            <div class="rankPoint">
+              {{match.rankPoint[0]}}
             </div>
-            <n-avatar
-              v-if="isShowChamp"
-              :size="30"
-              :src="champ.champImg"
-              fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-              style="display:block;"
-            />
-          </div>
+            <div class="rankPoint">
+              {{ match.rankPoint[1] }}
+            </div>
+          </n-space>
+        </n-space>
+        <n-tag size="tiny" type="info"
+               :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
+               >{{ match.summonerName }} </n-tag>
+        <n-space :size="[8,0]" v-for="champ in match.mathcHistory">
+          <n-avatar
+            :size="30"
+            :src="champ.champImg"
+            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+            style="display:block;"
+          />
+          <n-tag :type="champ.isWin===true? 'success' :'error'" :bordered="false"
+                 style="width: 62px;height: 30px;justify-content: center;align-items: center">
+            {{champ.kill}}-{{ champ.deaths }}-{{champ.assists}}</n-tag>
         </n-space>
       </n-space>
     </n-space>
@@ -49,7 +42,7 @@
 
 <script setup lang="ts">
 import {NSpace,NAvatar,NTag} from 'naive-ui'
-import {ref, watch} from "vue";
+import {watch} from "vue";
 
 const props:any = defineProps({
   isTeamOne:{
@@ -61,10 +54,6 @@ const props:any = defineProps({
   }
 })
 
-const isShowChamp = ref(false)
-const isShowKda = ref(false)
-defineExpose({isShowChamp,isShowKda})
-
 watch(props,() => {
   console.log(props.matchList)
 })
@@ -74,9 +63,9 @@ watch(props,() => {
 
 <style scoped>
 .match {
-  width: 546px;
-  height: 397px;
-  border-radius: 10px;
+  width: 548px;
+  height: 477px;
+  border-radius: 3px;
   background: #ffffff;
 }
 .avatarCommon{
@@ -115,5 +104,14 @@ watch(props,() => {
 .avatarWin {
   border:2px solid rgba(24, 180, 120, 0.8);
   background-color: rgba(24, 180, 120, 0.5);
+}
+.rankPoint {
+  font-size: 12px;
+  height: 16px;
+  width: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #2080f0;
 }
 </style>

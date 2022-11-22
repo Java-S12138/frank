@@ -64,10 +64,10 @@
       "recentMatch": {
         "file": "src/pages/main/index.html/#/recentMatch",
         "frame": false,
-        "width": 1127,
-        "height": 473,
+        "width": 1130,
+        "height": 550,
         "resizable": false,
-        "in_game_only": true,
+        "in_game_only": false,
         "keep_window_location": false
       }
     }
