@@ -3,7 +3,7 @@
     <n-space style="margin:8px"  :size="[8,0]" >
       <n-space vertical style="width: 100px;" :size="[0,8]"
                v-for="match in props.matchList">
-        <n-space :size="[5,0]" @click="active = !active">
+        <n-space :size="[5,0]">
           <n-avatar
             :size="50"
             :src="match.championUrl"

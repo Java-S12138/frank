@@ -8,6 +8,8 @@ export class recentMatch {
   public playerChampionSelections: any = {}
   public currentId: number = 0
   public gameType: number = 420
+  public teamOneList:[number,number] = [0,0]
+  public teamTwoList:[number,number] = [0,0]
 
   public init = async () => {
     // this.matchSession = (await request({
@@ -24,14 +26,13 @@ export class recentMatch {
     })
   }
 
-  public simplifySummonerInfo = async (summonerList: {}[]) => {
+  public simplifySummonerInfo = async (summonerList: {}[],isTeamOne:boolean) => {
     const info: any = await summonerList.reduce(async (res: any, item: any) => {
-      const matchHistory = await this.queryMatchHistory(item.summonerId)
+      const matchHistory = await this.queryMatchHistory(item.summonerId,isTeamOne)
       return (await res).concat({
         rankPoint: await this.queryRankPoint(item.puuid),
         summonerName: item.summonerName,
         mathcHistory: matchHistory.classicMode,
-        rateCount:matchHistory.rateCount,
         index: getPosition(item.selectedPosition),
         // @ts-ignore
         championUrl: this.gameType === (420||440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
@@ -47,9 +48,9 @@ export class recentMatch {
     await this.init()
     if (this.gameType===undefined){return {friendList: []}}
     const isTeamOne = this.matchSession.gameData.teamOne.find((i: any) => i.accountId === this.currentId) !== undefined?true:false
-    const friendList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamOne) : await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo)
-    const enemyList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo) : await this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
-    return {friendList, enemyList,isTeamOne}
+    const friendList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamOne,true) : await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo,false)
+    const enemyList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo,false) : await this.simplifySummonerInfo(this.matchSession.gameData.teamOne,true)
+    return {friendList, enemyList,isTeamOne,teamOneList:this.teamOneList,teamTwoList:this.teamTwoList}
   }
   // 获取段位数据
   public queryRankPoint = (puuid: string) => {
@@ -68,7 +69,7 @@ export class recentMatch {
   }
 
   // 查询比赛记录 (最近10场排位)
-  public queryMatchHistory = async (summonerId: number) => {
+  public queryMatchHistory = async (summonerId: number,isTeamOne:boolean) => {
     let classicMode: any = []
     let matchCount = 0
     let winCount = 0
@@ -93,6 +94,8 @@ export class recentMatch {
         }
       }
     }
-    return {classicMode:classicMode,rateCount:{win:winCount,defeate:classicMode.length-winCount}}
+    isTeamOne === true ? (this.teamOneList[0]+=winCount,this.teamOneList[1]+=matchCount) :
+      (this.teamTwoList[0]+=winCount, this.teamTwoList[1]+=matchCount)
+    return {classicMode}
   }
 }

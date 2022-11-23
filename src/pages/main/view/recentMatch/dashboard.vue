@@ -16,8 +16,6 @@
       </n-space>
     </n-space>
     <n-space style="margin-top: 15px;" justify="space-between">
-      <p class="headerP">我方胜利次数:23/50次</p>
-      <p class="headerP">敌方胜利次数:22/50次</p>
       <n-button
         text
         @click="handleMin" color="black">

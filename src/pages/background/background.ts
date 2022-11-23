@@ -8,14 +8,18 @@ cube.extensions.on('launch-triggered', async (s) => {
     cube.windows.obtainDeclaredWindow('assist',{x:currentScreen.width -320,y:(currentScreen.height -770)/2})
   }
 })
-cube.games.launchers.events.on('trigger-event', (classId, info) => {
-  console.log('trigger-event ', classId, info);
-});
+// cube.games.events.on('trigger-event', (classId, info) => {
+//   console.log('trigger-event ', classId, info);
+// });
+// cube.games.events.on('update-info', (classId, info) => {
+//   if (info.key.indexOf('jungle') !== -1){
+//     console.log(info)
+//   }
+// });
 const gameFlow = new GameFlow()
 gameFlow.initGameInWindow()
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
-  console.log('update info ', classId, info);
   if (info.category === 'game_flow') {
     if (info.value === 'ChampSelect') {
       // 显示助手窗口
