@@ -39,7 +39,7 @@ const changePage = () => {
   page.value = page.value === 2 ? 1 : 2
 }
 const test = () => {
-  cube.windows.obtainDeclaredWindow('recentMatch')
+  cube.windows.obtainDeclaredWindow('jungleTime')
 }
 </script>
 

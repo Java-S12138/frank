@@ -29,6 +29,7 @@ export class GameFlow {
       cube.windows.getWindowByName('main', false).then((v) => {
         cube.windows.close(v.id)
       })
+      cube.windows.obtainDeclaredWindow('jungleTime', {gamein: true})
       cube.windows.getWindowByName('matchHistory', false).then((v) => {
         cube.windows.close(v.id)
       }).catch(() => {})

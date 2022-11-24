@@ -30,6 +30,11 @@ const routes = [
     name: 'RecentMatch',
     component: () => import('../view/recentMatch/index.vue')
   },
+  {
+    path: '/jungleTime',
+    name: 'JungleTime',
+    component: () => import('../view/jungleTime/index.vue')
+  },
   ]
 
 const router = createRouter({
