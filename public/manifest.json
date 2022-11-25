@@ -15,6 +15,12 @@
         "title": "显示隐藏战绩历史窗口",
         "default": "SHIFT+TAB",
         "passthrough": false
+      },
+      "show_jungleTime": {
+        "title": "显示隐藏打野计时窗口",
+        "default": "TAB",
+        "passthrough": false,
+        "hold": true
       }
     },
     "launcher_hotkeys": {},
@@ -79,7 +85,8 @@
         "in_game_only": false,
         "transparent": true,
         "title_bar_height": 20,
-        "maximizable": false
+        "maximizable": false,
+        "show_center": false
       }
     }
   },

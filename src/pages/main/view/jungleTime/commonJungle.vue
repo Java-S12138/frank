@@ -2,18 +2,34 @@
   <div class="mainDiv">
     <n-space vertical justify="space-between" :size="[0,0]"
              style="height: 100%;width: 100%">
-      <span>先锋 <n-countdown :ref="`'${camp1.countdownRef}'`" v-if="!camp1.isAlive"
+      <span v-if="isDragon">大龙 <n-countdown :ref="`'${campDragon.countdownRef}'`" v-if="!campDragon.isAlive"
+                              :render="renderCountdown" :duration="campDragon.duration" :active="campDragon.isActice"/>
+          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/>
+         <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
+      </span>
+
+      <span v-else>先锋 <n-countdown :ref="`'${camp1.countdownRef}'`" v-if="!camp1.isAlive"
                               :render="renderCountdown" :duration="camp1.duration" :active="camp1.isActice"/>
-          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/></span>
+          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/>
+         <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
+      </span>
+
       <span>小龙 <n-countdown :ref="`'${camp2.countdownRef}'`" v-if="!camp2.isAlive"
                               :render="renderCountdown" :duration="camp2.duration" :active="camp2.isActice"/>
-          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/></span>
+          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/>
+         <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
+      </span>
+
       <span>上蟹 <n-countdown :ref="`'${camp3.countdownRef}'`" v-if="!camp3.isAlive"
                               :render="renderCountdown" :duration="camp3.duration" :active="camp3.isActice"/>
-          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/></span>
+          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/>
+         <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
+      </span>
       <span>下蟹 <n-countdown :ref="`'${camp4.countdownRef}'`" v-if="!camp4.isAlive"
                               :render="renderCountdown" :duration="camp4.duration" :active="camp4.isActice"/>
-          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/></span>
+          <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/>
+         <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
+      </span>
     </n-space>
   </div>
 </template>
@@ -53,8 +69,19 @@ const props = defineProps({
       countdownRef: ref<CountdownInst | null>(),
       isActice: false,
       isAlive: true,
-      duration: 0
     }
+  },
+  campDragon: {
+    type: Object,
+    default: {
+      countdownRef: ref<CountdownInst | null>(),
+      isActice: false,
+      isAlive: false,
+    }
+  },
+  isDragon: {
+    type: Boolean,
+    default: false
   }
 })
 const renderCountdown: CountdownProps['render'] = ({hours, minutes, seconds}) => {
@@ -66,10 +93,11 @@ const renderCountdown: CountdownProps['render'] = ({hours, minutes, seconds}) =>
 .mainDiv {
   margin: 5px;
   /*width: 35vw;*/
+  color: #666F75;
   height: calc(100vh - 10px);
 }
 span {
-  display: block;
+  display: inline-block;
 }
 
 @media (min-width: 150px) {
@@ -88,5 +116,7 @@ span {
     font: bold 18px sans-serif;
   }
 }
-
+.alive {
+  color: #f5f5f5;
+}
 </style>

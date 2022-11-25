@@ -8,6 +8,7 @@ cube.extensions.on('launch-triggered', async (s) => {
     cube.windows.obtainDeclaredWindow('assist',{x:currentScreen.width -320,y:(currentScreen.height -770)/2})
   }
 })
+
 // cube.games.events.on('trigger-event', (classId, info) => {
 //   console.log('trigger-event ', classId, info);
 // });

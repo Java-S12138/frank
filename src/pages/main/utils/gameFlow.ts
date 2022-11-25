@@ -1,7 +1,12 @@
 import {champSelectSession} from "../lcu/autoBP";
 import {invokeLcu} from "../lcu";
+import WindowInfo = cube.windows.WindowInfo;
 
 export class GameFlow {
+
+  public jungleWin?:WindowInfo
+  public recentMatchWin?:WindowInfo
+
   // 显示或者隐藏助手窗口
   public showOrHideAssist = async (isShow: boolean, message: string) => {
     const assistWin = await cube.windows.getWindowByName('assist')
@@ -21,33 +26,45 @@ export class GameFlow {
       cube.windows.message.send(assistWin.id, 'show-other-summoner', '')
     }
   }
+  // 关闭某个窗口
+  private coloseWin = (winName:string) => {
+    cube.windows.getWindowByName(winName, false).then((v) => {
+      cube.windows.close(v.id)
+    }).catch(() => {})
+  }
+
   // 选择英雄阶段结束后执行的操作
-  public initGameInWindow = () => {
+  public initGameInWindow = async () => {
+    const currentScreen = (await cube.utils.getPrimaryDisplay()).size
   //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
     cube.games.on('launched', () => {
-      //游戏启动关闭桌面窗口，打开游戏内窗口
-      cube.windows.getWindowByName('main', false).then((v) => {
-        cube.windows.close(v.id)
+      //游戏启动关闭桌面窗口和战绩历史窗口，打开游戏内窗口
+      this.coloseWin('main')
+      this.coloseWin('matchHistory')
+
+      cube.windows.obtainDeclaredWindow('jungleTime',
+        {gamein: true,x:currentScreen.width-350,y:currentScreen.height-350}).then((res) => {
+        cube.windows.hide(res.id)
+          this.jungleWin = res
       })
-      cube.windows.obtainDeclaredWindow('jungleTime', {gamein: true})
-      cube.windows.getWindowByName('matchHistory', false).then((v) => {
-        cube.windows.close(v.id)
-      }).catch(() => {})
+
       cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
         cube.windows.hide(v.id)
+        this.recentMatchWin = v
       })
     })
+
     cube.windows.message.on('received',(id:string, content:string) => {
-      if (id==='initDone'){
-       cube.windows.getWindowByName('recentMatch',true).then((win) => {
-         if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow){
-           return
-         }else {
-           cube.windows.show(win.id)
-         }
-       })
+      if (id==='initDone') {
+        if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow) {
+          return
+        } else {
+          // @ts-ignore
+          cube.windows.show(this.recentMatchWin.id)
+        }
       }
-    })
+     })
+
     cube.games.on('stopped', () => {
       //游戏结束创建桌面窗口
       cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
@@ -60,6 +77,17 @@ export class GameFlow {
           cube.windows.hide(recentMatch.id)
         }else {
           cube.windows.show(recentMatch.id)
+        }
+      }
+    })
+    cube.settings.hotkeys.game.on('hold',(name, state) => {
+      if (name ==='show_jungleTime'){
+        if (state==="down"){
+          // @ts-ignore
+          cube.windows.show(this.jungleWin.id)
+        }else {
+          // @ts-ignore
+          cube.windows.hide(this.jungleWin.id)
         }
       }
     })

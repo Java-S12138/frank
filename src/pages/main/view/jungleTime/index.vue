@@ -2,11 +2,11 @@
   <div>
     <n-space :size="[0,0]" justify="space-between">
       <jungle-team :camp1="monsterCamp_4" :camp2="monsterCamp_1" :camp3="monsterCamp_3"
-        :camp4="monsterCamp_13" :camp5="monsterCamp_5" :camp6="monsterCamp_2"/>
+        :camp4="monsterCamp_13" :camp5="monsterCamp_5" :camp6="monsterCamp_2" :is-bule="true"/>
       <jungle-team :camp1="monsterCamp_10" :camp2="monsterCamp_7" :camp3="monsterCamp_9"
-                   :camp4="monsterCamp_14" :camp5="monsterCamp_11" :camp6="monsterCamp_8"/>
+                   :camp4="monsterCamp_14" :camp5="monsterCamp_11" :camp6="monsterCamp_8" :is-bule="false"/>
       <common-jungle :camp1="monsterCamp_17" :camp2="monsterCamp_6"
-        :camp3="monsterCamp_16" :camp4="monsterCamp_15"/>
+        :camp3="monsterCamp_16" :camp4="monsterCamp_15" :camp-dragon="monsterCamp_12" :is-dragon="isDragon"/>
     </n-space>
   </div>
 </template>
@@ -99,7 +99,7 @@ const monsterCamp_11 = ref({
 const monsterCamp_12 = ref({
   countdownRef: ref<CountdownInst | null>(),
   isActice: false,
-  isAlive: true,
+  isAlive: false,
   duration: 0
 })
 const monsterCamp_13 = ref({
@@ -132,9 +132,12 @@ const monsterCamp_17 = ref({
   isAlive: true,
   duration: 0
 })
+const isDragon = ref(false)
+let isInit = true
 
 cube.games.events.on('update-info', (classId: number, info: infoObject) => {
   if (info.key.indexOf('jungle') !== -1) {
+    console.log(info)
     handleCamp(info)
   }
 })
@@ -196,17 +199,25 @@ const handleCamp = (info: infoObject) => {
 
   }
 }
+
 const taskAnalse = (value:infoValue,monster:any,type_:string) => {
   if (value.alive === '0' && value.icon_status === '1') { // 1分钟后刷新
+    if (isInit){
+      initJungle(monsterCamp_17,'jungle_camp_17')
+      initJungle(monsterCamp_6,'jungle_camp_6')
+      initJungle(monsterCamp_16,'jungle_camp_16')
+      initJungle(monsterCamp_15,'jungle_camp_15')
+      isInit = false
+    }
     monster.value.isActice = true
     monster.value.duration = 60000
     monster.value.isAlive = false
     monster.value.countdownRef?.reset()
-  } else if (value.alive === "0" && value.vision === "1") {
+  } else if (value.alive === "0" && value.icon_status === "0") {
     if (type_==='jungle_camp_4'||type_==='jungle_camp_1'||type_==='jungle_camp_7'||type_==='jungle_camp_10'||type_==='jungle_camp_6'){
       monster.value.duration = 300000 // 击杀后 5分钟刷新
     }else if (type_==='jungle_camp_15'||type_==='jungle_camp_16') {
-      monster.value.duration = 150000 // 击杀后 2.5分钟刷新
+      return
     }else if (type_==='jungle_camp_17'||type_==='jungle_camp_12') {
       monster.value.duration = 360000 // 击杀后 6分钟刷新
     }else {
@@ -215,16 +226,36 @@ const taskAnalse = (value:infoValue,monster:any,type_:string) => {
     monster.value.isActice = true
     monster.value.isAlive = false
     monster.value.countdownRef?.reset()
-  } else if (value.alive === "1" && value.vision === "0") {
+  } else if (value.alive === "1") {
     monster.value.isAlive = true
+    if (type_==='jungle_camp_12' && isDragon.value ===false){
+      isDragon.value=true
+    }
   }
+}
+
+const initJungle = (monster:any,type_:string) => {
+  switch (type_) {
+    case 'jungle_camp_17':
+      monster.value.duration = 450000
+      break
+    case 'jungle_camp_6':
+      monster.value.duration = 270000
+      break
+    case 'jungle_camp_16':
+      monster.value.duration = 180000
+      break
+    case 'jungle_camp_15':
+      monster.value.duration = 180000
+      break
+  }
+  monster.value.isActice = true
+  monster.value.isAlive = false
+  monster.value.countdownRef?.reset()
 }
 
 </script>
 
 <style scoped>
-div {
-  background-color: #8E959A;
-  color: #ffffff;
-}
+
 </style>
