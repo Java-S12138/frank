@@ -1,3 +1,4 @@
+import '../main/utils/config'
 import '../main/utils/tray.ts'
 import { GameFlow } from '../main/utils/gameFlow'
 

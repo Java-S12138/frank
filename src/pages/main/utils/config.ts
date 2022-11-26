@@ -1,4 +1,4 @@
- export const config= {
+export const config: any = {
   'autoPickChampion': {
     championId: "157",
     isAuto: false
@@ -8,7 +8,7 @@
     isAuto: false
   },
   'autoAccept': 50,
-  'horseColor':{
+  'horseColor': {
     'topHorse': '#7BD9A5',
     'midHorse': '#F9C97D',
     'bottomHorse': '#77C1F7',
@@ -27,8 +27,18 @@
   'isSwitchBlacklist': true,
   'runeType': '韩服数据',
   'isGameInWindow': true,
-  'is101': false
+  'is101': false,
+  'isJungleTime': true
 }
-if (localStorage.getItem('config')===null){
-  localStorage.setItem('config',JSON.stringify(config))
+
+if (localStorage.getItem('config') === null) {
+  localStorage.setItem('config', JSON.stringify(config))
+} else {
+  const localS = JSON.parse(String(localStorage.getItem('config')))
+  for (const configKey of Object.keys(config)) {
+    if (!localS.hasOwnProperty(configKey)) {
+      localS[configKey] = config[configKey]
+      localStorage.setItem('config', JSON.stringify(localS))
+    }
+  }
 }

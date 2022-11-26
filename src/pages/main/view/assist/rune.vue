@@ -191,8 +191,8 @@ cube.windows.message.on('received',async (id, content) => {
 
 // 判断当前游戏模式
 const getGameMode = async () => {
-  const session = await invokeLcu('get','/lol-champ-select/v1/session')
-  if (session.timer?.totalTimeInPhase === 70000){
+  const session = await invokeLcu('get','/lol-lobby/v1/parties/gamemode')
+  if (session?.queueId === 450){
     return 'aram'
   }else {
     return 'other'

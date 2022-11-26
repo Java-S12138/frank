@@ -43,6 +43,14 @@
           <n-switch v-model:value="config.isSwitchBlacklist" @click="changeBlacklist"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
+<!--        野怪计时-->
+        <n-space>
+          <n-tag :bordered="false">野怪计时</n-tag>
+          <n-tag :bordered="false" type="success"
+                 style="width: 140px;justify-content: center">是否使用野怪计时</n-tag>
+          <n-switch v-model:value="config.isJungleTime" @click="changeJungleTime"
+                    style="margin-left:22px;margin-top: 3px"/>
+        </n-space>
 <!--        游戏窗口-->
         <n-space>
           <n-popover :show-arrow="false" trigger="hover">
@@ -80,7 +88,13 @@
                     secondary @click="() => {showModal = true}">赞助作者持续开发
           </n-button>
         </n-space>
-
+        <!--Cube平台-->
+        <n-space>
+          <n-tag :bordered="false" >插件平台</n-tag>
+          <n-button size="small" type="success" style="width: 214px;"
+                    secondary @click="openCubeSite">CUBE 为改善游戏体验而生
+          </n-button>
+        </n-space>
 <!--        回到首页-->
         <n-space>
           <n-tag :bordered="false">回到首页</n-tag>
@@ -88,24 +102,6 @@
                     secondary @click="toHomePage">Frank On Cube BY: Java_S
           </n-button>
         </n-space>
-
-        <div>
-          <n-carousel autoplay :interval="2000"
-                      style="border-radius: 6px;width: 98.5%;">
-            <img @click="openCubeSite"
-              class="carousel-img"
-              src="../../../../assets/cube/cube1.png"
-            >
-            <img @click="openCubeSite"
-              class="carousel-img"
-              src="../../../../assets/cube/cube2.png"
-            >
-            <img @click="openCubeSite"
-              class="carousel-img"
-              src="../../../../assets/cube/cube3.png"
-            >
-          </n-carousel>
-        </div>
       </n-space>
     </n-card>
     <n-modal v-model:show="showModal" >
@@ -147,9 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NModal,NPopover,NCarousel
-} from 'naive-ui'
+import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NModal,NPopover} from 'naive-ui'
 import {optionsChampion} from '../../resources/champList'
 import {ref,reactive} from "vue";
 
@@ -192,6 +186,10 @@ const changeBan = () => {
 // 设置是否开启排位日记
 const changeBlacklist = () => {
   commoneChnage('isSwitchBlacklist')
+}
+// 设置是否开启野怪计时
+const changeJungleTime = () => {
+  commoneChnage('isJungleTime')
 }
 // 设置是否开启自动打开游戏内窗口
 const changeAutoGameInWin = () => {

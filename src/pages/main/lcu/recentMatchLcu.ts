@@ -48,8 +48,10 @@ export class recentMatch {
     await this.init()
     if (this.gameType===undefined){return {friendList: []}}
     const isTeamOne = this.matchSession.gameData.teamOne.find((i: any) => i.accountId === this.currentId) !== undefined?true:false
-    const friendList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamOne,true) : await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo,false)
-    const enemyList = isTeamOne === true ? await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo,false) : await this.simplifySummonerInfo(this.matchSession.gameData.teamOne,true)
+    const [friendList,enemyList] = await Promise.all([
+      isTeamOne === true ? this.simplifySummonerInfo(this.matchSession.gameData.teamOne,true) : this.simplifySummonerInfo(this.matchSession.gameData.teamTwo,false),
+      isTeamOne === true ? this.simplifySummonerInfo(this.matchSession.gameData.teamTwo,false) : this.simplifySummonerInfo(this.matchSession.gameData.teamOne,true)
+    ])
     return {friendList, enemyList,isTeamOne,teamOneList:this.teamOneList,teamTwoList:this.teamTwoList}
   }
   // 获取段位数据

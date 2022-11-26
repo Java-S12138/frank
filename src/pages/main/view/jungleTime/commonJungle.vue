@@ -2,7 +2,7 @@
   <div class="mainDiv">
     <n-space vertical justify="space-between" :size="[0,0]"
              style="height: 100%;width: 100%">
-      <span v-if="isDragon">大龙 <n-countdown :ref="`'${campDragon.countdownRef}'`" v-if="!campDragon.isAlive"
+      <span v-if="isDragon||pioneerCount===2">大龙 <n-countdown :ref="`'${campDragon.countdownRef}'`" v-if="!campDragon.isAlive"
                               :render="renderCountdown" :duration="campDragon.duration" :active="campDragon.isActice"/>
           <n-countdown  v-else :render="renderCountdown" :duration="12000" :active="false"/>
          <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
@@ -76,12 +76,16 @@ const props = defineProps({
     default: {
       countdownRef: ref<CountdownInst | null>(),
       isActice: false,
-      isAlive: false,
+      isAlive: true,
     }
   },
   isDragon: {
     type: Boolean,
     default: false
+  },
+  pioneerCount:{
+    type:Number,
+    default:0
   }
 })
 const renderCountdown: CountdownProps['render'] = ({hours, minutes, seconds}) => {

@@ -42,31 +42,41 @@ export class GameFlow {
       this.coloseWin('main')
       this.coloseWin('matchHistory')
 
-      cube.windows.obtainDeclaredWindow('jungleTime',
-        {gamein: true,x:currentScreen.width-350,y:currentScreen.height-350}).then((res) => {
-        cube.windows.hide(res.id)
-          this.jungleWin = res
-      })
-
-      cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
-        cube.windows.hide(v.id)
-        this.recentMatchWin = v
+      invokeLcu('get','/lol-lobby/v1/parties/gamemode').then((res:any) => {
+        const queueId = res?.queueId
+        const isJungleTime = JSON.parse(String(localStorage.getItem('config'))).isJungleTime
+        // 当前模式是召唤师峡谷之类的模式才打开野怪计时窗口
+        if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
+        // if (true){
+          cube.windows.obtainDeclaredWindow('jungleTime',
+            {gamein: true,x:currentScreen.width-350,y:currentScreen.height-350}).then((v) => {
+            cube.windows.hide(v.id)
+            this.jungleWin = v
+          })
+        }
+        // 当前模式不是云顶之亦才打开战绩历史窗口
+        if (queueId !== 1090 || queueId !== 1100 || queueId !== 1160 || queueId !== 1130){
+          cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
+            cube.windows.hide(v.id)
+            this.recentMatchWin = v
+          })
+        }
       })
     })
-
-    cube.windows.message.on('received',(id:string, content:string) => {
+    // 接收战绩历史窗口发送过来的消息,表示查询已经完成
+    cube.windows.message.on('received',(id:string) => {
       if (id==='initDone') {
         if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow) {
+          cube.windows.close(<number>this.recentMatchWin?.id)
           return
         } else {
-          // @ts-ignore
-          cube.windows.show(this.recentMatchWin.id)
+          cube.windows.show(<number>this.recentMatchWin?.id)
         }
       }
      })
 
+    //游戏结束创建桌面窗口
     cube.games.on('stopped', () => {
-      //游戏结束创建桌面窗口
       cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
     });
     // 游戏内监听按键, 显示或隐藏游戏内窗口
@@ -80,14 +90,13 @@ export class GameFlow {
         }
       }
     })
+    // 游戏内监听按键, 显示或隐藏野怪计时窗口
     cube.settings.hotkeys.game.on('hold',(name, state) => {
-      if (name ==='show_jungleTime'){
+      if (name ==='show_jungleTime' && this.jungleWin!==undefined){
         if (state==="down"){
-          // @ts-ignore
-          cube.windows.show(this.jungleWin.id)
+          cube.windows.show(<number>this.jungleWin?.id)
         }else {
-          // @ts-ignore
-          cube.windows.hide(this.jungleWin.id)
+          cube.windows.hide(<number>this.jungleWin?.id)
         }
       }
     })

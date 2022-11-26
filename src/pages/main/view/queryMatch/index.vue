@@ -13,7 +13,7 @@ import {
 import Dashboard from './dashboard.vue'
 import SummonerInfo from "./summonerInfo.vue";
 import MatchDetailed from "./matchDetailed.vue";
-
+import '../../utils/echarts';
 </script>
 
 <style scoped>

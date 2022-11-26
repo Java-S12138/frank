@@ -33,6 +33,7 @@ import {matchStore} from "../../store";
 import {storeToRefs} from "pinia/dist/pinia";
 import {getSummonerNickName} from "../../lcu/matchHistoryLcu";
 import {queryMatchSummonerInfo} from "../../lcu/matchHistoryLcu";
+import '../../utils/echarts';
 
 const matchData:Ref<any> = ref([])
 const lastPage = ref(0)

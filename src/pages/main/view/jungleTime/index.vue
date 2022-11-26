@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div style="position: relative">
     <n-space :size="[0,0]" justify="space-between">
       <jungle-team :camp1="monsterCamp_4" :camp2="monsterCamp_1" :camp3="monsterCamp_3"
         :camp4="monsterCamp_13" :camp5="monsterCamp_5" :camp6="monsterCamp_2" :is-bule="true"/>
       <jungle-team :camp1="monsterCamp_10" :camp2="monsterCamp_7" :camp3="monsterCamp_9"
                    :camp4="monsterCamp_14" :camp5="monsterCamp_11" :camp6="monsterCamp_8" :is-bule="false"/>
-      <common-jungle :camp1="monsterCamp_17" :camp2="monsterCamp_6"
+      <common-jungle :camp1="monsterCamp_17" :camp2="monsterCamp_6" :pioneer-count="pioneerCount"
         :camp3="monsterCamp_16" :camp4="monsterCamp_15" :camp-dragon="monsterCamp_12" :is-dragon="isDragon"/>
     </n-space>
   </div>
@@ -99,7 +99,7 @@ const monsterCamp_11 = ref({
 const monsterCamp_12 = ref({
   countdownRef: ref<CountdownInst | null>(),
   isActice: false,
-  isAlive: false,
+  isAlive: true,
   duration: 0
 })
 const monsterCamp_13 = ref({
@@ -132,7 +132,9 @@ const monsterCamp_17 = ref({
   isAlive: true,
   duration: 0
 })
+const pioneerCount = ref(0)
 const isDragon = ref(false)
+
 let isInit = true
 
 cube.games.events.on('update-info', (classId: number, info: infoObject) => {
@@ -220,6 +222,9 @@ const taskAnalse = (value:infoValue,monster:any,type_:string) => {
       return
     }else if (type_==='jungle_camp_17'||type_==='jungle_camp_12') {
       monster.value.duration = 360000 // 击杀后 6分钟刷新
+      if (type_==='jungle_camp_17' && pioneerCount.value<2){
+        pioneerCount.value += 1
+      }
     }else {
       monster.value.duration = 135000 // 击杀后 2.15 分钟刷新
     }
@@ -257,5 +262,10 @@ const initJungle = (monster:any,type_:string) => {
 </script>
 
 <style scoped>
-
+.closeWin {
+  position: absolute;
+  right: 72.5px;
+  top:2px;
+  color: #666F75;
+}
 </style>
