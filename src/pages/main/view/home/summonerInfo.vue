@@ -45,7 +45,10 @@
         </n-space>
         <n-tag v-else type="info"  size="small"
                round style="width: 241px;justify-content: center"
-               :bordered="false">进入英雄联盟大厅后⌛自动获取数据</n-tag>
+               :bordered="false">
+          <p v-if="config.isAutoLaunchGame">进入英雄联盟大厅后⌛自动获取数据</p>
+          <p v-else @click="init">点击此处 获取游戏数据</p>
+        </n-tag>
       </n-space>
     </n-card>
 
@@ -236,12 +239,12 @@
 <script setup lang="ts">
 import {ref,Ref, onMounted} from "vue"
 import {
-  NCard, NAvatar,NProgress, NSpace, NTag, NPopover,NDrawer,NDrawerContent,
+  NCard, NAvatar,NProgress, NSpace, NTag,NDrawer,NDrawerContent,
   NList, NListItem, NScrollbar, useMessage,NTabs,NTabPane,NRate,NIcon
 } from 'naive-ui'
 import {Diamond} from '@vicons/tabler'
 import {getCurrentSummonerInfo,queryCurrentChampStatstones} from "../../lcu/homeLcu";
-import LoadingAnime from "../components/loadingAnime.vue";
+
 const rankData:Ref<any[]> = ref([])
 const summonerHonor:Ref<any[]> = ref([])
 const summonerChampLevel:Ref<any[]> = ref([])
@@ -251,14 +254,15 @@ const message = useMessage()
 const active = ref(false)
 const currentChampStatstones:Ref<any[]> = ref([])
 const currentChampIndex = ref(0)
+const config = JSON.parse(String(localStorage.getItem('config')))
 
 onMounted(async () => {
  init()
 })
 
 const init = async () => {
-  const homeData = await getCurrentSummonerInfo()
-  if (homeData === null){
+  const homeData:any = await getCurrentSummonerInfo()
+  if (homeData === null && config.isAutoLaunchGame){
     message.loading('英雄联盟客户端启动中...',{ duration: 5000 })
     cube.utils.launchGame(54261).then(() => {
       cube.windows.message.on('received',(id) => {

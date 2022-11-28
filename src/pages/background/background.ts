@@ -10,14 +10,6 @@ cube.extensions.on('launch-triggered', async (s) => {
   }
 })
 
-// cube.games.events.on('trigger-event', (classId, info) => {
-//   console.log('trigger-event ', classId, info);
-// });
-// cube.games.events.on('update-info', (classId, info) => {
-//   if (info.key.indexOf('jungle') !== -1){
-//     console.log(info)
-//   }
-// });
 const gameFlow = new GameFlow()
 gameFlow.initGameInWindow()
 

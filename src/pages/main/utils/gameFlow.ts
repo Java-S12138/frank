@@ -4,8 +4,8 @@ import WindowInfo = cube.windows.WindowInfo;
 
 export class GameFlow {
 
-  public jungleWin?:WindowInfo
-  public recentMatchWin?:WindowInfo
+  public jungleWin:WindowInfo|null = null
+  public recentMatchWin:WindowInfo|null = null
 
   // 显示或者隐藏助手窗口
   public showOrHideAssist = async (isShow: boolean, message: string) => {
@@ -46,8 +46,8 @@ export class GameFlow {
         const queueId = res?.queueId
         const isJungleTime = JSON.parse(String(localStorage.getItem('config'))).isJungleTime
         // 当前模式是召唤师峡谷之类的模式才打开野怪计时窗口
-        if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
-        // if (true){
+        // if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
+        if (true){
           cube.windows.obtainDeclaredWindow('jungleTime',
             {gamein: true,x:currentScreen.width-350,y:currentScreen.height-350}).then((v) => {
             cube.windows.hide(v.id)
@@ -78,7 +78,10 @@ export class GameFlow {
     //游戏结束创建桌面窗口
     cube.games.on('stopped', () => {
       cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
-    });
+      this.jungleWin = null
+      this.recentMatchWin = null
+    })
+
     // 游戏内监听按键, 显示或隐藏游戏内窗口
     cube.settings.hotkeys.game.on('pressed',async (hotKeyName:string) => {
       if (hotKeyName==='show_matchHistory') {
@@ -101,11 +104,13 @@ export class GameFlow {
       }
     })
     // 检测到进入英雄联盟大厅后, 获取首页数据
-    cube.games.launchers.on('launched', () => {
-      cube.windows.getWindowByName('main').then((win) => {
-        cube.windows.message.send(win.id,'initHome','')
+    if (JSON.parse(String(localStorage.getItem('config'))).isAutoLaunchGame){
+      cube.games.launchers.on('launched', () => {
+        cube.windows.getWindowByName('main').then((win) => {
+          cube.windows.message.send(win.id,'initHome','')
+        })
       })
-    })
+    }
   }
   // 自动(禁用)选择英雄
   public autoPickBanChamp = () => {

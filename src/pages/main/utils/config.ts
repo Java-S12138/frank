@@ -28,7 +28,8 @@ export const config: any = {
   'runeType': '韩服数据',
   'isGameInWindow': true,
   'is101': false,
-  'isJungleTime': true
+  'isJungleTime': true,
+  'isAutoLaunchGame':true
 }
 
 if (localStorage.getItem('config') === null) {

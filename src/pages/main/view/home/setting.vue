@@ -51,6 +51,14 @@
           <n-switch v-model:value="config.isJungleTime" @click="changeJungleTime"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
+<!--        自动启动游戏-->
+        <n-space>
+          <n-tag :bordered="false">启动游戏</n-tag>
+          <n-tag :bordered="false" type="success"
+                 style="width: 140px;justify-content: center">是否自动启动游戏</n-tag>
+          <n-switch v-model:value="config.isAutoLaunchGame" @click="changeAutoLaunchGeme"
+                    style="margin-left:22px;margin-top: 3px"/>
+        </n-space>
 <!--        游戏窗口-->
         <n-space>
           <n-popover :show-arrow="false" trigger="hover">
@@ -190,6 +198,10 @@ const changeBlacklist = () => {
 // 设置是否开启野怪计时
 const changeJungleTime = () => {
   commoneChnage('isJungleTime')
+}
+// 设置是否自动启动游戏
+const changeAutoLaunchGeme = () => {
+  commoneChnage('isAutoLaunchGame')
 }
 // 设置是否开启自动打开游戏内窗口
 const changeAutoGameInWin = () => {

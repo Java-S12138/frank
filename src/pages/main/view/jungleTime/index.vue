@@ -138,8 +138,8 @@ const isDragon = ref(false)
 let isInit = true
 
 cube.games.events.on('update-info', (classId: number, info: infoObject) => {
+  console.log(info)
   if (info.key.indexOf('jungle') !== -1) {
-    console.log(info)
     handleCamp(info)
   }
 })
