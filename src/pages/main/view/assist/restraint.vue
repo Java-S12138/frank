@@ -120,9 +120,7 @@ const getDetailsData =  (restraint:any) => {
 
   for (const restraintListElement of restraint) {
     const chapmId = restraintListElement.championid2
-    // @ts-ignore
     const label = champDict[chapmId].label
-    // @ts-ignore
     const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
     const winRate = 10000 - Number(restraintListElement.winrate)
     resList.push([label, imgUrl, winRate])

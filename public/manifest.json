@@ -83,10 +83,10 @@
         "min_width": 150,
         "resizable": true,
         "in_game_only": false,
-        "transparent": true,
         "title_bar_height": 10,
         "maximizable": false,
-        "show_center": false
+        "show_center": false,
+        "opacity": 0.8
       }
     }
   },

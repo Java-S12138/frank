@@ -93,7 +93,6 @@ export const get101Runes = async (champId:string|number) => {
 
       const sorted = _orderBy(pData, (i) => i.igamecnt, [`desc`]);
 
-      // @ts-ignore
       var pages:any = sorted.slice(0, 2).map((i) => makePerkData(i, champDict[champId].alias, position));
     }
     return res.concat(pages);

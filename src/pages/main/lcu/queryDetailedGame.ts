@@ -37,7 +37,6 @@ const analyticalData  = (participant:any,nameList:any,accountIdList:any) => {
     accountId:accountIdList,
     teamType: participant.teamId,
     champLevel:participant.stats.champLevel,
-    // @ts-ignore
     champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[participant.championId].alias}.png`,
     spell1Id:getspellImgUrl(participant.spell1Id),
     spell2Id:getspellImgUrl(participant.spell2Id),

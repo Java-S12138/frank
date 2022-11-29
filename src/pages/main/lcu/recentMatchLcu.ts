@@ -34,7 +34,6 @@ export class recentMatch {
         summonerName: item.summonerName,
         mathcHistory: matchHistory.classicMode,
         index: getPosition(item.selectedPosition),
-        // @ts-ignore
         championUrl: this.gameType === (420||440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
           `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${item.profileIconId}.png`
       })
@@ -86,7 +85,6 @@ export class recentMatch {
           matchCount += 1
           winCount = matchList[j].participants[0].stats.win ===true ? winCount+1:winCount
           classicMode.push({
-            // @ts-ignore
             champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList[j].participants[0].championId)].alias}.png`,
             kill: matchList[j].participants[0].stats.kills,
             deaths: matchList[j].participants[0].stats.deaths,

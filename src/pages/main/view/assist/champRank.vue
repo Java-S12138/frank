@@ -307,7 +307,6 @@ const queryKoreaServe = async (tier:number,lane:string) => {
       appearance: Number(item.pick_rate).toFixed(1) +'%',
       ban: Number(item.ban_rate).toFixed(1) +'%',
       champId: item.champion__data_key,
-      // @ts-ignore
       imgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.champion__data_key)].alias}.png`,
       name: item.champion__name_cn,
       tLevel: item.is_op === true ? '0' : item.op_tier,
@@ -365,9 +364,7 @@ const getChampRankData = async (tier:number, lane:string, time:number) => {
 
     champSliceList.value.push({
       sortId: index,
-      // @ts-ignore
       imgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[dataList[0]]['alias']}.png`,
-      // @ts-ignore
       name: champDict[dataList[0]]['label'],
       tLevel: dataList[1],
       win: toPercent(parseFloat(dataList[2])),
@@ -426,9 +423,7 @@ const getRestraintData = async (champId:any, position:string, imgUrl:string, nam
 
   for (const restraintListElement of restraintJson) {
     const chapmId = restraintListElement.championid2
-    // @ts-ignore
     const label = champDict[chapmId].label
-    // @ts-ignore
     const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
     const winRate = 10000 - Number(restraintListElement.winrate)
     resList.push([label, imgUrl, winRate])

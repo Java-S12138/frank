@@ -77,7 +77,6 @@ export const queryMatchSummonerInfo = async (summonerId:number) => {
       // 本局游戏ID
        gameId : matchListElement.gameId,
       // 召唤师选择的英雄
-      // @ts-ignore
        champImgUrl : `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchListElement.participants[0].championId)].alias}.png`,
       // 是否取得胜利
        isWin : matchListElement.participants[0].stats.win == true ? '胜利' :'失败',
@@ -116,7 +115,6 @@ const querySummonerSuperChampData = async (summonerId:number) => {
   const summonerSuperChampData = (await invokeLcu('get',`/lol-collections/v1/inventories/${summonerId}/champion-mastery`)).slice(0,20)
   const superChampList = summonerSuperChampData.reduce((res:any,item:any) => {
     return res.concat({
-      // @ts-ignore
       champImgUrl:`https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
       champLevel:item.championLevel,
       championPoints:item.championPoints,

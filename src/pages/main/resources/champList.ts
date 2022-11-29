@@ -1,4 +1,4 @@
-export const champDict = {
+export const champDict:any = {
   '1': {'champId': '1', 'label': '黑暗之女', 'alias': 'Annie', 'title': '安妮'},
   '2': {'champId': '2', 'label': '狂战士', 'alias': 'Olaf', 'title': '奥拉夫'},
   '3': {'champId': '3', 'label': '正义巨像', 'alias': 'Galio', 'title': '加里奥'},

@@ -342,9 +342,7 @@ const getPosition = (pos:string) => {
 }
 // 通过英雄ID获取部分信息
 const mapChamp = (champId:any) => {
-  // @ts-ignore
   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[champId].alias}.png`
-  // @ts-ignore
   currentChampAlias.value = champDict[champId].alias
 }
 // 应用符文

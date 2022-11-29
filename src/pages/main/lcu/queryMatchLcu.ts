@@ -30,7 +30,6 @@ const querySummonerSuperChampData = async (summonerId: number) => {
     const summonerSuperChampData: any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
     return  summonerSuperChampData.slice(0, 20).reduce((res: any, item: any) => {
       return res.concat({
-        // @ts-ignore
         champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
         champLevel: item.championLevel,
         championPoints: item.championPoints
@@ -90,9 +89,7 @@ const queryMatchHistory = async (summonerId: number, begIndex: number, endIndex:
 const getSimpleMatch = (match: Game,gameModel:string):MatchList => {
   return {
     gameId: match.gameId,
-    // @ts-ignore
     champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(match.participants[0].championId)].alias}.png`,
-    // @ts-ignore
     champ: champDict[String(match.participants[0].championId)].title,
     // 是否取得胜利
     isWin: match.participants[0].stats.win === true ? true : false,

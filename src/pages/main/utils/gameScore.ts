@@ -79,7 +79,6 @@ const getSimpleMatchHistory = (matchList: any) => {
   let simpleMatch = []
   for (const match of matchList) {
     simpleMatch.push({
-      // @ts-ignore
       champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(match.participants[0].championId)].alias}.png`,
       position: match.participants[0].timeline.lane,
       kill: match.participants[0].stats.kills,

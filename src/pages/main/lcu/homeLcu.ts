@@ -48,7 +48,6 @@ const querySummonerHonorLevel = async ():Promise<[string,string]> => {
 const dealSuperChamp = (summonerSuperChampData:any,index:number,end:number) => {
   const superChampList = summonerSuperChampData.slice(index,end).reduce((res:any,item:any) => {
     res.push([
-      // @ts-ignore
       `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
       item.championLevel,
       item.championPoints,
@@ -77,7 +76,6 @@ const queryStatstones = async (puuid:string) => {
   const statstones:Array<Object> = await invokeLcu('get',`/lol-statstones/v1/profile-summary/${puuid}`)
   const statstonesList = statstones.reduce((res:any,item:any) => {
     return res.concat({
-          // @ts-ignore
           championId:`${champDict[String(item.championId)].label}`,
           name:item.name,
           imgUrl:(item.imageUrl).split('LCU/')[1],
@@ -118,7 +116,6 @@ export const queryCurrentChampStatstones = async (champId:any) => {
     },[])
 
     if (champStatstonesList[0].simpleStatstonesList[0].value ==='' &&champStatstonesList[1].simpleStatstonesList[1].value ==='' ){
-      // @ts-ignore
       return `${champDict[champId].label} 暂无永恒星碑`
     }
     return champStatstonesList
