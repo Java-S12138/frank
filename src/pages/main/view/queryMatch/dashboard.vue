@@ -71,8 +71,7 @@ import {NIcon, NSpace, NButton, NPopover,NPopconfirm,
   NInput,NPagination,useMessage,NSelect} from 'naive-ui'
 import {ChevronsDownLeft,CircleX,SmartHome} from '@vicons/tabler'
 import {ref} from "vue";
-// @ts-ignore
-import {queryStore} from "@/pages/main/store";
+import {queryStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {lcuSummonerInfo} from "../../lcu/types/homeLcuTypes";
 import {returnSummonerData} from "../../lcu/queryMatchLcu";
@@ -80,7 +79,7 @@ import {invokeLcu} from "../../lcu";
 
 const store = queryStore()
 const {querySummonerId,summoner,begIndex,endIndex,
-  page,currentMode,showChart,localSummoner} = storeToRefs(store)
+  page,currentMode,showChart,localSummoner,currentGameId}:any = storeToRefs(store)
 const message = useMessage()
 const searchName = ref('')
 const options = [
@@ -126,6 +125,7 @@ const searchSummonerInfo = async (event:any,local:any) => {
     querySummonerId.value = summoner.value.summonerInfo.currentId
     searchName.value = ''
     currentMode.value= '全部模式'
+    currentGameId.value = 0
     return
   }
 }

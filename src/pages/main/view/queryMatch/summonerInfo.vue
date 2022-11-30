@@ -107,7 +107,6 @@
             </n-space>
           </n-space>
           <n-space  v-else justify="center"><n-tag type="error" :bordered="false">当前召唤师英雄数据为空</n-tag></n-space>
-
         </n-space>
       </n-scrollbar>
     </n-card>

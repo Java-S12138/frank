@@ -10,6 +10,9 @@ export const queryGameDetailsData = async (gameId:number)  => {
 
 // 获取召唤师participants下面的详细数据
 const getParticipantsDetails = (res:any,participants:any, participantIdentities:any) => {
+  if (participants.length !== 10){
+    return []
+  }
   const nameList = getparticipantIdAndName(participantIdentities)
   let titleList = getDetailsTitle(res)
   let datalisList = []

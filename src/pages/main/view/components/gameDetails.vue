@@ -1,5 +1,5 @@
 <template>
-  <div  class="mainDiv" >
+  <div class="mainDiv" v-if="isGameDetalistNull === false">
       <n-space vertical>
         <n-grid :cols="7" style="width: 623px;" >
           <n-gi>
@@ -93,7 +93,7 @@
                   </n-space>
                   <!--                召唤师昵称-->
                   <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
-                              v-if="singleData[0].accountId!=curSummonerId">
+                              v-if="singleData[0].accountId!==curSummonerId">
                     {{ singleData[0].name }}
                   </n-ellipsis>
                   <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
@@ -152,7 +152,7 @@
                   </n-space>
                   <!--                召唤师昵称-->
                   <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
-                              v-if="singleData[1].accountId!=curSummonerId">
+                              v-if="singleData[1].accountId!==curSummonerId">
                     {{ singleData[1].name }}
                   </n-ellipsis>
                   <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
@@ -195,11 +195,14 @@
     </n-drawer>
     </div>
   </div>
+  <div class="result404" v-else>
+    <n-result status="404" title="404 资源不存在" description="当前战绩数据异常"></n-result>
+  </div>
 </template>
 
 <script setup lang="ts">
-import {NAvatar, NSpace, NTag, NPopover, NGrid, NGi,NDrawer,NDrawerContent,
-  NBadge, NEllipsis, useMessage} from 'naive-ui'
+import {NAvatar, NSpace, NPopover, NGrid, NGi,NDrawer,NDrawerContent,
+  NBadge, NEllipsis,NResult, useMessage} from 'naive-ui'
 import {onMounted, Ref, ref} from "vue";
 import {matchStore, queryStore} from "../../store";
 import {storeToRefs} from "pinia";
@@ -210,9 +213,9 @@ import {invokeLcu} from "../../lcu";
 import {lcuSummonerInfo} from "../../lcu/types/homeLcuTypes";
 
 const active = ref(false)
-let gameDetalisList = []
-const store = queryStore()
-const {querySummonerId,summoner,currentMode}:any = storeToRefs(store)
+let gameDetalisList:any = []
+const isGameDetalistNull = ref(false)
+const {querySummonerId,summoner,currentMode,currentGameId}:any = storeToRefs(queryStore())
 const titleList:Ref<any[]> = ref([])
 const summonersDataList:Ref<any[]> = ref([])
 const otherData:Ref<any> = ref(null)
@@ -226,19 +229,21 @@ const parentPage = ref('')
 const curSummonerId = ref(0) //当前召唤师ID
 
 const props = defineProps({
-  currentGameId: {
+  currentGameIdProps: {
     type: Number
   }
-});
+})
 
 onMounted(async () => {
-  if (props.currentGameId ===undefined){
+  if (props.currentGameIdProps ===undefined){
     const {currentQueryGameId,querySummonerId}:any = storeToRefs(matchStore())
     gameDetalisList = await queryGameDetailsData(Number(currentQueryGameId.value))
+    isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
     curSummonerId.value = querySummonerId.value
     parentPage.value = 'match'
   }else {
-    gameDetalisList = await queryGameDetailsData(Number(props.currentGameId))
+    gameDetalisList = await queryGameDetailsData(Number(props.currentGameIdProps))
+    isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
     curSummonerId.value = querySummonerId.value
     parentPage.value = 'query'
   }
@@ -256,6 +261,7 @@ const queryDetails = async (nickname:string) => {
     return
   }else{
     summoner.value = await returnSummonerData(res.summonerId)
+    currentGameId.value = 0
     querySummonerId.value = summoner.value.summonerInfo.currentId
     currentMode.value='全部模式'
     return
@@ -446,5 +452,7 @@ function slnotimg(event:any) {
   padding:0px 5px 0px 5px;
   border-radius: 3px;
 }
-
+.result404 {
+  margin-top: 160px;
+}
 </style>

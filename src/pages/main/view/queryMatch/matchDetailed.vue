@@ -48,7 +48,7 @@
         <n-layout>
           <n-layout-content v-if="currentGameId !==0">
             <game-details class="slide-in-right"
-                          :currentGameId="currentGameId" :key="currentGameId"
+                          :currentGameIdProps="currentGameId" :key="currentGameId"
             ></game-details>
           </n-layout-content>
         </n-layout>

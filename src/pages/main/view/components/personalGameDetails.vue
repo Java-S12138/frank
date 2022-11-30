@@ -112,7 +112,6 @@ const props:any = defineProps({
 // 向夫组件传输数据
 const emits = defineEmits(['queryDetails']);
 const queryDetails = () => {
-  // @ts-ignore
   emits('queryDetails', props.personalDetails.name)
 }
 
