@@ -63,6 +63,8 @@ cube.windows.message.on('received',async (id) => {
   }else if (id==='show-other-summoner'&& isSwitchBlacklist){
     currentBlackList.value.length = 0
     transValue.value = 'blacklist'
+  }else if (id==='refresh'){
+    location.reload()
   }
 })
 

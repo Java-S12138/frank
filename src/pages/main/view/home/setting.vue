@@ -193,6 +193,10 @@ const changeBan = () => {
 }
 // 设置是否开启排位日记
 const changeBlacklist = () => {
+  cube.windows.getWindowByName('assist').then((v) => {
+    cube.windows.message.send(v.id,'refresh','')
+  })
+
   commoneChnage('isSwitchBlacklist')
 }
 // 设置是否开启野怪计时

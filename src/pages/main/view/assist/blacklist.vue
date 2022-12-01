@@ -210,7 +210,7 @@ const reviseContent = () => {
 }
 // 修改标签内容
 const reviseTag = () => {
-  localBlacklist[detialsJson.summonerId]['tag`'] = detialsJson.content
+  localBlacklist[detialsJson.summonerId]['tag'] = detialsJson.tag
   localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
   queryBlacklist()
   active.value = false
