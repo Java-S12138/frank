@@ -225,11 +225,7 @@ const deleteBlackElement = () => {
 }
 // 通过字数判断展示标签的内容
 const showTagContent = (tag:string) => {
-  if (tag.length === 2){
-    return tag
-  }else {
-    return '原因'
-  }
+  return tag.length === 2 ? tag : '原因'
 }
 // 新增黑名单
 const addBlacklistFunc = () => {
