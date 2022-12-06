@@ -257,7 +257,7 @@ const currentChampIndex = ref(0)
 const config = JSON.parse(String(localStorage.getItem('config')))
 
 onMounted(async () => {
- init()
+ // init()
 })
 
 const init = async () => {

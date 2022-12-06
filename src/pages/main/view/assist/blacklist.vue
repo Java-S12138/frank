@@ -131,6 +131,7 @@ import PickSummoner from "./pickSummoner.vue"
 import AddBlacklist from "./addBlacklist.vue"
 import {assistStore} from "../../store";
 import {storeToRefs} from "pinia";
+import {blacklistServe} from "../../utils/request";
 
 const active = ref(false)
 const addBlacklistActive = ref(false)
@@ -163,6 +164,15 @@ onMounted(() => {
   // @ts-ignore
   if (divListCard.length !=0){divListCard[0]['style'] = "padding-left:0px;padding-right:0px"}
   queryBlacklist()
+
+  blacklistServe({
+    url:'/player/findPlayerByPlayerId',
+    params:{'playerId':'1585859305348628482'},
+    method:'GET'
+  }).then((res) => {
+    console.log(JSON.parse(res.data.data.haterIdList))
+  })
+
 })
 
 // 将某个元素移动到数组首位
@@ -238,6 +248,7 @@ cube.windows.message.on('received',(id:any) => {
     queryBlacklist()
   }
 })
+
 
 </script>
 

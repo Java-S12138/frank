@@ -5,7 +5,7 @@
   "version": "1.54.1222",
   "type": "module",
   "scripts": {
-    "dev": "node ./scripts/debug && vite",
+    "dev": "node ./scripts/debug && vite --mode development",
     "build": "vite build && node ./scripts/pack",
     "preview": "vite preview",
     "pretty": "prettier --write \"src/**/*.ts\""
