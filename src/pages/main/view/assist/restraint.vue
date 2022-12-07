@@ -132,7 +132,7 @@ const getDetailsData =  (restraint:any) => {
 }
 // 设置是否自动符文
 const setIsAutoRune = async () => {
-  const autoRunesList = localStorage.getItem('autoRunes')
+  const autoRunesList:any = localStorage.getItem('autoRunes')
   if (autoRunesList ===null){
     localStorage.setItem('autoRunes','{}')
   }

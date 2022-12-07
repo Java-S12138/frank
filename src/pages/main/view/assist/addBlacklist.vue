@@ -9,7 +9,8 @@
           v-model:value="blacklistName"
           placeholder="输入召唤师昵称"
         />
-        <n-tag size="large"  :bordered="false">{{currentDate}}</n-tag>
+        <n-select style="width: 108px" :show-checkmark="false" @update:value="handleUpdateArea($event)"
+                  v-model:value="areaSetting" :options="areaOptions" />
       </n-space>
     </template>
     <template #footer>
@@ -47,6 +48,8 @@ import {NSpace,NInput,NSelect,NTag,NButton,NDrawerContent,useMessage} from 'naiv
 import {ref,onBeforeMount} from "vue";
 import {isStoreageHas} from "../../lcu/utils";
 import {invokeLcu} from "../../lcu";
+import {areaOptions} from "../../resources/areaList";
+import {config} from "../../utils/config";
 
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
 const props = defineProps({
@@ -81,7 +84,8 @@ const options = [
 const blacklistContent = ref('')
 const blacklistName = ref('')
 const message = useMessage()
-const emits = defineEmits(['closeDrawer']);
+const emits = defineEmits(['closeDrawer'])
+const areaSetting = ref(JSON.parse(String(localStorage.getItem('config'))).currentArea)
 
 // 判断当前召唤师是否存在于黑名单中
 onBeforeMount(() => {
@@ -96,7 +100,6 @@ const queryCurrenDate = () => {
   var myDate = new Date()
   return myDate.toLocaleDateString()
 }
-const currentDate = queryCurrenDate()
 
 const confirmShielding = async () => {
   const currentName = props.name !== '' ? props.name : blacklistName.value
@@ -115,7 +118,7 @@ const confirmShielding = async () => {
   }
   localBlacklist[`${summonerId}`] = {
     nickname:currentName,
-    date:currentDate,
+    date:queryCurrenDate(),
     timestamp:Date.now(),
     content:blacklistContent.value,
     tag:selectValue.value,
@@ -131,6 +134,12 @@ const querySummonerId = async (nickname:string) => {
     return null
   }else
     return res.summonerId
+}
+const handleUpdateArea = (value:string) => {
+  areaSetting.value = value
+  const config = JSON.parse(String(localStorage.getItem('config')))
+  config.currentArea = value
+  localStorage.setItem('config', JSON.stringify(config))
 }
 </script>
 

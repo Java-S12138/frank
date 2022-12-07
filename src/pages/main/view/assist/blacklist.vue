@@ -1,9 +1,10 @@
 <template>
-  <div >
-    <n-card class="boxShadow listCard"  size="small">
-      <n-space v-if="blacklist.length=== 0" justify="center" :size="[0,-1]">
-        <p style="color: #666F75;">笔记功能介绍请查看更新详情</p>
-        <p style="color: #666F75">愿你的排位笔记永远没有笔记</p>
+  <div>
+    <n-card class="boxShadow listCard" size="small" content-style="padding:0px">
+      <n-space v-if="blacklist.length=== 0" style="margin: 10px 0px 10px 0px"
+               justify="center" :size="[0,0]">
+          <p style="color: #666F75;">笔记功能介绍请查看更新详情</p>
+          <p style="color: #666F75">愿你的排位笔记永远没有笔记</p>
       </n-space>
       <n-scrollbar v-else style="max-height: 525px;">
         <n-list style="margin-right:13px;margin-left: 13px" >
@@ -13,49 +14,59 @@
                 max-width: 112px;
                 width:112px;
                 color: #ff6666;"
-                          v-if="currentBlackList.indexOf(blackSummoner[4]) !=-1"
+                          v-if="currentBlackList.indexOf(blackSummoner.sumId) !=-1"
               >
-                {{ blackSummoner[0] }}
+                {{ blackSummoner.nickName }}
               </n-ellipsis>
               <n-ellipsis style="
                 max-width: 112px;
                 width:112px;
                 color: #9aa4af;" v-else
               >
-                {{ blackSummoner[0] }}
+                {{ blackSummoner.nickName }}
               </n-ellipsis>
 
-              <p style="color: #9aa4af;"> {{ blackSummoner[1] }}</p>
-              <n-button size="small" type="error" dashed @click="getDetails(blackSummoner[4])"> {{ showTagContent(blackSummoner[2]) }}</n-button>
+              <p style="color: #9aa4af;"> {{ formatDate(blackSummoner.blacklist.UpdatedAt) }}</p>
+              <n-button size="small" type="error"
+                        dashed @click="getDetails(blackSummoner.nickName,blackSummoner.blacklist)"> {{ showTagContent(blackSummoner.blacklist.tag) }}</n-button>
             </n-space>
           </n-list-item>
         </n-list>
       </n-scrollbar>
     </n-card>
-    <n-card class="boxShadow"  size="small" >
-      <n-popover trigger="hover" :show-arrow="false">
-        <template #trigger>
-          <n-space justify="center" :size="[0,-1]" @click="addBlacklistActive=true">
-            <p style="color: #9aa4af;">珍爱生命 远离摆烂</p>
-            <p style="color: #9aa4af;">营造良好游戏环境从你我做起</p>
-          </n-space>
-        </template>
-        <span>点击此处  新增黑名单</span>
-      </n-popover>
+    <n-card class="boxShadow"  size="small" content-style="padding:10px 0px 5px 0px">
+      <n-space justify="center" :size="[0,10]">
+        <n-space :size="[18,0]" >
+          <n-select style="width: 108px" :show-checkmark="false" @update:value="handleUpdateArea($event)"
+                    v-model:value="areaSetting" :options="areaOptions" />
+          <n-button @click="addBlacklistActive=true">新增</n-button>
+        </n-space>
 
+        <p style="color: #9aa4af;">营造良好游戏环境从你我做起</p>
+      </n-space>
     </n-card>
-    <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-              :height="420" placement="bottom" :auto-focus = "false" >
-      <n-drawer-content >
+    <n-drawer v-model:show="active"
+              style="border-top-left-radius: 12px;border-top-right-radius: 12px"
+              :height="420" placement="bottom" :auto-focus = "false">
+      <n-drawer-content body-content-style="padding-left:10px;padding-right:6px" >
         <template #header>
           <n-space justify="space-between" style="width: 272px;">
-            <n-tag size="large"  :bordered="false">{{detialsJson.name}}</n-tag>
-            <n-tag size="large"  :bordered="false">{{detialsJson.date}}</n-tag>
+            <n-tag size="large" :bordered="false" type="error" >{{detialsNickname}}</n-tag>
+            <n-popover trigger="hover" :show-arrow="false" placement="left"
+                       v-if="loaclSummonerInfo.playerSumName!==detialsJson.playerSumName">
+              <template #trigger>
+                <n-tag size="large" :bordered="false" type="success">{{detialsJson.playerSumName}}</n-tag>
+              </template>
+              <p>当前数据由此用户提供</p>
+            </n-popover>
+            <n-tag :color="{ color: '#fafafc', textColor: '#9AA4AF' }" :bordered="false"
+                   size="large" v-else>{{formatDate(detialsJson.UpdatedAt)}}</n-tag>
 
           </n-space>
         </template>
         <template #footer>
           <n-space style="width: 270px;" justify="space-between">
+
             <n-popconfirm
               @positive-click="reviseTag"
 
@@ -124,29 +135,35 @@
 </template>
 
 <script setup lang="ts">
-import {NCard,NSpace,NList,NPopover,NInput,NTag,NPopconfirm,
+import {NCard,NSpace,NList,NPopover,NInput,NTag,NPopconfirm,NSelect,
   NListItem,NButton,NScrollbar,NEllipsis,NDrawer,NDrawerContent,useMessage} from 'naive-ui'
-import {onMounted, reactive, Ref, ref, watch} from "vue"
+import {onMounted, Ref, ref, watch} from "vue"
 import PickSummoner from "./pickSummoner.vue"
 import AddBlacklist from "./addBlacklist.vue"
 import {assistStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {blacklistServe} from "../../utils/request";
+import {OnlineBlacklist,HaterItem,Hater} from "../../interface/blacklistTypes";
+import {areaOptions} from "../../resources/areaList";
 
 const active = ref(false)
 const addBlacklistActive = ref(false)
 const blacklist:Ref<any> = ref([])
-const detialsJson = reactive({name:'',date:'',content:'',tag:'',summonerId:''})
+const detialsJson = ref({})
+const detialsNickname = ref('')
 const message = useMessage()
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist')))
+const areaSetting = ref(JSON.parse(String(localStorage.getItem('config'))).currentArea)
 const store = assistStore()
 const {currentBlackList}:any = storeToRefs(store)
+const loaclSummonerInfo = ref({playerSumId:'123123',playerSumName:'多元函数积分学'})
+const cubeUserId = ref('')
 
 watch(currentBlackList.value,() => {
   if (currentBlackList.value.length === 1){
-    getDetails(currentBlackList.value[0])
+    // getDetails(currentBlackList.value[0])
   }
-  if (currentBlackList.value.value !=0){
+  if (currentBlackList.value.value !==0){
     const loaclBlacklistSummonerId: any[] = []
     for (const blacklistElement of blacklist.value) {
       loaclBlacklistSummonerId.push(blacklistElement[4])
@@ -159,20 +176,10 @@ watch(currentBlackList.value,() => {
   }
 })
 
-onMounted(() => {
-  let divListCard = document.querySelectorAll("div.n-card.n-card--bordered.boxShadow.listCard > div")
-  // @ts-ignore
-  if (divListCard.length !=0){divListCard[0]['style'] = "padding-left:0px;padding-right:0px"}
+onMounted(async () => {
+  // TODO 获取本地召唤师信息 初步方案 luc连接成功后 再打开助手窗口
+  cubeUserId.value =(await cube.profile.getCurrentUser()).userId
   queryBlacklist()
-
-  blacklistServe({
-    url:'/player/findPlayerByPlayerId',
-    params:{'playerId':'1585859305348628482'},
-    method:'GET'
-  }).then((res) => {
-    console.log(JSON.parse(res.data.data.haterIdList))
-  })
-
 })
 
 // 将某个元素移动到数组首位
@@ -189,39 +196,103 @@ const shiftFirst = (currentSummonerId:number) => {
 }
 
 // 从本地查询黑名单列表
-const queryBlacklist = () => {
-  localBlacklist = JSON.parse(String(localStorage.getItem('blacklist')))
-  blacklist.value = []
-  // 获取黑名单数据
-  for (const black in localBlacklist) {
-    const tempList:any[] = [localBlacklist[black].nickname,localBlacklist[black].date,
-      localBlacklist[black].tag,localBlacklist[black].timestamp,black]
-    blacklist.value.push(tempList)
+const queryBlacklist = async () => {
+  const res = await  blacklistServe({
+    url:'/player/findPlayerByPlayerId',
+    params:{'playerId':cubeUserId.value},
+    method:'GET'
+  })
+  if (res.status !== 200){return}
+  const onlineBlacklist:OnlineBlacklist = res.data.code=== 0 ? JSON.parse(res.data.data.haterIdList)[areaSetting.value] : null
+  if (onlineBlacklist?.sumIdList?.length > 0){
+    console.log(onlineBlacklist)
+    findHaterByHaterId(onlineBlacklist.sumIdList)
   }
-  blacklist.value.sort((x:any,y:any) => {return y[3]-x[3]})
+  // console.log(onlineBlacklist)
+  // localBlacklist = JSON.parse(String(localStorage.getItem('blacklist')))
+  // console.log(localBlacklist)
+  // blacklist.value = []
+  // // 获取黑名单数据
+  // for (const black in localBlacklist) {
+  //   const tempList:any[] = [localBlacklist[black].nickname,localBlacklist[black].date,
+  //     localBlacklist[black].tag,localBlacklist[black].timestamp,black]
+  //   blacklist.value.push(tempList)
+  // }
+  // blacklist.value.sort((x:any,y:any) => {return y[3]-x[3]})
+  // console.log(blacklist.value)
 }
+
+// 通过HaterId查询数据
+const findHaterByHaterId = async (haterIdList:string[]) => {
+  blacklist.value.length = 0
+  const res = await  blacklistServe({
+    url:'/hater/findHaterBySumId',
+    data:{'sumIdList':haterIdList},
+    method:'POST'
+  })
+  const haterList:Hater[] =  res.data.data
+  console.log(haterList)
+  console.log('---------------------------------')
+  for (const haterItem of haterList) {
+    const blacklistHater:HaterItem[] = haterItem.blacklist
+    for (const blacklistItem of blacklistHater) {
+      const tempList = {
+        sumId:haterItem.sumId,nickName:haterItem.nickName,blacklist:blacklistItem
+      }
+      blacklist.value.push(tempList)
+    }
+  }
+  // blacklist.value.sort((x:any,y:any) => {return y[3]-x[3]})
+  console.log(blacklist.value)
+  return
+  // for (const blackitem:HaterItem in hater) {
+  //   const tempList:any[] = [
+  //     black.nickname,localBlacklist[black].date,
+  //     localBlacklist[black].tag,localBlacklist[black].timestamp,black
+  //   ]
+  //   blacklist.value.push(tempList)
+  // }
+  // blacklist.value.sort((x:any,y:any) => {return y[3]-x[3]})
+  console.log(res)
+}
+
+// 格式化数据库时间格式
+const formatDate = (dateStr:string) => {
+  return dateStr.split('T')[0]
+}
+
 // 获取单个召唤师的详细信息
-const getDetails = (summonerId:string) => {
-  const currentData = localBlacklist[summonerId]
-  detialsJson.name = currentData.nickname
-  detialsJson.date = currentData.date
-  detialsJson.content = currentData.content
-  detialsJson.tag = currentData.tag
-  detialsJson.summonerId = summonerId
+const getDetails = (nickname:string,haterItem:HaterItem) => {
+  console.log(haterItem)
+  detialsJson.value = haterItem
+  detialsNickname.value = nickname
   active.value = true
 }
 // 修改黑名单内容
-const reviseContent = () => {
-  localBlacklist[detialsJson.summonerId]['content'] = detialsJson.content
-  localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
-  queryBlacklist()
+const reviseContent = async () => {
+  // localBlacklist[detialsJson.summonerId]['content'] = detialsJson.content
+  // localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
   active.value = false
-  message.success('修改内容成功')
+  const res = await blacklistServe({
+    url:'/blacklist/updateBlacklist',
+    data:detialsJson.value,
+    method:'PUT'
+  })
+  if (res.status===200){
+    message.success('修改内容成功')
+  }else {
+    message.error('提交修改内容失败')
+    queryBlacklist()
+  }
+  console.log(res)
+  // queryBlacklist()
+
 }
 // 修改标签内容
 const reviseTag = () => {
-  localBlacklist[detialsJson.summonerId]['tag'] = detialsJson.tag
-  localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
+
+  // localBlacklist[detialsJson.summonerId]['tag'] = detialsJson.tag
+  // localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
   queryBlacklist()
   active.value = false
   message.success('修改标签成功')
@@ -248,7 +319,15 @@ cube.windows.message.on('received',(id:any) => {
     queryBlacklist()
   }
 })
-
+// 改变当前大区
+const handleUpdateArea = (value:string) => {
+  const config = JSON.parse(String(localStorage.getItem('config')))
+  blacklist.value.length = 0
+  areaSetting.value = value
+  config.currentArea = value
+  localStorage.setItem('config', JSON.stringify(config))
+  queryBlacklist()
+}
 
 </script>
 

@@ -29,7 +29,8 @@ export const config: any = {
   'isGameInWindow': true,
   'is101': false,
   'isJungleTime': true,
-  'isAutoLaunchGame':true
+  'isAutoLaunchGame':true,
+  'currentArea':'t_1'
 }
 
 if (localStorage.getItem('config') === null) {
