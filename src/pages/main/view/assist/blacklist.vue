@@ -3,7 +3,7 @@
     <n-card class="boxShadow listCard" size="small" content-style="padding:0px">
       <n-space v-if="blacklist.length=== 0" style="margin: 10px 0px 10px 0px"
                justify="center" :size="[0,0]">
-          <p style="color: #666F75;">笔记功能介绍请查看更新详情</p>
+          <p style="color: #666F75;">当前大区暂无你的排位笔记哟</p>
           <p style="color: #666F75">愿你的排位笔记永远没有笔记</p>
       </n-space>
       <n-scrollbar v-else style="max-height: 525px;">
@@ -35,14 +35,23 @@
       </n-scrollbar>
     </n-card>
     <n-card class="boxShadow"  size="small" content-style="padding:10px 0px 5px 0px">
-      <n-space justify="center" :size="[0,10]">
-        <n-space :size="[18,0]" >
-          <n-select style="width: 108px" :show-checkmark="false" @update:value="handleUpdateArea($event)"
-                    v-model:value="areaSetting" :options="areaOptions" />
-          <n-button @click="addBlacklistActive=true">新增</n-button>
+      <n-space justify="center" :size="[0,5]">
+        <n-space style="width: 215px;" justify="space-between" >
+          <n-tree-select
+            size="small" :show-checkmark="false" :show-path="false"
+            :menu-props="{style:'width:130px'}"
+            @update:value="handleUpdateArea($event)"
+            v-model:value="areaSetting" :options="areaOptions" >
+          </n-tree-select>
+          <n-button @click="addBlacklistActive=true" size="small">新增</n-button>
         </n-space>
 
-        <p style="color: #9aa4af;">营造良好游戏环境从你我做起</p>
+
+        <div>
+          <p style="color: #9aa4af;">营造良好游戏环境从你我做起
+            <span style="color: #666F75;cursor: pointer">教程</span></p>
+
+        </div>
       </n-space>
     </n-card>
     <n-drawer v-model:show="active"
@@ -135,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import {NCard,NSpace,NList,NPopover,NInput,NTag,NPopconfirm,NSelect,
+import {NCard,NSpace,NList,NPopover,NInput,NTag,NPopconfirm,NTreeSelect,
   NListItem,NButton,NScrollbar,NEllipsis,NDrawer,NDrawerContent,useMessage} from 'naive-ui'
 import {onMounted, Ref, ref, watch} from "vue"
 import PickSummoner from "./pickSummoner.vue"

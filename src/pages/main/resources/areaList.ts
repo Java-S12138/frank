@@ -32,119 +32,137 @@ export const areaList = {
 
 export const areaOptions = [
   {
-    "value": "t_1",
-    "label": "艾欧尼亚"
+    "key": "telecom",
+    "label": "电信大区",
+    "children":[
+      {
+        "key": "t_1",
+        "label": "艾欧尼亚"
+      },
+      {
+        "key": "t_2",
+        "label": "祖安"
+      },
+      {
+        "key": "t_3",
+        "label": "诺克萨斯"
+      },
+      {
+        "key": "t_4",
+        "label": "班德尔城"
+      },
+      {
+        "key": "t_5",
+        "label": "皮尔特沃夫"
+      },
+      {
+        "key": "t_6",
+        "label": "战争学院"
+      },
+      {
+        "key": "t_7",
+        "label": "巨神峰"
+      },
+      {
+        "key": "t_8",
+        "label": "雷瑟守备"
+      },
+      {
+        "key": "t_9",
+        "label": "裁决之地"
+      },
+      {
+        "key": "t_10",
+        "label": "黑色玫瑰"
+      },
+      {
+        "key": "t_11",
+        "label": "暗影岛"
+      },
+      {
+        "key": "t_12",
+        "label": "钢铁烈阳"
+      },
+      {
+        "key": "t_13",
+        "label": "水晶之痕"
+      },
+      {
+        "key": "t_14",
+        "label": "均衡教派"
+      },
+      {
+        "key": "t_15",
+        "label": "影流"
+      },
+      {
+        "key": "t_16",
+        "label": "守望之海"
+      },
+      {
+        "key": "t_17",
+        "label": "征服之海"
+      },
+      {
+        "key": "t_18",
+        "label": "卡拉曼达"
+      },
+      {
+        "key": "t_19",
+        "label": "皮城警备"
+      },
+    ]
   },
   {
-    "value": "t_2",
-    "label": "祖安"
+    "key": "netcom",
+    "label": "网通大区",
+    "children":[
+      {
+        "key": "n_1",
+        "label": "比尔吉沃特"
+      },
+      {
+        "key": "n_2",
+        "label": "德玛西亚"
+      },
+      {
+        "key": "n_3",
+        "label": "弗雷尔卓德"
+      },
+      {
+        "key": "n_4",
+        "label": "无畏先锋"
+      },
+      {
+        "key": "n_5",
+        "label": "恕瑞玛"
+      },
+      {
+        "key": "n_6",
+        "label": "扭曲丛林"
+      },
+      {
+        "key": "n_7",
+        "label": "巨龙之巢"
+      },
+    ]
   },
   {
-    "value": "t_3",
-    "label": "诺克萨斯"
-  },
-  {
-    "value": "t_4",
-    "label": "班德尔城"
-  },
-  {
-    "value": "t_5",
-    "label": "皮尔特沃夫"
-  },
-  {
-    "value": "t_6",
-    "label": "战争学院"
-  },
-  {
-    "value": "t_7",
-    "label": "巨神峰"
-  },
-  {
-    "value": "t_8",
-    "label": "雷瑟守备"
-  },
-  {
-    "value": "t_9",
-    "label": "裁决之地"
-  },
-  {
-    "value": "t_10",
-    "label": "黑色玫瑰"
-  },
-  {
-    "value": "t_11",
-    "label": "暗影岛"
-  },
-  {
-    "value": "t_12",
-    "label": "钢铁烈阳"
-  },
-  {
-    "value": "t_13",
-    "label": "水晶之痕"
-  },
-  {
-    "value": "t_14",
-    "label": "均衡教派"
-  },
-  {
-    "value": "t_15",
-    "label": "影流"
-  },
-  {
-    "value": "t_16",
-    "label": "守望之海"
-  },
-  {
-    "value": "t_17",
-    "label": "征服之海"
-  },
-  {
-    "value": "t_18",
-    "label": "卡拉曼达"
-  },
-  {
-    "value": "t_19",
-    "label": "皮城警备"
-  },
-  {
-    "value": "n_1",
-    "label": "比尔吉沃特"
-  },
-  {
-    "value": "n_2",
-    "label": "德玛西亚"
-  },
-  {
-    "value": "n_3",
-    "label": "弗雷尔卓德"
-  },
-  {
-    "value": "n_4",
-    "label": "无畏先锋"
-  },
-  {
-    "value": "n_5",
-    "label": "恕瑞玛"
-  },
-  {
-    "value": "n_6",
-    "label": "扭曲丛林"
-  },
-  {
-    "value": "n_7",
-    "label": "巨龙之巢"
-  },
-  {
-    "value": "o_1",
-    "label": "峡谷之巅"
-  },
-  {
-    "value": "o_2",
-    "label": "男爵领域"
-  },
-  {
-    "value": "o_3",
-    "label": "教育网专区"
+    "key": "othercom",
+    "label": "其它大区",
+    "children":[
+      {
+        "key": "o_1",
+        "label": "峡谷之巅"
+      },
+      {
+        "key": "o_2",
+        "label": "男爵领域"
+      },
+      {
+        "key": "o_3",
+        "label": "教育网专区"
+      }
+    ]
   }
 ]

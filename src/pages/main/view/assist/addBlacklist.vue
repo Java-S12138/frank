@@ -9,8 +9,7 @@
           v-model:value="blacklistName"
           placeholder="输入召唤师昵称"
         />
-        <n-select style="width: 108px" :show-checkmark="false" @update:value="handleUpdateArea($event)"
-                  v-model:value="areaSetting" :options="areaOptions" />
+        <n-tag size="large" :color="{ color: '#fafafc', textColor: '#9AA4AF' }"  :bordered="false">{{queryCurrenDate()}}</n-tag>
       </n-space>
     </template>
     <template #footer>
@@ -48,7 +47,6 @@ import {NSpace,NInput,NSelect,NTag,NButton,NDrawerContent,useMessage} from 'naiv
 import {ref,onBeforeMount} from "vue";
 import {isStoreageHas} from "../../lcu/utils";
 import {invokeLcu} from "../../lcu";
-import {areaOptions} from "../../resources/areaList";
 import {config} from "../../utils/config";
 
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
@@ -85,7 +83,6 @@ const blacklistContent = ref('')
 const blacklistName = ref('')
 const message = useMessage()
 const emits = defineEmits(['closeDrawer'])
-const areaSetting = ref(JSON.parse(String(localStorage.getItem('config'))).currentArea)
 
 // 判断当前召唤师是否存在于黑名单中
 onBeforeMount(() => {
@@ -134,12 +131,6 @@ const querySummonerId = async (nickname:string) => {
     return null
   }else
     return res.summonerId
-}
-const handleUpdateArea = (value:string) => {
-  areaSetting.value = value
-  const config = JSON.parse(String(localStorage.getItem('config')))
-  config.currentArea = value
-  localStorage.setItem('config', JSON.stringify(config))
 }
 </script>
 
