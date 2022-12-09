@@ -37,7 +37,6 @@
         placeholder="请输入拉黑原因"
       />
 
-
     </n-space>
   </n-drawer-content>
 </template>
@@ -47,10 +46,11 @@ import {NSpace,NInput,NSelect,NTag,NButton,NDrawerContent,useMessage} from 'naiv
 import {ref,onBeforeMount} from "vue";
 import {isStoreageHas} from "../../lcu/utils";
 import {invokeLcu} from "../../lcu";
-import {config} from "../../utils/config";
+import {PlayerInfo} from "../../interface/blacklistTypes";
+import {blacklistServe} from "../../utils/request";
 
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
-const props = defineProps({
+const props:any = defineProps({
   name:{
     type:String,
     default:''
@@ -58,6 +58,12 @@ const props = defineProps({
   summonerId:{
     type:String,
     default:''
+  },
+  onlinePlayerInfo:{
+    type:Object
+  },
+  localSummonerInfo:{
+    type:Object
   }
 })
 const selectValue = ref('摆烂')
@@ -72,8 +78,8 @@ const options = [
     label: "演员",
     value: '演员',
   },{
-    label: "脏兵",
-    value: '脏兵',
+    label: "脚本",
+    value: '脚本',
   },{
     label: "挂机",
     value: '挂机',
@@ -94,17 +100,65 @@ onBeforeMount(() => {
 })
 
 const queryCurrenDate = () => {
-  var myDate = new Date()
-  return myDate.toLocaleDateString()
+  let nowDate = new Date();
+  let year = nowDate.getFullYear();
+  let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1)
+    : nowDate.getMonth() + 1;
+  let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
+    .getDate();
+  return  year + "-" + month + "-" + day;
+}
+
+// 更新玩家信息
+const updatePlayerInfo = async (player:PlayerInfo,haterSumId:string,areaSetting:string) => {
+  const tempBlacklist = JSON.parse(player.haterIdList)
+  if (tempBlacklist[areaSetting].sumIdList.includes(haterSumId)){
+    return true
+  }
+  tempBlacklist[areaSetting].sumIdList.push(haterSumId)
+  player.haterIdList = JSON.stringify(tempBlacklist)
+  const res = await blacklistServe({
+    url:'/player/updatePlayer',
+    method:'PUT',
+    data:player
+  })
+  return res?.data?.code===0 ? true : false
+}
+// 更新Hater信息
+const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:string) => {
+  const haterStruct = {
+    "sumId":summonerId,
+    "area":areaSetting,
+    "nickName":currentName,
+    "signCount":1
+  }
+  const blacklistStruct =[{
+    "playerSumName": props.localSummonerInfo.playerSumName,
+    "PlayerSumId": props.localSummonerInfo.playerSumId,
+    "matchId": "",
+    "sumId": summonerId,
+    "tag": selectValue.value,
+    "content": blacklistContent.value,
+    "handAdd": true,
+    "isShow": false
+  }]
+  const res = await blacklistServe({
+    url:'/hater/createHaterByFrank',
+    method:'POST',
+    data: {hater:haterStruct,blacklist:blacklistStruct}
+  })
+  return res?.data?.code===0 ? true : false
 }
 
 const confirmShielding = async () => {
   const currentName = props.name !== '' ? props.name : blacklistName.value
+  const areaSetting = JSON.parse(String(localStorage.getItem('config'))).currentArea
   if (currentName ===''){
     message.error('召唤师昵称不能为空 !')
     return
   }
-  const summonerId = props.summonerId !== '' ?props.summonerId : await querySummonerId(currentName)
+  // const summonerId = props.summonerId !== '' ?props.summonerId : await querySummonerId(currentName)
+  const summonerId = '2022005'
   if (summonerId === null){
     message.error('哎呀 召唤师不存在 !')
     return
@@ -113,16 +167,19 @@ const confirmShielding = async () => {
     message.error('拉黑原因不能为空 !')
     return
   }
-  localBlacklist[`${summonerId}`] = {
-    nickname:currentName,
-    date:queryCurrenDate(),
-    timestamp:Date.now(),
-    content:blacklistContent.value,
-    tag:selectValue.value,
+
+  const [updateHater,updatePlayer] = await Promise.all([
+    updatePlayerInfo(<PlayerInfo>props.onlinePlayerInfo,summonerId,areaSetting),
+    updateHaterInfo(String(summonerId),areaSetting,currentName)
+  ])
+
+  if (updateHater && updatePlayer){
+    emits('closeDrawer','closeDrawer') //向父组件发送消息关闭抽屉
+    message.success(`${currentName}   拉黑成功😡`)
+  }else {
+    message.error(`${currentName}   拉黑失败`)
   }
-  localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
-  emits('closeDrawer','closeDrawer') //向父组件发送消息关闭抽屉
-  message.success(`${currentName}   拉黑成功😡`)
+
 }
 
 const querySummonerId = async (nickname:string) => {

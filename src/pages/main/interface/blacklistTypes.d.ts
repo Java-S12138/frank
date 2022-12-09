@@ -1,13 +1,21 @@
-export interface OnlineBlacklist {
+export interface PlayerInfo {
+  ID: number;
+  CreatedAt: string;
+  UpdatedAt: string;
+  playerId: string;
+  haterIdList: string;
+}
+
+export interface OnlineBlacklistTpye {
   nickname:string,
   playerSumId:string
   sumIdList:string[]
 }
 
 export interface Hater {
-  iD: number;
-  createdAt: string;
-  updatedAt: string;
+  ID: number;
+  CreatedAt: string;
+  UpdatedAt: string;
   sumId: string;
   area: string;
   nickName: string;
@@ -16,7 +24,7 @@ export interface Hater {
 }
 
 export interface HaterItem {
-  iD: number;
+  ID: number;
   CreatedAt: string;
   UpdatedAt: string;
   hId: number;

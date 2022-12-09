@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <n-card class="boxShadow listCard" size="small" content-style="padding:0px">
       <n-space v-if="blacklist.length=== 0" style="margin: 10px 0px 10px 0px"
                justify="center" :size="[0,0]">
@@ -28,12 +29,16 @@
 
               <p style="color: #9aa4af;"> {{ formatDate(blackSummoner.blacklist.UpdatedAt) }}</p>
               <n-button size="small" type="error"
-                        dashed @click="getDetails(blackSummoner.nickName,blackSummoner.blacklist)"> {{ showTagContent(blackSummoner.blacklist.tag) }}</n-button>
+                        :secondary="localSummonerInfo.playerSumId===blackSummoner.blacklist.playerSumId ? false : true"
+                        @click="getDetails(blackSummoner.nickName,blackSummoner.blacklist)">
+                        {{ showTagContent(blackSummoner.blacklist.tag) }}
+              </n-button>
             </n-space>
           </n-list-item>
         </n-list>
       </n-scrollbar>
     </n-card>
+
     <n-card class="boxShadow"  size="small" content-style="padding:10px 0px 5px 0px">
       <n-space justify="center" :size="[0,5]">
         <n-space style="width: 215px;" justify="space-between" >
@@ -46,7 +51,6 @@
           <n-button @click="addBlacklistActive=true" size="small">新增</n-button>
         </n-space>
 
-
         <div>
           <p style="color: #9aa4af;">营造良好游戏环境从你我做起
             <span style="color: #666F75;cursor: pointer">教程</span></p>
@@ -54,6 +58,7 @@
         </div>
       </n-space>
     </n-card>
+
     <n-drawer v-model:show="active"
               style="border-top-left-radius: 12px;border-top-right-radius: 12px"
               :height="420" placement="bottom" :auto-focus = "false">
@@ -61,12 +66,11 @@
         <template #header>
           <n-space justify="space-between" style="width: 272px;">
             <n-tag size="large" :bordered="false" type="error" >{{detialsNickname}}</n-tag>
-            <n-popover trigger="hover" :show-arrow="false" placement="left"
-                       v-if="loaclSummonerInfo.playerSumName!==detialsJson.playerSumName">
+            <n-popover v-if="detialsJson.isShow" trigger="hover" :show-arrow="false" placement="left">
               <template #trigger>
-                <n-tag size="large" :bordered="false" type="success">{{detialsJson.playerSumName}}</n-tag>
+                <n-tag  size="large" :bordered="false" type="success">净化</n-tag>
               </template>
-              <p>当前数据由此用户提供</p>
+              <p>当前数据已共享给其他召唤师使用</p>
             </n-popover>
             <n-tag :color="{ color: '#fafafc', textColor: '#9AA4AF' }" :bordered="false"
                    size="large" v-else>{{formatDate(detialsJson.UpdatedAt)}}</n-tag>
@@ -74,10 +78,10 @@
           </n-space>
         </template>
         <template #footer>
-          <n-space style="width: 270px;" justify="space-between">
+          <n-space v-if="localSummonerInfo.playerSumId===detialsJson.playerSumId" style="width: 270px;" justify="space-between">
 
             <n-popconfirm
-              @positive-click="reviseTag"
+              @positive-click="reviseContent"
 
               :show-icon="false" positive-text="修改" negative-text="取消"
             >
@@ -118,6 +122,16 @@
             </n-space>
 
           </n-space>
+          <n-space v-else style="width: 270px;" justify="space-between">
+            <n-tag type="error" :bordered="false"
+                   >{{detialsJson.tag}}</n-tag>
+              <n-popover trigger="hover" :show-arrow="false" placement="left">
+                <template #trigger>
+                  <n-tag  :bordered="false" type="success">{{detialsJson.playerSumName}}</n-tag>
+                </template>
+                <p>当前数据由此用户提供</p>
+              </n-popover>
+          </n-space>
         </template>
           <n-scrollbar style="max-height: 250px;">
             <n-input
@@ -126,19 +140,24 @@
               autosize
               placeholder="请输入拉黑原因"
               :bordered="false"
-              style="padding-left: 6px"
+              style="padding-left: 6.5px"
             />
           </n-scrollbar>
 
-        <p class="tipText">点击文字区域可以修改黑名单内容</p>
+        <p class="tipText" v-if="localSummonerInfo.playerSumId===detialsJson.playerSumId">点击文字区域可以修改黑名单内容</p>
       </n-drawer-content>
     </n-drawer>
 
     <pick-summoner @refreshList="queryBlacklist"></pick-summoner>
 
-    <n-drawer v-model:show="addBlacklistActive" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
+    <n-drawer v-model:show="addBlacklistActive"
+              style="border-top-left-radius: 12px;border-top-right-radius: 12px"
               :height="420" placement="bottom" :auto-focus="false">
-      <add-blacklist @closeDrawer="addBlacklistFunc"></add-blacklist>
+      <add-blacklist
+        @closeDrawer="addBlacklistFunc"
+        :onlinePlayerInfo="onlinePlayerInfo"
+        :localSummonerInfo="localSummonerInfo"
+      ></add-blacklist>
     </n-drawer>
   </div>
 </template>
@@ -152,21 +171,35 @@ import AddBlacklist from "./addBlacklist.vue"
 import {assistStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {blacklistServe} from "../../utils/request";
-import {OnlineBlacklist,HaterItem,Hater} from "../../interface/blacklistTypes";
+import {OnlineBlacklistTpye,HaterItem,Hater,PlayerInfo} from "../../interface/blacklistTypes";
 import {areaOptions} from "../../resources/areaList";
 
 const active = ref(false)
 const addBlacklistActive = ref(false)
 const blacklist:Ref<any> = ref([])
-const detialsJson = ref({})
+const detialsJson:Ref<HaterItem> = ref({
+  "ID": 0,
+  "CreatedAt": "",
+  "UpdatedAt": "",
+  "hId": 0,
+  "playerSumName": "",
+  "playerSumId": "",
+  "matchId": "",
+  "sumId": "",
+  "tag": "",
+  "content": "",
+  "handAdd": false,
+  "isShow": true
+})
 const detialsNickname = ref('')
 const message = useMessage()
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist')))
 const areaSetting = ref(JSON.parse(String(localStorage.getItem('config'))).currentArea)
 const store = assistStore()
 const {currentBlackList}:any = storeToRefs(store)
-const loaclSummonerInfo = ref({playerSumId:'123123',playerSumName:'多元函数积分学'})
+const localSummonerInfo = ref({playerSumId:'2001001',playerSumName:'多元函数积分学'})
 const cubeUserId = ref('')
+const onlinePlayerInfo:Ref<PlayerInfo>|Ref<null> = ref(null)
 
 watch(currentBlackList.value,() => {
   if (currentBlackList.value.length === 1){
@@ -206,29 +239,25 @@ const shiftFirst = (currentSummonerId:number) => {
 
 // 从本地查询黑名单列表
 const queryBlacklist = async () => {
+  onlinePlayerInfo.value = null
+  if (areaSetting.value==='othercom' || areaSetting.value==='netcom' || areaSetting.value==='telecom'){
+    message.warning('请选择大区')
+    return
+  }
   const res = await  blacklistServe({
     url:'/player/findPlayerByPlayerId',
     params:{'playerId':cubeUserId.value},
     method:'GET'
   })
-  if (res.status !== 200){return}
-  const onlineBlacklist:OnlineBlacklist = res.data.code=== 0 ? JSON.parse(res.data.data.haterIdList)[areaSetting.value] : null
+  if (res.status !== 200 && res.data.code !== 0){
+    message.error('接口出现异常')
+    return
+  }
+  onlinePlayerInfo.value = res.data.data
+  const onlineBlacklist:OnlineBlacklistTpye =  JSON.parse(res.data.data.haterIdList)[areaSetting.value]
   if (onlineBlacklist?.sumIdList?.length > 0){
-    console.log(onlineBlacklist)
     findHaterByHaterId(onlineBlacklist.sumIdList)
   }
-  // console.log(onlineBlacklist)
-  // localBlacklist = JSON.parse(String(localStorage.getItem('blacklist')))
-  // console.log(localBlacklist)
-  // blacklist.value = []
-  // // 获取黑名单数据
-  // for (const black in localBlacklist) {
-  //   const tempList:any[] = [localBlacklist[black].nickname,localBlacklist[black].date,
-  //     localBlacklist[black].tag,localBlacklist[black].timestamp,black]
-  //   blacklist.value.push(tempList)
-  // }
-  // blacklist.value.sort((x:any,y:any) => {return y[3]-x[3]})
-  // console.log(blacklist.value)
 }
 
 // 通过HaterId查询数据
@@ -239,35 +268,40 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
     data:{'sumIdList':haterIdList},
     method:'POST'
   })
+  if (res.status !== 200){
+    message.error('接口出现异常')
+    return
+  }
   const haterList:Hater[] =  res.data.data
-  console.log(haterList)
-  console.log('---------------------------------')
   for (const haterItem of haterList) {
     const blacklistHater:HaterItem[] = haterItem.blacklist
     for (const blacklistItem of blacklistHater) {
-      const tempList = {
-        sumId:haterItem.sumId,nickName:haterItem.nickName,blacklist:blacklistItem
+      if (localSummonerInfo.value.playerSumId===blacklistItem.playerSumId){
+        blacklist.value.push({
+          sumId:haterItem.sumId,nickName:haterItem.nickName,blacklist:blacklistItem
+        })
+      }else if (blacklistItem.isShow) {
+        blacklist.value.push({
+          sumId: haterItem.sumId, nickName: haterItem.nickName, blacklist: blacklistItem
+        })
       }
-      blacklist.value.push(tempList)
     }
   }
-  // blacklist.value.sort((x:any,y:any) => {return y[3]-x[3]})
-  console.log(blacklist.value)
-  return
-  // for (const blackitem:HaterItem in hater) {
-  //   const tempList:any[] = [
-  //     black.nickname,localBlacklist[black].date,
-  //     localBlacklist[black].tag,localBlacklist[black].timestamp,black
-  //   ]
-  //   blacklist.value.push(tempList)
-  // }
-  // blacklist.value.sort((x:any,y:any) => {return y[3]-x[3]})
-  console.log(res)
+  blacklist.value.sort((x:any,y:any) => {return y.blacklist.ID-x.blacklist.ID})
 }
 
 // 格式化数据库时间格式
 const formatDate = (dateStr:string) => {
   return dateStr.split('T')[0]
+}
+const queryCurrenDate = () => {
+  let nowDate = new Date();
+  let year = nowDate.getFullYear();
+  let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1)
+    : nowDate.getMonth() + 1;
+  let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
+    .getDate();
+  return  year + "-" + month + "-" + day;
 }
 
 // 获取单个召唤师的详细信息
@@ -279,8 +313,6 @@ const getDetails = (nickname:string,haterItem:HaterItem) => {
 }
 // 修改黑名单内容
 const reviseContent = async () => {
-  // localBlacklist[detialsJson.summonerId]['content'] = detialsJson.content
-  // localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
   active.value = false
   const res = await blacklistServe({
     url:'/blacklist/updateBlacklist',
@@ -288,30 +320,64 @@ const reviseContent = async () => {
     method:'PUT'
   })
   if (res.status===200){
+    detialsJson.value.UpdatedAt = queryCurrenDate()
     message.success('修改内容成功')
   }else {
     message.error('提交修改内容失败')
     queryBlacklist()
   }
-  console.log(res)
-  // queryBlacklist()
 
 }
-// 修改标签内容
-const reviseTag = () => {
 
-  // localBlacklist[detialsJson.summonerId]['tag'] = detialsJson.tag
-  // localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
-  queryBlacklist()
-  active.value = false
-  message.success('修改标签成功')
-}
 // 删除某个黑名单
-const deleteBlackElement = () => {
-  delete localBlacklist[detialsJson.summonerId]
-  localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
-  queryBlacklist()
+const deleteBlackElement = async () => {
   active.value = false
+  const res = await blacklistServe({
+    url:'/blacklist/deleteBlacklist',
+    data:detialsJson.value,
+    method:'DELETE'
+  })
+  if (res.status===200){
+    isHavaItem(detialsJson.value.sumId,detialsJson.value.hId)
+    message.success('修改内容成功')
+    queryBlacklist()
+  }else {
+    message.error('删除名单失败')
+    queryBlacklist()
+  }
+}
+// 判断当前召唤师删除的Hater是否还有剩余内容
+const isHavaItem = async (sumId:string,hId:number) => {
+  const res = await blacklistServe({
+    url:'blacklist/getBlacklistList',
+    params:{sumId:sumId},
+    method:'GET'
+  })
+  if (res.status===200){
+    const localCount = res.data?.data?.list.find(
+      (i:any) => (i.playerSumId===localSummonerInfo.value.playerSumId))
+    if (localCount===undefined){
+      const tempPlayerInfo = <PlayerInfo><unknown>onlinePlayerInfo.value
+      const tempBlacklist = JSON.parse(tempPlayerInfo.haterIdList)
+      let index = tempBlacklist[areaSetting.value].sumIdList.indexOf(sumId)
+      if(index > -1) {
+        tempBlacklist[areaSetting.value].sumIdList.splice(index,1)
+      }
+      tempPlayerInfo.haterIdList =  JSON.stringify(tempBlacklist)
+      blacklistServe({
+        url:'/player/updatePlayer',
+        method:'PUT',
+        data:tempPlayerInfo
+      })
+    }
+    if (res.data?.data?.list.length===0){
+      blacklistServe({
+        url:'/hater/deleteHater',
+        method:'DELETE',
+        data: {ID:hId}
+      })
+    }
+  }
 }
 // 通过字数判断展示标签的内容
 const showTagContent = (tag:string) => {
