@@ -276,10 +276,12 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
   for (const haterItem of haterList) {
     const blacklistHater:HaterItem[] = haterItem.blacklist
     for (const blacklistItem of blacklistHater) {
+      // 显示本地召唤的数据
       if (localSummonerInfo.value.playerSumId===blacklistItem.playerSumId){
         blacklist.value.push({
           sumId:haterItem.sumId,nickName:haterItem.nickName,blacklist:blacklistItem
         })
+      // 如果不是本地召唤师, 判断是否已经共享给了其他用户
       }else if (blacklistItem.isShow) {
         blacklist.value.push({
           sumId: haterItem.sumId, nickName: haterItem.nickName, blacklist: blacklistItem
@@ -294,14 +296,15 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
 const formatDate = (dateStr:string) => {
   return dateStr.split('T')[0]
 }
+
 const queryCurrenDate = () => {
-  let nowDate = new Date();
-  let year = nowDate.getFullYear();
+  let nowDate = new Date()
+  let year = nowDate.getFullYear()
   let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1)
-    : nowDate.getMonth() + 1;
+    : nowDate.getMonth() + 1
   let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
-    .getDate();
-  return  year + "-" + month + "-" + day;
+    .getDate()
+  return  year + "-" + month + "-" + day
 }
 
 // 获取单个召唤师的详细信息
@@ -319,7 +322,7 @@ const reviseContent = async () => {
     data:detialsJson.value,
     method:'PUT'
   })
-  if (res.status===200){
+  if (res.data?.code===0){
     detialsJson.value.UpdatedAt = queryCurrenDate()
     message.success('修改内容成功')
   }else {
@@ -332,12 +335,13 @@ const reviseContent = async () => {
 // 删除某个黑名单
 const deleteBlackElement = async () => {
   active.value = false
+  // 根据黑名单的内容 删除对应的黑名单
   const res = await blacklistServe({
     url:'/blacklist/deleteBlacklist',
     data:detialsJson.value,
     method:'DELETE'
   })
-  if (res.status===200){
+  if (res.data?.code===0){
     isHavaItem(detialsJson.value.sumId,detialsJson.value.hId)
     message.success('修改内容成功')
     queryBlacklist()
@@ -348,18 +352,21 @@ const deleteBlackElement = async () => {
 }
 // 判断当前召唤师删除的Hater是否还有剩余内容
 const isHavaItem = async (sumId:string,hId:number) => {
+  // 根据Hater的召唤师 查询当前Hater的黑名单数据
   const res = await blacklistServe({
     url:'blacklist/getBlacklistList',
     params:{sumId:sumId},
     method:'GET'
   })
-  if (res.status===200){
-    const localCount = res.data?.data?.list.find(
-      (i:any) => (i.playerSumId===localSummonerInfo.value.playerSumId))
-    if (localCount===undefined){
+  if (res.data?.code===0){
+    // 判断Hater的黑名单中是否还存在 本地召唤师添加的数据
+    // 如果不存在, 需要更新Player里面的数据
+    const isHasLocal = res.data?.data?.list.find(
+      (i:HaterItem) => (i.playerSumId===localSummonerInfo.value.playerSumId))
+    if (isHasLocal===undefined){
       const tempPlayerInfo = <PlayerInfo><unknown>onlinePlayerInfo.value
       const tempBlacklist = JSON.parse(tempPlayerInfo.haterIdList)
-      let index = tempBlacklist[areaSetting.value].sumIdList.indexOf(sumId)
+      const index = tempBlacklist[areaSetting.value].sumIdList.indexOf(sumId)
       if(index > -1) {
         tempBlacklist[areaSetting.value].sumIdList.splice(index,1)
       }
@@ -370,6 +377,7 @@ const isHavaItem = async (sumId:string,hId:number) => {
         data:tempPlayerInfo
       })
     }
+    // 如果Hater的黑名单数据为空, 删除当前的Hater
     if (res.data?.data?.list.length===0){
       blacklistServe({
         url:'/hater/deleteHater',
