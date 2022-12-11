@@ -39,7 +39,7 @@ const tabsInstRef = ref(['champRank', 'rune','blacklist'])
 const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
-const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo}:any = storeToRefs(store)
+const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,onlinePlayerInfo}:any = storeToRefs(store)
 const isSwitchBlacklist = JSON.parse(String(localStorage.getItem('config'))).isSwitchBlacklist
 
 cube.windows.message.on('received',async (id) => {
@@ -70,15 +70,17 @@ cube.windows.message.on('received',async (id) => {
 
 
 const getCurrentBlacklist = (summonerInfo:any) => {
-  let summonerList = []
+  const areaSetting = JSON.parse(String(localStorage.getItem('config'))).currentArea
+  // 获取当前队伍中的召唤师ID
+  const summonerList = summonerInfo.reduce((res:String[],item:{name:string,summonerId:number}) => {
+    return res.concat([String(item.summonerId)])
+  },[])
+  console.log(summonerList)
 
-  for (const summoner of summonerInfo) {
-    summonerList.push(`${summoner.summonerId}`)
-  }
-  if (localStorage.getItem('blacklist') !== null && localStorage.getItem('blacklist') !=='{}'){
-    const blacklistIds = Object.keys(JSON.parse(String(localStorage.getItem('blacklist'))))
+  if (onlinePlayerInfo.value.haterIdList[areaSetting] !== undefined){
+    const blacklistIds = onlinePlayerInfo.value.haterIdList[areaSetting].sumIdList
     for (const blacklistId of blacklistIds) {
-      if (summonerList.indexOf(blacklistId) !=-1){
+      if (summonerList.indexOf(blacklistId) !== -1){
         currentBlackList.value.push(blacklistId)
       }
     }
@@ -86,6 +88,7 @@ const getCurrentBlacklist = (summonerInfo:any) => {
       transValue.value = 'blacklist'
     }
   }
+  console.log( currentBlackList.value)
 }
 
 // 显示队伍战绩历史窗口

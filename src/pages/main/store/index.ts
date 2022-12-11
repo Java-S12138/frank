@@ -29,6 +29,8 @@ export const assistStore = defineStore('assist', {
       endGameAfterInfo:[[],[]],// 当前对局敌我双方信息
       currentBlackList:[],// 当前对局中出现的黑名单队友
       showSummonerInfoModal:false,
+      onlinePlayerInfo:{},
+      localSummonerInfo:{playerSumId:'2001001',playerSumName:'多元函数积分学'}
     }
   }
 })

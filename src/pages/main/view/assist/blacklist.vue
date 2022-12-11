@@ -2,20 +2,21 @@
   <div>
 
     <n-card class="boxShadow listCard" size="small" content-style="padding:0px">
-      <n-space v-if="blacklist.length=== 0" style="margin: 10px 0px 10px 0px"
+      <n-space v-if="onlineListStatus===0" style="margin: 10px 0px 10px 0px"
                justify="center" :size="[0,0]">
           <p style="color: #666F75;">当前大区暂无你的排位笔记哟</p>
           <p style="color: #666F75">愿你的排位笔记永远没有笔记</p>
       </n-space>
-      <n-scrollbar v-else style="max-height: 525px;">
-        <n-list style="margin-right:13px;margin-left: 13px" >
+      <n-scrollbar v-else-if="onlineListStatus===1" style="height: 545px;margin-bottom: 5px">
+        <n-list style="margin-right:13px;margin-left: 13px"
+                class="fade-in-top" :key="blacklist.length">
           <n-list-item v-for="blackSummoner in blacklist">
             <n-space justify="space-between" class="alignCenter">
               <n-ellipsis style="
                 max-width: 112px;
                 width:112px;
                 color: #ff6666;"
-                          v-if="currentBlackList.indexOf(blackSummoner.sumId) !=-1"
+                v-if="currentBlackList.indexOf(blackSummoner.sumId) !=-1"
               >
                 {{ blackSummoner.nickName }}
               </n-ellipsis>
@@ -37,6 +38,9 @@
           </n-list-item>
         </n-list>
       </n-scrollbar>
+      <n-tag type="warning"  style="margin: 12px 0px 12px 23px"
+             v-else-if="onlineListStatus===2" :bordered="false">
+        服务器接口出现异常 请稍后再次尝试</n-tag>
     </n-card>
 
     <n-card class="boxShadow"  size="small" content-style="padding:10px 0px 5px 0px">
@@ -68,7 +72,7 @@
             <n-tag size="large" :bordered="false" type="error" >{{detialsNickname}}</n-tag>
             <n-popover v-if="detialsJson.isShow" trigger="hover" :show-arrow="false" placement="left">
               <template #trigger>
-                <n-tag  size="large" :bordered="false" type="success">净化</n-tag>
+                <n-tag  size="large" :bordered="false" type="success">共享</n-tag>
               </template>
               <p>当前数据已共享给其他召唤师使用</p>
             </n-popover>
@@ -155,8 +159,6 @@
               :height="420" placement="bottom" :auto-focus="false">
       <add-blacklist
         @closeDrawer="addBlacklistFunc"
-        :onlinePlayerInfo="onlinePlayerInfo"
-        :localSummonerInfo="localSummonerInfo"
       ></add-blacklist>
     </n-drawer>
   </div>
@@ -171,7 +173,7 @@ import AddBlacklist from "./addBlacklist.vue"
 import {assistStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {blacklistServe} from "../../utils/request";
-import {OnlineBlacklistTpye,HaterItem,Hater,PlayerInfo} from "../../interface/blacklistTypes";
+import {OnlineBlacklistTpye, HaterItem, Hater, PlayerInfo} from "../../interface/blacklistTypes";
 import {areaOptions} from "../../resources/areaList";
 
 const active = ref(false)
@@ -196,14 +198,17 @@ const message = useMessage()
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist')))
 const areaSetting = ref(JSON.parse(String(localStorage.getItem('config'))).currentArea)
 const store = assistStore()
-const {currentBlackList}:any = storeToRefs(store)
-const localSummonerInfo = ref({playerSumId:'2001001',playerSumName:'多元函数积分学'})
+const {currentBlackList,onlinePlayerInfo,localSummonerInfo}: any= storeToRefs(store)
 const cubeUserId = ref('')
-const onlinePlayerInfo:Ref<PlayerInfo>|Ref<null> = ref(null)
+const onlineListStatus = ref(0)
 
 watch(currentBlackList.value,() => {
   if (currentBlackList.value.length === 1){
-    // getDetails(currentBlackList.value[0])
+    // TODO 使用ElasticSearch 进行数据的查询
+    const haterItem = blacklist.value.find((i:any) =>i.sumId === (currentBlackList.value[0]))
+    console.log(haterItem)
+    console.log(blacklist.value)
+    getDetails(haterItem.nickName,haterItem.blacklist)
   }
   if (currentBlackList.value.value !==0){
     const loaclBlacklistSummonerId: any[] = []
@@ -239,7 +244,6 @@ const shiftFirst = (currentSummonerId:number) => {
 
 // 从本地查询黑名单列表
 const queryBlacklist = async () => {
-  onlinePlayerInfo.value = null
   if (areaSetting.value==='othercom' || areaSetting.value==='netcom' || areaSetting.value==='telecom'){
     message.warning('请选择大区')
     return
@@ -249,26 +253,33 @@ const queryBlacklist = async () => {
     params:{'playerId':cubeUserId.value},
     method:'GET'
   })
-  if (res.status !== 200 && res.data.code !== 0){
+  if (res.data.code !== 0){
+    onlineListStatus.value=2
     message.error('接口出现异常')
     return
   }
   onlinePlayerInfo.value = res.data.data
-  const onlineBlacklist:OnlineBlacklistTpye =  JSON.parse(res.data.data.haterIdList)[areaSetting.value]
+  onlinePlayerInfo.value.haterIdList = JSON.parse(res.data.data.haterIdList)
+  const onlineBlacklist:OnlineBlacklistTpye =  onlinePlayerInfo.value.haterIdList[areaSetting.value]
   if (onlineBlacklist?.sumIdList?.length > 0){
+    onlineListStatus.value = 1
     findHaterByHaterId(onlineBlacklist.sumIdList)
+  }else {
+    onlineListStatus.value = 0
   }
 }
 
 // 通过HaterId查询数据
 const findHaterByHaterId = async (haterIdList:string[]) => {
+  console.log(onlinePlayerInfo.value)
   blacklist.value.length = 0
   const res = await  blacklistServe({
     url:'/hater/findHaterBySumId',
     data:{'sumIdList':haterIdList},
     method:'POST'
   })
-  if (res.status !== 200){
+  if (res.data.code !== 0){
+    onlineListStatus.value=2
     message.error('接口出现异常')
     return
   }
@@ -309,7 +320,6 @@ const queryCurrenDate = () => {
 
 // 获取单个召唤师的详细信息
 const getDetails = (nickname:string,haterItem:HaterItem) => {
-  console.log(haterItem)
   detialsJson.value = haterItem
   detialsNickname.value = nickname
   active.value = true
@@ -342,49 +352,66 @@ const deleteBlackElement = async () => {
     method:'DELETE'
   })
   if (res.data?.code===0){
-    isHavaItem(detialsJson.value.sumId,detialsJson.value.hId)
-    message.success('修改内容成功')
-    queryBlacklist()
+    if (await isHavaItem(detialsJson.value.sumId,detialsJson.value.hId)){
+      const haterIdList:OnlineBlacklistTpye =  onlinePlayerInfo.value.haterIdList[areaSetting.value]
+      console.log(haterIdList)
+      message.success('删除成功')
+      findHaterByHaterId(haterIdList.sumIdList)
+    }else {
+      message.error('删除失败')
+    }
   }else {
-    message.error('删除名单失败')
+    message.error('删除失败')
     queryBlacklist()
   }
 }
 // 判断当前召唤师删除的Hater是否还有剩余内容
 const isHavaItem = async (sumId:string,hId:number) => {
-  // 根据Hater的召唤师 查询当前Hater的黑名单数据
-  const res = await blacklistServe({
-    url:'blacklist/getBlacklistList',
-    params:{sumId:sumId},
-    method:'GET'
-  })
-  if (res.data?.code===0){
-    // 判断Hater的黑名单中是否还存在 本地召唤师添加的数据
-    // 如果不存在, 需要更新Player里面的数据
-    const isHasLocal = res.data?.data?.list.find(
-      (i:HaterItem) => (i.playerSumId===localSummonerInfo.value.playerSumId))
-    if (isHasLocal===undefined){
-      const tempPlayerInfo = <PlayerInfo><unknown>onlinePlayerInfo.value
-      const tempBlacklist = JSON.parse(tempPlayerInfo.haterIdList)
-      const index = tempBlacklist[areaSetting.value].sumIdList.indexOf(sumId)
-      if(index > -1) {
-        tempBlacklist[areaSetting.value].sumIdList.splice(index,1)
+  try {
+    // 根据Hater的召唤师 查询当前Hater的黑名单数据
+    const res = await blacklistServe({
+      url:'blacklist/getBlacklistList',
+      params:{sumId:sumId},
+      method:'GET'
+    })
+    if (res.data?.code===0) {
+      // 判断Hater的黑名单中是否还存在 本地召唤师添加的数据
+      // 如果不存在, 需要更新Player里面的数据
+      const isHasLocal = res.data?.data?.list.find(
+        (i: HaterItem) => (i.playerSumId === localSummonerInfo.value.playerSumId))
+      if (isHasLocal === undefined) {
+        console.log(onlinePlayerInfo.value)
+        const tempBlacklist = onlinePlayerInfo.value.haterIdList
+        const index = tempBlacklist[areaSetting.value].sumIdList.indexOf(sumId)
+        if (index > -1) {
+          tempBlacklist[areaSetting.value].sumIdList.splice(index, 1)
+        }
+        onlinePlayerInfo.value.haterIdList = tempBlacklist
+        blacklistServe({
+          url: '/player/updatePlayer',
+          method: 'PUT',
+          data: {
+            ID: onlinePlayerInfo.value.ID,
+            CreatedAt:onlinePlayerInfo.value.CreatedAt,
+            playerId: onlinePlayerInfo.value.playerId,
+            haterIdList: JSON.stringify(tempBlacklist)
+          }
+        })
       }
-      tempPlayerInfo.haterIdList =  JSON.stringify(tempBlacklist)
-      blacklistServe({
-        url:'/player/updatePlayer',
-        method:'PUT',
-        data:tempPlayerInfo
-      })
+      // 如果Hater的黑名单数据为空, 删除当前的Hater
+      if (res.data?.data?.list.length === 0) {
+        blacklistServe({
+          url: '/hater/deleteHater',
+          method: 'DELETE',
+          data: {ID: hId}
+        })
+      }
+      return true
+    }else {
+      return false
     }
-    // 如果Hater的黑名单数据为空, 删除当前的Hater
-    if (res.data?.data?.list.length===0){
-      blacklistServe({
-        url:'/hater/deleteHater',
-        method:'DELETE',
-        data: {ID:hId}
-      })
-    }
+  }catch (e) {
+    return false
   }
 }
 // 通过字数判断展示标签的内容
@@ -393,7 +420,7 @@ const showTagContent = (tag:string) => {
 }
 // 新增黑名单
 const addBlacklistFunc = () => {
-  queryBlacklist()
+  findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value].sumIdList)
   addBlacklistActive.value=false
 }
 // 更新排位日记
@@ -435,4 +462,8 @@ const handleUpdateArea = (value:string) => {
   font-size: 12px;
   color: #9aa4af;
 }
+.fade-in-top{-webkit-animation:fade-in-top .6s cubic-bezier(.39,.575,.565,1.000) both;animation:fade-in-top .6s cubic-bezier(.39,.575,.565,1.000) both}
+
+@keyframes fade-in-top{0%{-webkit-transform:translateY(-50px);transform:translateY(-50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}
+
 </style>

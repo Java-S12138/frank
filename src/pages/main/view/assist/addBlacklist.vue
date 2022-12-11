@@ -35,6 +35,7 @@
         type="textarea"
         autosize
         placeholder="请输入拉黑原因"
+        maxlength="250"
       />
 
     </n-space>
@@ -48,6 +49,8 @@ import {isStoreageHas} from "../../lcu/utils";
 import {invokeLcu} from "../../lcu";
 import {PlayerInfo} from "../../interface/blacklistTypes";
 import {blacklistServe} from "../../utils/request";
+import {assistStore} from "../../store";
+import {storeToRefs} from "pinia";
 
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
 const props:any = defineProps({
@@ -59,12 +62,6 @@ const props:any = defineProps({
     type:String,
     default:''
   },
-  onlinePlayerInfo:{
-    type:Object
-  },
-  localSummonerInfo:{
-    type:Object
-  }
 })
 const selectValue = ref('摆烂')
 const options = [
@@ -87,6 +84,8 @@ const options = [
 ]
 const blacklistContent = ref('')
 const blacklistName = ref('')
+const store = assistStore()
+const {onlinePlayerInfo,localSummonerInfo}: any= storeToRefs(store)
 const message = useMessage()
 const emits = defineEmits(['closeDrawer'])
 
@@ -110,17 +109,22 @@ const queryCurrenDate = () => {
 }
 
 // 更新玩家信息
-const updatePlayerInfo = async (player:PlayerInfo,haterSumId:string,areaSetting:string) => {
-  const tempBlacklist = JSON.parse(player.haterIdList)
+const updatePlayerInfo = async (haterSumId:string,areaSetting:string) => {
+  const tempBlacklist = onlinePlayerInfo.value.haterIdList
   if (tempBlacklist[areaSetting].sumIdList.includes(haterSumId)){
     return true
   }
   tempBlacklist[areaSetting].sumIdList.push(haterSumId)
-  player.haterIdList = JSON.stringify(tempBlacklist)
+  onlinePlayerInfo.value.haterIdList = tempBlacklist
   const res = await blacklistServe({
     url:'/player/updatePlayer',
     method:'PUT',
-    data:player
+    data:{
+      ID: onlinePlayerInfo.value.ID,
+      CreatedAt:onlinePlayerInfo.value.CreatedAt,
+      playerId: onlinePlayerInfo.value.playerId,
+      haterIdList: JSON.stringify(tempBlacklist)
+    }
   })
   return res?.data?.code===0 ? true : false
 }
@@ -133,8 +137,8 @@ const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:
     "signCount":1
   }
   const blacklistStruct =[{
-    "playerSumName": props.localSummonerInfo.playerSumName,
-    "PlayerSumId": props.localSummonerInfo.playerSumId,
+    "playerSumName": localSummonerInfo.value.playerSumName,
+    "PlayerSumId": localSummonerInfo.value.playerSumId,
     "matchId": "",
     "sumId": summonerId,
     "tag": selectValue.value,
@@ -158,7 +162,9 @@ const confirmShielding = async () => {
     return
   }
   // const summonerId = props.summonerId !== '' ?props.summonerId : await querySummonerId(currentName)
-  const summonerId = '2022005'
+  // const summonerId = String(Math.floor(Math.random() * 10000000))
+  const summonerId = String(2022010)
+
   if (summonerId === null){
     message.error('哎呀 召唤师不存在 !')
     return
@@ -169,7 +175,7 @@ const confirmShielding = async () => {
   }
 
   const [updateHater,updatePlayer] = await Promise.all([
-    updatePlayerInfo(<PlayerInfo>props.onlinePlayerInfo,summonerId,areaSetting),
+    updatePlayerInfo(summonerId,areaSetting),
     updateHaterInfo(String(summonerId),areaSetting,currentName)
   ])
 

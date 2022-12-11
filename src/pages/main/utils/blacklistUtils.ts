@@ -1,6 +1,7 @@
 import {invokeLcu} from "../lcu";
 import {champDict} from "../resources/champList"
 import {lcuSummonerInfo} from "../lcu/types/homeLcuTypes";
+import {request} from "./request";
 
 // 查询本地召唤师信息
 const queryLoaclSummoner = async () => {
@@ -35,12 +36,12 @@ const getPosition = (selectedPosition:string) => {
 // 查询敌方召唤师ID和昵称
 export const queryEnemySummonerIdAndSummonerName= async () => {
   const currentId = await queryLoaclSummoner()
-  const mactchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+  // const mactchSession = await invokeLcu('get','/lol-gameflow/v1/session')
 
-  // const mactchSession = (await request({
-  //   'url': 'https://cdn.syjun.vip/frank/session.json',
-  //   method: 'GET',
-  // })).data
+  const mactchSession = (await request({
+    'url': 'https://cdn.syjun.vip/frank/session.json',
+    method: 'GET',
+  })).data
 
   let friendInfoList = []
   let enemyInfoList = []
@@ -101,19 +102,20 @@ const getChatSelectChampId = async () => {
 export const queryAllSummonerId = async () => {
   // todo 测试
   // const summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
-  // return summonerIdList
-  let summonerIdList = []
-  const chatId = await getChatSelectChampId()
-  if (chatId == null){return null}
-
-  const summonersId = await invokeLcu('get',`/lol-chat/v1/conversations/${chatId}/messages`)
-
-  for (const summonersIdElement of summonersId) {
-    summonerIdList.push(summonersIdElement.fromSummonerId)
-  }
-  // 数组去重
-  summonerIdList = [... new Set(summonerIdList)]
+  const summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,4013465288]
   return summonerIdList
+  // let summonerIdList = []
+  // const chatId = await getChatSelectChampId()
+  // if (chatId === null){return null}
+  //
+  // const summonersId = await invokeLcu('get',`/lol-chat/v1/conversations/${chatId}/messages`)
+  //
+  // for (const summonersIdElement of summonersId) {
+  //   summonerIdList.push(summonersIdElement.fromSummonerId)
+  // }
+  // // 数组去重
+  // summonerIdList = [... new Set(summonerIdList)]
+  // return summonerIdList
 }
 
 // 获取我方召唤师ID和昵称
@@ -121,8 +123,11 @@ export const querySummonerIdAndSummonerName = async () => {
   console.log('获取我方召唤师ID和昵称')
   const summonerInfoList = []
   const allSummonerId = await queryAllSummonerId()
-  // @ts-ignore
-  for (const allSummonerIdElement of allSummonerId) {
+  if (allSummonerId === null){
+    return []
+  }
+
+  for (const allSummonerIdElement of <[]>allSummonerId) {
     const currentNickname = (await querySummonerInfo(allSummonerIdElement)).displayName
     summonerInfoList.push( {name:currentNickname,summonerId:allSummonerIdElement})
   }

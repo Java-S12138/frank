@@ -92,20 +92,23 @@ const blacklistId = ref('')
 const emits = defineEmits(['refreshList'])
 
 cube.windows.message.on('received',async (id) => {
-  if (id==='show-other-summoner'){
-    if (endGameAfterInfo.value[0].length !== 0) {
-      summonersList.value = []
-      for (const summoner of endGameAfterInfo.value[0]) {
-        summonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
+  // TODO Development
+  if (id==='show-other-summoner' || id==='query-enemy-summoner'){
+    setTimeout(() => {
+      if (endGameAfterInfo.value[0].length !== 0) {
+        summonersList.value = []
+        for (const summoner of endGameAfterInfo.value[0]) {
+          summonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
+        }
       }
-    }
-    if (endGameAfterInfo.value[1]!== 0) {
-      enemySummonersList.value = []
-      for (const summoner of  endGameAfterInfo.value[1]) {
-        enemySummonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
+      if (endGameAfterInfo.value[1]!== 0) {
+        enemySummonersList.value = []
+        for (const summoner of  endGameAfterInfo.value[1]) {
+          enemySummonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
+        }
       }
-    }
-    showSummonerInfoModal.value = true
+      showSummonerInfoModal.value = true
+    },1500)
   }
 })
 
