@@ -21,12 +21,14 @@ import {
 } from "naive-ui";
 import Rune from './rune.vue'
 import ChampRank from './champRank.vue'
-import Blacklist from "./blacklist.vue"
-import {onMounted, ref} from "vue";
+import Blacklist from "./rankNote/blacklist.vue"
+import {onMounted, Ref, ref} from "vue";
 import {assistStore} from "../../store";
 import {storeToRefs} from "pinia";
-import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName} from "../../utils/blacklistUtils"
+import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName,handleHaterListBySumId} from "../../utils/blacklistUtils"
 import {invokeLcu} from "../../lcu";
+import {blacklistServe} from "../../utils/request";
+import {HaterItem} from "../../interface/blacklistTypes";
 
 onMounted(() => {
   let nTabsRail = document.querySelector('.n-tabs-rail')
@@ -39,7 +41,7 @@ const tabsInstRef = ref(['champRank', 'rune','blacklist'])
 const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
-const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,onlinePlayerInfo}:any = storeToRefs(store)
+const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,localSummonerInfo}:any = storeToRefs(store)
 const isSwitchBlacklist = JSON.parse(String(localStorage.getItem('config'))).isSwitchBlacklist
 
 cube.windows.message.on('received',async (id) => {
@@ -69,26 +71,30 @@ cube.windows.message.on('received',async (id) => {
 })
 
 
-const getCurrentBlacklist = (summonerInfo:any) => {
+const getCurrentBlacklist = async (summonerInfo:any) => {
   const areaSetting = JSON.parse(String(localStorage.getItem('config'))).currentArea
   // 获取当前队伍中的召唤师ID
   const summonerList = summonerInfo.reduce((res:String[],item:{name:string,summonerId:number}) => {
     return res.concat([String(item.summonerId)])
   },[])
-  console.log(summonerList)
 
-  if (onlinePlayerInfo.value.haterIdList[areaSetting] !== undefined){
-    const blacklistIds = onlinePlayerInfo.value.haterIdList[areaSetting].sumIdList
-    for (const blacklistId of blacklistIds) {
-      if (summonerList.indexOf(blacklistId) !== -1){
-        currentBlackList.value.push(blacklistId)
-      }
-    }
-    if (currentBlackList.value.length > 1){
-      transValue.value = 'blacklist'
-    }
+  const res = await blacklistServe({
+    url:'/hater/findHaterBySumId',
+    data:{'sumIdList':summonerList,'area':areaSetting},
+    method:'POST'
+  })
+  if (res.data.code !== 0){
+    return
   }
-  console.log( currentBlackList.value)
+  if (res.data.data?.length !==0){
+      handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId).then((res) => {
+        currentBlackList.value = res
+        console.log(res)
+        if (res.length > 1){
+          transValue.value = 'blacklist'
+        }
+      })
+  }
 }
 
 // 显示队伍战绩历史窗口

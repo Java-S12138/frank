@@ -45,11 +45,11 @@
 <script setup lang="ts">
 import {NSpace,NInput,NSelect,NTag,NButton,NDrawerContent,useMessage} from 'naive-ui'
 import {ref,onBeforeMount} from "vue";
-import {isStoreageHas} from "../../lcu/utils";
-import {invokeLcu} from "../../lcu";
-import {PlayerInfo} from "../../interface/blacklistTypes";
-import {blacklistServe} from "../../utils/request";
-import {assistStore} from "../../store";
+import {isStoreageHas} from "../../../lcu/utils";
+import {invokeLcu} from "../../../lcu";
+import {PlayerInfo} from "../../../interface/blacklistTypes";
+import {blacklistServe} from "../../../utils/request";
+import {assistStore} from "../../../store";
 import {storeToRefs} from "pinia";
 
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))

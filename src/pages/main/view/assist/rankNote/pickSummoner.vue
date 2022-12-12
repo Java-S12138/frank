@@ -78,7 +78,7 @@ import {
 import {CircleX} from '@vicons/tabler'
 import AddBlacklist from './addBlacklist.vue'
 import {Ref, ref} from "vue";
-import {assistStore} from "../../store";
+import {assistStore} from "../../../store";
 import {storeToRefs} from "pinia";
 
 

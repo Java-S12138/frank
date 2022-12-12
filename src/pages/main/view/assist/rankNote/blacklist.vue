@@ -10,20 +10,32 @@
       <n-scrollbar v-else-if="onlineListStatus===1" style="height: 545px;margin-bottom: 5px">
         <n-list style="margin-right:13px;margin-left: 13px"
                 class="fade-in-top" :key="blacklist.length">
+          <div v-if="currentBlacklistStatus">
+            <n-list-item v-for="blackSummoner in currentBlackList" >
+              <n-space justify="space-between" class="alignCenter">
+                <n-ellipsis style="
+                max-width: 112px;
+                width:112px;
+                color: #ff6666;"
+                >
+                  {{ blackSummoner.nickName }}
+                </n-ellipsis>
+                <p style="color: #ff6666"> {{ formatDate(blackSummoner.blacklist.UpdatedAt) }}</p>
+                <n-button size="small" type="error"
+                          :secondary="localSummonerInfo.playerSumId===blackSummoner.blacklist.playerSumId ? false : true"
+                          @click="getDetails(blackSummoner.nickName,blackSummoner.blacklist)">
+                  {{ showTagContent(blackSummoner.blacklist.tag) }}
+                </n-button>
+              </n-space>
+            </n-list-item>
+          </div>
+
           <n-list-item v-for="blackSummoner in blacklist">
             <n-space justify="space-between" class="alignCenter">
               <n-ellipsis style="
                 max-width: 112px;
                 width:112px;
-                color: #ff6666;"
-                v-if="currentBlackList.indexOf(blackSummoner.sumId) !=-1"
-              >
-                {{ blackSummoner.nickName }}
-              </n-ellipsis>
-              <n-ellipsis style="
-                max-width: 112px;
-                width:112px;
-                color: #9aa4af;" v-else
+                color: #9aa4af;"
               >
                 {{ blackSummoner.nickName }}
               </n-ellipsis>
@@ -72,9 +84,9 @@
             <n-tag size="large" :bordered="false" type="error" >{{detialsNickname}}</n-tag>
             <n-popover v-if="detialsJson.isShow" trigger="hover" :show-arrow="false" placement="left">
               <template #trigger>
-                <n-tag  size="large" :bordered="false" type="success">共享</n-tag>
+                <n-tag  size="large" :bordered="false" type="info">同舟共济</n-tag>
               </template>
-              <p>当前数据已共享给其他召唤师使用</p>
+              <p>此数据已共享给其他玩家使用</p>
             </n-popover>
             <n-tag :color="{ color: '#fafafc', textColor: '#9AA4AF' }" :bordered="false"
                    size="large" v-else>{{formatDate(detialsJson.UpdatedAt)}}</n-tag>
@@ -97,7 +109,8 @@
                        placeholder="输入标签"
                        type="text" style="width: 104px" />
             </n-popconfirm>
-
+            <n-button secondary type="info" @click="toMatch"
+                      size="small" v-if="detialsJson.matchId!==''">查看对局</n-button>
             <n-space>
               <n-popconfirm
                 :show-icon="false"
@@ -123,19 +136,25 @@
                 </template>
                 是否将当前召唤师移除黑名单
               </n-popconfirm>
+
             </n-space>
 
           </n-space>
           <n-space v-else style="width: 270px;" justify="space-between">
             <n-tag type="error" :bordered="false"
-                   >{{detialsJson.tag}}</n-tag>
-              <n-popover trigger="hover" :show-arrow="false" placement="left">
-                <template #trigger>
-                  <n-tag  :bordered="false" type="success">{{detialsJson.playerSumName}}</n-tag>
-                </template>
-                <p>当前数据由此用户提供</p>
-              </n-popover>
+                   >{{detialsJson.tag}}
+            </n-tag>
+            <n-button secondary type="info" @click="toMatch"
+                      size="small" v-if="detialsJson.matchId!==''">查看对局</n-button>
+            <n-popover trigger="hover" :show-arrow="false" placement="left">
+              <template #trigger>
+                <n-tag  :bordered="false" type="info">{{detialsJson.playerSumName}}</n-tag>
+              </template>
+              <p>当前数据由此用户提供</p>
+            </n-popover>
+
           </n-space>
+
         </template>
           <n-scrollbar style="max-height: 250px;">
             <n-input
@@ -170,11 +189,12 @@ import {NCard,NSpace,NList,NPopover,NInput,NTag,NPopconfirm,NTreeSelect,
 import {onMounted, Ref, ref, watch} from "vue"
 import PickSummoner from "./pickSummoner.vue"
 import AddBlacklist from "./addBlacklist.vue"
-import {assistStore} from "../../store";
+import {assistStore} from "../../../store";
 import {storeToRefs} from "pinia";
-import {blacklistServe} from "../../utils/request";
-import {OnlineBlacklistTpye, HaterItem, Hater, PlayerInfo} from "../../interface/blacklistTypes";
-import {areaOptions} from "../../resources/areaList";
+import {blacklistServe} from "../../../utils/request";
+import {OnlineBlacklistTpye, HaterItem} from "../../../interface/blacklistTypes";
+import {areaOptions} from "../../../resources/areaList";
+import {handleHaterListBySumId} from "../../../utils/blacklistUtils";
 
 const active = ref(false)
 const addBlacklistActive = ref(false)
@@ -201,24 +221,20 @@ const store = assistStore()
 const {currentBlackList,onlinePlayerInfo,localSummonerInfo}: any= storeToRefs(store)
 const cubeUserId = ref('')
 const onlineListStatus = ref(0)
+const currentBlacklistStatus = ref(false)
 
-watch(currentBlackList.value,() => {
-  if (currentBlackList.value.length === 1){
-    // TODO 使用ElasticSearch 进行数据的查询
-    const haterItem = blacklist.value.find((i:any) =>i.sumId === (currentBlackList.value[0]))
-    console.log(haterItem)
-    console.log(blacklist.value)
-    getDetails(haterItem.nickName,haterItem.blacklist)
-  }
-  if (currentBlackList.value.value !==0){
-    const loaclBlacklistSummonerId: any[] = []
-    for (const blacklistElement of blacklist.value) {
-      loaclBlacklistSummonerId.push(blacklistElement[4])
+watch(currentBlackList,() => {
+  if (currentBlackList.value.length !== 0){
+    currentBlacklistStatus.value = true
+    onlineListStatus.value = 1
+    if (currentBlackList.value.length === 1){
+      const haterItem = currentBlackList.value[0]
+      getDetails(haterItem.nickName,haterItem.blacklist)
     }
-    for (const currentSummonerId of currentBlackList.value) {
-      if (loaclBlacklistSummonerId.indexOf(currentSummonerId) !== -1){
-        shiftFirst(currentSummonerId)
-      }
+  }else {
+    currentBlacklistStatus.value = false
+    if (blacklist.value.length ===0){
+      onlineListStatus.value = 0
     }
   }
 })
@@ -228,19 +244,6 @@ onMounted(async () => {
   cubeUserId.value =(await cube.profile.getCurrentUser()).userId
   queryBlacklist()
 })
-
-// 将某个元素移动到数组首位
-const shiftFirst = (currentSummonerId:number) => {
-  let tempArr:any[] = []
-  blacklist.value.forEach((item:any,index:number)=>{
-    if(item[4] === currentSummonerId){
-      tempArr = item
-      blacklist.value.splice(index,1)
-      return
-    }
-  })
-  blacklist.value.unshift(tempArr)
-}
 
 // 从本地查询黑名单列表
 const queryBlacklist = async () => {
@@ -271,11 +274,10 @@ const queryBlacklist = async () => {
 
 // 通过HaterId查询数据
 const findHaterByHaterId = async (haterIdList:string[]) => {
-  console.log(onlinePlayerInfo.value)
   blacklist.value.length = 0
   const res = await  blacklistServe({
     url:'/hater/findHaterBySumId',
-    data:{'sumIdList':haterIdList},
+    data:{'sumIdList':haterIdList,'area':areaSetting.value},
     method:'POST'
   })
   if (res.data.code !== 0){
@@ -283,22 +285,8 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
     message.error('接口出现异常')
     return
   }
-  const haterList:Hater[] =  res.data.data
-  for (const haterItem of haterList) {
-    const blacklistHater:HaterItem[] = haterItem.blacklist
-    for (const blacklistItem of blacklistHater) {
-      // 显示本地召唤的数据
-      if (localSummonerInfo.value.playerSumId===blacklistItem.playerSumId){
-        blacklist.value.push({
-          sumId:haterItem.sumId,nickName:haterItem.nickName,blacklist:blacklistItem
-        })
-      // 如果不是本地召唤师, 判断是否已经共享给了其他用户
-      }else if (blacklistItem.isShow) {
-        blacklist.value.push({
-          sumId: haterItem.sumId, nickName: haterItem.nickName, blacklist: blacklistItem
-        })
-      }
-    }
+  if (res.data.data?.length !== 0){
+    blacklist.value = await handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId)
   }
   blacklist.value.sort((x:any,y:any) => {return y.blacklist.ID-x.blacklist.ID})
 }
@@ -439,6 +427,10 @@ const handleUpdateArea = (value:string) => {
   queryBlacklist()
 }
 
+// 查看对局
+const toMatch = (matchId:string) => {
+
+}
 </script>
 
 <style scoped>
