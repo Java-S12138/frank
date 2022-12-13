@@ -14,6 +14,12 @@ import Dashboard from './dashboard.vue'
 import SummonerInfo from "./summonerInfo.vue";
 import MatchDetailed from "./matchDetailed.vue";
 import '../../utils/echarts';
+
+cube.windows.message.on('received',async (id) => {
+  if (id==='refresdh-window'){
+    location.reload()
+  }
+})
 </script>
 
 <style scoped>

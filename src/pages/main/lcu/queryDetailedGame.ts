@@ -5,11 +5,11 @@ import {GameDetailedInfo} from  "./types/queryDetailedGameTypes"
 
 export const queryGameDetailsData = async (gameId:number)  => {
   const response:GameDetailedInfo = await invokeLcu('get',`/lol-match-history/v1/games/${gameId}`)
-  return getParticipantsDetails(response,response.participants, response.participantIdentities)
+  return getParticipantsDetails(response,response.participants, response.participantIdentities,gameId)
 }
 
 // 获取召唤师participants下面的详细数据
-const getParticipantsDetails = (res:any,participants:any, participantIdentities:any) => {
+const getParticipantsDetails = (res:any,participants:any, participantIdentities:any,gameId:number) => {
   if (participants.length !== 10){
     return []
   }
@@ -26,17 +26,18 @@ const getParticipantsDetails = (res:any,participants:any, participantIdentities:
     team100GoldEarned += participants[i].stats.goldEarned
     team200GoldEarned += participants[i+5].stats.goldEarned
 
-    datalisList.push([analyticalData(participants[i],nameList[i].name,nameList[i].summonerId),
-      analyticalData(participants[i+5],nameList[i+5].name,nameList[i+5].summonerId)])
+    datalisList.push([analyticalData(participants[i],nameList[i].name,nameList[i].summonerId,gameId),
+      analyticalData(participants[i+5],nameList[i+5].name,nameList[i+5].summonerId,gameId)])
   }
   titleList.push(String(team100Kills),String(team200Kills),String(goldToStr(team100GoldEarned)),String(goldToStr(team200GoldEarned)))
   datalisList.push(titleList)
   return datalisList
 }
 // 解析对局数据
-const analyticalData  = (participant:any,nameList:any,accountIdList:any) => {
+const analyticalData  = (participant:any,nameList:any,accountIdList:any,gameId:number) => {
   return{
     name: nameList,
+    gameId:gameId,
     accountId:accountIdList,
     teamType: participant.teamId,
     champLevel:participant.stats.champLevel,

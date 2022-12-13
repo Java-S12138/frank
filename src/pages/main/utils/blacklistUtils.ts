@@ -40,6 +40,27 @@ const getPosition = (selectedPosition: string) => {
   }
 }
 
+const getDetailedInfo = (summonerInfo:any[],playerChampionSelections:any) => {
+  const infoList = []
+  for (const infoElement of summonerInfo) {
+    try {
+      infoList.push({
+        name: infoElement.summonerName,
+        summonerId: infoElement.accountId,
+        // @ts-ignore
+        selectChamp: "https://game.gtimg.cn/images/lol/act/img/champion/" + champDict[`${playerChampionSelections[infoElement.summonerInternalName]}`].alias + ".png",
+        index: getPosition(infoElement.selectedPosition)
+      })
+    } catch (e) {
+      break
+    }
+  }
+  infoList.sort((x: any, y: any) => {
+    return x.index - y.index
+  })
+  return infoList
+}
+
 // 查询敌方召唤师ID和昵称
 export const queryEnemySummonerIdAndSummonerName = async () => {
   const currentId = await queryLoaclSummoner()
@@ -49,54 +70,20 @@ export const queryEnemySummonerIdAndSummonerName = async () => {
     'url': 'https://cdn.syjun.vip/frank/session.json',
     method: 'GET',
   })).data
-
-  let friendInfoList = []
-  let enemyInfoList = []
+  console.log(mactchSession)
   const playerChampionSelections = getSelectChamp(mactchSession.gameData.playerChampionSelections)
 
   if (mactchSession.gameData.teamOne.find((i: any) => i.accountId === currentId)) {
-    var enemyInfo = mactchSession.gameData.teamTwo
-    var friendInfo = mactchSession.gameData.teamOne
+    var [enemyInfo,friendInfo] = [mactchSession.gameData.teamTwo,mactchSession.gameData.teamOne]
   } else {
-    var enemyInfo = mactchSession.gameData.teamOne
-    var friendInfo = mactchSession.gameData.teamTwo
+    var [friendInfo,enemyInfo] = [mactchSession.gameData.teamTwo,mactchSession.gameData.teamOne]
   }
 
-  for (let i = 0; i < friendInfo.length; i++) {
-    try {
-      friendInfoList.push({
-        name: friendInfo[i].summonerName,
-        summonerId: friendInfo[i].accountId,
-        // @ts-ignore
-        selectChamp: "https://game.gtimg.cn/images/lol/act/img/champion/" + champDict[`${playerChampionSelections[friendInfo[i].summonerInternalName]}`].alias + ".png",
-        index: getPosition(friendInfo[i].selectedPosition)
-      })
-    } catch (e) {
-      break
-    }
-  }
-  for (let i = 0; i < enemyInfo.length; i++) {
-    try {
-      enemyInfoList.push({
-        name: enemyInfo[i].summonerName,
-        summonerId: enemyInfo[i].accountId,
-        // @ts-ignore
-        selectChamp: "https://game.gtimg.cn/images/lol/act/img/champion/" + champDict[`${playerChampionSelections[enemyInfo[i].summonerInternalName]}`].alias + ".png",
-        index: getPosition(enemyInfo[i].selectedPosition)
-      })
-    } catch (e) {
-      break
-    }
-  }
-
-  friendInfoList.sort((x: any, y: any) => {
-    return x.index - y.index
-  })
-  enemyInfoList.sort((x: any, y: any) => {
-    return x.index - y.index
-  })
-
-  return [friendInfoList, enemyInfoList]
+  return [
+    getDetailedInfo(friendInfo,playerChampionSelections),
+    getDetailedInfo(enemyInfo,playerChampionSelections),
+    mactchSession.gameData.gameId
+  ]
 }
 
 // 获取选择英雄时的对局聊天组的ID

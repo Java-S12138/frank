@@ -237,12 +237,12 @@ const props = defineProps({
 onMounted(async () => {
   if (props.currentGameIdProps ===undefined){
     const {currentQueryGameId,querySummonerId}:any = storeToRefs(matchStore())
-    gameDetalisList = await queryGameDetailsData(Number(currentQueryGameId.value))
+    gameDetalisList = await queryGameDetailsData(currentQueryGameId.value)
     isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
     curSummonerId.value = querySummonerId.value
     parentPage.value = 'match'
   }else {
-    gameDetalisList = await queryGameDetailsData(Number(props.currentGameIdProps))
+    gameDetalisList = await queryGameDetailsData(props.currentGameIdProps)
     isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
     curSummonerId.value = querySummonerId.value
     parentPage.value = 'query'
@@ -294,7 +294,8 @@ const queryPersonalGameDetails = async (index:any,position:any) => {
     spell2Id:personalGameDetails.spell2Id,runesList:personalGameDetails.runesList,
     listItemData:listItemData,
     rankData:rankData,
-    summonerId:personalGameDetails.accountId
+    summonerId:personalGameDetails.accountId,
+    gameId:personalGameDetails.gameId
   }
 }
 

@@ -124,12 +124,15 @@ import {queryStore} from '../../store'
 import {storeToRefs} from 'pinia'
 
 const store = queryStore()
-const {querySummonerId,summoner,localSummoner}:any = storeToRefs(store)
+const {querySummonerId,summoner,localSummoner,assistGameId}:any = storeToRefs(store)
 
 onMounted(async () => {
   summoner.value = await returnSummonerData()
   localSummoner.value =summoner.value.summonerInfo.name
   querySummonerId.value = summoner.value.summonerInfo.currentId
+  if (summoner.value.assistGameId !== undefined){
+    assistGameId.value = summoner.value.assistGameId
+  }
 })
 
 </script>

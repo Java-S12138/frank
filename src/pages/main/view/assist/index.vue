@@ -12,17 +12,25 @@
           class="slide-in-bottom" ></rune>
     <div v-if="isSwitchBlacklist" >
       <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>
+      <n-drawer v-model:show="queryMatchAddition.active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
+                :height="420" placement="bottom" :auto-focus="false">
+        <add-blacklist @closeDrawer="closeDrawer"
+                       :name="queryMatchAddition.blacklistName"
+                       :summonerId="queryMatchAddition.blacklistId"
+                       :gameAfterId="queryMatchAddition.gameAfterId"></add-blacklist>
+      </n-drawer>
     </div>
 </template>
 
 <script setup lang="ts">
 import {
-  NTabs, NTab, useMessage
+  NTabs, NTab, useMessage,NDrawer
 } from "naive-ui";
 import Rune from './rune.vue'
 import ChampRank from './champRank.vue'
 import Blacklist from "./rankNote/blacklist.vue"
-import {onMounted, Ref, ref} from "vue";
+import AddBlacklist from "./rankNote/addBlacklist.vue"
+import {onMounted, ref} from "vue";
 import {assistStore} from "../../store";
 import {storeToRefs} from "pinia";
 import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName,handleHaterListBySumId} from "../../utils/blacklistUtils"
@@ -43,8 +51,14 @@ const message = useMessage()
 const store = assistStore()
 const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,localSummonerInfo}:any = storeToRefs(store)
 const isSwitchBlacklist = JSON.parse(String(localStorage.getItem('config'))).isSwitchBlacklist
+const queryMatchAddition = ref({
+  active:false,
+  blacklistName:'',
+  blacklistId:'',
+  gameAfterId:0
+})
 
-cube.windows.message.on('received',async (id) => {
+cube.windows.message.on('received',async (id,content:any) => {
   // 查询我方召唤师
   if (id==='query-other-summoner' && isSwitchBlacklist){
     showSummonerInfoModal.value = false
@@ -59,6 +73,7 @@ cube.windows.message.on('received',async (id) => {
     // 查询敌方召唤师
     setTimeout(async () => {
       const res = await queryEnemySummonerIdAndSummonerName()
+      console.log(res)
       endGameAfterInfo.value = [[], []]
       endGameAfterInfo.value = res
     }, 1500)
@@ -67,6 +82,12 @@ cube.windows.message.on('received',async (id) => {
     transValue.value = 'blacklist'
   }else if (id==='refresh'){
     location.reload()
+  }else if (id==='queryMatch-add-blacklist'){
+    transValue.value = 'blacklist'
+    queryMatchAddition.value.active=true
+    queryMatchAddition.value.blacklistId=content.summonerId
+    queryMatchAddition.value.gameAfterId=content.gameId
+    queryMatchAddition.value.blacklistName=content.name
   }
 })
 
@@ -121,6 +142,10 @@ const changePage = (e:string) => {
 }
 const handldDrge = () => {
   cube.windows.current.dragMove()
+}
+const closeDrawer = () => {
+  queryMatchAddition.value.active = false
+  currentBlackList.value='add'
 }
 </script>
 

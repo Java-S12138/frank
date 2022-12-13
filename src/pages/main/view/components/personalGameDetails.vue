@@ -87,17 +87,16 @@
       <n-button :bordered="false" type="success" @click="queryDetails">
         查看详细战绩
       </n-button>
-      <n-button :bordered="false" type="warning" @click="addBlacklist">
+      <n-button :bordered="false" type="warning" @click="addOnlineBlacklist">
         导入排位笔记
       </n-button>
-
     </n-space>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import {NAvatar, NSpace, NTag,NList,NListItem,NButton,NScrollbar,useMessage} from 'naive-ui'
+import {NAvatar, NSpace, NTag,NList,NListItem,NButton,
+  NScrollbar,useMessage} from 'naive-ui'
 
 
 // 从父组件获取的数据
@@ -115,31 +114,23 @@ const queryDetails = () => {
   emits('queryDetails', props.personalDetails.name)
 }
 
-const queryCurrenDate = () => {
-  var myDate = new Date()
-  return myDate.toLocaleDateString()
-}
-
 const message = useMessage()
 
-const addBlacklist = async () => {
-  try {
-    const currentDate = queryCurrenDate()
-    const localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
-    localBlacklist[`${props.personalDetails.summonerId}`] = {
-      nickname:props.personalDetails.name,
-      date:currentDate,
-      timestamp:Date.now(),
-      content:'战绩查询中添加的召唤师',
-      tag:'战绩查询',
-    }
-    localStorage.setItem('blacklist',JSON.stringify(localBlacklist))
-    message.success(`${props.personalDetails.name}   拉黑成功😡`)
-    cube.windows.message.send((await cube.windows.getWindowByName('assist')).id,'updataBL','')
-  }catch (e) {
-    message.error(`${props.personalDetails.name}   拉黑失败 !`)
-  }
+const addOnlineBlacklist = () => {
+  console.log(props.personalDetails)
+  cube.windows.getWindowByName('assist').then((v) => {
+    cube.windows.show(v.id).then(() => {
+      cube.windows.message.send(v.id,'queryMatch-add-blacklist',{
+        gameId:props.personalDetails.gameId,
+        summonerId:String(props.personalDetails.summonerId),
+        name:props.personalDetails.name
+      })
+    })
+  }).catch(() => {
+    message.error('打开助手窗口失败')
+  })
  }
+
 
 // 获取符文图片地址
 const getImaUrl = (imgId:string) => {

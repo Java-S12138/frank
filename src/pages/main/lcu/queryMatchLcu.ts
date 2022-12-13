@@ -58,6 +58,16 @@ const queryCurrentRankPoint = async (puuid: string) => {
 
 export const returnSummonerData = async (summonerId?: number) => {
   if (summonerId === undefined) {
+    const initQueryMatch = localStorage.getItem('initQueryMatch')
+    if (initQueryMatch !== null){
+      const jsonQueryMatch = JSON.parse(initQueryMatch)
+      summonerId = jsonQueryMatch?.summonerId
+      var assistGameId = jsonQueryMatch?.matchId
+      localStorage.removeItem('initQueryMatch')
+    }
+  }
+
+  if (summonerId === undefined) {
     summonerId = await queryCurrentSummonerId()
   }
   const summonerInfo: summonerInfo = await querySummonerInfo(summonerId)
@@ -65,8 +75,8 @@ export const returnSummonerData = async (summonerId?: number) => {
     queryCurrentRankPoint(summonerInfo.puuid),
     querySummonerSuperChampData(summonerId)
   ])
-
-  return {summonerInfo, rankData, superChampList}
+  console.log({summonerInfo, rankData, superChampList,assistGameId})
+  return {summonerInfo, rankData, superChampList,assistGameId}
 }
 
 export const returnRankData = async (summonerId: number) => {

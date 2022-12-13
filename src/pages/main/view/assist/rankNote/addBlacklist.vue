@@ -62,6 +62,10 @@ const props:any = defineProps({
     type:String,
     default:''
   },
+  gameAfterId:{
+    type:Number,
+    default:0
+  }
 })
 const selectValue = ref('摆烂')
 const options = [
@@ -130,6 +134,7 @@ const updatePlayerInfo = async (haterSumId:string,areaSetting:string) => {
 }
 // 更新Hater信息
 const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:string) => {
+  const gameId = props.gameAfterId !== 0 ? String(props.gameAfterId):""
   const haterStruct = {
     "sumId":summonerId,
     "area":areaSetting,
@@ -139,7 +144,7 @@ const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:
   const blacklistStruct =[{
     "playerSumName": localSummonerInfo.value.playerSumName,
     "PlayerSumId": localSummonerInfo.value.playerSumId,
-    "matchId": "",
+    "matchId": gameId,
     "sumId": summonerId,
     "tag": selectValue.value,
     "content": blacklistContent.value,
@@ -161,9 +166,9 @@ const confirmShielding = async () => {
     message.error('召唤师昵称不能为空 !')
     return
   }
-  // const summonerId = props.summonerId !== '' ?props.summonerId : await querySummonerId(currentName)
+  const summonerId = props.summonerId !== '' ?props.summonerId : await querySummonerId(currentName)
   // const summonerId = String(Math.floor(Math.random() * 10000000))
-  const summonerId = String(2022010)
+  // const summonerId = String(2022010)
 
   if (summonerId === null){
     message.error('哎呀 召唤师不存在 !')
@@ -193,7 +198,7 @@ const querySummonerId = async (nickname:string) => {
   if (res.success === false){
     return null
   }else
-    return res.summonerId
+    return String(res.summonerId)
 }
 </script>
 

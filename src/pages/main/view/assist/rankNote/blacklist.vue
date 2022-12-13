@@ -9,7 +9,7 @@
       </n-space>
       <n-scrollbar v-else-if="onlineListStatus===1" style="height: 545px;margin-bottom: 5px">
         <n-list style="margin-right:13px;margin-left: 13px"
-                class="fade-in-top" :key="blacklist.length">
+                class="fade-in-bottom" :key="blacklist.length">
           <div v-if="currentBlacklistStatus">
             <n-list-item v-for="blackSummoner in currentBlackList" >
               <n-space justify="space-between" class="alignCenter">
@@ -109,7 +109,7 @@
                        placeholder="输入标签"
                        type="text" style="width: 104px" />
             </n-popconfirm>
-            <n-button secondary type="info" @click="toMatch"
+            <n-button secondary type="info" @click="toMatch(detialsJson.matchId,detialsJson.sumId)"
                       size="small" v-if="detialsJson.matchId!==''">查看对局</n-button>
             <n-space>
               <n-popconfirm
@@ -144,7 +144,7 @@
             <n-tag type="error" :bordered="false"
                    >{{detialsJson.tag}}
             </n-tag>
-            <n-button secondary type="info" @click="toMatch"
+            <n-button secondary type="info" @click="toMatch(detialsJson.matchId,detialsJson.sumId)"
                       size="small" v-if="detialsJson.matchId!==''">查看对局</n-button>
             <n-popover trigger="hover" :show-arrow="false" placement="left">
               <template #trigger>
@@ -171,7 +171,7 @@
       </n-drawer-content>
     </n-drawer>
 
-    <pick-summoner @refreshList="queryBlacklist"></pick-summoner>
+    <pick-summoner @refreshList="addBlacklistFunc"></pick-summoner>
 
     <n-drawer v-model:show="addBlacklistActive"
               style="border-top-left-radius: 12px;border-top-right-radius: 12px"
@@ -224,6 +224,11 @@ const onlineListStatus = ref(0)
 const currentBlacklistStatus = ref(false)
 
 watch(currentBlackList,() => {
+  if (currentBlackList.value === 'add'){
+    findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value].sumIdList)
+    currentBlackList.value = []
+    return
+  }
   if (currentBlackList.value.length !== 0){
     currentBlacklistStatus.value = true
     onlineListStatus.value = 1
@@ -233,7 +238,8 @@ watch(currentBlackList,() => {
     }
   }else {
     currentBlacklistStatus.value = false
-    if (blacklist.value.length ===0){
+    console.log(blacklist.value)
+    if (blacklist.value.length === 0){
       onlineListStatus.value = 0
     }
   }
@@ -274,7 +280,7 @@ const queryBlacklist = async () => {
 
 // 通过HaterId查询数据
 const findHaterByHaterId = async (haterIdList:string[]) => {
-  blacklist.value.length = 0
+
   const res = await  blacklistServe({
     url:'/hater/findHaterBySumId',
     data:{'sumIdList':haterIdList,'area':areaSetting.value},
@@ -282,6 +288,7 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
   })
   if (res.data.code !== 0){
     onlineListStatus.value=2
+    blacklist.value.length = 0
     message.error('接口出现异常')
     return
   }
@@ -308,6 +315,7 @@ const queryCurrenDate = () => {
 
 // 获取单个召唤师的详细信息
 const getDetails = (nickname:string,haterItem:HaterItem) => {
+  console.log(haterItem)
   detialsJson.value = haterItem
   detialsNickname.value = nickname
   active.value = true
@@ -428,8 +436,12 @@ const handleUpdateArea = (value:string) => {
 }
 
 // 查看对局
-const toMatch = (matchId:string) => {
-
+const toMatch = async (matchId:string,summonerId:string) => {
+  localStorage.setItem('initQueryMatch',JSON.stringify({matchId:matchId,summonerId:summonerId}))
+  const queryMatch = await cube.windows.obtainDeclaredWindow('queryMatch')
+  if (queryMatch!==undefined){
+    cube.windows.message.send(queryMatch.id,'refresdh-window','')
+  }
 }
 </script>
 
@@ -454,8 +466,7 @@ const toMatch = (matchId:string) => {
   font-size: 12px;
   color: #9aa4af;
 }
-.fade-in-top{-webkit-animation:fade-in-top .6s cubic-bezier(.39,.575,.565,1.000) both;animation:fade-in-top .6s cubic-bezier(.39,.575,.565,1.000) both}
+.fade-in-bottom{-webkit-animation:fade-in-bottom .6s cubic-bezier(.39,.575,.565,1.000) both;animation:fade-in-bottom .6s cubic-bezier(.39,.575,.565,1.000) both}
 
-@keyframes fade-in-top{0%{-webkit-transform:translateY(-50px);transform:translateY(-50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}
-
+@-webkit-keyframes fade-in-bottom{0%{-webkit-transform:translateY(50px);transform:translateY(50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}@keyframes fade-in-bottom{0%{-webkit-transform:translateY(50px);transform:translateY(50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}
 </style>

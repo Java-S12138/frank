@@ -56,15 +56,33 @@
       <recent-echart v-if="matchList.length!==0 && showChart" :matchList="matchList"></recent-echart>
     </n-card>
 
+    <div v-if="assistGameId!==undefined">
+      <n-drawer v-model:show="active"
+                style="border-top-left-radius: 12px;border-bottom-left-radius: 12px"
+                :width="665" :placement="'right'">
+        <n-drawer-content :body-content-style ="'padding:0px'">
+          <div style="margin-top: 60px">
+            <game-details class="slide-in-right" :currentGameIdProps="assistGameId"
+            ></game-details>
+          </div>
+        </n-drawer-content>
+      </n-drawer>
+    </div>
+    <div v-if="assistGameId!==undefined" @click="() => {active=!active}"
+         class="assistGameId boxShadow">
+      <n-icon :size="18">
+        <highlight/>
+      </n-icon>
+    </div>
   </div>
 </template>
 
 
 <script setup lang="ts">
-import {ThumbUp, ThumbDown} from '@vicons/tabler'
+import {ThumbUp, ThumbDown,Highlight} from '@vicons/tabler'
 import {
   NCard, NLayout, NLayoutSider, NLayoutContent, NAvatar, NIcon, NSpace, NTag,
-  NList, NListItem, useMessage
+  NList, NListItem, useMessage,NDrawer,NDrawerContent
 } from "naive-ui";
 import {queryStore} from "../../store";
 import {storeToRefs} from "pinia";
@@ -78,12 +96,13 @@ import RecentEchart from "./recentEchart.vue";
 const store = queryStore()
 const {
   querySummonerId, begIndex, endIndex, page, currentMode,
-  showChart, matchList, currentGameId, currentMatchIndex
+  showChart, matchList, currentGameId, currentMatchIndex,assistGameId
 }:any = storeToRefs(store)
-
+const active = ref(false)
 const message = useMessage()
 let messageReactive:any = null
 const specialMatchDict:Ref<Array<MatchList>> = ref([])
+let isInit = true
 
 watch(querySummonerId, async () => {
   if (page.value !== 1) {
@@ -160,6 +179,8 @@ const initHomeData = async () => {
     matchList.value = matchDict
     currentMatchIndex.value = 0
   }
+  if (isInit){active.value=true}else {active.value=false}
+  isInit = false
 }
 const removeMessage = () => {
   if (messageReactive) {
@@ -211,5 +232,17 @@ const renderSpecialMatch = async (mode:string) => {
 
 .mainCard {
   width: 850px;
+}
+.assistGameId {
+  position: absolute;
+  bottom: 18px;
+  right: 16px;
+  width: 30px;
+  height: 30px;
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 </style>

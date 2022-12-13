@@ -65,7 +65,7 @@
     <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
               :height="420" placement="bottom" :auto-focus="false">
       <add-blacklist @closeDrawer="closeDrawer"
-                     :name="blacklistName" :summonerId="blacklistId"></add-blacklist>
+                     :name="blacklistName" :summonerId="blacklistId" :gameAfterId="gameAfterId"></add-blacklist>
     </n-drawer>
   </div>
 </template>
@@ -89,6 +89,7 @@ const store = assistStore()
 const {endGameAfterInfo, showSummonerInfoModal}:any = storeToRefs(store)
 const blacklistName = ref('')
 const blacklistId = ref('')
+const gameAfterId = ref(0)
 const emits = defineEmits(['refreshList'])
 
 cube.windows.message.on('received',async (id) => {
@@ -101,12 +102,13 @@ cube.windows.message.on('received',async (id) => {
           summonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
         }
       }
-      if (endGameAfterInfo.value[1]!== 0) {
+      if (endGameAfterInfo.value[1].length!== 0) {
         enemySummonersList.value = []
         for (const summoner of  endGameAfterInfo.value[1]) {
           enemySummonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
         }
       }
+      gameAfterId.value = endGameAfterInfo.value[2]
       showSummonerInfoModal.value = true
     },1500)
   }
