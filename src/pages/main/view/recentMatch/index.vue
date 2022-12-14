@@ -8,9 +8,21 @@
              :is-team-one="false"></match>
     </div>
     <div class="winStat">
+      <n-button text :bordered="false" style="margin-right: 15px"
+                type="success" size="small" @click="blacklistActice=!blacklistActice">
+        排位笔记
+      </n-button>
       <span class="winCount">我方胜利次数 {{ friendTeamList[0] }}/{{ friendTeamList[1] }} 次</span>
       <span class="winCount">敌方胜利次数 {{ enemyTeamTwoList[0] }}/{{ enemyTeamTwoList[1] }} 次</span>
     </div>
+
+    <n-drawer v-model:show="blacklistActice"
+              style="border-top-left-radius: 12px;border-bottom-left-radius: 12px"
+              :width="320" :placement="'right'">
+      <n-drawer-content title="斯通纳">
+        《斯通纳》是美国作家约翰·威廉姆斯在 1965 年出版的小说。
+      </n-drawer-content>
+    </n-drawer>
   </div>
   <div v-else>
     <null-page/>
@@ -19,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import {NDrawer,NDrawerContent,NButton} from 'naive-ui'
 import Dashboard from "./dashboard.vue"
 import Match from "./match.vue"
 import NullPage from "../components/nullPage.vue"
@@ -31,6 +44,7 @@ const isTeamOne = ref(true)
 const isPageNull = ref(false)
 const friendTeamList = ref([0,0])
 const enemyTeamTwoList = ref([0,0])
+const blacklistActice = ref(true)
 
 onMounted(async () => {
   const RecentMatch: any = new recentMatch()
