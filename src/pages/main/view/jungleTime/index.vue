@@ -1,13 +1,14 @@
 <template>
-  <div style="position: relative">
-    <n-space :size="[0,0]" justify="space-between">
+  <div style="position: relative;margin: 10px 0px 10px 0px">
+    <n-space :size="[0,10]" justify="space-between">
       <jungle-team :camp1="monsterCamp_4" :camp2="monsterCamp_1" :camp3="monsterCamp_3"
-        :camp4="monsterCamp_13" :camp5="monsterCamp_5" :camp6="monsterCamp_2" :is-bule="true"/>
+                   :camp4="monsterCamp_13" :camp5="monsterCamp_5" :camp6="monsterCamp_2" :is-bule="true"/>
       <jungle-team :camp1="monsterCamp_10" :camp2="monsterCamp_7" :camp3="monsterCamp_9"
                    :camp4="monsterCamp_14" :camp5="monsterCamp_11" :camp6="monsterCamp_8" :is-bule="false"/>
       <common-jungle :camp1="monsterCamp_17" :camp2="monsterCamp_6" :pioneer-count="pioneerCount"
-        :camp3="monsterCamp_16" :camp4="monsterCamp_15" :camp-dragon="monsterCamp_12" :is-dragon="isDragon"/>
+                     :camp3="monsterCamp_16" :camp4="monsterCamp_15" :camp-dragon="monsterCamp_12" :is-dragon="isDragon"/>
     </n-space>
+    <div class="closeWin" @click="closeJungleTime"></div>
   </div>
 </template>
 
@@ -259,13 +260,21 @@ const initJungle = (monster:any,type_:string) => {
   monster.value.countdownRef?.reset()
 }
 
+const closeJungleTime = () => {
+  cube.windows.close(cube.windows.current.id())
+}
+
 </script>
 
 <style scoped>
 .closeWin {
   position: absolute;
-  right: 72.5px;
-  top:2px;
-  color: #666F75;
+  border-radius: 5px;
+  right: 95px;
+  bottom: -8px;
+  width: 30px;
+  height: 5px;
+  background-color: #9aa4af;
+  cursor: pointer;
 }
 </style>

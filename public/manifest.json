@@ -78,10 +78,10 @@
       "jungleTime": {
         "file": "src/pages/main/index.html/#/jungleTime",
         "frame": false,
-        "width": 350,
-        "height": 105,
+        "width": 220,
+        "height": 280,
         "min_width": 150,
-        "resizable": true,
+        "resizable": false,
         "in_game_only": false,
         "title_bar_height": 10,
         "maximizable": false,

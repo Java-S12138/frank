@@ -3,34 +3,34 @@
     <n-space vertical justify="space-between" :size="[0,0]"
              style="height: 100%;width: 100%">
       <n-space class="rowSpace" :size="[0,0]" :class="isBule===true ? 'blue' : 'red'">
-        <span>红 <n-countdown  :ref="`'${camp1.countdownRef}'`" v-if="!camp1.isAlive"
-                                :render="renderCountdown" :duration="camp1.duration" :active="camp1.isActice"/>
+        <span>红霸符 <n-countdown  :ref="`'${camp1.countdownRef}'`" v-if="!camp1.isAlive"
+                                   :render="renderCountdown" :duration="camp1.duration" :active="camp1.isActice"/>
           <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
         </span>
-        <span>蓝 <n-countdown :ref="`'${camp2.countdownRef}'`" v-if="!camp2.isAlive"
-                              :render="renderCountdown" :duration="camp2.duration" :active="camp2.isActice"/>
+        <span>蓝霸符 <n-countdown :ref="`'${camp2.countdownRef}'`" v-if="!camp2.isAlive"
+                                  :render="renderCountdown" :duration="camp2.duration" :active="camp2.isActice"/>
         <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
         </span>
 
       </n-space>
       <n-space class="rowSpace" :size="[0,0]" :class="isBule===true ? 'blue' : 'red'">
-        <span>鸟 <n-countdown :ref="`'${camp3.countdownRef}'`" v-if="!camp3.isAlive"
-                              :render="renderCountdown" :duration="camp3.duration" :active="camp3.isActice"/>
+        <span>锋喙鸟 <n-countdown :ref="`'${camp3.countdownRef}'`" v-if="!camp3.isAlive"
+                                  :render="renderCountdown" :duration="camp3.duration" :active="camp3.isActice"/>
           <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
         </span>
-        <span>蛤 <n-countdown :ref="`'${camp4.countdownRef}'`" v-if="!camp4.isAlive"
-                              :render="renderCountdown" :duration="camp4.duration" :active="camp4.isActice"/>
+        <span>魔沼蛙 <n-countdown :ref="`'${camp4.countdownRef}'`" v-if="!camp4.isAlive"
+                                  :render="renderCountdown" :duration="camp4.duration" :active="camp4.isActice"/>
           <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
         </span>
 
       </n-space>
       <n-space class="rowSpace" :size="[0,0]" :class="isBule===true ? 'blue' : 'red'">
-        <span>石 <n-countdown :ref="`'${camp5.countdownRef}'`" v-if="!camp5.isAlive"
-                              :render="renderCountdown" :duration="camp5.duration" :active="camp5.isActice"/>
+        <span>石甲虫 <n-countdown :ref="`'${camp5.countdownRef}'`" v-if="!camp5.isAlive"
+                                  :render="renderCountdown" :duration="camp5.duration" :active="camp5.isActice"/>
           <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
         </span>
-        <span>狼 <n-countdown :ref="`'${camp6.countdownRef}'`" v-if="!camp6.isAlive"
-                              :render="renderCountdown" :duration="camp6.duration" :active="camp6.isActice"/>
+        <span>暗影狼 <n-countdown :ref="`'${camp6.countdownRef}'`" v-if="!camp6.isAlive"
+                                  :render="renderCountdown" :duration="camp6.duration" :active="camp6.isActice"/>
           <span class="alive" v-else><n-countdown   :render="renderCountdown" :duration="0" :active="false"/></span>
         </span>
       </n-space>
@@ -108,34 +108,18 @@ const renderCountdown: CountdownProps['render'] = ({hours, minutes, seconds}) =>
 
 <style scoped>
 .mainDiv {
-  margin: 5px;
-  width: 35vw;
-  height: calc(100vh - 10px);
+  margin: 0px 10px;
+  width: calc(100vw - 20px);
+  height: 32.9vh;
   border-radius: 3px;
   background-color: #fff;
 }
 
 span {
   display: inline-block;
+  font: bold 13px sans-serif;
 }
 
-@media (min-width: 150px) {
-  span {
-    font: bold 10px sans-serif;
-  }
-}
-
-@media (min-width: 350px) {
-  span {
-    font: bold 13px sans-serif;
-  }
-}
-
-@media (min-width: 450px) {
-  span {
-    font: bold 18px sans-serif;
-  }
-}
 .alive {
   color: #ffffff !important;
 }
