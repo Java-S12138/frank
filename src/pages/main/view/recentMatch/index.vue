@@ -2,25 +2,52 @@
   <div class="mainDiv" v-if="!isPageNull">
     <dashboard/>
     <div class="matchs">
-      <match :matchList="isTeamOne===true?friendList:enemyList"
-             :is-team-one="true"></match>
-      <match :matchList="isTeamOne===false?friendList:enemyList"
-             :is-team-one="false"></match>
+      <match :matchList="friendList"></match>
+      <match :matchList="enemyList"
+             :blackList="blackList"
+             @openDrawer="openDrawer"
+      ></match>
     </div>
     <div class="winStat">
-      <n-button text :bordered="false" style="margin-right: 15px"
-                type="success" size="small" @click="blacklistActice=!blacklistActice">
-        排位笔记
-      </n-button>
       <span class="winCount">我方胜利次数 {{ friendTeamList[0] }}/{{ friendTeamList[1] }} 次</span>
       <span class="winCount">敌方胜利次数 {{ enemyTeamTwoList[0] }}/{{ enemyTeamTwoList[1] }} 次</span>
     </div>
 
     <n-drawer v-model:show="blacklistActice"
               style="border-top-left-radius: 12px;border-bottom-left-radius: 12px"
-              :width="320" :placement="'right'">
-      <n-drawer-content title="斯通纳">
-        《斯通纳》是美国作家约翰·威廉姆斯在 1965 年出版的小说。
+              :width="336" :placement="'right'">
+      <n-drawer-content>
+        <div v-for="detialsJson in detialsJsonList" style="margin-bottom: 20px">
+          <n-space justify="space-between" style="width: 100%;">
+            <n-tag size="large"
+                   :bordered="false"
+                   type="error" >{{detialsNickname}}</n-tag>
+            <n-popover v-if="detialsJson.isShow" trigger="hover" :show-arrow="false" placement="left">
+              <template #trigger>
+                <n-tag  size="large" :bordered="false" type="info">同舟共济</n-tag>
+              </template>
+              <p>此数据已共享给其他玩家使用</p>
+            </n-popover>
+            <n-tag :color="{ color: '#fafafc', textColor: '#9AA4AF' }" :bordered="false"
+                   size="large" v-else>{{formatDate(detialsJson.UpdatedAt)}}</n-tag>
+
+          </n-space>
+          <div class="draContent">
+            {{detialsJson.content}}
+          </div>
+          <n-space style="width: 100%;" justify="space-between">
+            <n-tag type="error" :bordered="false">{{detialsJson.tag}}
+            </n-tag>
+            <n-popover trigger="hover" :show-arrow="false" placement="left">
+              <template #trigger>
+                <n-tag  :bordered="false"
+                        type="info">{{detialsJson.playerSumName}}</n-tag>
+              </template>
+              <p>当前数据由此用户提供</p>
+            </n-popover>
+
+          </n-space>
+        </div>
       </n-drawer-content>
     </n-drawer>
   </div>
@@ -31,36 +58,85 @@
 </template>
 
 <script setup lang="ts">
-import {NDrawer,NDrawerContent,NButton} from 'naive-ui'
+import {NSpace,NPopover,NTag,NDrawer,NDrawerContent} from 'naive-ui'
 import Dashboard from "./dashboard.vue"
 import Match from "./match.vue"
 import NullPage from "../components/nullPage.vue"
 import {recentMatch} from "../../lcu/recentMatchLcu"
-import {onMounted, ref} from "vue"
+import {onMounted,ref} from "vue"
+import {blacklistServe} from "../../utils/request";
 
 const friendList = ref([])
 const enemyList = ref([])
-const isTeamOne = ref(true)
-const isPageNull = ref(false)
+const isPageNull = ref(true)
 const friendTeamList = ref([0,0])
 const enemyTeamTwoList = ref([0,0])
-const blacklistActice = ref(true)
+const blacklistActice = ref(false)
+const blacklistDict:any = ref({})
+const blackList:any = ref([])
+const detialsNickname =ref('')
+const detialsJsonList:any = ref([])
+
 
 onMounted(async () => {
-  const RecentMatch: any = new recentMatch()
+  const RecentMatch = new recentMatch()
   const matchList = await RecentMatch.queryAllSummonerInfo()
-  if (matchList.friendList.length === 0){
-    isPageNull.value = true
+  if (matchList.friendList.length !== 0){
+    isPageNull.value = false
+  }else {
+    return
   }
+  checkBlacklist(matchList.enemyList)
   friendList.value = matchList.friendList
   enemyList.value = matchList.enemyList
-  isTeamOne.value = matchList.isTeamOne
   matchList.isTeamOne === true ? (friendTeamList.value = matchList.teamOneList,enemyTeamTwoList.value = matchList.teamTwoList) :
-    (enemyTeamTwoList.value = matchList.teamOneList,friendTeamList.value = matchList.teamTwoList)
+    (enemyTeamTwoList.value = <[number,number]>matchList.teamOneList, friendTeamList.value = <[number,number]> matchList.teamTwoList)
   cube.windows.getWindowByName('background').then((win) => {
     cube.windows.message.send(win.id,'initDone','')
   })
 })
+
+const checkBlacklist = async (enemyList:[]) => {
+  const areaSetting = JSON.parse(String(localStorage.getItem('config'))).currentArea
+  const enemySummonerList = enemyList.reduce((res:any,item:any) => {
+    return res.concat([
+      item.summonerId
+    ])
+  },[])
+
+  const res = await  blacklistServe({
+    url:'/hater/findHaterBySumId',
+    data:{'sumIdList':enemySummonerList,'area':areaSetting},
+    method:'POST'
+  })
+  if (res.data.code !== 0){
+    return
+  }else {
+    let init = true
+    for (const re of res.data.data) {
+      blacklistDict.value[re.sumId] = []
+      blackList.value.push(re.sumId)
+      for (const reElement of re.blacklist) {
+        blacklistDict.value[re.sumId].push(reElement)
+      }
+      if (init){
+        blacklistActice.value = true
+        detialsJsonList.value = blacklistDict.value[re.sumId]
+        detialsNickname.value = re.nickName
+        init=false
+      }
+    }
+  }
+}
+
+const openDrawer = (summonerId:string,summonerName:string) => {
+  detialsNickname.value = summonerName
+  blacklistActice.value=true
+  detialsJsonList.value = blacklistDict.value[summonerId]
+}
+const formatDate = (dateStr:string) => {
+  return dateStr.split('T')[0]
+}
 </script>
 
 <style scoped>
@@ -79,5 +155,10 @@ onMounted(async () => {
 .winCount {
   color: #9AA4AF;
   margin-right: 15px
+}
+.draContent {
+  margin: 15px 0px;
+  color: #9AA4AF;
+  font-size: 13px;
 }
 </style>

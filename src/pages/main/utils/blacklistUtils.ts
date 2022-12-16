@@ -15,9 +15,8 @@ const querySummonerInfo = async (summonerId: Number): Promise<lcuSummonerInfo> =
 }
 // 获取召唤师的英雄
 const getSelectChamp = (playerChampionSelections: any) => {
-  let champDict = {}
+  const champDict:any = {}
   for (const summonerSelect of playerChampionSelections) {
-    // @ts-ignore
     champDict[summonerSelect.summonerInternalName] = summonerSelect.championId
   }
   return champDict
@@ -40,20 +39,18 @@ const getPosition = (selectedPosition: string) => {
   }
 }
 
-const getDetailedInfo = (summonerInfo:any[],playerChampionSelections:any) => {
+const getDetailedInfo = (summonerInfo:any[],playerChampionSelections:any,gameType:number) => {
   const infoList = []
   for (const infoElement of summonerInfo) {
-    try {
       infoList.push({
         name: infoElement.summonerName,
         summonerId: infoElement.accountId,
         // @ts-ignore
-        selectChamp: "https://game.gtimg.cn/images/lol/act/img/champion/" + champDict[`${playerChampionSelections[infoElement.summonerInternalName]}`].alias + ".png",
+        selectChamp:  (gameType === 420 || gameType === 440) ?
+          "https://game.gtimg.cn/images/lol/act/img/champion/" + champDict[`${playerChampionSelections[infoElement.summonerInternalName]}`].alias + ".png" :
+          `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${infoElement.profileIconId}.png`,
         index: getPosition(infoElement.selectedPosition)
       })
-    } catch (e) {
-      break
-    }
   }
   infoList.sort((x: any, y: any) => {
     return x.index - y.index
@@ -71,6 +68,7 @@ export const queryEnemySummonerIdAndSummonerName = async () => {
     method: 'GET',
   })).data
   console.log(mactchSession)
+  const gameType = mactchSession?.gameData?.queue?.id
   const playerChampionSelections = getSelectChamp(mactchSession.gameData.playerChampionSelections)
 
   if (mactchSession.gameData.teamOne.find((i: any) => i.accountId === currentId)) {
@@ -80,8 +78,8 @@ export const queryEnemySummonerIdAndSummonerName = async () => {
   }
 
   return [
-    getDetailedInfo(friendInfo,playerChampionSelections),
-    getDetailedInfo(enemyInfo,playerChampionSelections),
+    getDetailedInfo(friendInfo,playerChampionSelections,gameType),
+    getDetailedInfo(enemyInfo,playerChampionSelections,gameType),
     mactchSession.gameData.gameId
   ]
 }

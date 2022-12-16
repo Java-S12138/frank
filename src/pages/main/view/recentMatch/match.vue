@@ -21,7 +21,13 @@
             </div>
           </n-space>
         </n-space>
-        <n-tag size="tiny" type="info"
+        <n-tag size="tiny" type="info" v-if="blackList.length===0"
+               :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
+               >{{ match.summonerName }} </n-tag>
+        <n-tag size="tiny" type="info" v-else-if="blackList.indexOf(match.summonerId) === -1"
+               :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
+               >{{ match.summonerName }} </n-tag>
+        <n-tag size="tiny" type="error" v-else @click="openDra(match.summonerId,match.summonerName)"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
                >{{ match.summonerName }} </n-tag>
         <n-space :size="[8,0]" v-for="champ in match.mathcHistory">
@@ -45,19 +51,21 @@ import {NSpace,NAvatar,NTag} from 'naive-ui'
 import {watch} from "vue";
 
 const props:any = defineProps({
-  isTeamOne:{
-    type:Boolean
-  },
   matchList:{
+    type:Array,
+    default:[]
+  },
+  blackList:{
     type:Array,
     default:[]
   }
 })
 
-watch(props,() => {
-  console.log(props.matchList)
-})
+const emits = defineEmits(['openDrawer'])
 
+const openDra = (summonerId:string,summonerName:string) => {
+  emits('openDrawer',summonerId,summonerName)
+}
 
 </script>
 

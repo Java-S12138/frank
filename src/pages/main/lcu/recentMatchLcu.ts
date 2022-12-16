@@ -12,12 +12,12 @@ export class recentMatch {
   public teamTwoList:[number,number] = [0,0]
 
   public init = async () => {
-    // this.matchSession = (await request({
-    //   'url': 'https://cdn.syjun.vip/frank/session.json',
-    //   method: 'GET',
-    // })).data
+    this.matchSession = (await request({
+      'url': 'https://cdn.syjun.vip/frank/sessionTest.json',
+      method: 'GET',
+    })).data
 
-    this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+    // this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
 
     this.gameType = this.matchSession?.gameData?.queue?.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
@@ -30,11 +30,12 @@ export class recentMatch {
     const info: any = await summonerList.reduce(async (res: any, item: any) => {
       const matchHistory = await this.queryMatchHistory(item.summonerId,isTeamOne)
       return (await res).concat({
+        summonerId:`${item.summonerId}`,
         rankPoint: await this.queryRankPoint(item.puuid),
         summonerName: item.summonerName,
         mathcHistory: matchHistory.classicMode,
         index: getPosition(item.selectedPosition),
-        championUrl: this.gameType === (420||440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
+        championUrl: (this.gameType === 420 || this.gameType === 440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
           `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${item.profileIconId}.png`
       })
     }, [])
@@ -78,7 +79,7 @@ export class recentMatch {
     for (let i = 0; i < 100; i += 20) {
       const matchList = (await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20]))['games']['games'].reverse()
       for (let j = 0; j < matchList.length; j++) {
-        if (matchList[j].queueId === this.gameType) {
+        // if (matchList[j].queueId === this.gameType) {
           if (matchCount === 10) {
             break mainfor
           }
@@ -91,7 +92,7 @@ export class recentMatch {
             assists: matchList[j].participants[0].stats.assists,
             isWin: matchList[j].participants[0].stats.win,
           })
-        }
+        // }
       }
     }
     isTeamOne === true ? (this.teamOneList[0]+=winCount,this.teamOneList[1]+=matchCount) :

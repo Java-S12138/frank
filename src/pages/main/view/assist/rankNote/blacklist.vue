@@ -81,7 +81,14 @@
       <n-drawer-content body-content-style="padding-left:10px;padding-right:6px" >
         <template #header>
           <n-space justify="space-between" style="width: 272px;">
-            <n-tag size="large" :bordered="false" type="error" >{{detialsNickname}}</n-tag>
+            <n-popover trigger="hover" :show-arrow="false" placement="right">
+              <template #trigger>
+                <n-tag size="large" style="cursor: pointer" @click="toMatch(undefined,detialsJson.sumId)"
+                       :bordered="false" type="error" >{{detialsNickname}}</n-tag>
+              </template>
+              <p>点击查看此召唤师战绩</p>
+            </n-popover>
+
             <n-popover v-if="detialsJson.isShow" trigger="hover" :show-arrow="false" placement="left">
               <template #trigger>
                 <n-tag  size="large" :bordered="false" type="info">同舟共济</n-tag>
@@ -103,7 +110,7 @@
             >
               <template #trigger>
                 <n-tag type="error" :bordered="false"
-                       style="font-size: 15px">{{detialsJson.tag}}</n-tag>
+                       style="font-size: 15px;cursor: pointer">{{detialsJson.tag}}</n-tag>
               </template>
               <n-input v-model:value="detialsJson.tag"
                        placeholder="输入标签"
@@ -148,7 +155,9 @@
                       size="small" v-if="detialsJson.matchId!==''">查看对局</n-button>
             <n-popover trigger="hover" :show-arrow="false" placement="left">
               <template #trigger>
-                <n-tag  :bordered="false" type="info">{{detialsJson.playerSumName}}</n-tag>
+                <n-tag  :bordered="false" style="cursor: pointer"
+                        @click="toMatch(undefined,detialsJson.playerSumId)"
+                        type="info">{{detialsJson.playerSumName}}</n-tag>
               </template>
               <p>当前数据由此用户提供</p>
             </n-popover>
@@ -443,6 +452,7 @@ const toMatch = async (matchId:string,summonerId:string) => {
     cube.windows.message.send(queryMatch.id,'refresdh-window','')
   }
 }
+
 </script>
 
 <style scoped>
@@ -468,5 +478,5 @@ const toMatch = async (matchId:string,summonerId:string) => {
 }
 .fade-in-bottom{-webkit-animation:fade-in-bottom .6s cubic-bezier(.39,.575,.565,1.000) both;animation:fade-in-bottom .6s cubic-bezier(.39,.575,.565,1.000) both}
 
-@-webkit-keyframes fade-in-bottom{0%{-webkit-transform:translateY(50px);transform:translateY(50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}@keyframes fade-in-bottom{0%{-webkit-transform:translateY(50px);transform:translateY(50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}
+@keyframes fade-in-bottom{0%{-webkit-transform:translateY(50px);transform:translateY(50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}
 </style>
