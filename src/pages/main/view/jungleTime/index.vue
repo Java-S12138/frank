@@ -135,13 +135,18 @@ const monsterCamp_17 = ref({
 })
 const pioneerCount = ref(0)
 const isDragon = ref(false)
-
+let isSuccess = false
 let isInit = true
 
 cube.games.events.on('update-info', (classId: number, info: infoObject) => {
-  console.log(info)
   if (info.key.indexOf('jungle') !== -1) {
     handleCamp(info)
+    if (!isSuccess){
+      isSuccess = true
+      cube.windows.getWindowByName('background').then((v) => {
+        cube.windows.message.send(v.id,'jungle_success','')
+      })
+    }
   }
 })
 

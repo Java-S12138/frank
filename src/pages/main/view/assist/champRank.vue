@@ -154,7 +154,7 @@ import {ref, onMounted, reactive, Ref} from "vue";
 import {request} from "../../utils/request"
 import {champDict} from "../../resources/champList";
 
-const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
+const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
 
 const tier = ref(config.champRankOption.tier)
 const lane = ref(config.champRankOption.lane)

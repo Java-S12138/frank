@@ -32,7 +32,7 @@ import {NIcon, NSpace, NButton,NSwitch} from 'naive-ui'
 import {ChevronsDownLeft} from '@vicons/tabler'
 import {reactive} from "vue"
 
-const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
+const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
 
 const handleMin = () => {
   cube.windows.hide(cube.windows.current.id())

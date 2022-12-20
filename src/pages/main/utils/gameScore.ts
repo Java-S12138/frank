@@ -163,7 +163,7 @@ const analyseSingleMatch = (match: any) => {
 }
 // 判断是否为 上等马或者下等马
 const jundgeHorse = (score: number) => {
-  const config = JSON.parse(String(localStorage.getItem('config')))
+  const config = JSON.parse(<string>localStorage.getItem('config'))
 
   if (score >= 120) {
     return config.horseType.top

@@ -96,7 +96,7 @@ import {ChevronsDownLeft, CircleX, Ballon,PictureInPictureTop} from "@vicons/tab
 import LoadingAnime from "../components/loadingAnime.vue";
 import {reactive} from "vue";
 
-const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
+const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
 const emits = defineEmits(['changePage','summonerId','toGameDetailsPage'])
 const store = matchStore()
 const {

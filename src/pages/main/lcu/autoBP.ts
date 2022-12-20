@@ -17,20 +17,20 @@ const champSelectPatchAction = async (actionID:any, champId:any, type:string) =>
 
 //自动秒选英雄
 export const autoPickChampion = async (actionID:any, type:string) => {
-  const config = JSON.parse(String(localStorage.getItem('config')))
+  const config = JSON.parse(<string>(localStorage.getItem('config')))
   const championPickId =config.autoPickChampion.championId
   return champSelectPatchAction(actionID, championPickId, type)
 }
 // 自动禁用英雄
 export const autoBanChampion = async (actionID:any, type:string) => {
-  const config = JSON.parse(String(localStorage.getItem('config')))
+  const config = JSON.parse(<string>(localStorage.getItem('config')))
   const championBanId =config.autoBanChampion.championId
   return champSelectPatchAction(actionID, championBanId, type)
 }
 
 // 获取选人会话
 export const champSelectSession = async (idSetInterval:any) => {
-  const config = JSON.parse(String(localStorage.getItem('config')))
+  const config = JSON.parse(<string>(localStorage.getItem('config')))
   try {
     const res = await invokeLcu('get','/lol-champ-select/v1/session')
     const localPlayerCellId = res.localPlayerCellId

@@ -161,7 +161,7 @@ const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:
 
 const confirmShielding = async () => {
   const currentName = props.name !== '' ? props.name : blacklistName.value
-  const areaSetting = JSON.parse(String(localStorage.getItem('config'))).currentArea
+  const areaSetting = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
   if (currentName ===''){
     message.error('召唤师昵称不能为空 !')
     return

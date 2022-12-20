@@ -97,7 +97,7 @@ onMounted(async () => {
 })
 
 const checkBlacklist = async (enemyList:[]) => {
-  const areaSetting = JSON.parse(String(localStorage.getItem('config'))).currentArea
+  const areaSetting = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
   const enemySummonerList = enemyList.reduce((res:any,item:any) => {
     return res.concat([
       item.summonerId

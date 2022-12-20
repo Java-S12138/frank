@@ -50,7 +50,7 @@ const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
 const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,localSummonerInfo}:any = storeToRefs(store)
-const isSwitchBlacklist = JSON.parse(String(localStorage.getItem('config'))).isSwitchBlacklist
+const isSwitchBlacklist = JSON.parse(<string>(localStorage.getItem('config'))).isSwitchBlacklist
 const queryMatchAddition = ref({
   active:false,
   blacklistName:'',
@@ -93,7 +93,7 @@ cube.windows.message.on('received',async (id,content:any) => {
 
 
 const getCurrentBlacklist = async (summonerInfo:any) => {
-  const areaSetting = JSON.parse(String(localStorage.getItem('config'))).currentArea
+  const areaSetting = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
   // 获取当前队伍中的召唤师ID
   const summonerList = summonerInfo.reduce((res:String[],item:{name:string,summonerId:number}) => {
     return res.concat([String(item.summonerId)])

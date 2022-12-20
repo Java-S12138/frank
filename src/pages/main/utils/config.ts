@@ -36,7 +36,7 @@ export const config: any = {
 if (localStorage.getItem('config') === null) {
   localStorage.setItem('config', JSON.stringify(config))
 } else {
-  const localS = JSON.parse(String(localStorage.getItem('config')))
+  const localS = JSON.parse(<string>(localStorage.getItem('config')))
   for (const configKey of Object.keys(config)) {
     if (!localS.hasOwnProperty(configKey)) {
       localS[configKey] = config[configKey]

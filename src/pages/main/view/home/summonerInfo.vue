@@ -254,7 +254,7 @@ const message = useMessage()
 const active = ref(false)
 const currentChampStatstones:Ref<any[]> = ref([])
 const currentChampIndex = ref(0)
-const config = JSON.parse(String(localStorage.getItem('config')))
+const config = JSON.parse(<string>(localStorage.getItem('config')))
 
 onMounted(async () => {
  // init()

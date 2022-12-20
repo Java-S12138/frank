@@ -6,6 +6,7 @@ export class GameFlow {
 
   public jungleWin:WindowInfo|null = null
   public recentMatchWin:WindowInfo|null = null
+  public isJungleSuccess = false
 
   // 显示或者隐藏助手窗口
   public showOrHideAssist = async (isShow: boolean, message: string) => {
@@ -19,7 +20,7 @@ export class GameFlow {
   }
   // 游戏结束后,根据用户设置判断是否弹出拉黑召唤师的抽屉
   public isShowBlack = async () => {
-    const config = JSON.parse(String(localStorage.getItem('config')))
+    const config = JSON.parse(<string>(localStorage.getItem('config')))
     if (config.isSwitchBlacklist) {
       const assistWin = await cube.windows.getWindowByName('assist')
       cube.windows.show(assistWin.id)
@@ -44,10 +45,10 @@ export class GameFlow {
 
       invokeLcu('get','/lol-lobby/v1/parties/gamemode').then((res:any) => {
         const queueId = res?.queueId
-        const isJungleTime = JSON.parse(String(localStorage.getItem('config'))).isJungleTime
+        const isJungleTime = JSON.parse(<string>(localStorage.getItem('config'))).isJungleTime
         // 当前模式是召唤师峡谷之类的模式才打开野怪计时窗口
-        // if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
-        if (true){
+        if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
+        // if (true){
           cube.windows.obtainDeclaredWindow('jungleTime',
             {gamein: true,x:currentScreen.width-350,y:currentScreen.height-350}).then((v) => {
             cube.windows.hide(v.id)
@@ -66,7 +67,7 @@ export class GameFlow {
     // 接收战绩历史窗口发送过来的消息,表示查询已经完成
     cube.windows.message.on('received',(id:string) => {
       if (id==='initDone') {
-        if (!JSON.parse(String(localStorage.getItem('config'))).isGameInWindow) {
+        if (!JSON.parse(<string>(localStorage.getItem('config'))).isGameInWindow) {
           cube.windows.close(<number>this.recentMatchWin?.id)
           return
         } else {
@@ -91,11 +92,13 @@ export class GameFlow {
         }else {
           cube.windows.show(recentMatch.id)
         }
+      }else if (hotKeyName==='jungle_success'){
+        this.isJungleSuccess = true
       }
     })
     // 游戏内监听按键, 显示或隐藏野怪计时窗口
     cube.settings.hotkeys.game.on('hold',(name, state) => {
-      if (name ==='show_jungleTime' && this.jungleWin!==undefined){
+      if (name ==='show_jungleTime' && this.isJungleSuccess ){
         if (state==="down"){
           cube.windows.show(<number>this.jungleWin?.id)
         }else {
@@ -104,7 +107,7 @@ export class GameFlow {
       }
     })
     // 检测到进入英雄联盟大厅后, 获取首页数据
-    if (JSON.parse(String(localStorage.getItem('config'))).isAutoLaunchGame){
+    if (JSON.parse(<string>(localStorage.getItem('config'))).isAutoLaunchGame){
       cube.games.launchers.on('launched', () => {
         cube.windows.getWindowByName('main').then((win) => {
           cube.windows.message.send(win.id,'initHome','')
@@ -114,7 +117,7 @@ export class GameFlow {
   }
   // 自动(禁用)选择英雄
   public autoPickBanChamp = () => {
-    const config = JSON.parse(String(localStorage.getItem('config')))
+    const config = JSON.parse(<string>(localStorage.getItem('config')))
     if (config.autoPickChampion.isAuto || config.autoBanChampion.isAuto) {
       const idSetInterval = setInterval(async () => {
         champSelectSession(idSetInterval)
@@ -123,7 +126,7 @@ export class GameFlow {
   }
   // 自动接收对局
   public autoAcceptGame = async () => {
-    const config = JSON.parse(String(localStorage.getItem('config')))
+    const config = JSON.parse(<string>(localStorage.getItem('config')))
     const isAutoAccept = config.autoAccept
     if (isAutoAccept < 50) {
       return

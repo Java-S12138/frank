@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import {NResult,NButton,NSwitch,NSpace} from "naive-ui";
 import {reactive} from "vue";
-const config = reactive(JSON.parse(String(localStorage.getItem('config'))))
+const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
 const changeAutoGameInWin = () => {
   if (config['isGameInWindow'] !== true) {
     config['isGameInWindow'] = false

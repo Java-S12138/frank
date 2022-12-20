@@ -53,7 +53,7 @@ import {storeToRefs} from "pinia";
 import {matchStore} from "../../store";
 const emits = defineEmits(['summonerId','backHome'])
 
-const config = JSON.parse(String(localStorage.getItem('config')))
+const config = JSON.parse(<string>(localStorage.getItem('config')))
 const horseType:any = config.horseType
 const store = matchStore()
 const {currentSummonerName, summonerInfo}:any = storeToRefs(store)

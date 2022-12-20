@@ -224,8 +224,8 @@ const detialsJson:Ref<HaterItem> = ref({
 })
 const detialsNickname = ref('')
 const message = useMessage()
-let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist')))
-const areaSetting = ref(JSON.parse(String(localStorage.getItem('config'))).currentArea)
+let localBlacklist:any = JSON.parse(<string>(localStorage.getItem('blacklist')))
+const areaSetting = ref(JSON.parse(<string>(localStorage.getItem('config'))).currentArea)
 const store = assistStore()
 const {currentBlackList,onlinePlayerInfo,localSummonerInfo}: any= storeToRefs(store)
 const cubeUserId = ref('')
@@ -436,7 +436,7 @@ cube.windows.message.on('received',(id:any) => {
 })
 // 改变当前大区
 const handleUpdateArea = (value:string) => {
-  const config = JSON.parse(String(localStorage.getItem('config')))
+  const config = JSON.parse(<string>(localStorage.getItem('config')))
   blacklist.value.length = 0
   areaSetting.value = value
   config.currentArea = value

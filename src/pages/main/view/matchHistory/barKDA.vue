@@ -172,7 +172,7 @@ import {matchStore} from "../../store";
 import {storeToRefs} from "pinia";
 
 const message = useMessage()
-const config = JSON.parse(String(localStorage.getItem('config')))
+const config = JSON.parse(<string>(localStorage.getItem('config')))
 const store = matchStore()
 
 const {echartsData,summonerInfo,pageCount}:any = storeToRefs(store)
