@@ -65,7 +65,11 @@
     <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
               :height="420" placement="bottom" :auto-focus="false">
       <add-blacklist @closeDrawer="closeDrawer"
-                     :name="blacklistName" :summonerId="blacklistId" :gameAfterId="gameAfterId"></add-blacklist>
+                     :name="blacklistName"
+                     :summonerId="blacklistId"
+                     :gameAfterId="gameAfterId"
+                     :isHandAdd="false"
+      ></add-blacklist>
     </n-drawer>
   </div>
 </template>
@@ -93,24 +97,21 @@ const gameAfterId = ref(0)
 const emits = defineEmits(['refreshList'])
 
 cube.windows.message.on('received',async (id) => {
-  // TODO Development
-  if (id==='show-other-summoner' || id==='query-enemy-summoner'){
-    setTimeout(() => {
-      if (endGameAfterInfo.value[0].length !== 0) {
-        summonersList.value = []
-        for (const summoner of endGameAfterInfo.value[0]) {
-          summonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
-        }
+  if (id==='show-other-summoner'){
+    if (endGameAfterInfo.value[0].length !== 0) {
+      summonersList.value = []
+      for (const summoner of endGameAfterInfo.value[0]) {
+        summonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
       }
-      if (endGameAfterInfo.value[1].length!== 0) {
-        enemySummonersList.value = []
-        for (const summoner of  endGameAfterInfo.value[1]) {
-          enemySummonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
-        }
+    }
+    if (endGameAfterInfo.value[1].length!== 0) {
+      enemySummonersList.value = []
+      for (const summoner of  endGameAfterInfo.value[1]) {
+        enemySummonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
       }
-      gameAfterId.value = endGameAfterInfo.value[2]
-      showSummonerInfoModal.value = true
-    },1500)
+    }
+    gameAfterId.value = endGameAfterInfo.value[2]
+    showSummonerInfoModal.value = true
   }
 })
 

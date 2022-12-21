@@ -266,7 +266,9 @@ const initJungle = (monster:any,type_:string) => {
 }
 
 const closeJungleTime = () => {
-  cube.windows.close(cube.windows.current.id())
+  if (confirm('是否关闭此页面')){
+    cube.windows.close(cube.windows.current.id())
+  }
 }
 
 </script>

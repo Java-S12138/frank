@@ -204,6 +204,8 @@ import {blacklistServe} from "../../../utils/request";
 import {OnlineBlacklistTpye, HaterItem} from "../../../interface/blacklistTypes";
 import {areaOptions} from "../../../resources/areaList";
 import {handleHaterListBySumId} from "../../../utils/blacklistUtils";
+import {lcuSummonerInfo} from "../../../lcu/types/homeLcuTypes";
+import {invokeLcu} from "../../../lcu";
 
 const active = ref(false)
 const addBlacklistActive = ref(false)
@@ -224,7 +226,6 @@ const detialsJson:Ref<HaterItem> = ref({
 })
 const detialsNickname = ref('')
 const message = useMessage()
-let localBlacklist:any = JSON.parse(<string>(localStorage.getItem('blacklist')))
 const areaSetting = ref(JSON.parse(<string>(localStorage.getItem('config'))).currentArea)
 const store = assistStore()
 const {currentBlackList,onlinePlayerInfo,localSummonerInfo}: any= storeToRefs(store)
@@ -247,7 +248,6 @@ watch(currentBlackList,() => {
     }
   }else {
     currentBlacklistStatus.value = false
-    console.log(blacklist.value)
     if (blacklist.value.length === 0){
       onlineListStatus.value = 0
     }
@@ -255,7 +255,7 @@ watch(currentBlackList,() => {
 })
 
 onMounted(async () => {
-  // TODO 获取本地召唤师信息 初步方案 luc连接成功后 再打开助手窗口
+  await queryLocalSummonerInfo()
   cubeUserId.value =(await cube.profile.getCurrentUser()).userId
   queryBlacklist()
 })
@@ -302,7 +302,21 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
     return
   }
   if (res.data.data?.length !== 0){
-    blacklist.value = await handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId)
+    const hater = await handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId)
+    blacklist.value = hater.blackList
+    if (hater.existHater.length !== haterIdList.length){
+      // 玩家的haterList长度发生变化改变
+      onlinePlayerInfo.value.haterIdList[areaSetting.value].sumIdList = hater.existHater
+      blacklistServe({
+        url: '/player/updatePlayer',
+        method: 'PUT',
+        data: {
+          ID: onlinePlayerInfo.value.ID,
+          playerId: onlinePlayerInfo.value.playerId,
+          haterIdList: JSON.stringify(onlinePlayerInfo.value.haterIdList)
+        }
+      })
+    }
   }
   blacklist.value.sort((x:any,y:any) => {return y.blacklist.ID-x.blacklist.ID})
 }
@@ -324,7 +338,6 @@ const queryCurrenDate = () => {
 
 // 获取单个召唤师的详细信息
 const getDetails = (nickname:string,haterItem:HaterItem) => {
-  console.log(haterItem)
   detialsJson.value = haterItem
   detialsNickname.value = nickname
   active.value = true
@@ -359,7 +372,6 @@ const deleteBlackElement = async () => {
   if (res.data?.code===0){
     if (await isHavaItem(detialsJson.value.sumId,detialsJson.value.hId)){
       const haterIdList:OnlineBlacklistTpye =  onlinePlayerInfo.value.haterIdList[areaSetting.value]
-      console.log(haterIdList)
       message.success('删除成功')
       findHaterByHaterId(haterIdList.sumIdList)
     }else {
@@ -385,7 +397,6 @@ const isHavaItem = async (sumId:string,hId:number) => {
       const isHasLocal = res.data?.data?.list.find(
         (i: HaterItem) => (i.playerSumId === localSummonerInfo.value.playerSumId))
       if (isHasLocal === undefined) {
-        console.log(onlinePlayerInfo.value)
         const tempBlacklist = onlinePlayerInfo.value.haterIdList
         const index = tempBlacklist[areaSetting.value].sumIdList.indexOf(sumId)
         if (index > -1) {
@@ -397,7 +408,6 @@ const isHavaItem = async (sumId:string,hId:number) => {
           method: 'PUT',
           data: {
             ID: onlinePlayerInfo.value.ID,
-            CreatedAt:onlinePlayerInfo.value.CreatedAt,
             playerId: onlinePlayerInfo.value.playerId,
             haterIdList: JSON.stringify(tempBlacklist)
           }
@@ -443,7 +453,6 @@ const handleUpdateArea = (value:string) => {
   localStorage.setItem('config', JSON.stringify(config))
   queryBlacklist()
 }
-
 // 查看对局
 const toMatch = async (matchId:string,summonerId:string) => {
   localStorage.setItem('initQueryMatch',JSON.stringify({matchId:matchId,summonerId:summonerId}))
@@ -452,7 +461,12 @@ const toMatch = async (matchId:string,summonerId:string) => {
     cube.windows.message.send(queryMatch.id,'refresdh-window','')
   }
 }
-
+// 获取本地召唤师信息
+const queryLocalSummonerInfo = async () => {
+  const summonerInfo:lcuSummonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
+  localSummonerInfo.value.playerSumId = `${summonerInfo.summonerId}`
+  localSummonerInfo.value.playerSumName = summonerInfo.displayName
+}
 </script>
 
 <style scoped>

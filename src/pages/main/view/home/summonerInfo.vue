@@ -257,7 +257,7 @@ const currentChampIndex = ref(0)
 const config = JSON.parse(<string>(localStorage.getItem('config')))
 
 onMounted(async () => {
- // init()
+ init()
 })
 
 const init = async () => {
@@ -280,6 +280,9 @@ const init = async () => {
   summonerChampLevel.value = homeData.champLevel
   xp.value = parseInt(String((homeData.rank[6][0]/homeData.rank[6][1])*100))
   statstonesList.value = homeData.statstones
+
+  const currentScreen = (await cube.utils.getPrimaryDisplay()).size
+  cube.windows.obtainDeclaredWindow('assist',{x:currentScreen.width -320,y:(currentScreen.height -770)/2})
 }
 
 const queryMatch = () => {

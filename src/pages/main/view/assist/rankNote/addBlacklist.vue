@@ -65,6 +65,10 @@ const props:any = defineProps({
   gameAfterId:{
     type:Number,
     default:0
+  },
+  isHandAdd:{
+    type:Boolean,
+    default:true
   }
 })
 const selectValue = ref('摆烂')
@@ -139,7 +143,8 @@ const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:
     "sumId":summonerId,
     "area":areaSetting,
     "nickName":currentName,
-    "signCount":1
+    "signCount":1,
+    "isShow":true
   }
   const blacklistStruct =[{
     "playerSumName": localSummonerInfo.value.playerSumName,
@@ -148,8 +153,8 @@ const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:
     "sumId": summonerId,
     "tag": selectValue.value,
     "content": blacklistContent.value,
-    "handAdd": true,
-    "isShow": false
+    "handAdd": props.isHandAdd,
+    "isShow": true
   }]
   const res = await blacklistServe({
     url:'/hater/createHaterByFrank',
@@ -167,8 +172,6 @@ const confirmShielding = async () => {
     return
   }
   const summonerId = props.summonerId !== '' ?props.summonerId : await querySummonerId(currentName)
-  // const summonerId = String(Math.floor(Math.random() * 10000000))
-  // const summonerId = String(2022010)
 
   if (summonerId === null){
     message.error('哎呀 召唤师不存在 !')

@@ -14,7 +14,6 @@
     </div>
 
     <n-drawer v-model:show="blacklistActice"
-              style="border-top-left-radius: 12px;border-bottom-left-radius: 12px"
               :width="336" :placement="'right'">
       <n-drawer-content>
         <div v-for="detialsJson in detialsJsonList" style="margin-bottom: 20px">

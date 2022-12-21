@@ -202,6 +202,7 @@ const changeBlacklist = () => {
 // 设置是否开启野怪计时
 const changeJungleTime = () => {
   commoneChnage('isJungleTime')
+  alert('目前野怪计时还不太稳定, 开启后请重启Frank~~~')
 }
 // 设置是否自动启动游戏
 const changeAutoLaunchGeme = () => {

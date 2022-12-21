@@ -73,6 +73,8 @@ export class GameFlow {
         } else {
           cube.windows.show(<number>this.recentMatchWin?.id)
         }
+      }else if (id==='jungle_success'){
+        this.isJungleSuccess = true
       }
      })
 
@@ -81,6 +83,7 @@ export class GameFlow {
       cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
       this.jungleWin = null
       this.recentMatchWin = null
+      this.isJungleSuccess = false
     })
 
     // 游戏内监听按键, 显示或隐藏游戏内窗口
@@ -92,20 +95,21 @@ export class GameFlow {
         }else {
           cube.windows.show(recentMatch.id)
         }
-      }else if (hotKeyName==='jungle_success'){
-        this.isJungleSuccess = true
       }
     })
     // 游戏内监听按键, 显示或隐藏野怪计时窗口
-    cube.settings.hotkeys.game.on('hold',(name, state) => {
-      if (name ==='show_jungleTime' && this.isJungleSuccess ){
-        if (state==="down"){
-          cube.windows.show(<number>this.jungleWin?.id)
-        }else {
-          cube.windows.hide(<number>this.jungleWin?.id)
+    if (JSON.parse(<string>(localStorage.getItem('config'))).isJungleTime){
+      cube.settings.hotkeys.game.on('hold',(name, state) => {
+        if (name ==='show_jungleTime' && this.isJungleSuccess ){
+          if (state==="down"){
+            cube.windows.show(<number>this.jungleWin?.id)
+          }else {
+            cube.windows.hide(<number>this.jungleWin?.id)
+          }
         }
-      }
-    })
+      })
+    }
+
     // 检测到进入英雄联盟大厅后, 获取首页数据
     if (JSON.parse(<string>(localStorage.getItem('config'))).isAutoLaunchGame){
       cube.games.launchers.on('launched', () => {

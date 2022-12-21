@@ -4,9 +4,7 @@ import { GameFlow } from '../main/utils/gameFlow'
 
 cube.extensions.on('launch-triggered', async (s) => {
   if (!s.gamein){
-    const currentScreen = (await cube.utils.getPrimaryDisplay()).size
     cube.windows.obtainDeclaredWindow('main')
-    cube.windows.obtainDeclaredWindow('assist',{x:currentScreen.width -320,y:(currentScreen.height -770)/2})
   }
 })
 

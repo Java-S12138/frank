@@ -61,13 +61,12 @@ const getDetailedInfo = (summonerInfo:any[],playerChampionSelections:any,gameTyp
 // 查询敌方召唤师ID和昵称
 export const queryEnemySummonerIdAndSummonerName = async () => {
   const currentId = await queryLoaclSummoner()
-  // const mactchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+  const mactchSession = await invokeLcu('get','/lol-gameflow/v1/session')
 
-  const mactchSession = (await request({
-    'url': 'https://cdn.syjun.vip/frank/session.json',
-    method: 'GET',
-  })).data
-  console.log(mactchSession)
+  // const mactchSession = (await request({
+  //   'url': 'https://cdn.syjun.vip/frank/session.json',
+  //   method: 'GET',
+  // })).data
   const gameType = mactchSession?.gameData?.queue?.id
   const playerChampionSelections = getSelectChamp(mactchSession.gameData.playerChampionSelections)
 
@@ -98,20 +97,20 @@ const getChatSelectChampId = async () => {
 export const queryAllSummonerId = async () => {
   // todo 测试
   // const summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
-  const summonerIdList = [2947489903, 2943068890, 2205753043394816, 2937983583, 4013465288]
-  return summonerIdList
-  // let summonerIdList = []
-  // const chatId = await getChatSelectChampId()
-  // if (chatId === null){return null}
-  //
-  // const summonersId = await invokeLcu('get',`/lol-chat/v1/conversations/${chatId}/messages`)
-  //
-  // for (const summonersIdElement of summonersId) {
-  //   summonerIdList.push(summonersIdElement.fromSummonerId)
-  // }
-  // // 数组去重
-  // summonerIdList = [... new Set(summonerIdList)]
+  // const summonerIdList = [2947489903, 2943068890, 2205753043394816, 2937983583, 4013465288]
   // return summonerIdList
+  let summonerIdList = []
+  const chatId = await getChatSelectChampId()
+  if (chatId === null){return null}
+
+  const summonersId = await invokeLcu('get',`/lol-chat/v1/conversations/${chatId}/messages`)
+
+  for (const summonersIdElement of summonersId) {
+    summonerIdList.push(summonersIdElement.fromSummonerId)
+  }
+  // 数组去重
+  summonerIdList = [... new Set(summonerIdList)]
+  return summonerIdList
 }
 
 // 获取我方召唤师ID和昵称
@@ -133,8 +132,10 @@ export const querySummonerIdAndSummonerName = async () => {
 // 处理通过sumId查找到的Hater
 export const handleHaterListBySumId = async (res: Hater[], localSumId: string) => {
   const blackList = []
+  const existHater = []
   for (const haterItem of res) {
     const blacklistHater: HaterItem[] = haterItem.blacklist
+    existHater.push(haterItem.sumId)
     for (const blacklistItem of blacklistHater) {
       // 显示本地召唤的数据
       if (localSumId === blacklistItem.playerSumId) {
@@ -149,5 +150,5 @@ export const handleHaterListBySumId = async (res: Hater[], localSumId: string) =
       }
     }
   }
-  return blackList
+  return {blackList,existHater}
 }

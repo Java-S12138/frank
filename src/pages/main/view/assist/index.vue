@@ -73,7 +73,6 @@ cube.windows.message.on('received',async (id,content:any) => {
     // 查询敌方召唤师
     setTimeout(async () => {
       const res = await queryEnemySummonerIdAndSummonerName()
-      console.log(res)
       endGameAfterInfo.value = [[], []]
       endGameAfterInfo.value = res
     }, 1500)
@@ -93,6 +92,7 @@ cube.windows.message.on('received',async (id,content:any) => {
 
 
 const getCurrentBlacklist = async (summonerInfo:any) => {
+  currentBlackList.value = []
   const areaSetting = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
   // 获取当前队伍中的召唤师ID
   const summonerList = summonerInfo.reduce((res:String[],item:{name:string,summonerId:number}) => {
@@ -109,9 +109,8 @@ const getCurrentBlacklist = async (summonerInfo:any) => {
   }
   if (res.data.data?.length !==0){
       handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId).then((res) => {
-        currentBlackList.value = res
-        console.log(res)
-        if (res.length > 1){
+        currentBlackList.value = res.blackList
+        if (res.blackList.length > 1){
           transValue.value = 'blacklist'
         }
       })
