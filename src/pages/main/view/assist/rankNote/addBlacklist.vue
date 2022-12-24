@@ -117,13 +117,21 @@ const queryCurrenDate = () => {
 }
 
 // 更新玩家信息
-const updatePlayerInfo = async (haterSumId:string,areaSetting:string) => {
+const updatePlayerInfo = async (haterSumId:string,areaSetting:string,playerSumId:string) => {
+  if (onlinePlayerInfo.value.haterIdList[areaSetting]===undefined){
+    onlinePlayerInfo.value.haterIdList[areaSetting]={}
+  }
+  if (onlinePlayerInfo.value.haterIdList[areaSetting][playerSumId]===undefined){
+    onlinePlayerInfo.value.haterIdList[areaSetting][playerSumId]={
+      sumIdList:[],
+      nickname:localSummonerInfo.value.playerSumName
+    }
+  }
   const tempBlacklist = onlinePlayerInfo.value.haterIdList
-  if (tempBlacklist[areaSetting].sumIdList.includes(haterSumId)){
+  if (tempBlacklist[areaSetting][playerSumId]?.sumIdList.includes(haterSumId)){
     return true
   }
-  tempBlacklist[areaSetting].sumIdList.push(haterSumId)
-  onlinePlayerInfo.value.haterIdList = tempBlacklist
+  tempBlacklist[areaSetting][playerSumId].sumIdList.push(haterSumId)
   const res = await blacklistServe({
     url:'/player/updatePlayer',
     method:'PUT',
@@ -183,7 +191,7 @@ const confirmShielding = async () => {
   }
 
   const [updateHater,updatePlayer] = await Promise.all([
-    updatePlayerInfo(summonerId,areaSetting),
+    updatePlayerInfo(summonerId,areaSetting,localSummonerInfo.value.playerSumId),
     updateHaterInfo(String(summonerId),areaSetting,currentName)
   ])
 

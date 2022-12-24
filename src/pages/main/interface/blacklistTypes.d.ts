@@ -7,9 +7,8 @@ export interface PlayerInfo {
 }
 
 export interface OnlineBlacklistTpye {
-  nickname:string,
-  playerSumId:string
-  sumIdList:string[]
+  sumIdList:string[],
+  nickname:string
 }
 
 export interface Hater {

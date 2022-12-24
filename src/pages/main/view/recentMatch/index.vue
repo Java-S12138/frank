@@ -21,14 +21,8 @@
             <n-tag size="large"
                    :bordered="false"
                    type="error" >{{detialsNickname}}</n-tag>
-            <n-popover v-if="detialsJson.isShow" trigger="hover" :show-arrow="false" placement="left">
-              <template #trigger>
-                <n-tag  size="large" :bordered="false" type="info">同舟共济</n-tag>
-              </template>
-              <p>此数据已共享给其他玩家使用</p>
-            </n-popover>
-            <n-tag :color="{ color: '#fafafc', textColor: '#9AA4AF' }" :bordered="false"
-                   size="large" v-else>{{formatDate(detialsJson.UpdatedAt)}}</n-tag>
+            <n-tag type="info" :bordered="false"
+                   size="large">{{formatDate(detialsJson.UpdatedAt)}}</n-tag>
 
           </n-space>
           <div class="draContent">
@@ -114,15 +108,17 @@ const checkBlacklist = async (enemyList:[]) => {
     let init = true
     for (const re of res.data.data) {
       blacklistDict.value[re.sumId] = []
-      blackList.value.push(re.sumId)
       for (const reElement of re.blacklist) {
-        blacklistDict.value[re.sumId].push(reElement)
-      }
-      if (init){
-        blacklistActice.value = true
-        detialsJsonList.value = blacklistDict.value[re.sumId]
-        detialsNickname.value = re.nickName
-        init=false
+        if (reElement.isShow){
+          blackList.value.push(re.sumId)
+          blacklistDict.value[re.sumId].push(reElement)
+          if (init){
+            blacklistActice.value = true
+            detialsJsonList.value = blacklistDict.value[re.sumId]
+            detialsNickname.value = re.nickName
+            init=false
+          }
+        }
       }
     }
   }

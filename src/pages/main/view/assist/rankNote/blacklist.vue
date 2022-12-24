@@ -235,7 +235,7 @@ const currentBlacklistStatus = ref(false)
 
 watch(currentBlackList,() => {
   if (currentBlackList.value === 'add'){
-    findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value].sumIdList)
+    findHaterByHaterId(onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
     currentBlackList.value = []
     return
   }
@@ -271,6 +271,8 @@ const queryBlacklist = async () => {
     params:{'playerId':cubeUserId.value},
     method:'GET'
   })
+
+  console.log(res.data)
   if (res.data.code !== 0){
     onlineListStatus.value=2
     message.error('接口出现异常')
@@ -278,9 +280,11 @@ const queryBlacklist = async () => {
   }
   onlinePlayerInfo.value = res.data.data
   onlinePlayerInfo.value.haterIdList = JSON.parse(res.data.data.haterIdList)
-  const onlineBlacklist:OnlineBlacklistTpye =  onlinePlayerInfo.value.haterIdList[areaSetting.value]
+  if (onlinePlayerInfo.value.haterIdList[areaSetting.value] === undefined){
+    return
+  }
+  const onlineBlacklist:OnlineBlacklistTpye = onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId]
   if (onlineBlacklist?.sumIdList?.length > 0){
-    onlineListStatus.value = 1
     findHaterByHaterId(onlineBlacklist.sumIdList)
   }else {
     onlineListStatus.value = 0
@@ -305,20 +309,32 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
     const hater = await handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId)
     blacklist.value = hater.blackList
     if (hater.existHater.length !== haterIdList.length){
+      console.log('玩家的haterList长度发生变化改变')
       // 玩家的haterList长度发生变化改变
-      onlinePlayerInfo.value.haterIdList[areaSetting.value].sumIdList = hater.existHater
-      blacklistServe({
-        url: '/player/updatePlayer',
-        method: 'PUT',
-        data: {
-          ID: onlinePlayerInfo.value.ID,
-          playerId: onlinePlayerInfo.value.playerId,
-          haterIdList: JSON.stringify(onlinePlayerInfo.value.haterIdList)
-        }
-      })
+      changePlayerSumIdList(hater.existHater)
     }
+    blacklist.value.sort((x:any,y:any) => {return y.blacklist.ID-x.blacklist.ID})
+    onlineListStatus.value = 1
+  }else {
+    changePlayerSumIdList([])
+    blacklist.value.length = 0
+    onlineListStatus.value = 0
   }
-  blacklist.value.sort((x:any,y:any) => {return y.blacklist.ID-x.blacklist.ID})
+
+}
+
+// 玩家的haterList长度发生变化改变
+const changePlayerSumIdList =async (list:any[]) => {
+  onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList = list
+  blacklistServe({
+    url: '/player/updatePlayer',
+    method: 'PUT',
+    data: {
+      ID: onlinePlayerInfo.value.ID,
+      playerId: onlinePlayerInfo.value.playerId,
+      haterIdList: JSON.stringify(onlinePlayerInfo.value.haterIdList)
+    }
+  })
 }
 
 // 格式化数据库时间格式
@@ -371,7 +387,7 @@ const deleteBlackElement = async () => {
   })
   if (res.data?.code===0){
     if (await isHavaItem(detialsJson.value.sumId,detialsJson.value.hId)){
-      const haterIdList:OnlineBlacklistTpye =  onlinePlayerInfo.value.haterIdList[areaSetting.value]
+      const haterIdList:OnlineBlacklistTpye =  onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId]
       message.success('删除成功')
       findHaterByHaterId(haterIdList.sumIdList)
     }else {
@@ -388,7 +404,7 @@ const isHavaItem = async (sumId:string,hId:number) => {
     // 根据Hater的召唤师 查询当前Hater的黑名单数据
     const res = await blacklistServe({
       url:'blacklist/getBlacklistList',
-      params:{sumId:sumId},
+      params:{sumId:sumId,hId:hId},
       method:'GET'
     })
     if (res.data?.code===0) {
@@ -398,11 +414,10 @@ const isHavaItem = async (sumId:string,hId:number) => {
         (i: HaterItem) => (i.playerSumId === localSummonerInfo.value.playerSumId))
       if (isHasLocal === undefined) {
         const tempBlacklist = onlinePlayerInfo.value.haterIdList
-        const index = tempBlacklist[areaSetting.value].sumIdList.indexOf(sumId)
+        const index = tempBlacklist[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList.indexOf(sumId)
         if (index > -1) {
-          tempBlacklist[areaSetting.value].sumIdList.splice(index, 1)
+          tempBlacklist[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList.splice(index, 1)
         }
-        onlinePlayerInfo.value.haterIdList = tempBlacklist
         blacklistServe({
           url: '/player/updatePlayer',
           method: 'PUT',
@@ -435,7 +450,7 @@ const showTagContent = (tag:string) => {
 }
 // 新增黑名单
 const addBlacklistFunc = () => {
-  findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value].sumIdList)
+  findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
   addBlacklistActive.value=false
 }
 // 更新排位日记
