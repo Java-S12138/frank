@@ -8,7 +8,18 @@
       <common-jungle :camp1="monsterCamp_17" :camp2="monsterCamp_6" :pioneer-count="pioneerCount"
                      :camp3="monsterCamp_16" :camp4="monsterCamp_15" :camp-dragon="monsterCamp_12" :is-dragon="isDragon"/>
     </n-space>
-    <div class="closeWin" @click="closeJungleTime"></div>
+    <div class="closeWin">
+      <n-popconfirm
+        positive-text="确定"
+        negative-text="取消"
+        :show-icon="false"
+        @positive-click="closeJungleTime">
+        <template #trigger>
+          <div class="closeWinDiv"></div>
+        </template>
+       是否关闭此窗口
+      </n-popconfirm>
+    </div>
   </div>
 </template>
 
@@ -17,6 +28,7 @@ import JungleTeam from './jungleTeam.vue'
 import CommonJungle from './commonJungle.vue'
 import {CountdownInst, NSpace} from 'naive-ui'
 import {ref} from "vue";
+import {NPopconfirm} from "naive-ui"
 
 interface infoObject {
   category: string;
@@ -266,9 +278,7 @@ const initJungle = (monster:any,type_:string) => {
 }
 
 const closeJungleTime = () => {
-  if (confirm('是否关闭此页面')){
-    cube.windows.close(cube.windows.current.id())
-  }
+  cube.windows.close(cube.windows.current.id())
 }
 
 </script>
@@ -276,9 +286,11 @@ const closeJungleTime = () => {
 <style scoped>
 .closeWin {
   position: absolute;
-  border-radius: 5px;
   right: 95px;
-  bottom: -8px;
+  bottom: -9px;
+}
+.closeWinDiv{
+  border-radius: 5px;
   width: 30px;
   height: 5px;
   background-color: #9aa4af;

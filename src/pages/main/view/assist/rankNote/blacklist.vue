@@ -272,7 +272,6 @@ const queryBlacklist = async () => {
     method:'GET'
   })
 
-  console.log(res.data)
   if (res.data.code !== 0){
     onlineListStatus.value=2
     message.error('接口出现异常')
@@ -281,6 +280,7 @@ const queryBlacklist = async () => {
   onlinePlayerInfo.value = res.data.data
   onlinePlayerInfo.value.haterIdList = JSON.parse(res.data.data.haterIdList)
   if (onlinePlayerInfo.value.haterIdList[areaSetting.value] === undefined){
+    onlineListStatus.value = 0
     return
   }
   const onlineBlacklist:OnlineBlacklistTpye = onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId]
@@ -309,7 +309,6 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
     const hater = await handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId)
     blacklist.value = hater.blackList
     if (hater.existHater.length !== haterIdList.length){
-      console.log('玩家的haterList长度发生变化改变')
       // 玩家的haterList长度发生变化改变
       changePlayerSumIdList(hater.existHater)
     }

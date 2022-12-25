@@ -34,7 +34,7 @@
         v-model:value="blacklistContent"
         type="textarea"
         autosize
-        placeholder="请输入拉黑原因"
+        placeholder="输入拉黑原因(内容将共享给其他召唤师)"
         maxlength="250"
       />
 
