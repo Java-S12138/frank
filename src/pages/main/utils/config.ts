@@ -28,7 +28,7 @@ export const config: any = {
   'runeType': '韩服数据',
   'isGameInWindow': true,
   'is101': false,
-  'isJungleTime': true,
+  'isJungleTime': false,
   'isAutoLaunchGame':true,
   'currentArea':'t_1'
 }

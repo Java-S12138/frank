@@ -69,8 +69,7 @@
 
         <div>
           <p style="color: #9aa4af;">营造良好游戏环境从你我做起
-            <span style="color: #666F75;cursor: pointer">教程</span></p>
-
+            <span style="color: #666F75;cursor: pointer" @click="openWeb">教程</span></p>
         </div>
       </n-space>
     </n-card>
@@ -480,6 +479,10 @@ const queryLocalSummonerInfo = async () => {
   const summonerInfo:lcuSummonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
   localSummonerInfo.value.playerSumId = `${summonerInfo.summonerId}`
   localSummonerInfo.value.playerSumName = summonerInfo.displayName
+}
+
+const openWeb = () => {
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/blacklist')
 }
 </script>
 
