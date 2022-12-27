@@ -130,14 +130,22 @@ export class GameFlow {
   }
   // 自动接收对局
   public autoAcceptGame = async () => {
-    const config = JSON.parse(<string>(localStorage.getItem('config')))
-    const isAutoAccept = config.autoAccept
+    const isAutoAccept = (JSON.parse(<string>(localStorage.getItem('config')))).autoAccept
     if (isAutoAccept < 50) {
+      return
+    }
+    if (isAutoAccept === 50){
+      invokeLcu('post', '/lol-matchmaking/v1/ready-check/accept')
       return
     }
     const setTime = (isAutoAccept - 50) * 200
     setTimeout(async () => {
-      invokeLcu('post', '/lol-matchmaking/v1/ready-check/accept')
+      invokeLcu('get','/lol-matchmaking/v1/ready-check').then((res) => {
+        if (res?.playerResponse !=='Declined'){
+          invokeLcu('post', '/lol-matchmaking/v1/ready-check/accept')
+        }
+        return
+      })
     }, setTime)
   }
 }

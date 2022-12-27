@@ -121,7 +121,7 @@ export const dealMatchHistory = async (summonerId: number, begIndex: number, end
   const matchList = await queryMatchHistory(summonerId, begIndex, endIndex)
 
   if (matchList.httpStatus === 500) {return null}
-  if (matchList.games.games.length === 0) {return null}
+  if (matchList?.games?.games?.length === 0 ||matchList?.games?.games ===undefined ) {return null}
 
   let simpleMatchList = []
   let specialSimpleMatchList = []

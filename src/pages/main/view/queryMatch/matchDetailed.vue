@@ -62,7 +62,7 @@
                 :width="665" :placement="'right'">
         <n-drawer-content :body-content-style ="'padding:0px'">
           <div style="margin-top: 60px">
-            <game-details class="slide-in-right" :currentGameIdProps="assistGameId"
+            <game-details class="slide-in-right" :currentGameIdProps="Number(assistGameId)"
             ></game-details>
           </div>
         </n-drawer-content>
