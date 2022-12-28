@@ -266,11 +266,9 @@ const queryBlacklist = async () => {
     return
   }
   const res = await  blacklistServe({
-    url:'/player/findPlayerByPlayerId',
-    params:{'playerId':cubeUserId.value},
+    url:`/player/findPlayerByPlayerId?playerId=${cubeUserId.value}`,
     method:'GET'
   })
-
   if (res.data.code !== 0){
     onlineListStatus.value=2
     message.error('接口出现异常')
@@ -292,10 +290,9 @@ const queryBlacklist = async () => {
 
 // 通过HaterId查询数据
 const findHaterByHaterId = async (haterIdList:string[]) => {
-
   const res = await  blacklistServe({
     url:'/hater/findHaterBySumId',
-    data:{'sumIdList':haterIdList,'area':areaSetting.value},
+    data:{'sumIdList':JSON.parse(JSON.stringify(haterIdList)),'area':areaSetting.value},
     method:'POST'
   })
   if (res.data.code !== 0){
@@ -401,10 +398,10 @@ const isHavaItem = async (sumId:string,hId:number) => {
   try {
     // 根据Hater的召唤师 查询当前Hater的黑名单数据
     const res = await blacklistServe({
-      url:'blacklist/getBlacklistList',
-      params:{sumId:sumId,hId:hId},
+      url:`blacklist/getBlacklistList?sumId=${sumId}&hId=${hId}`,
       method:'GET'
     })
+    console.log(res)
     if (res.data?.code===0) {
       // 判断Hater的黑名单中是否还存在 本地召唤师添加的数据
       // 如果不存在, 需要更新Player里面的数据
@@ -482,7 +479,7 @@ const queryLocalSummonerInfo = async () => {
 }
 
 const openWeb = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/blacklist')
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction#tKqfU')
 }
 </script>
 

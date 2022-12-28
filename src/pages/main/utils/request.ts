@@ -3,7 +3,21 @@ import axios from "axios";
 export const request = axios.create({
   timeout:9999
 })
-export const blacklistServe = axios.create({
-  baseURL:import.meta.env.VITE_BASE_API,
-  timeout:9999
-})
+// export const blacklistServe = axios.create({
+//   baseURL:"http://43.138.74.180:8412",
+//   timeout:9999
+// })
+export const blacklistServe =async (config:any) => {
+  const res = await cube.net.sendHttpRequest('http://43.138.74.180:8412'+config.url,
+    {method:config.method,body:JSON.stringify(config?.data)}
+    )
+  if (res.status === 200){
+    return {
+      data:JSON.parse(res.data)
+    }
+  }else {
+    console.log(config)
+    console.log(JSON.parse(res.data))
+    return {data:{code:-1}}
+  }
+}

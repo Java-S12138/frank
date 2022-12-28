@@ -50,7 +50,7 @@ export class GameFlow {
         if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
         // if (true){
           cube.windows.obtainDeclaredWindow('jungleTime',
-            {gamein: true,x:currentScreen.width-350,y:currentScreen.height-350}).then((v) => {
+            {gamein: true,x:currentScreen.width-220,y:currentScreen.height-350}).then((v) => {
             cube.windows.hide(v.id)
             this.jungleWin = v
           })

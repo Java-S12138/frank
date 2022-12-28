@@ -1,7 +1,6 @@
 import {invokeLcu} from "./index";
 import {englishToChinese, getPosition} from "./utils";
 import {champDict} from "../resources/champList";
-import {request} from "../utils/request";
 
 export class recentMatch {
   public matchSession: any
@@ -12,12 +11,12 @@ export class recentMatch {
   public teamTwoList:[number,number] = [0,0]
 
   public init = async () => {
-    this.matchSession = (await request({
-      'url': 'https://cdn.syjun.vip/frank/sessionTest.json',
-      method: 'GET',
-    })).data
+    // this.matchSession = (await request({
+    //   'url': 'https://cdn.syjun.vip/frank/sessionTest.json',
+    //   method: 'GET',
+    // })).data
 
-    // this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+    this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
 
     this.gameType = this.matchSession?.gameData?.queue?.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
