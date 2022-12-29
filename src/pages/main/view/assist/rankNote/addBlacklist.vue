@@ -2,6 +2,12 @@
   <n-drawer-content>
     <template #header>
       <n-space justify="space-between" style="width: 272px;align-items: center">
+        <n-tree-select
+          :show-checkmark="false" :show-path="false"
+          :menu-props="{style:'width:130px'}"
+          @update:value="handleUpdateArea($event)"
+          v-model:value="areaSetting" :options="areaOptions" >
+        </n-tree-select>
         <n-tag size="large" v-if="props.name!=''"  :bordered="false">{{props.name}}</n-tag>
         <n-input
           v-else
@@ -9,7 +15,7 @@
           v-model:value="blacklistName"
           placeholder="输入召唤师昵称"
         />
-        <n-tag size="large" :color="{ color: '#fafafc', textColor: '#9AA4AF' }"  :bordered="false">{{queryCurrenDate()}}</n-tag>
+
       </n-space>
     </template>
     <template #footer>
@@ -26,7 +32,7 @@
           />
 
         </n-space>
-        <n-button type="error" size="small" @click="confirmShielding">拉黑一下</n-button>
+        <n-button :disabled="isCommit" type="error" size="small" @click="confirmShielding">拉黑一下</n-button>
       </n-space>
     </template>
     <n-space vertical>
@@ -34,7 +40,7 @@
         v-model:value="blacklistContent"
         type="textarea"
         autosize
-        placeholder="输入拉黑原因(内容将共享给其他召唤师)"
+        placeholder="请输入拉黑原因 ( 请选择当前所在大区 )"
         maxlength="250"
       />
 
@@ -43,15 +49,16 @@
 </template>
 
 <script setup lang="ts">
-import {NSpace,NInput,NSelect,NTag,NButton,NDrawerContent,useMessage} from 'naive-ui'
+import {NSpace,NInput,NSelect,NTag,NButton,NDrawerContent,useMessage,NTreeSelect} from 'naive-ui'
 import {ref,onBeforeMount} from "vue";
 import {isStoreageHas} from "../../../lcu/utils";
 import {invokeLcu} from "../../../lcu";
-import {PlayerInfo} from "../../../interface/blacklistTypes";
 import {blacklistServe} from "../../../utils/request";
 import {assistStore} from "../../../store";
 import {storeToRefs} from "pinia";
+import {areaOptions} from "../../../resources/areaList";
 
+const areaSetting = ref(JSON.parse(<string>(localStorage.getItem('config'))).currentArea)
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
 const props:any = defineProps({
   name:{
@@ -93,9 +100,10 @@ const options = [
 const blacklistContent = ref('')
 const blacklistName = ref('')
 const store = assistStore()
-const {onlinePlayerInfo,localSummonerInfo}: any= storeToRefs(store)
+const {onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
 const message = useMessage()
-const emits = defineEmits(['closeDrawer'])
+const emits = defineEmits(['closeDra'])
+const isCommit = ref(false)
 
 // 判断当前召唤师是否存在于黑名单中
 onBeforeMount(() => {
@@ -106,15 +114,6 @@ onBeforeMount(() => {
   }
 })
 
-const queryCurrenDate = () => {
-  let nowDate = new Date();
-  let year = nowDate.getFullYear();
-  let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1)
-    : nowDate.getMonth() + 1;
-  let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
-    .getDate();
-  return  year + "-" + month + "-" + day;
-}
 
 // 更新玩家信息
 const updatePlayerInfo = async (haterSumId:string,areaSetting:string,playerSumId:string) => {
@@ -174,7 +173,11 @@ const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:
 
 const confirmShielding = async () => {
   const currentName = props.name !== '' ? props.name : blacklistName.value
-  const areaSetting = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
+
+  if (areaSetting.value==='othercom' || areaSetting.value==='netcom' || areaSetting.value==='telecom'){
+    message.error('请选择大区')
+    return
+  }
   if (currentName ===''){
     message.error('召唤师昵称不能为空 !')
     return
@@ -189,15 +192,13 @@ const confirmShielding = async () => {
     message.error('拉黑原因不能为空 !')
     return
   }
+  emits('closeDra','closeDra')
 
-  const [updateHater,updatePlayer] = await Promise.all([
-    updatePlayerInfo(summonerId,areaSetting,localSummonerInfo.value.playerSumId),
-    updateHaterInfo(String(summonerId),areaSetting,currentName)
-  ])
-
+  const updatePlayer = await updatePlayerInfo(String(summonerId),areaSetting.value,localSummonerInfo.value.playerSumId)
+  const updateHater = await updateHaterInfo(String(summonerId),areaSetting.value,currentName)
   if (updateHater && updatePlayer){
-    emits('closeDrawer','closeDrawer') //向父组件发送消息关闭抽屉
     message.success(`${currentName}   拉黑成功😡`)
+    addHater.value += 1
   }else {
     message.error(`${currentName}   拉黑失败`)
   }
@@ -210,6 +211,14 @@ const querySummonerId = async (nickname:string) => {
     return null
   }else
     return String(res.summonerId)
+}
+
+// 改变当前大区
+const handleUpdateArea = (value:string) => {
+  const config = JSON.parse(<string>(localStorage.getItem('config')))
+  areaSetting.value = value
+  config.currentArea = value
+  localStorage.setItem('config', JSON.stringify(config))
 }
 </script>
 

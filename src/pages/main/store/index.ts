@@ -32,6 +32,7 @@ export const assistStore = defineStore('assist', {
       showSummonerInfoModal:false,
       onlinePlayerInfo:{},
       localSummonerInfo:{playerSumId:'',playerSumName:''},
+      addHater:0
     }
   }
 })

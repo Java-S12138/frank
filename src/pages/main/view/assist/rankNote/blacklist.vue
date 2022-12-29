@@ -179,13 +179,13 @@
       </n-drawer-content>
     </n-drawer>
 
-    <pick-summoner @refreshList="addBlacklistFunc"></pick-summoner>
+    <pick-summoner></pick-summoner>
 
     <n-drawer v-model:show="addBlacklistActive"
               style="border-top-left-radius: 12px;border-top-right-radius: 12px"
               :height="420" placement="bottom" :auto-focus="false">
       <add-blacklist
-        @closeDrawer="addBlacklistFunc"
+        @closeDra = "addBlacklistActive=false"
       ></add-blacklist>
     </n-drawer>
   </div>
@@ -227,17 +227,12 @@ const detialsNickname = ref('')
 const message = useMessage()
 const areaSetting = ref(JSON.parse(<string>(localStorage.getItem('config'))).currentArea)
 const store = assistStore()
-const {currentBlackList,onlinePlayerInfo,localSummonerInfo}: any= storeToRefs(store)
+const {currentBlackList,onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
 const cubeUserId = ref('')
 const onlineListStatus = ref(0)
 const currentBlacklistStatus = ref(false)
 
 watch(currentBlackList,() => {
-  if (currentBlackList.value === 'add'){
-    findHaterByHaterId(onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
-    currentBlackList.value = []
-    return
-  }
   if (currentBlackList.value.length !== 0){
     currentBlacklistStatus.value = true
     onlineListStatus.value = 1
@@ -251,6 +246,11 @@ watch(currentBlackList,() => {
       onlineListStatus.value = 0
     }
   }
+})
+
+watch(addHater,() => {
+  areaSetting.value = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
+  findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
 })
 
 onMounted(async () => {
@@ -269,6 +269,7 @@ const queryBlacklist = async () => {
     url:`/player/findPlayerByPlayerId?playerId=${cubeUserId.value}`,
     method:'GET'
   })
+
   if (res.data.code !== 0){
     onlineListStatus.value=2
     message.error('接口出现异常')
@@ -387,6 +388,7 @@ const deleteBlackElement = async () => {
       findHaterByHaterId(haterIdList.sumIdList)
     }else {
       message.error('删除失败')
+      queryBlacklist()
     }
   }else {
     message.error('删除失败')
@@ -398,10 +400,9 @@ const isHavaItem = async (sumId:string,hId:number) => {
   try {
     // 根据Hater的召唤师 查询当前Hater的黑名单数据
     const res = await blacklistServe({
-      url:`blacklist/getBlacklistList?sumId=${sumId}&hId=${hId}`,
+      url:`/blacklist/getBlacklistList?sumId=${sumId}&hId=${hId}`,
       method:'GET'
     })
-    console.log(res)
     if (res.data?.code===0) {
       // 判断Hater的黑名单中是否还存在 本地召唤师添加的数据
       // 如果不存在, 需要更新Player里面的数据
@@ -445,8 +446,9 @@ const showTagContent = (tag:string) => {
 }
 // 新增黑名单
 const addBlacklistFunc = () => {
+  console.log('addBlack')
+  areaSetting.value = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
   findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
-  addBlacklistActive.value=false
 }
 // 更新排位日记
 cube.windows.message.on('received',(id:any) => {

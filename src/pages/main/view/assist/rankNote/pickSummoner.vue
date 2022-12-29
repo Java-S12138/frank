@@ -64,7 +64,7 @@
 
     <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
               :height="420" placement="bottom" :auto-focus="false">
-      <add-blacklist @closeDrawer="closeDrawer"
+      <add-blacklist @closeDra = "active=false"
                      :name="blacklistName"
                      :summonerId="blacklistId"
                      :gameAfterId="gameAfterId"
@@ -123,10 +123,6 @@ const preAddBlacklist = (summonerName:string, summonerId:string) => {
   blacklistName.value = summonerName
   blacklistId.value = summonerId
   active.value = true
-}
-const closeDrawer = () => {
-  emits('refreshList')
-  active.value = false
 }
 
 </script>

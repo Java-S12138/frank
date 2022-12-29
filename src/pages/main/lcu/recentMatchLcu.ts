@@ -78,7 +78,7 @@ export class recentMatch {
     for (let i = 0; i < 100; i += 20) {
       const matchList = (await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20]))['games']['games'].reverse()
       for (let j = 0; j < matchList.length; j++) {
-        // if (matchList[j].queueId === this.gameType) {
+        if (matchList[j].queueId === this.gameType) {
           if (matchCount === 10) {
             break mainfor
           }
@@ -91,7 +91,7 @@ export class recentMatch {
             assists: matchList[j].participants[0].stats.assists,
             isWin: matchList[j].participants[0].stats.win,
           })
-        // }
+        }
       }
     }
     isTeamOne === true ? (this.teamOneList[0]+=winCount,this.teamOneList[1]+=matchCount) :

@@ -14,7 +14,7 @@
       <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>
       <n-drawer v-model:show="queryMatchAddition.active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
                 :height="420" placement="bottom" :auto-focus="false">
-        <add-blacklist @closeDrawer="closeDrawer"
+        <add-blacklist @closeDra="closeDrawer"
                        :name="queryMatchAddition.blacklistName"
                        :summonerId="queryMatchAddition.blacklistId"
                        :gameAfterId="queryMatchAddition.gameAfterId"></add-blacklist>
@@ -144,7 +144,6 @@ const handldDrge = () => {
 }
 const closeDrawer = () => {
   queryMatchAddition.value.active = false
-  currentBlackList.value='add'
 }
 </script>
 
