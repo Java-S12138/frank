@@ -5,7 +5,7 @@
       <n-space v-if="onlineListStatus===0" style="margin: 10px 0px 10px 0px"
                justify="center" :size="[0,0]">
           <p style="color: #666F75;">当前大区暂无你的排位笔记哟</p>
-          <p style="color: #666F75">愿你的排位笔记永远没有笔记</p>
+          <p style="color: #666F75">营造良好游戏环境从你我做起</p>
       </n-space>
       <n-scrollbar v-else-if="onlineListStatus===1" style="height: 545px;margin-bottom: 5px">
         <n-list style="margin-right:13px;margin-left: 13px"
@@ -57,19 +57,19 @@
 
     <n-card class="boxShadow"  size="small" content-style="padding:10px 0px 5px 0px">
       <n-space justify="center" :size="[0,5]">
-        <n-space style="width: 215px;" justify="space-between" >
+        <n-space justify="space-between" >
           <n-tree-select
             size="small" :show-checkmark="false" :show-path="false"
             :menu-props="{style:'width:130px'}"
             @update:value="handleUpdateArea($event)"
             v-model:value="areaSetting" :options="areaOptions" >
           </n-tree-select>
+          <n-button @click="openWeb('https://frank.syjun.vip/#/index')" size="small">共享笔记</n-button>
           <n-button @click="addBlacklistActive=true" size="small">新增</n-button>
         </n-space>
 
         <div>
-          <p style="color: #9aa4af;">营造良好游戏环境从你我做起
-            <span style="color: #666F75;cursor: pointer" @click="openWeb">教程</span></p>
+          <p style="color: #9aa4af">排位笔记 将共享内容给同大区玩家使用</p>
         </div>
       </n-space>
     </n-card>
@@ -480,8 +480,8 @@ const queryLocalSummonerInfo = async () => {
   localSummonerInfo.value.playerSumName = summonerInfo.displayName
 }
 
-const openWeb = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction#tKqfU')
+const openWeb = (url:string) => {
+  cube.utils.openUrlInDefaultBrowser(url)
 }
 </script>
 

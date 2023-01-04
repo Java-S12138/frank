@@ -2,8 +2,10 @@
   <div class="mainDiv" v-if="!isPageNull">
     <dashboard/>
     <div class="matchs">
-      <match :matchList="friendList"></match>
+      <match :matchList="friendList" :win-count="friendTeamList" :game-type="gameType"></match>
       <match :matchList="enemyList"
+             :win-count="enemyTeamTwoList"
+             :game-type="gameType"
              :blackList="blackList"
              @openDrawer="openDrawer"
       ></match>
@@ -69,24 +71,27 @@ const blacklistDict:any = ref({})
 const blackList:any = ref([])
 const detialsNickname =ref('')
 const detialsJsonList:any = ref([])
+const gameType = ref(420)
 
-
+// todo dev
 onMounted(async () => {
   const RecentMatch = new recentMatch()
   const matchList = await RecentMatch.queryAllSummonerInfo()
+  console.log(matchList)
   if (matchList.friendList.length !== 0){
     isPageNull.value = false
   }else {
     return
   }
-  checkBlacklist(matchList.enemyList)
-  friendList.value = matchList.friendList
-  enemyList.value = matchList.enemyList
-  matchList.isTeamOne === true ? (friendTeamList.value = matchList.teamOneList,enemyTeamTwoList.value = matchList.teamTwoList) :
-    (enemyTeamTwoList.value = <[number,number]>matchList.teamOneList, friendTeamList.value = <[number,number]> matchList.teamTwoList)
-  cube.windows.getWindowByName('background').then((win) => {
-    cube.windows.message.send(win.id,'initDone','')
-  })
+  // checkBlacklist(matchList.enemyList)
+  gameType.value = <number>matchList.gameType
+  setTimeout(() => {
+    friendList.value = matchList.friendList
+    enemyList.value = matchList.enemyList
+  },3000)
+  // cube.windows.getWindowByName('background').then((win) => {
+  //   cube.windows.message.send(win.id,'initDone','')
+  // })
 })
 
 const checkBlacklist = async (enemyList:[]) => {

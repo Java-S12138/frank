@@ -30,7 +30,7 @@
         <n-tag size="tiny" type="error" v-else @click="openDra(match.summonerId,match.summonerName)"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
                >{{ match.summonerName }} </n-tag>
-        <n-space :size="[8,0]" v-for="champ in match.mathcHistory">
+        <n-space :size="[8,0]" v-for="champ in match.matchHistory">
           <n-avatar
             :size="30"
             :src="champ.champImg"
@@ -48,7 +48,10 @@
 
 <script setup lang="ts">
 import {NSpace,NAvatar,NTag} from 'naive-ui'
-import {watch} from "vue";
+import {onMounted} from "vue";
+import {invokeLcu} from "../../lcu";
+import {champDict} from "../../resources/champList";
+
 
 const props:any = defineProps({
   matchList:{
@@ -58,6 +61,22 @@ const props:any = defineProps({
   blackList:{
     type:Array,
     default:[]
+  },
+  winCount:{
+    type:Array,
+    default:[0,0]
+  },
+  gameType:{
+    type:Number,
+    default:420
+  }
+})
+
+onMounted(async () => {
+  console.log(props.matchList)
+
+  for (const summonerInfo of props.matchList) {
+    summonerInfo['matchHistory'] = await queryMatchHistory(summonerInfo.summonerId,props.gameType)
   }
 })
 
@@ -65,6 +84,36 @@ const emits = defineEmits(['openDrawer'])
 
 const openDra = (summonerId:string,summonerName:string) => {
   emits('openDrawer',summonerId,summonerName)
+}
+
+// 查询比赛记录 (最近10场排位)
+const queryMatchHistory = async (summonerId: string,gameType:number) => {
+  let classicMode: any = []
+  let matchCount = 0
+  let winCount = 0
+  mainfor:
+    for (let i = 0; i < 100; i += 20) {
+      const matchList = (await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20]))?.games?.games.reverse()
+      for (let j = 0; j < matchList?.length; j++) {
+        if (matchList[j].queueId === gameType) {
+          if (matchCount === 10) {
+            break mainfor
+          }
+          matchCount += 1
+          winCount = matchList[j].participants[0].stats.win ===true ? winCount+1:winCount
+          classicMode.push({
+            champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList[j].participants[0].championId)].alias}.png`,
+            kill: matchList[j].participants[0].stats.kills,
+            deaths: matchList[j].participants[0].stats.deaths,
+            assists: matchList[j].participants[0].stats.assists,
+            isWin: matchList[j].participants[0].stats.win,
+          })
+        }
+      }
+    }
+  props.winCount[0] += winCount
+  props.winCount[1] += matchCount
+  return classicMode
 }
 
 </script>
