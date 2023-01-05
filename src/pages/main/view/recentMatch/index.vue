@@ -77,25 +77,23 @@ const gameType = ref(420)
 onMounted(async () => {
   const RecentMatch = new recentMatch()
   const matchList = await RecentMatch.queryAllSummonerInfo()
-  console.log(matchList)
   if (matchList.friendList.length !== 0){
     isPageNull.value = false
   }else {
     return
   }
-  // checkBlacklist(matchList.enemyList)
+  checkBlacklist(matchList.enemyList)
   gameType.value = <number>matchList.gameType
-  setTimeout(() => {
-    friendList.value = matchList.friendList
-    enemyList.value = matchList.enemyList
-  },3000)
-  // cube.windows.getWindowByName('background').then((win) => {
-  //   cube.windows.message.send(win.id,'initDone','')
-  // })
+  friendList.value = matchList.friendList
+  enemyList.value = matchList.enemyList
 })
 
 const checkBlacklist = async (enemyList:[]) => {
-  const areaSetting = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
+  const config = JSON.parse(<string>(localStorage.getItem('config')))
+  if (!config.isSwitchBlacklist){
+    return
+  }
+  const areaSetting = config.currentArea
   const enemySummonerList = enemyList.reduce((res:any,item:any) => {
     return res.concat([
       item.summonerId

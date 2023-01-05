@@ -58,7 +58,6 @@ export class GameFlow {
         // 当前模式不是云顶之亦才打开战绩历史窗口
         if (queueId !== 1090 || queueId !== 1100 || queueId !== 1160 || queueId !== 1130){
           cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
-            cube.windows.hide(v.id)
             this.recentMatchWin = v
           })
         }
@@ -66,14 +65,7 @@ export class GameFlow {
     })
     // 接收战绩历史窗口发送过来的消息,表示查询已经完成
     cube.windows.message.on('received',(id:string) => {
-      if (id==='initDone') {
-        if (!JSON.parse(<string>(localStorage.getItem('config'))).isGameInWindow) {
-          cube.windows.close(<number>this.recentMatchWin?.id)
-          return
-        } else {
-          cube.windows.show(<number>this.recentMatchWin?.id)
-        }
-      }else if (id==='jungle_success'){
+      if (id === 'jungle_success'){
         this.isJungleSuccess = true
       }
      })
@@ -89,11 +81,14 @@ export class GameFlow {
     // 游戏内监听按键, 显示或隐藏游戏内窗口
     cube.settings.hotkeys.game.on('pressed',async (hotKeyName:string) => {
       if (hotKeyName==='show_matchHistory') {
-        const recentMatch = await cube.windows.getWindowByName('recentMatch',true)
-        if (recentMatch.show){
-          cube.windows.hide(recentMatch.id)
+        if (<boolean>this.recentMatchWin?.show){
+          cube.windows.hide(<number>this.recentMatchWin?.id).then(() => {
+            (<WindowInfo>this.recentMatchWin).show=false
+          })
         }else {
-          cube.windows.show(recentMatch.id)
+          cube.windows.show(<number>this.recentMatchWin?.id).then(() => {
+            (<WindowInfo>this.recentMatchWin).show=true
+          })
         }
       }
     })

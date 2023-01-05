@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <n-result status="404" title="数据还在加载中..." description="如果长时间无法显示数据 请关闭此窗口" size="huge">
+    <n-result status="404" title="数据正在加载中..." description="如果长时间无法显示数据 请关闭此窗口" size="huge">
       <template #footer>
         <n-space vertical :size="[0,20]">
           <n-switch size="large" v-model:value="config.isGameInWindow" @click="changeAutoGameInWin">

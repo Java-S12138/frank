@@ -52,7 +52,6 @@ import {onMounted} from "vue";
 import {invokeLcu} from "../../lcu";
 import {champDict} from "../../resources/champList";
 
-
 const props:any = defineProps({
   matchList:{
     type:Array,
@@ -73,12 +72,12 @@ const props:any = defineProps({
 })
 
 onMounted(async () => {
-  console.log(props.matchList)
-
   for (const summonerInfo of props.matchList) {
-    summonerInfo['matchHistory'] = await queryMatchHistory(summonerInfo.summonerId,props.gameType)
+    summonerInfo.matchHistory = summonerInfo.matchHistory.concat(
+      await queryMatchHistory(summonerInfo.summonerId,props.gameType))
   }
 })
+
 
 const emits = defineEmits(['openDrawer'])
 
@@ -100,7 +99,7 @@ const queryMatchHistory = async (summonerId: string,gameType:number) => {
             break mainfor
           }
           matchCount += 1
-          winCount = matchList[j].participants[0].stats.win ===true ? winCount+1:winCount
+          winCount = matchList[j].participants[0].stats.win === true ? winCount+1:winCount
           classicMode.push({
             champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList[j].participants[0].championId)].alias}.png`,
             kill: matchList[j].participants[0].stats.kills,

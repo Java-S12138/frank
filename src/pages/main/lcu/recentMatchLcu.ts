@@ -10,12 +10,12 @@ export class recentMatch {
   public gameType: number = 420
 
   public init = async () => {
-    this.matchSession = (await request({
-      'url': 'https://cdn.syjun.vip/frank/sessionTest.json',
-      method: 'GET',
-    })).data
+    // this.matchSession = (await request({
+    //   'url': 'https://cdn.syjun.vip/frank/sessionTest.json',
+    //   method: 'GET',
+    // })).data
 
-    // this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
+    this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
 
     this.gameType = this.matchSession?.gameData?.queue?.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
@@ -25,19 +25,24 @@ export class recentMatch {
   }
 
   public simplifySummonerInfo = async (summonerList: {}[]) => {
-    const info: any = await summonerList.reduce(async (res: any, item: any) => {
-      return (await res).concat({
-        summonerId:`${item.summonerId}`,
-        rankPoint: await this.queryRankPoint(item.puuid),
-        summonerName: item.summonerName,
-        index: getPosition(item.selectedPosition),
-        championUrl: (this.gameType === 420 || this.gameType === 440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
-          `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${item.profileIconId}.png`
+    try {
+      const info: any = await summonerList.reduce(async (res: any, item: any) => {
+        return (await res).concat({
+          summonerId:`${item.summonerId}`,
+          rankPoint: await this.queryRankPoint(item.puuid),
+          summonerName: item.summonerName,
+          matchHistory:[],
+          index: getPosition(item.selectedPosition),
+          championUrl: (this.gameType === 420 || this.gameType === 440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
+            `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${item.profileIconId}.png`
+        })
+      }, [])
+      return info.sort((x: any, y: any) => {
+        return x.index - y.index
       })
-    }, [])
-    return info.sort((x: any, y: any) => {
-      return x.index - y.index
-    })
+    }catch (e) {
+      return []
+    }
   }
 
   public queryAllSummonerInfo = async () => {
