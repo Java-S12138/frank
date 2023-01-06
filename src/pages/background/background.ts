@@ -60,8 +60,7 @@ cube.games.on('stopped', (classId) => {
   }
 })
 cube.games.launchers.on('stopped', (classId) => {
-  if (classId === 10902 && update) {
-    cube.extensions.relaunch()
+  if (classId === 10902){
+    cube.extensions.terminate()
   }
 })
-

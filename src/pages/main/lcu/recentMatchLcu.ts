@@ -1,7 +1,7 @@
 import {invokeLcu} from "./index";
 import {englishToChinese, getPosition} from "./utils";
 import {champDict} from "../resources/champList";
-import {request} from "../utils/request";
+
 
 export class recentMatch {
   public matchSession: any

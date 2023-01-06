@@ -73,7 +73,7 @@ const detialsNickname =ref('')
 const detialsJsonList:any = ref([])
 const gameType = ref(420)
 
-// todo dev
+
 onMounted(async () => {
   const RecentMatch = new recentMatch()
   const matchList = await RecentMatch.queryAllSummonerInfo()

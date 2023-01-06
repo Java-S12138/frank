@@ -291,7 +291,7 @@ const queryMatch = () => {
   cube.windows.hide(cube.windows.current.id())
 }
 const getImaUrl = (imgUrl:any) => {
-  return new URL(`/src/assets/statstones/${imgUrl.toLowerCase()}`, import.meta.url).href
+  return `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/statstones/${imgUrl.toLowerCase()}`
 }
 const showCurrentChampstatstones = async (champId:any,champIndex:any) => {
   const champStatstones  =  await queryCurrentChampStatstones(champId)
