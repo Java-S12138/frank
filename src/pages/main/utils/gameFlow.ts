@@ -45,7 +45,9 @@ export class GameFlow {
 
       invokeLcu('get','/lol-lobby/v1/parties/gamemode').then((res:any) => {
         const queueId = res?.queueId
-        const isJungleTime = JSON.parse(<string>(localStorage.getItem('config'))).isJungleTime
+        const config = JSON.parse(<string>(localStorage.getItem('config')))
+        const isJungleTime = config.isJungleTime
+        const isGameInWindow = config.isGameInWindow
         // 当前模式是召唤师峡谷之类的模式才打开野怪计时窗口
         if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
         // if (true){
@@ -59,6 +61,11 @@ export class GameFlow {
         if (queueId !== 1090 || queueId !== 1100 || queueId !== 1160 || queueId !== 1130){
           cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
             this.recentMatchWin = v
+            if (!isGameInWindow){
+              cube.windows.hide(<number>this.recentMatchWin?.id).then(() => {
+                (<WindowInfo>this.recentMatchWin).show=false
+              })
+            }
           })
         }
       })
