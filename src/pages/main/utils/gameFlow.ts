@@ -58,7 +58,7 @@ export class GameFlow {
           })
         }
         // 当前模式不是云顶之亦才打开战绩历史窗口
-        if (queueId !== 1090 || queueId !== 1100 || queueId !== 1160 || queueId !== 1130){
+        if (queueId !== 1090 || queueId !== 1100 || queueId !== 1160 || queueId !== 1130 || queueId !== 1170){
           cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
             this.recentMatchWin = v
             if (!isGameInWindow){
