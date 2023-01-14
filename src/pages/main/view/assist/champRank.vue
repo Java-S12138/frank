@@ -295,27 +295,30 @@ const queryChampRankData = async () => {
 const queryKoreaServe = async (tier:number,lane:string) => {
   config.champRankOption.tier = tier
   localStorage.setItem('config',JSON.stringify(config))
-
-  const url = `https://lol.ps/lol/get_lane_champion_tier_list/?region=0&tier=${tier}&lane=${lane}&region=0&order_by=-op_score`
-  const res = await request({
-    url:url,
-    method:"GET"
-  })
-
-  const champList = res.data.results.reduce((res:any,item:any,index:number) => {
-    const currentChamp = {
-      appearance: Number(item.pick_rate).toFixed(1) +'%',
-      ban: Number(item.ban_rate).toFixed(1) +'%',
-      champId: item.champion__data_key,
-      imgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.champion__data_key)].alias}.png`,
-      name: item.champion__name_cn,
-      tLevel: item.is_op === true ? '0' : item.op_tier,
-      win: Number(item.win_rate).toFixed(1) +'%',
-      sortId: index
-    }
-    return res.concat(currentChamp)
-  },[])
-  return champList
+  try {
+    const url = `https://lol.ps/lol/get_lane_champion_tier_list/?region=0&tier=${tier}&lane=${lane}&region=0&order_by=-op_score`
+    const res = await request({
+      url:url,
+      method:"GET"
+    })
+    const champList = res.data.results.reduce((res:any,item:any,index:number) => {
+      const currentChamp = {
+        appearance: Number(item.pick_rate).toFixed(1) +'%',
+        ban: Number(item.ban_rate).toFixed(1) +'%',
+        champId: item.champion__data_key,
+        imgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.champion__data_key)].alias}.png`,
+        name: item.champion__name_cn,
+        tLevel: item.is_op === true ? '0' : item.op_tier,
+        win: Number(item.win_rate).toFixed(1) +'%',
+        sortId: index
+      }
+      return res.concat(currentChamp)
+    },[])
+    return champList
+  }catch (e) {
+    message.warning('韩服数据异常 已切换为国服数据')
+    changeServe()
+  }
 }
 
 // 转换百分数
