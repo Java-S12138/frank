@@ -64,3 +64,4 @@ cube.games.launchers.on('stopped', (classId) => {
     cube.extensions.terminate()
   }
 })
+// 2023/1/21 大年三十 新年快乐 ٩(◕‿◕｡)۶
