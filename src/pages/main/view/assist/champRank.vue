@@ -292,24 +292,26 @@ const queryChampRankData = async () => {
 }
 
 // 查询韩服数据
+//https://lol.ps/api/statistics/tierlist.json?region=0&version=64&tier=2&lane=2
 const queryKoreaServe = async (tier:number,lane:string) => {
   config.champRankOption.tier = tier
   localStorage.setItem('config',JSON.stringify(config))
   try {
-    const url = `https://lol.ps/lol/get_lane_champion_tier_list/?region=0&tier=${tier}&lane=${lane}&region=0&order_by=-op_score`
+    const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=64&tier=${tier}&lane=${lane}`
     const res = await request({
       url:url,
       method:"GET"
     })
-    const champList = res.data.results.reduce((res:any,item:any,index:number) => {
+    console.log(res)
+    const champList = res.data.data.reduce((res:any,item:any,index:number) => {
       const currentChamp = {
-        appearance: Number(item.pick_rate).toFixed(1) +'%',
-        ban: Number(item.ban_rate).toFixed(1) +'%',
-        champId: item.champion__data_key,
-        imgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.champion__data_key)].alias}.png`,
-        name: item.champion__name_cn,
-        tLevel: item.is_op === true ? '0' : item.op_tier,
-        win: Number(item.win_rate).toFixed(1) +'%',
+        appearance: Number(item.pickRate).toFixed(1) +'%',
+        ban: Number(item.banRate).toFixed(1) +'%',
+        champId: item.championId,
+        imgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
+        name: item.championInfo.nameCn,
+        tLevel: item.isOp === true ? '0' : item.opTier,
+        win: Number(item.winRate).toFixed(1) +'%',
         sortId: index
       }
       return res.concat(currentChamp)
