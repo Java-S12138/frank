@@ -10,9 +10,9 @@
 // });
 
 
-export const invokeLcu = (method:string, uri:string,args?:any) => {
+export const invokeLcu = (method: string, uri: string, args?: any) => {
   return cube.games.launchers
-    .invokeLEP(10902, 'lcuRequest', { method: method, uri: uri,args:args })
+    .invokeLEP(10902, 'lcuRequest', {method: method, uri: uri, args: args})
     .then((v) => {
       return v
     })

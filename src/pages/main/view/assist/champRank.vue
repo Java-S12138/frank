@@ -258,16 +258,13 @@ const isTopWin = ref(false)
 const message = useMessage()
 
 onMounted(() => {
-  let rankSetDiv = document.querySelector('#app > div.slide-in-bottom > div:nth-child(1) > div')
-  // @ts-ignore
-  rankSetDiv.style['padding-bottom'] = '6px'
   queryChampRankData()
 })
 
 // 获取不同服务器的数据
 const queryChampRankData = async () => {
   if (is101.value){
-    getChampRankData(tier.value, lane.value, getLacalDateStr())
+    getChampRankData(tier.value, lane.value, getLacalDateStr(),1)
   }else {
     let laneKr = ''
     switch (lane.value) {
@@ -302,7 +299,6 @@ const queryKoreaServe = async (tier:number,lane:string) => {
       url:url,
       method:"GET"
     })
-    console.log(res)
     const champList = res.data.data.reduce((res:any,item:any,index:number) => {
       const currentChamp = {
         appearance: Number(item.pickRate).toFixed(1) +'%',
@@ -334,12 +330,16 @@ const getLacalDateStr = () => {
   let currentDate = new Date()
   let dateList = currentDate.toLocaleDateString().split('/')
   dateList[1] = dateList[1].length == 1 ? '0' + dateList[1] : dateList[1]
-  return parseInt(dateList.join('')) - 2
+  dateList[2] = dateList[2].length == 1 ? '0' + dateList[2] : dateList[2]
+  return parseInt(dateList.join('')) - 1
 }
 
 // 获取国服英雄数据排行
-// @ts-ignore
-const getChampRankData = async (tier:number, lane:string, time:number) => {
+const getChampRankData = async (tier:number, lane:string, time:number,recursionCount:number):Promise<any> => {
+  if (recursionCount>10){
+    message.error('国服服数据异常')
+    return
+  }
   config.champRankOption.tier = tier
   localStorage.setItem('config',JSON.stringify(config))
 
@@ -350,7 +350,8 @@ const getChampRankData = async (tier:number, lane:string, time:number) => {
     method: 'GET',
   })
   if (res.data.data.result === "") {
-    return getChampRankData(tier, lane, time - 1)
+    recursionCount += 1
+    return getChampRankData(tier, lane, time - 1,recursionCount)
   }
 
   try {

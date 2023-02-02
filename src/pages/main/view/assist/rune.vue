@@ -215,12 +215,16 @@ const getChampInfo = async (gameMode:string) => {
 }
 
 // 获取符文数据
+// https://lol.ps/api/champ/34/versus.json?region=0&version=64&tier=2&lane=2
 const getRuneData = async (gameMode:string) => {
   // 判断当前英雄是否配置看自动符文
   if (isStoreageHas('autoRunes',String(currentChamp.value))){
     const runeData = JSON.parse(String(localStorage.getItem('autoRunes')))[String(currentChamp.value)]
     applyRunePage(runeData)
   }
+
+  const clientPath = await invokeLcu('get','/data-store/v1/install-dir')
+  console.log(clientPath)
 
   try {
     const champInfo = await getChampInfo(gameMode)
@@ -274,13 +278,13 @@ const changeRuneType = (type:string) => {
   getRuneData(currentGameMode)
 }
 
-// const test = () => {
-//   currentChampAlias.value = 'Viktor'
-//   currentChamp.value = 112
-//   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
-//   getRuneData('')
-// }
-// test()
+const test = () => {
+  currentChampAlias.value = 'Viktor'
+  currentChamp.value = 112
+  currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
+  getRuneData('')
+}
+test()
 
 // 切换不同的装备进行显示
 const changeItemsImg = () => {
