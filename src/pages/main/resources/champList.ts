@@ -653,7 +653,7 @@ export const optionsChampion = [
     'label': '纳祖芒荣耀'
   }
 ]
-export const mapNameFromUrl = {
+export const mapNameFromUrl:any = {
   'Annie': {'label': '黑暗之女', 'name': '安妮'},
   'Olaf': {'label': '狂战士', 'name': '奥拉夫'},
   'Galio': {'label': '正义巨像', 'name': '加里奥'},

@@ -132,6 +132,7 @@ import {applyRunePage} from "../../lcu/runeLcu";
 import {get101Runes} from "../../utils/rune/get101Runes";
 import {isStoreageHas} from "../../lcu/utils";
 import {invokeLcu} from "../../lcu";
+import {OnlineRunes} from "../../interface/runeTypes";
 
 const currentChamp:Ref<number> = ref(0)
 const currentChampImgUrl = ref('')
@@ -200,7 +201,7 @@ const getGameMode = async () => {
 }
 
 // 获取英雄数据
-const getChampInfo = async (gameMode:string) => {
+const getChampInfo = async (gameMode:string):Promise<OnlineRunes[]> => {
   if (gameMode === 'aram' && currentGameMode === 'aram') {
     return (await request({
       url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json`,
@@ -214,6 +215,7 @@ const getChampInfo = async (gameMode:string) => {
   }
 }
 
+
 // 获取符文数据
 // https://lol.ps/api/champ/34/versus.json?region=0&version=64&tier=2&lane=2
 const getRuneData = async (gameMode:string) => {
@@ -223,13 +225,14 @@ const getRuneData = async (gameMode:string) => {
     applyRunePage(runeData)
   }
 
-  const clientPath = await invokeLcu('get','/data-store/v1/install-dir')
-  console.log(clientPath)
-
   try {
-    const champInfo = await getChampInfo(gameMode)
+    const champInfo:OnlineRunes[] = await getChampInfo(gameMode)
     // 技能
     getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
+    // 自动写入装备
+    if (await autoWriteBlock(champInfo)){
+      message.success('自动写入装备成功 !')
+    }
 
     for (const champ of champInfo) {
       // 符文
@@ -260,6 +263,32 @@ const getRuneData = async (gameMode:string) => {
 
 }
 
+// 自动写入装备
+const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
+  const clientPath = await invokeLcu('get','/data-store/v1/install-dir')
+  let isWriteSuccess
+
+  for (const champ of champInfo) {
+    const itemBuilds = champ.itemBuilds[0]
+    const champName = mapNameFromUrl[champ.alias].name
+    const position = getPosition(champ.position)
+    itemBuilds.title = `Frank ${position} ${champName} ${champ.officialVersion}`
+
+    const path = [
+      `${clientPath}/../Game/Config/Global/Recommended/frank${champ.position}.json`,
+      `${clientPath}/Game/Config/Global/Recommended/frank${champ.position}.json`,
+    ]
+
+    for (const string of path) {
+      isWriteSuccess = await cube.io
+          .writeFileContents(string, JSON.stringify(itemBuilds))
+          .then((res) => true)
+          .catch((err) => false)
+    }
+  }
+  return <boolean>isWriteSuccess
+}
+
 // 切换不同服务器的符文数据
 const changeRuneType = (type:string) => {
   if (type==='国服数据'){
@@ -278,13 +307,13 @@ const changeRuneType = (type:string) => {
   getRuneData(currentGameMode)
 }
 
-const test = () => {
-  currentChampAlias.value = 'Viktor'
-  currentChamp.value = 112
-  currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
-  getRuneData('')
-}
-test()
+// const test = () => {
+//   currentChampAlias.value = 'Viktor'
+//   currentChamp.value = 112
+//   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
+//   getRuneData('')
+// }
+// test()
 
 // 切换不同的装备进行显示
 const changeItemsImg = () => {
