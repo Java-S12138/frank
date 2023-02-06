@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const queryStore = defineStore('query',{
   state: () => {
     return {
-      querySummonerId: 0, // 召唤师ID
+      querySummonerId: '0', // 召唤师ID
       summoner: {         // 召唤师信息
         rankData: [],     // 排位数据
         summonerInfo: {}, // 召唤师基本信息
@@ -40,7 +40,7 @@ export const assistStore = defineStore('assist', {
 export const matchStore = defineStore('matchHistory',{
   state: () => {
     return {
-      querySummonerId:0,
+      querySummonerId:'0',
       pageCount:1,// 首页页面切换计数器
       summonerInfo:[],// 当前对局中队友的信息
       echartsData:{name:[],data:[],kdaHistory:[],horse:[],summonerId:[]},// 图表基础数据

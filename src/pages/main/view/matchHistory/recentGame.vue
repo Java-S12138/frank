@@ -11,7 +11,7 @@
               :src="`https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summoner.iconId}.png`"
               fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
               style="display: block"
-              @click="clickCurrentSummoner($event,summoner.summonerId,summoner.name)"
+              @click="clickCurrentSummoner($event,summoner.summonerId,summoner.name,summoner.puuid)"
             />
             <n-tag type="default" :bordered="false" :color="{ color: '#fafafc'}"
                    round size="small" style="width: 120px;justify-content: center">{{summoner.name}}
@@ -103,9 +103,8 @@ const {
   summonerInfo,currentSummonerName,pageCount
 } = storeToRefs(store)
 
-
-const clickCurrentSummoner = (e:any, summonerId:number, name:string) => {
-  emits('summonerId', {summonerId, name})
+const clickCurrentSummoner = (e:any, summonerId:number, name:string,puuid:string) => {
+  emits('summonerId', {summonerId, name, puuid})
 }
 
 const toGameDetailsPage = (gameId:any,summoneName:string) => {

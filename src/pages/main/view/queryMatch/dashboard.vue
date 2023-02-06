@@ -122,7 +122,7 @@ const searchSummonerInfo = async (event:any,local:any) => {
     return
   }else{
     summoner.value = await returnSummonerData(res.summonerId)
-    querySummonerId.value = summoner.value.summonerInfo.currentId
+    querySummonerId.value = summoner.value.summonerInfo.puuid
     searchName.value = ''
     currentMode.value= '全部模式'
     currentGameId.value = 0

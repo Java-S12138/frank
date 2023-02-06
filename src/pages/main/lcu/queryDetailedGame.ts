@@ -88,7 +88,7 @@ const getparticipantIdAndName = (participantIdentities:any) => {
   for (const participantIdentity of participantIdentities) {
     dataList.push({
       name: participantIdentity.player.summonerName,
-      summonerId:participantIdentity.player.accountId})
+      summonerId:participantIdentity.player.summonerId})
   }
   return dataList
 }

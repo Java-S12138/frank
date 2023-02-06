@@ -117,7 +117,6 @@ const queryDetails = () => {
 const message = useMessage()
 
 const addOnlineBlacklist = () => {
-  console.log(props.personalDetails)
   cube.windows.getWindowByName('assist').then((v) => {
     cube.windows.show(v.id).then(() => {
       cube.windows.message.send(v.id,'queryMatch-add-blacklist',{

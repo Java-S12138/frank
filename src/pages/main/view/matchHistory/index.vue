@@ -71,7 +71,7 @@ const querySpecialSummoner = async (summonerData:any) => {
   pageCount.value = 2
   currentSummonerName.value = summonerData.name
   querySummonerId.value = summonerData.summonerId
-  const res = await queryMatchSummonerInfo(summonerData.summonerId)
+  const res = await queryMatchSummonerInfo(summonerData.puuid,summonerData.summonerId)
   matchData.value = res
 }
 // 进入战绩详情页面

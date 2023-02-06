@@ -36,6 +36,7 @@ const queryRankPoint = async (puuid:string) => {
 export const getSummonerNickName = async (enemyIdList?:any) => {
   console.log('[info] 获取召唤师昵称和等级和头像...')
   let allSummonerId
+  const locale = <string>localStorage.getItem('locale')
   if (enemyIdList !== undefined){
     allSummonerId = enemyIdList
   }else {
@@ -49,12 +50,13 @@ export const getSummonerNickName = async (enemyIdList?:any) => {
   for (const summonerId of allSummonerId) {
     const summonerInfo = await querySummonerInfo(summonerId)
     const [gameSocreInfo,rankPoint] = await Promise.all([
-      getGameScore(summonerId),
+      getGameScore(summonerInfo.puuid,locale),
       queryRankPoint(summonerInfo.puuid)
     ])
 
     allSummonerNickName.push({
       summonerId:summonerId,
+      puuid:summonerInfo.puuid,
       name: summonerInfo.displayName,
       iconId:summonerInfo.profileIconId,
       // 通过召唤师ID查询最近5场排位进行分数分析 得出匹马信息
@@ -69,9 +71,9 @@ export const getSummonerNickName = async (enemyIdList?:any) => {
 }
 
 //----- standing page functions
-export const queryMatchSummonerInfo = async (summonerId:number) => {
-  const matchList = (await invokeLcu('get',`/lol-match-history/v3/matchlist/account/${summonerId}`))['games']['games'].reverse()
-
+export const queryMatchSummonerInfo = async (puuid:string,summonerId:number) => {
+  const matchGet = (await invokeLcu('get',`/lol-match-history/v1/products/lol/${puuid}/matches`))
+  const matchList = localStorage.getItem('locale') ==='zh_CN'?matchGet['games']['games'].reverse():matchGet['games']['games']
   const matchInfoList = matchList.reduce((res:any,matchListElement:any) => {
     return res.concat({
       // 本局游戏ID

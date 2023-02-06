@@ -11,7 +11,7 @@
               :size="50"
               :src="`https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summoner.iconId}.png`"
               fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-              @click="clickCurrentSummoner($event,summoner.summonerId,summoner.name)"
+              @click="clickCurrentSummoner($event,summoner.summonerId,summoner.name,summoner.puuid)"
             />
             <n-space vertical :size="[10,4]">
               <n-tag type="success" :bordered="false"
@@ -59,8 +59,8 @@ const store = matchStore()
 const {currentSummonerName, summonerInfo}:any = storeToRefs(store)
 
 
-const clickCurrentSummoner = (e:any, summonerId:number, name:string) => {
-  emits('summonerId', {summonerId, name})
+const clickCurrentSummoner = (e:any, summonerId:number, name:string,puuid:string) => {
+  emits('summonerId', {summonerId, name,puuid})
 }
 
 </script>

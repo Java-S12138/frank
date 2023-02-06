@@ -151,7 +151,7 @@ watch(currentMode, async () => {
   }
   if (mode !== '全部模式') {
     createMessage(mode)
-    specialMatchDict.value = await querySpecialMatchHistory(querySummonerId.value, mode)
+    specialMatchDict.value = await querySpecialMatchHistory(querySummonerId.value, mode,<string>localStorage.getItem('locale'))
     removeMessage()
     renderSpecialMatch(mode)
   } else {
@@ -167,7 +167,7 @@ const showDetiledData = (gameId:any, index:any) => {
   currentMatchIndex.value = index
 }
 const initHomeData = async () => {
-  const matchDict = await dealMatchHistory(querySummonerId.value, begIndex.value, endIndex.value)
+  const matchDict = await dealMatchHistory(querySummonerId.value, begIndex.value, endIndex.value,undefined,<string>localStorage.getItem('locale'))
   if (matchDict === null) {
     matchList.value = []
     currentGameId.value = 0

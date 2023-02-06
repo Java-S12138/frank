@@ -244,7 +244,7 @@ onMounted(async () => {
   }else {
     gameDetalisList = await queryGameDetailsData(props.currentGameIdProps)
     isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
-    curSummonerId.value = querySummonerId.value
+    curSummonerId.value =summoner.value.summonerInfo.currentId
     parentPage.value = 'query'
   }
   queryOtherMax(gameDetalisList)
@@ -262,7 +262,7 @@ const queryDetails = async (nickname:string) => {
   }else{
     summoner.value = await returnSummonerData(res.summonerId)
     currentGameId.value = 0
-    querySummonerId.value = summoner.value.summonerInfo.currentId
+    querySummonerId.value = summoner.value.summonerInfo.puuid
     currentMode.value='全部模式'
     return
   }

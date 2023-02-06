@@ -18,25 +18,26 @@ export const queryCurrentGameMode = async () => {
 }
 
 // 获取最近的比赛记录
-const getRencentMatchHistoty = async (summonerId: number) => {
-  const matchList = await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [0, 10])
-  return matchList['games']['games'].reverse()
+const getRencentMatchHistoty = async (summonerId: string,locale:string) => {
+  const matchList = await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [0, 10])
+  return locale === 'zh_CN' ? matchList['games']['games'].reverse() : matchList['games']['games']
 }
 
 // 查询比赛记录 (最近10场排位)
-const queryMatchHistory = async (summonerId: number) => {
+const queryMatchHistory = async (summonerId: string,locale:string) => {
   const currentGameMode = await queryCurrentGameMode()
   console.log('当前游戏模式:', currentGameMode)
-  if (currentGameMode === null) {
-    return await getRencentMatchHistoty(summonerId)
+  if (currentGameMode === null || currentGameMode === -1) {
+    return await getRencentMatchHistoty(summonerId,locale)
   }
 
   let classicMode = []
   let matchCount = 0
   for (let i = 0; i < 100; i += 20) {
-    const matchList = await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20])
+    const matchList = await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [i, i + 20])
     try {
-      for (const matchListElement of matchList['games']['games'].reverse()) {
+      const forMatchList = locale === 'zh_CN' ? matchList['games']['games'].reverse() : matchList['games']['games']
+      for (const matchListElement of forMatchList) {
         if (matchListElement.queueId === currentGameMode && matchCount < 10) {
           matchCount += 1
           classicMode.push(matchListElement)
@@ -52,8 +53,8 @@ const queryMatchHistory = async (summonerId: number) => {
 }
 
 // 获取召唤师游戏评分分数
-export const getGameScore = async (summonerId: number) => {
-  let classicModeGames = await queryMatchHistory(summonerId)
+export const getGameScore = async (summonerId: string,locale:string) => {
+  let classicModeGames = await queryMatchHistory(summonerId,locale)
   const simpleMatchHistory = getSimpleMatchHistory(classicModeGames)
   let gameScore = 0
   let gameCount = classicModeGames.slice(0, 10).length

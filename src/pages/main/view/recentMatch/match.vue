@@ -74,7 +74,7 @@ const props:any = defineProps({
 onMounted(async () => {
   for (const summonerInfo of props.matchList) {
     summonerInfo.matchHistory = summonerInfo.matchHistory.concat(
-      await queryMatchHistory(summonerInfo.summonerId,props.gameType))
+      await queryMatchHistory(summonerInfo.puuid,props.gameType))
   }
 })
 
@@ -90,11 +90,15 @@ const queryMatchHistory = async (summonerId: string,gameType:number) => {
   let classicMode: any = []
   let matchCount = 0
   let winCount = 0
+  const locale = localStorage.getItem('locale')
+  console.log(locale)
   mainfor:
     for (let i = 0; i < 100; i += 20) {
-      const matchList = (await invokeLcu('get', `/lol-match-history/v3/matchlist/account/${summonerId}`, [i, i + 20]))?.games?.games.reverse()
+      const matchGet = (await invokeLcu('get',`/lol-match-history/v1/products/lol/${summonerId}/matches`,[i, i + 20]))
+      const matchList = locale ==='zh_CN'?matchGet['games']['games'].reverse():matchGet['games']['games']
+      // const matchList = (await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [i, i + 20]))?.games?.games.reverse()
       for (let j = 0; j < matchList?.length; j++) {
-        if (matchList[j].queueId === gameType) {
+        // if (matchList[j].queueId === gameType) {
           if (matchCount === 10) {
             break mainfor
           }
@@ -107,7 +111,7 @@ const queryMatchHistory = async (summonerId: string,gameType:number) => {
             assists: matchList[j].participants[0].stats.assists,
             isWin: matchList[j].participants[0].stats.win,
           })
-        }
+        // }
       }
     }
   props.winCount[0] += winCount

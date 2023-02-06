@@ -43,7 +43,6 @@ const querySummonerSuperChampData = async (summonerId: number) => {
 // 查询召唤师排位分数
 const queryCurrentRankPoint = async (puuid: string) => {
   const rankPoint = (await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`)).queues
-
   // 单双排位/ 灵活排位/ 云顶之亦
   let rankSolo = rankPoint.find((i: any) => i.queueType === "RANKED_SOLO_5x5")
   let rankSr = rankPoint.find((i: any) => i.queueType === "RANKED_FLEX_SR")
@@ -75,7 +74,6 @@ export const returnSummonerData = async (summonerId?: number) => {
     queryCurrentRankPoint(summonerInfo.puuid),
     querySummonerSuperChampData(summonerId)
   ])
-  console.log({summonerInfo, rankData, superChampList,assistGameId})
   return {summonerInfo, rankData, superChampList,assistGameId}
 }
 
@@ -87,12 +85,20 @@ export const returnRankData = async (summonerId: number) => {
 // matchDetailed Page ==================================================================== //
 
 // 根据召唤师ID查询战绩
-const queryMatchHistory = async (summonerId: number, begIndex: number, endIndex: number): Promise<LcuMatchList> => {
+const queryMatchHistory = async (summonerId: string, begIndex: number, endIndex: number): Promise<LcuMatchList> => {
+  const locale = localStorage.getItem('locale')
+  endIndex = locale==='zh_CN'?endIndex:endIndex-1
   return await invokeLcu(
     'get',
-    `/lol-match-history/v3/matchlist/account/${summonerId}`,
+    `/lol-match-history/v1/products/lol/${summonerId}/matches`,
     [begIndex, endIndex]
   )
+  // return await invokeLcu(
+  //   'get',
+  //   `/lol-match-history/v3/matchlist/account/${summonerId}`,
+  //   [begIndex, endIndex]
+  // )
+
 }
 
 // 获取简单的对局数据
@@ -117,7 +123,7 @@ const getSimpleMatch = (match: Game,gameModel:string):MatchList => {
 }
 
 // 处理战绩数据
-export const dealMatchHistory = async (summonerId: number, begIndex: number, endIndex: number, mode?: string):Promise<Array<MatchList> | null>  => {
+export const dealMatchHistory = async (summonerId: string, begIndex: number, endIndex: number, mode?: string,locale?:string):Promise<Array<MatchList> | null>  => {
   const matchList = await queryMatchHistory(summonerId, begIndex, endIndex)
 
   if (matchList.httpStatus === 500) {return null}
@@ -125,7 +131,8 @@ export const dealMatchHistory = async (summonerId: number, begIndex: number, end
 
   let simpleMatchList = []
   let specialSimpleMatchList = []
-  for (const matchListElement of matchList.games.games.reverse()) {
+  const forMatchList = locale === 'zh_CN' ? matchList.games.games.reverse() : matchList.games.games
+  for (const matchListElement of forMatchList) {
     // 游戏模式
     let gameModel = queryGameType(matchListElement.queueId)
     if (gameModel === mode) {
@@ -146,10 +153,13 @@ const timestampToDate = (timestamp: number) => {
 }
 
 // 查看特定模式的战绩
-export const querySpecialMatchHistory = async (summonerId: number, mode: string):Promise<Array<MatchList>> => {
+export const querySpecialMatchHistory = async (summonerId: string, mode: string,locale:string):Promise<Array<MatchList>> => {
   let specialDict: any = []
   for (let i = 0; i < 8; i++) {
-    const matchHistory: any = await dealMatchHistory(summonerId, 20 * i, 20 * (i + 1), mode)
+    const matchHistory: any = await dealMatchHistory(summonerId, 20 * i, 20 * (i + 1), mode,locale)
+    if (matchHistory===null){
+      return specialDict
+    }
     specialDict = [...specialDict, ...matchHistory]
   }
   return specialDict
