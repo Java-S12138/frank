@@ -36,7 +36,6 @@ import {storeToRefs} from "pinia";
 import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName,handleHaterListBySumId} from "../../utils/blacklistUtils"
 import {invokeLcu} from "../../lcu";
 import {blacklistServe} from "../../utils/request";
-import {HaterItem} from "../../interface/blacklistTypes";
 
 onMounted(() => {
   let nTabsRail = document.querySelector('.n-tabs-rail')

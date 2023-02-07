@@ -5,7 +5,7 @@
     "author": "Java_S",
     "icon": "icon.png",
     "window_icon": "icon.ico",
-    "version": "1.610.131",
+    "version": "1.620.131",
     "display_name": "Frank",
     "description": "A bran-new League of Legends assistant software, Powered By Cube."
   },
@@ -38,7 +38,7 @@
       "background": {
         "file": "src/pages/background/index.html",
         "is_background_page": true,
-        "open_dev_tools": true
+        "open_dev_tools": false
       },
       "queryMatch": {
         "file": "src/pages/main/index.html/#/querymatch",

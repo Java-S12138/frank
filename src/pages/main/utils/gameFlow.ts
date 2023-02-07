@@ -42,7 +42,7 @@ export class GameFlow {
       //游戏启动关闭桌面窗口和战绩历史窗口，打开游戏内窗口
       this.coloseWin('main')
       this.coloseWin('matchHistory')
-
+      if (localStorage.getItem('locale')!=='zh_CN'){return}
       invokeLcu('get','/lol-lobby/v1/parties/gamemode').then((res:any) => {
         const queueId = res?.queueId
         const config = JSON.parse(<string>(localStorage.getItem('config')))
@@ -50,7 +50,6 @@ export class GameFlow {
         const isGameInWindow = config.isGameInWindow
         // 当前模式是召唤师峡谷之类的模式才打开野怪计时窗口
         if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
-        // if (true){
           cube.windows.obtainDeclaredWindow('jungleTime',
             {gamein: true,x:currentScreen.width-220,y:currentScreen.height-350}).then((v) => {
             cube.windows.hide(v.id)
@@ -61,7 +60,7 @@ export class GameFlow {
         if (queueId !== 1090 || queueId !== 1100 || queueId !== 1160 || queueId !== 1130 || queueId !== 1170){
           cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
             this.recentMatchWin = v
-            if (!isGameInWindow){
+            if (!isGameInWindow ){
               cube.windows.hide(<number>this.recentMatchWin?.id).then(() => {
                 (<WindowInfo>this.recentMatchWin).show=false
               })

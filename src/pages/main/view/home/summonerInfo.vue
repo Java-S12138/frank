@@ -259,12 +259,10 @@ const currentChampIndex = ref(0)
 const config = JSON.parse(<string>(localStorage.getItem('config')))
 
 onMounted(async () => {
-  // todo dev
   init()
 })
 
 const init = async () => {
-  console.log('init')
   const homeData: any = await getCurrentSummonerInfo()
   if (homeData === null && config.isAutoLaunchGame) {
     autoStartGame()
@@ -278,17 +276,20 @@ const init = async () => {
   initAfter()
 }
 
-const autoStartGame = () => {
-  let isStart = true
-  cube.games.launchers.getRunningLaunchers().then((launchers) => {
-    launchers.forEach((v) => {
-     if (v.classId===6513){
-       message.loading('请在英雄联盟客户端启动后 打开Frank', {duration: 5000})
-       isStart = false
-     }
-    })
+const autoStartGame = async () => {
+  let isAuto = true
+  const launchers = await cube.games.launchers.getRunningLaunchers()
+  launchers.forEach((v) => {
+    if (v.classId===6513) {
+      message.loading('若长时间无数据 请重启Frank', {duration: 5000})
+      isAuto = false
+      setTimeout(() => {
+        init()
+      },5000)
+      return
+    }
   })
-  if (isStart){
+  if (isAuto){
     message.loading('英雄联盟客户端启动中...', {duration: 5000})
     cube.utils.launchGame(54261).then(() => {
       cube.windows.message.on('received', (id) => {
@@ -303,17 +304,18 @@ const autoStartGame = () => {
 }
 
 const initAfter = async () => {
+  cube.games.launchers.events.getInfo(10902).then((info) => {
+    localStorage.setItem('locale',info?.summoner_info?.locale)
+    if (info?.summoner_info?.locale!=='zh_CN'){
+      const config = JSON.parse(<string>localStorage.getItem('config'))
+      if (config.isSwitchBlacklist===true){
+        config.isSwitchBlacklist = false
+        localStorage.setItem('config',JSON.stringify(config))
+      }
+    }
+  })
   const currentScreen = (await cube.utils.getPrimaryDisplay()).size
   cube.windows.obtainDeclaredWindow('assist', {x: currentScreen.width - 320, y: (currentScreen.height - 770) / 2})
-  cube.games.launchers.getRunningLaunchers().then((launchers) => {
-    launchers.forEach((v) => {
-      if (v.classId ===10902){
-        cube.games.launchers.events.getInfo(v.classId).then((info) => {
-          localStorage.setItem('locale',info?.summoner_info?.locale)
-        })
-      }
-    })
-  })
 }
 
 const queryMatch = () => {

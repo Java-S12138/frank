@@ -230,9 +230,9 @@ const getRuneData = async (gameMode:string) => {
     // 技能
     getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
     // 自动写入装备
-    if (await autoWriteBlock(champInfo)){
-      message.success('自动写入装备成功 !')
-    }
+    // if (await autoWriteBlock(champInfo)){
+    //   message.success('自动写入装备成功')
+    // }
 
     for (const champ of champInfo) {
       // 符文
@@ -263,31 +263,48 @@ const getRuneData = async (gameMode:string) => {
 
 }
 
-// 自动写入装备
-const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
-  const clientPath = await invokeLcu('get','/data-store/v1/install-dir')
-  let isWriteSuccess
-
-  for (const champ of champInfo) {
-    const itemBuilds = champ.itemBuilds[0]
-    const champName = mapNameFromUrl[champ.alias].name
-    const position = getPosition(champ.position)
-    itemBuilds.title = `Frank ${position} ${champName} ${champ.officialVersion}`
-
-    const path = [
-      `${clientPath}/../Game/Config/Global/Recommended/frank${champ.position}.json`,
-      `${clientPath}/Game/Config/Global/Recommended/frank${champ.position}.json`,
-    ]
-
-    for (const string of path) {
-      isWriteSuccess = await cube.io
-          .writeFileContents(string, JSON.stringify(itemBuilds))
-          .then((res) => true)
-          .catch((err) => false)
-    }
-  }
-  return <boolean>isWriteSuccess
-}
+// // 自动写入装备
+// const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
+//   if (localStorage.getItem('locale')!=='zh_CN'){return false}
+//   const clientPath = await invokeLcu('get','/data-store/v1/install-dir')
+//   let isWriteSuccess
+//   const buildItems = {}
+//   console.log(champInfo)
+//   for (const champ of champInfo) {
+//     const itemBuilds = champ.itemBuilds[0]
+//   }
+//   const path = `${clientPath}/../Game/Config/Global/Recommended/frank.json`
+//   isWriteSuccess = await cube.io
+//           .writeFileContents(path, JSON.stringify(buildItems))
+//           .then((res) => true)
+//           .catch((err) => false)
+//   return <boolean>isWriteSuccess
+//   // for (const champ of champInfo) {
+//   //   const itemBuilds = champ.itemBuilds[0]
+//   //   const champName = mapNameFromUrl[champ.alias].name
+//   //   const position = getPosition(champ.position)
+//   //   itemBuilds.title = `Frank ${position} ${champName} ${champ.officialVersion}`
+//   //
+//   //   const path = `${clientPath}/../Game/Config/Global/Recommended/frank${champ.position}.json`
+//   //
+//   //
+//   //   // for (const string of path) {
+//   //   //   isWriteSuccess = await cube.io
+//   //   //       .writeFileContents(string, JSON.stringify(itemBuilds))
+//   //   //       .then((res) => true)
+//   //   //       .catch((err) => false)
+//   //   // }
+//   // }
+//
+// }
+//
+// const test = () => {
+//   currentChampAlias.value = 'Viktor'
+//   currentChamp.value = 112
+//   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
+//   getRuneData('')
+// }
+// test()
 
 // 切换不同服务器的符文数据
 const changeRuneType = (type:string) => {
@@ -307,13 +324,7 @@ const changeRuneType = (type:string) => {
   getRuneData(currentGameMode)
 }
 
-// const test = () => {
-//   currentChampAlias.value = 'Viktor'
-//   currentChamp.value = 112
-//   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
-//   getRuneData('')
-// }
-// test()
+
 
 // 切换不同的装备进行显示
 const changeItemsImg = () => {

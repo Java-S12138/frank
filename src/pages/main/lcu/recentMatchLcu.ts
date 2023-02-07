@@ -16,8 +16,6 @@ export class recentMatch {
     // })).data
 
     this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
-    // console.log(await  invokeLcu('get','/lol-gameflow/v1/gameflow-phase'))
-    console.log(this.matchSession)
     this.gameType = this.matchSession?.gameData?.queue?.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
     this.matchSession?.gameData?.playerChampionSelections.forEach((res: any) => {

@@ -75,9 +75,6 @@ const gameType = ref(420)
 
 
 onMounted(async () => {
-  cube.windows.getCurrentWindow().then((v) => {
-    cube.windows.openDevTools(v.id)
-  })
   const RecentMatch = new recentMatch()
   const matchList = await RecentMatch.queryAllSummonerInfo()
   if (matchList.friendList.length !== 0){
