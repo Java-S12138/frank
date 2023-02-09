@@ -119,7 +119,11 @@
               </n-space>
             </n-space>
           </template>
-          <n-scrollbar style="max-height: 365px">
+          <n-space vertical >
+            <n-spin size="large" />
+            <n-tag :bordered="false" type="success">数据加载中...</n-tag>
+          </n-space>
+          <n-scrollbar style="max-height: 365px" v-if="false">
             <n-list-item v-for="champRes in restraintList">
               <n-space class=alignCenter>
                 <n-avatar
@@ -132,7 +136,7 @@
                 />
                 <n-tag type="success" :bordered="false"
                        style="width: 100px;justify-content: center">
-                  胜率 {{ (champRes[2] * 0.01).toFixed(1) + '%' }}
+                  胜率 {{champRes[2]}}
                 </n-tag>
                 <p>{{ champRes[0] }}</p>
               </n-space>
@@ -146,7 +150,7 @@
 
 <script setup lang="ts">
 import {
-  NAvatar, NButton, NCard, NIcon, NInput, NList, NScrollbar, NDropdown,
+  NAvatar, NButton, NCard, NIcon, NInput, NList, NScrollbar, NDropdown,NSpin,
   NListItem, NPopover, NSelect, NSpace, NTag, useMessage, NDrawer, NDrawerContent,
 } from "naive-ui";
 import {Ballon} from '@vicons/tabler'
@@ -413,31 +417,47 @@ const getRestraintData = async (champId:any, position:string, imgUrl:string, nam
   restraintList.value = []
   selectedList.value = [imgUrl, name, level, win, ban]
   restraintActive.value = true
-  const url = `https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_${champId}.js`
-  const result = await request({
-    'url': url,
-    method: 'GET',
-    params: {ts: '2760378'}
-  })
-  let detailsData = JSON.parse(result.data.split('=')[1].split(';/*')[0])
-  let restraintJson = detailsData.list.championFight[position]
-  if (restraintJson == null) {
-    message.warning('当前英雄数据暂无...')
+  let tierRes = 2
+
+  if (position==='top'){
+    position = '0'
+  }else if (position==='jungle'){
+    position = '1'
+  }else if (position==='mid'){
+    position = '2'
+  }else if (position==='bottom'){
+    position = '3'
+  }else if (position==='support'){
+    position = '4'
+  }else {
     return
   }
-  let resList = []
-
-  for (const restraintListElement of restraintJson) {
-    const chapmId = restraintListElement.championid2
-    const label = champDict[chapmId].label
-    const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
-    const winRate = 10000 - Number(restraintListElement.winrate)
-    resList.push([label, imgUrl, winRate])
+  if (!is101.value){
+    tierRes = tier.value
   }
-  resList.sort((a, b) => {
-    return a[2] < b[2] ? 1 : -1
+  const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=65&tier=${tierRes}&lane=${position}`
+  const result = await request({
+    'url': url,
+    method: 'GET'
   })
-  restraintList.value = resList
+  try {
+    let resList = []
+    const counterChampionIdList = JSON.parse(result?.data?.data['counterChampionIdList'])
+    const counterWinrateList = JSON.parse(result?.data?.data['counterWinrateList'])
+    for (let i = 0; i < counterChampionIdList.length; i++) {
+        const chapmId = counterChampionIdList[i]
+        const label = champDict[chapmId].label
+        const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
+        const winRate = `${counterWinrateList[i]}%`
+        resList.push([label, imgUrl, winRate])
+    }
+    resList.sort((a, b) => {
+      return a[2] < b[2] ? 1 : -1
+    })
+    restraintList.value = resList
+  }catch (e) {
+    return
+  }
 }
 // 改变是否为英雄克制 或者优势对线
 const changeRestraint = () => {
