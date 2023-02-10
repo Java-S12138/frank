@@ -7,7 +7,7 @@
     <n-tab name="rune" tab="符文配置" @click="transValue='rune'"></n-tab>
   </n-tabs>
 
-    <champ-rank v-show="transValue==='champRank'" class="slide-in-bottom"></champ-rank>
+    <champ-rank v-show="transValue==='champRank'" :trans-value-rank="transValue" class="slide-in-bottom"></champ-rank>
     <rune v-show="transValue==='rune'"  @changePage="changePage"
           class="slide-in-bottom" ></rune>
     <div v-if="isSwitchBlacklist" >

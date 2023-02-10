@@ -60,10 +60,10 @@
           </n-space>
 
         </template>
-        <n-scrollbar style="max-height: 448px">
+        <n-scrollbar style="max-height: 448px;padding-right: 14px">
           <n-list-item v-for="chapm in champSliceList">
             <n-space justify="space-evenly"
-                     @click="getRestraintData(chapm.champId,lane,chapm.imgUrl,chapm.name,chapm.tLevel,chapm.win,chapm.ban)">
+                     @click="getRestraintData(chapm.champId,lane,chapm.imgUrl,chapm.tLevel,chapm.win,chapm.ban)">
               <n-avatar
                 round
                 :bordered="false"
@@ -73,8 +73,8 @@
                 style="display: block"
 
               />
-              <n-space vertical :size=[0,10]>
-                <n-space style="margin-bottom: -12px" justify="space-between">
+              <n-space vertical :size=[0,0] justify="center" style="height: 50px">
+                <n-space justify="space-between">
                   <p>{{ chapm.name }}</p>
                   <div :class="'imgT'+chapm.tLevel"></div>
                 </n-space>
@@ -91,21 +91,21 @@
 
     <n-drawer v-model:show="restraintActive"
               style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-              :height="476" placement="bottom">
-      <n-drawer-content>
+              :height="477" placement="bottom">
+      <n-drawer-content body-content-style="padding-top:0px">
         <n-list>
           <template #header>
-            <n-space>
+            <n-space style="margin: 5.5px 0px">
               <n-avatar
                 round
                 :bordered="false"
                 :size="50"
+                @click="preselectChamp(selectedList[5])"
                 :src=selectedList[0]
                 fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                 style="display: block"
-                @click=changeRestraint
               />
-              <n-space vertical>
+              <n-space vertical style="height: 50px;justify-content: center">
                 <n-space style="margin-bottom: -12px" justify="space-between">
                   <p>{{ selectedList[1] }}</p>
                   <div :class="'imgT'+selectedList[2]"></div>
@@ -113,36 +113,51 @@
                 <n-space class="textColorSecendDrawer" justify="space-between" style="width: 100%;">
                   <p>胜率 {{ selectedList[3] }} </p>
                   <p>禁用 {{ selectedList[4] }} </p>
-                  <p style="color: #ff6666" v-if="isRestraint">英雄反制</p>
-                  <p style="color: #18a058" v-else>优势对线</p>
+                  <p style="color: #d03050;cursor: pointer" @click=changeRestraint v-if="!isRestraint">劣势对线</p>
+                  <p style="color: #18a058;cursor: pointer" @click=changeRestraint v-else>优势对线</p>
                 </n-space>
               </n-space>
             </n-space>
           </template>
-          <n-space vertical >
-            <n-spin size="large" />
-            <n-tag :bordered="false" type="success">数据加载中...</n-tag>
-          </n-space>
-          <n-scrollbar style="max-height: 365px" v-if="false">
+          <n-list-item v-if="restraintList.length===0"
+            v-for="count in 5">
+            <n-space class=alignCenter>
+              <n-skeleton height="50px" circle />
+              <n-space vertical :size="[0,4]" style="height: 50px;justify-content: space-between">
+                <n-skeleton height="20px" width="197px" :sharp="false" />
+                <n-skeleton height="20px" width="197px" :sharp="false" />
+              </n-space>
+
+            </n-space>
+          </n-list-item>
+          <n-scrollbar style="max-height: 365px;padding-right: 12px" v-else>
             <n-list-item v-for="champRes in restraintList">
               <n-space class=alignCenter>
                 <n-avatar
                   round
                   :bordered="false"
                   :size="50"
+                  @click="preselectChamp(champRes[3])"
                   :src=champRes[1]
                   fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                   style="display: block"
                 />
-                <n-tag type="success" :bordered="false"
-                       style="width: 100px;justify-content: center">
-                  胜率 {{champRes[2]}}
-                </n-tag>
-                <p>{{ champRes[0] }}</p>
+                <n-space vertical :size="[0,4.5]" style="height: 50px;">
+                  <n-tag type="info" :bordered="false" size="small"
+                         style="width: 197px;justify-content: center;height: 20px;">
+                    {{ champRes[0] }}
+                  </n-tag>
+                  <n-tag :type="champRes[2] >= 50 ? 'success' :'error'" :bordered="false" size="small"
+                         style="width: 197px;justify-content: center;height: 20px;">
+                    胜率 {{champRes[2]}}%
+                  </n-tag>
+                </n-space>
+
               </n-space>
             </n-list-item>
           </n-scrollbar>
         </n-list>
+        <p class="tipsP">点击头像可在 [ 选择英雄阶段 ] 预选英雄</p>
       </n-drawer-content>
     </n-drawer>
   </div>
@@ -150,13 +165,14 @@
 
 <script setup lang="ts">
 import {
-  NAvatar, NButton, NCard, NIcon, NInput, NList, NScrollbar, NDropdown,NSpin,
-  NListItem, NPopover, NSelect, NSpace, NTag, useMessage, NDrawer, NDrawerContent,
+  NAvatar, NButton, NCard, NIcon, NInput, NList, NScrollbar, NDropdown,NSkeleton,
+  NListItem, NPopover, NSelect, NSpace, NTag, useMessage, NDrawer, NDrawerContent
 } from "naive-ui";
 import {Ballon} from '@vicons/tabler'
-import {ref, onMounted, reactive, Ref} from "vue";
+import {ref, onMounted, reactive, Ref, watch} from "vue";
 import {request} from "../../utils/request"
 import {champDict} from "../../resources/champList";
+import {invokeLcu} from "../../lcu";
 
 const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
 
@@ -258,8 +274,21 @@ const isRestraint = ref(true)
 const searchValue = ref(null)
 const is101 = ref(config.is101)
 const isTopWin = ref(false)
+let preselectActionID:number|null = null
 
 const message = useMessage()
+const props:any = defineProps({
+  transValueRank:{
+    type:String
+  }
+})
+
+watch(props,(value) => {
+  if (value.transValueRank === 'rune' ||value.transValueRank === 'champRank'){
+    preselectActionID = null
+    restraintActive.value = false
+  }
+})
 
 onMounted(() => {
   queryChampRankData()
@@ -413,9 +442,9 @@ const getBanRankData = () => {
   quickSort('ban')
 }
 // 获取英雄反制数据
-const getRestraintData = async (champId:any, position:string, imgUrl:string, name:string, level:string, win:string, ban:string) => {
+const getRestraintData = async (champId:any, position:string, imgUrl:string, level:string, win:string, ban:string) => {
   restraintList.value = []
-  selectedList.value = [imgUrl, name, level, win, ban]
+  selectedList.value = [imgUrl, champDict[champId].label +' ' + champDict[champId].title, level, win, ban,champId]
   restraintActive.value = true
   let tierRes = 2
 
@@ -440,22 +469,29 @@ const getRestraintData = async (champId:any, position:string, imgUrl:string, nam
     'url': url,
     method: 'GET'
   })
+  if (result.data.data == null || result.status!==200){
+    restraintActive.value = false
+    message.error('当前英雄数据异常')
+    return
+  }
   try {
     let resList = []
     const counterChampionIdList = JSON.parse(result?.data?.data['counterChampionIdList'])
     const counterWinrateList = JSON.parse(result?.data?.data['counterWinrateList'])
     for (let i = 0; i < counterChampionIdList.length; i++) {
         const chapmId = counterChampionIdList[i]
-        const label = champDict[chapmId].label
+        const label = champDict[chapmId].label +' ' + champDict[chapmId].title
         const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
-        const winRate = `${counterWinrateList[i]}%`
-        resList.push([label, imgUrl, winRate])
+        const winRate = counterWinrateList[i]
+        resList.push([label, imgUrl, winRate,chapmId])
     }
     resList.sort((a, b) => {
       return a[2] < b[2] ? 1 : -1
     })
     restraintList.value = resList
   }catch (e) {
+    restraintActive.value = false
+    message.error('当前英雄数据异常')
     return
   }
 }
@@ -504,7 +540,7 @@ const searchChampData = () => {
   const currentChamp = searchValue.value
   const chapm = champSliceList.value.find((i) => i.name == currentChamp)
   if (chapm != null) {
-    getRestraintData(chapm.champId, lane.value, chapm.imgUrl, chapm.name, chapm.tLevel, chapm.win, chapm.ban)
+    getRestraintData(chapm.champId, lane.value, chapm.imgUrl, chapm.tLevel, chapm.win, chapm.ban)
   } else {
     message.error('当前输入不存在')
   }
@@ -529,6 +565,43 @@ const changeServe = () => {
   config.champRankOption.tier = tier
   config.is101 = is101.value
   localStorage.setItem('config',JSON.stringify(config))
+}
+
+// 预选英雄
+const preselectChamp = async (champId:number) => {
+  if (preselectActionID===null){
+    const res = await invokeLcu('get','/lol-champ-select/v1/session')
+    if (res?.success === false){
+      message.warning('请在选择英雄阶段使用')
+      return
+    }
+    const localPlayerCellId = res.localPlayerCellId
+    const actions = res.actions
+    for (let action of actions) {
+      for (let actionElement of action) {
+        if (actionElement.actorCellId == localPlayerCellId && actionElement.isInProgress) {
+          preselectActionID = actionElement.id
+          return champSelectPatchAction(preselectActionID,champId)
+        }
+      }
+    }
+  }else {
+    return champSelectPatchAction(preselectActionID,champId)
+  }
+}
+
+const champSelectPatchAction = async (actionID:any, champId:any) => {
+  const localBody = {
+    "completed": false,
+    "type": 'pick',
+    "championId": champId
+  }
+  try {
+    invokeLcu('patch',`/lol-champ-select/v1/session/actions/${actionID}`,[localBody])
+    return true
+  } catch (e) {
+    return false
+  }
 }
 </script>
 
@@ -574,5 +647,12 @@ const changeServe = () => {
 .tagSpace {
   position: absolute;
   bottom: 2px;
+}
+.tipsP {
+  position: absolute;
+  left: 52px;
+  bottom: 3px;
+  font-size: 12px;
+  color: #9aa4af;
 }
 </style>
