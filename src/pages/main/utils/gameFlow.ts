@@ -42,7 +42,6 @@ export class GameFlow {
       //游戏启动关闭桌面窗口和战绩历史窗口，打开游戏内窗口
       this.coloseWin('main')
       this.coloseWin('matchHistory')
-      if (localStorage.getItem('locale')!=='zh_CN'){return}
       invokeLcu('get','/lol-lobby/v1/parties/gamemode').then((res:any) => {
         const queueId = res?.queueId
         const config = JSON.parse(<string>(localStorage.getItem('config')))

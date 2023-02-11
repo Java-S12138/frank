@@ -27,7 +27,8 @@ export const areaList = {
   "n_7":"巨龙之巢",
   "o_1":"峡谷之巅",
   "o_2":"男爵领域",
-  "o_3":"教育网专区"
+  "o_3":"教育网专区",
+  "zh_tw":'中国台湾'
 }
 
 export const areaOptions = [
@@ -164,5 +165,9 @@ export const areaOptions = [
         "label": "教育网专区"
       }
     ]
+  },
+  {
+    "key": "zh_tw",
+    "label": "中国台湾"
   }
 ]

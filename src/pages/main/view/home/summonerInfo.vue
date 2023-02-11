@@ -306,13 +306,6 @@ const autoStartGame = async () => {
 const initAfter = async () => {
   cube.games.launchers.events.getInfo(10902).then((info) => {
     localStorage.setItem('locale',info?.summoner_info?.locale)
-    if (info?.summoner_info?.locale!=='zh_CN'){
-      const config = JSON.parse(<string>localStorage.getItem('config'))
-      if (config.isSwitchBlacklist===true){
-        config.isSwitchBlacklist = false
-        localStorage.setItem('config',JSON.stringify(config))
-      }
-    }
   })
   const currentScreen = (await cube.utils.getPrimaryDisplay()).size
   cube.windows.obtainDeclaredWindow('assist', {x: currentScreen.width - 320, y: (currentScreen.height - 770) / 2})

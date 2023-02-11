@@ -98,6 +98,7 @@
             <n-space style="margin: 5.5px 0px">
               <n-avatar
                 round
+                class="champImg"
                 :bordered="false"
                 :size="50"
                 @click="preselectChamp(selectedList[5])"
@@ -135,6 +136,7 @@
               <n-space class=alignCenter>
                 <n-avatar
                   round
+                  class="champImg"
                   :bordered="false"
                   :size="50"
                   @click="preselectChamp(champRes[3])"
@@ -654,5 +656,12 @@ const champSelectPatchAction = async (actionID:any, champId:any) => {
   bottom: 3px;
   font-size: 12px;
   color: #9aa4af;
+}
+.champImg {
+  cursor: pointer;
+  transition:  border-radius .5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.champImg:hover {
+ border-radius: 3px;
 }
 </style>

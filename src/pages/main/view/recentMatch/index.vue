@@ -73,10 +73,23 @@ const detialsNickname =ref('')
 const detialsJsonList:any = ref([])
 const gameType = ref(420)
 
-
 onMounted(async () => {
   const RecentMatch = new recentMatch()
-  const matchList = await RecentMatch.queryAllSummonerInfo()
+  const isSession = await RecentMatch.checkmatchSession()
+  if (isSession){
+    RecentMatch.fromLcuQuery().then((matchList) => {
+      init(matchList)
+    })
+  }else {
+    setTimeout(() => {
+      RecentMatch.fromLogQuery().then((matchList) => {
+        init(matchList)
+      })
+    },3000)
+  }
+})
+
+const init = (matchList:any) => {
   if (matchList.friendList.length !== 0){
     isPageNull.value = false
   }else {
@@ -86,7 +99,7 @@ onMounted(async () => {
   gameType.value = <number>matchList.gameType
   friendList.value = matchList.friendList
   enemyList.value = matchList.enemyList
-})
+}
 
 const checkBlacklist = async (enemyList:[]) => {
   const config = JSON.parse(<string>(localStorage.getItem('config')))
