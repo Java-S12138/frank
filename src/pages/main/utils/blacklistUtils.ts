@@ -10,7 +10,7 @@ const queryLoaclSummoner = async () => {
   return summonerInfo.summonerId
 }
 // 根据召唤师ID查询信息
-const querySummonerInfo = async (summonerId: Number): Promise<lcuSummonerInfo> => {
+const querySummonerInfo = async (summonerId: number): Promise<lcuSummonerInfo> => {
   return await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
 }
 // 获取召唤师的英雄

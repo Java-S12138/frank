@@ -1,10 +1,10 @@
 <template>
   <header class="frankTitle">
     <n-space class="frankTitle">
-      <img src="@/assets/icon/app-icon.png" draggable="false"  alt="" width="40">
-      <img src="@/assets/icon/Frank.png" draggable="false" style="margin-top: 4px">
-      <n-space style="margin-left: 23px">
-        <div style="display: flex;margin-right: 8px">
+      <img src="@/assets/icon/app-icon.png" draggable="false" width="40">
+      <img src="@/assets/icon/Frank.png" draggable="false">
+      <n-space style="margin-left: 43px;height: 26px;" :size="[0,0]">
+        <div style="display: flex">
           <p class="headerP">
             窗口快捷键 Shift + Tab</p>
         </div>
@@ -15,11 +15,12 @@
         </div>
       </n-space>
     </n-space>
-    <n-space style="margin-top: 15px;" justify="space-between">
+    <n-space style="margin-top: 12px;width: 549px;" justify="space-between">
+      <img src="@/assets/icon/site.png" draggable="false" style="margin-top: -3px">
       <n-button
         text
         @click="handleMin" color="black">
-        <n-icon size="25" color="#9AA4AF">
+        <n-icon size="25" color="#666666">
           <chevrons-down-left/>
         </n-icon>
       </n-button>
@@ -59,8 +60,14 @@ header {
   height: 40px;
 }
 .headerP {
-  padding-top: 1px;
-  color: #9AA4AF;
-  margin-right: 15px
+  display: flex;
+  color: #666666;
+  height: 22px;
+  background-color: #e3e3e3;
+  font-size: 13px;
+  padding: 0px 5px 0px 5px;
+  border-radius: 2px;
+  align-items: center;
+  margin-right: 15px;
 }
 </style>

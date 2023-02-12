@@ -132,7 +132,7 @@ import {applyRunePage} from "../../lcu/runeLcu";
 import {get101Runes} from "../../utils/rune/get101Runes";
 import {isStoreageHas} from "../../lcu/utils";
 import {invokeLcu} from "../../lcu";
-import {OnlineRunes} from "../../interface/runeTypes";
+import {OnlineRunes, Block} from "../../interface/runeTypes";
 
 const currentChamp:Ref<number> = ref(0)
 const currentChampImgUrl = ref('')
@@ -230,9 +230,9 @@ const getRuneData = async (gameMode:string) => {
     // 技能
     getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
     // 自动写入装备
-    // if (await autoWriteBlock(champInfo)){
-    //   message.success('自动写入装备成功')
-    // }
+    if (await autoWriteBlock(JSON.parse(JSON.stringify(champInfo)))){
+      message.success('自动写入装备成功')
+    }
 
     for (const champ of champInfo) {
       // 符文
@@ -263,41 +263,55 @@ const getRuneData = async (gameMode:string) => {
 
 }
 
-// // 自动写入装备
-// const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
-//   if (localStorage.getItem('locale')!=='zh_CN'){return false}
-//   const clientPath = await invokeLcu('get','/data-store/v1/install-dir')
-//   let isWriteSuccess
-//   const buildItems = {}
-//   console.log(champInfo)
-//   for (const champ of champInfo) {
-//     const itemBuilds = champ.itemBuilds[0]
-//   }
-//   const path = `${clientPath}/../Game/Config/Global/Recommended/frank.json`
-//   isWriteSuccess = await cube.io
-//           .writeFileContents(path, JSON.stringify(buildItems))
-//           .then((res) => true)
-//           .catch((err) => false)
-//   return <boolean>isWriteSuccess
-//   // for (const champ of champInfo) {
-//   //   const itemBuilds = champ.itemBuilds[0]
-//   //   const champName = mapNameFromUrl[champ.alias].name
-//   //   const position = getPosition(champ.position)
-//   //   itemBuilds.title = `Frank ${position} ${champName} ${champ.officialVersion}`
-//   //
-//   //   const path = `${clientPath}/../Game/Config/Global/Recommended/frank${champ.position}.json`
-//   //
-//   //
-//   //   // for (const string of path) {
-//   //   //   isWriteSuccess = await cube.io
-//   //   //       .writeFileContents(string, JSON.stringify(itemBuilds))
-//   //   //       .then((res) => true)
-//   //   //       .catch((err) => false)
-//   //   // }
-//   // }
-//
-// }
-//
+// 自动写入装备
+const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
+  if (localStorage.getItem('locale')!=='zh_CN'){return false}
+  if (!config.autoWriteBlock){return false}
+  const blockPath = (await invokeLcu('get','/data-store/v1/install-dir')).
+    replace('LeagueClient','Game')+"/Config/Global/Recommended/frank.json"
+
+  let blocksList:any[] = []
+  // 合并不同路的出装
+  for (const champ of champInfo) {
+    const position = getPosition(champ.position)
+    const itemBuilds = champ.itemBuilds[0]
+    blocksList = blocksList.concat(handleBlocks(itemBuilds.blocks,position as string))
+  }
+
+  const buildItems = champInfo[0].itemBuilds[0]
+  const name = mapNameFromUrl[champInfo[0].name].label +'-' +mapNameFromUrl[champInfo[0].name].name
+  buildItems.title = name + ' 推荐出装 ' + 'lolfrank.cn'
+  buildItems.blocks = blocksList
+
+  return await cube.io
+          .writeFileContents(blockPath, JSON.stringify(buildItems))
+          .then((res) => true)
+          .catch((err) => false)
+}
+
+// 处理出装字段
+const handleBlocks = (blocks:Block[],position:string) => {
+  let startItemCount = 0
+  let coreItemCount = 0
+  const blocksResult:Block[] = []
+  for (const block of blocks) {
+    if (block.type.indexOf('Starter') !== -1 && startItemCount< 2){
+      block.type = position+' '+ block.type.replace('Starter Items,','出门装:').
+        replace('Pick','选择次数').
+        replace('Win Rate','胜率')
+      startItemCount+=1
+      blocksResult.push(block)
+    }else if (block.type.indexOf('Core') !== -1 && coreItemCount< 3) {
+      block.type =  position+' '+ block.type.replace('Core Items,','核心装备:').
+      replace('Pick','选择次数').
+      replace('Win Rate,','胜率')
+      coreItemCount+=1
+      blocksResult.push(block)
+    }
+  }
+  return blocksResult
+}
+
 // const test = () => {
 //   currentChampAlias.value = 'Viktor'
 //   currentChamp.value = 112

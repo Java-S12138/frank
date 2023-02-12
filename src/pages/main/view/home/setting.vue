@@ -78,6 +78,18 @@
           <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
+        <n-space>
+          <n-popover :show-arrow="false" trigger="hover">
+            <template #trigger>
+              <n-tag :bordered="false">推荐出装</n-tag>
+            </template>
+            游戏内显示Frank提供的推荐出装
+          </n-popover>
+            <n-tag :bordered="false" type="success"
+                   style="width: 140px;justify-content: center">自动配置推荐出装</n-tag>
+          <n-switch v-model:value="config.autoWriteBlock" @click="changeAutoWriteBlock"
+                    style="margin-left:22px;margin-top: 3px"/>
+        </n-space>
 <!--        秒接对局-->
         <n-space>
           <n-popover :show-arrow="false" trigger="hover">
@@ -211,6 +223,14 @@ const changeAutoLaunchGeme = () => {
 // 设置是否开启自动打开游戏内窗口
 const changeAutoGameInWin = () => {
   commoneChnage('isGameInWindow')
+}
+// 设置是否开启自动配置推荐出装
+const changeAutoWriteBlock = () => {
+  cube.windows.getWindowByName('assist').then((v) => {
+    cube.windows.message.send(v.id,'refresh','')
+  })
+
+  commoneChnage('autoWriteBlock')
 }
 // 通过选择器选择英雄后, 执行的函数 选择
 const handleUpdatePick = () => {

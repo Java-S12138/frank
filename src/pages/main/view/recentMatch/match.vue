@@ -124,16 +124,6 @@ const queryMatchHistory = async (summonerId: string,gameType:number) => {
   border-radius: 3px;
   background: #ffffff;
 }
-.avatarCommon{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 3px;
-  position: relative;
-  font-size: 11px;
-}
 .avatarOne > div > div > div > p{
   color: #ffffff;
   position: absolute;
@@ -143,23 +133,6 @@ const queryMatchHistory = async (summonerId: string,gameType:number) => {
   color: #ffffff;
   position: absolute;
   right: 8px;
-}
-.one_ {
-  top: -2px;
-}
-.two_ {
-  top: 10px;
-}
-.three_ {
-  top: 22px;
-}
-.avatarDefeat {
-  border:2px solid rgba(255, 102, 102, 0.8);
-  background-color: rgba(255, 102, 102, 0.5);
-}
-.avatarWin {
-  border:2px solid rgba(24, 180, 120, 0.8);
-  background-color: rgba(24, 180, 120, 0.5);
 }
 .rankPoint {
   font-size: 12px;

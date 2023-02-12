@@ -30,7 +30,8 @@ export const config: any = {
   'is101': false,
   'isJungleTime': false,
   'isAutoLaunchGame':true,
-  'currentArea':'t_1'
+  'currentArea':'t_1',
+  'autoWriteBlock':true,
 }
 
 if (localStorage.getItem('config') === null) {

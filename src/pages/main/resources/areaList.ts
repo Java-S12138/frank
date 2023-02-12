@@ -161,13 +161,13 @@ export const areaOptions = [
         "label": "男爵领域"
       },
       {
+        "key": "zh_tw",
+        "label": "中国台湾"
+      },
+      {
         "key": "o_3",
         "label": "教育网专区"
       }
     ]
-  },
-  {
-    "key": "zh_tw",
-    "label": "中国台湾"
   }
 ]

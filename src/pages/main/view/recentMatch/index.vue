@@ -11,7 +11,7 @@
       ></match>
     </div>
     <div class="winStat">
-      <span class="winCount">我方胜利次数 {{ friendTeamList[0] }}/{{ friendTeamList[1] }} 次</span>
+      <span class="winCount">友方胜利次数 {{ friendTeamList[0] }}/{{ friendTeamList[1] }} 次</span>
       <span class="winCount">敌方胜利次数 {{ enemyTeamTwoList[0] }}/{{ enemyTeamTwoList[1] }} 次</span>
     </div>
 
@@ -159,13 +159,21 @@ const formatDate = (dateStr:string) => {
   position: relative;
 }
 .winStat {
+  display: flex;
   position: absolute;
   right: 30px;
-  top: 24px;
+  top: 21px;
 }
 .winCount {
-  color: #9AA4AF;
-  margin-right: 15px
+  display: flex;
+  color: #666666;
+  height: 22px;
+  background-color: #e3e3e3;
+  font-size: 13px;
+  padding: 0px 5px 0px 5px;
+  border-radius: 2px;
+  align-items: center;
+  margin-right: 15px;
 }
 .draContent {
   margin: 15px 0px;

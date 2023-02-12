@@ -70,11 +70,14 @@ cube.windows.message.on('received',async (id,content:any) => {
     },1500)
   }else if (id==='query-enemy-summoner'&& isSwitchBlacklist){
     // 查询敌方召唤师
-    setTimeout(async () => {
-      const res = await queryEnemySummonerIdAndSummonerName()
-      endGameAfterInfo.value = [[], []]
-      endGameAfterInfo.value = res
-    }, 1500)
+    const locale = <string>(localStorage.getItem('locale'))
+    if (locale==='zh_CN'){
+      setTimeout(async () => {
+        const res = await queryEnemySummonerIdAndSummonerName()
+        endGameAfterInfo.value = [[], []]
+        endGameAfterInfo.value = res
+      }, 1500)
+    }
   }else if (id==='show-other-summoner'&& isSwitchBlacklist){
     currentBlackList.value.length = 0
     transValue.value = 'blacklist'

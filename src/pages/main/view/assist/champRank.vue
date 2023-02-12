@@ -329,7 +329,7 @@ const queryKoreaServe = async (tier:number,lane:string) => {
   config.champRankOption.tier = tier
   localStorage.setItem('config',JSON.stringify(config))
   try {
-    const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=64&tier=${tier}&lane=${lane}`
+    const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=65&tier=${tier}&lane=${lane}`
     const res = await request({
       url:url,
       method:"GET"

@@ -130,7 +130,7 @@ export class recentMatch {
         if (logList.length===17){
           logList.splice(9,1)
         }
-        const summonerName = logList[8].replace("'","")
+        const summonerName = (logList[8].match(/\'(\S*)\'/) as RegExpMatchArray)[1]
         const matchHistory:any[] = []
         const champName = (logList[10].match(re) as RegExpMatchArray)[0].replace(/\(|\)/g,'')
         const championUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champName}.png`
