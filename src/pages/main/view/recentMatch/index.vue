@@ -73,6 +73,7 @@ const detialsNickname =ref('')
 const detialsJsonList:any = ref([])
 const gameType = ref(420)
 
+
 onMounted(async () => {
   const RecentMatch = new recentMatch()
   const isSession = await RecentMatch.checkmatchSession()
@@ -81,11 +82,17 @@ onMounted(async () => {
       init(matchList)
     })
   }else {
-    setTimeout(() => {
-      RecentMatch.fromLogQuery().then((matchList) => {
+    let timer = 0
+    const interval = setInterval(async () => {
+      timer += 1
+      const matchList = await RecentMatch.fromLogQuery()
+      if (matchList.friendList.length !== 0){
         init(matchList)
-      })
-    },3000)
+        clearInterval(interval)
+      }else if (timer===10){
+        clearInterval(interval)
+      }
+    },1000)
   }
 })
 
@@ -161,8 +168,9 @@ const formatDate = (dateStr:string) => {
 .winStat {
   display: flex;
   position: absolute;
-  right: 30px;
+  left: 160px;
   top: 21px;
+  justify-content: space-between;
 }
 .winCount {
   display: flex;

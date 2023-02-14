@@ -202,14 +202,15 @@ const getGameMode = async () => {
 
 // 获取英雄数据
 const getChampInfo = async (gameMode:string):Promise<OnlineRunes[]> => {
+  const timestamp = new Date().getTime()
   if (gameMode === 'aram' && currentGameMode === 'aram') {
     return (await request({
-      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json`,
+      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json?date${timestamp}`,
       method: 'GET',
     })).data
   } else {
     return (await request({
-      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json `,
+      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json?date${timestamp}`,
       method: 'GET',
     })).data
   }
@@ -265,11 +266,9 @@ const getRuneData = async (gameMode:string) => {
 
 // 自动写入装备
 const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
-  if (localStorage.getItem('locale')!=='zh_CN'){return false}
   if (!config.autoWriteBlock){return false}
   const blockPath = (await invokeLcu('get','/data-store/v1/install-dir')).
     replace('LeagueClient','Game')+"/Config/Global/Recommended/frank.json"
-
   let blocksList:any[] = []
   // 合并不同路的出装
   for (const champ of champInfo) {
@@ -279,7 +278,7 @@ const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
   }
 
   const buildItems = champInfo[0].itemBuilds[0]
-  const name = mapNameFromUrl[champInfo[0].name].label +'-' +mapNameFromUrl[champInfo[0].name].name
+  const name = mapNameFromUrl[champInfo[0].alias].label +'-' +mapNameFromUrl[champInfo[0].alias].name
   buildItems.title = name + ' 推荐出装 ' + 'lolfrank.cn'
   buildItems.blocks = blocksList
 

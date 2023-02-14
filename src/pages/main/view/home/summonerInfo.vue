@@ -280,7 +280,7 @@ const autoStartGame = async () => {
   let isAuto = true
   const launchers = await cube.games.launchers.getRunningLaunchers()
   launchers.forEach((v) => {
-    if (v.classId===6513) {
+    if (v.path.indexOf('Riot Games') !== -1) {
       message.loading('若长时间无数据 请重启Frank', {duration: 5000})
       isAuto = false
       setTimeout(() => {
