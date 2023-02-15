@@ -56,10 +56,10 @@ import {
   NListItem, NSpace, NTag,NTabs,NTabPane
 } from "naive-ui";
 import {ref,onMounted,Ref} from "vue";
-import {champDict} from "../../resources/champList";
-import {request} from "../../utils/request";
-import {isStoreageHas} from "../../lcu/utils";
-import {invokeLcu} from "../../lcu/index";
+import {champDict} from "../../../resources/champList";
+import {request} from "../../../utils/request";
+import {isStoreageHas} from "../../../lcu/utils";
+import {invokeLcu} from "../../../lcu";
 
 const props = defineProps({
   champ: {

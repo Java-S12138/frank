@@ -10,23 +10,23 @@
     <champ-rank v-show="transValue==='champRank'" :trans-value-rank="transValue" class="slide-in-bottom"></champ-rank>
     <rune v-show="transValue==='rune'"  @changePage="changePage"
           class="slide-in-bottom" ></rune>
-    <div v-if="isSwitchBlacklist" >
-      <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>
-      <n-drawer v-model:show="queryMatchAddition.active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-                :height="420" placement="bottom" :auto-focus="false">
-        <add-blacklist @closeDra="closeDrawer"
-                       :name="queryMatchAddition.blacklistName"
-                       :summonerId="queryMatchAddition.blacklistId"
-                       :gameAfterId="queryMatchAddition.gameAfterId"></add-blacklist>
-      </n-drawer>
-    </div>
+<!--    <div v-if="isSwitchBlacklist" >-->
+<!--      <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>-->
+<!--      <n-drawer v-model:show="queryMatchAddition.active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"-->
+<!--                :height="420" placement="bottom" :auto-focus="false">-->
+<!--        <add-blacklist @closeDra="closeDrawer"-->
+<!--                       :name="queryMatchAddition.blacklistName"-->
+<!--                       :summonerId="queryMatchAddition.blacklistId"-->
+<!--                       :gameAfterId="queryMatchAddition.gameAfterId"></add-blacklist>-->
+<!--      </n-drawer>-->
+<!--    </div>-->
 </template>
 
 <script setup lang="ts">
 import {
   NTabs, NTab, useMessage,NDrawer
 } from "naive-ui";
-import Rune from './rune.vue'
+import Rune from './runePages/rune.vue'
 import ChampRank from './champRank.vue'
 import Blacklist from "./rankNote/blacklist.vue"
 import AddBlacklist from "./rankNote/addBlacklist.vue"

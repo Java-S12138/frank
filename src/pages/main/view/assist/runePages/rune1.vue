@@ -1,111 +1,113 @@
 <template>
   <div v-if="runeDataListFor.length !==0">
-    <n-card class="boxShadow" size="small">
-      <n-space justify="space-between">
-        <n-badge :value="isAutoRune" color="#ff6666">
-          <n-avatar
-            round
-            :bordered="false"
-            :size="50"
-            :src="currentChampImgUrl"
-            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-            style="display: block"
-            @click="restraintActive = true"
-          />
-        </n-badge>
+    <!--    <n-card class="boxShadow" size="small">-->
+    <!--      <n-space justify="space-between">-->
+    <!--        <n-badge :value="isAutoRune" color="#ff6666">-->
+    <!--          <n-avatar-->
+    <!--            round-->
+    <!--            :bordered="false"-->
+    <!--            :size="50"-->
+    <!--            :src="currentChampImgUrl"-->
+    <!--            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"-->
+    <!--            style="display: block"-->
+    <!--            @click="restraintActive = true"-->
+    <!--          />-->
+    <!--        </n-badge>-->
 
-        <n-select @update:value="changeRuneType($event)" style="width: 100px"
-                  v-model:value="runeValue" :options="runeOptions" />
+    <!--        <n-select @update:value="changeRuneType($event)" style="width: 100px"-->
+    <!--                  v-model:value="runeValue" :options="runeOptions" />-->
 
-        <div class="buttonSwitch">
-          <n-space >
-            <n-button text style="font-size: 2em" @click="pageBack">
-              <n-icon>
-                <arrow-big-left-line></arrow-big-left-line>
-              </n-icon>
-            </n-button>
-            <n-button text style="font-size: 2em" @click="pageNext">
-              <n-icon>
-                <arrow-big-right-line></arrow-big-right-line>
-              </n-icon>
-            </n-button>
-          </n-space>
-        </div>
-      </n-space>
-    </n-card>
-    <n-grid :cols="2" >
-      <n-gi v-for="rune in runeDataListFor">
-        <n-card class="boxShadow runeCard" size="small">
-          <n-space :size=[-5,0] align="stretch" justify="space-between">
-            <n-space vertical  :size=[1,-5]>
-              <img :src="getImaUrl(rune.selectedPerkIds[0])" alt="" class="runImg">
-              <img :src="getImaUrl(rune.selectedPerkIds[1])" alt="" class="runImg">
-              <img :src="getImaUrl(rune.selectedPerkIds[2])" alt="" class="runImg">
-              <img :src="getImaUrl(rune.selectedPerkIds[3])" alt="" class="runImg">
-              <n-tag :bordered="false" type="error" size="medium" style="margin-top: 6px">
-                {{ getPosition(rune.position) }}
-              </n-tag>
+    <!--        <div class="buttonSwitch">-->
+    <!--          <n-space >-->
+    <!--            <n-button text style="font-size: 2em" @click="pageBack">-->
+    <!--              <n-icon>-->
+    <!--                <arrow-big-left-line></arrow-big-left-line>-->
+    <!--              </n-icon>-->
+    <!--            </n-button>-->
+    <!--            <n-button text style="font-size: 2em" @click="pageNext">-->
+    <!--              <n-icon>-->
+    <!--                <arrow-big-right-line></arrow-big-right-line>-->
+    <!--              </n-icon>-->
+    <!--            </n-button>-->
+    <!--          </n-space>-->
+    <!--        </div>-->
+    <!--      </n-space>-->
+    <!--    </n-card>-->
+    <rune-header/>
+    <rune-main/>
+    <!--    <n-grid :cols="2" >-->
+    <!--      <n-gi v-for="rune in runeDataListFor">-->
+    <!--        <n-card class="boxShadow runeCard" size="small">-->
+    <!--          <n-space :size=[-5,0] align="stretch" justify="space-between">-->
+    <!--            <n-space vertical  :size=[1,-5]>-->
+    <!--              <img :src="getImaUrl(rune.selectedPerkIds[0])" alt="" class="runImg">-->
+    <!--              <img :src="getImaUrl(rune.selectedPerkIds[1])" alt="" class="runImg">-->
+    <!--              <img :src="getImaUrl(rune.selectedPerkIds[2])" alt="" class="runImg">-->
+    <!--              <img :src="getImaUrl(rune.selectedPerkIds[3])" alt="" class="runImg">-->
+    <!--              <n-tag :bordered="false" type="error" size="medium" style="margin-top: 6px">-->
+    <!--                {{ getPosition(rune.position) }}-->
+    <!--              </n-tag>-->
 
-            </n-space>
-            <n-space vertical :size=[1,-5]>
-              <img :src="getImaUrl(rune.selectedPerkIds[4])" alt="" class="runImg">
-              <img :src="getImaUrl(rune.selectedPerkIds[5])" alt="" class="runImg">
-              <div class="runSondary">
-                <img :src="getImaUrl(rune.selectedPerkIds[6])" alt="" class="runImgseSondary">
-                <img :src="getImaUrl(rune.selectedPerkIds[7])" alt="" class="runImgseSondary">
-                <img :src="getImaUrl(rune.selectedPerkIds[8])" alt="" class="runImgseSondary">
-              </div>
-              <div style="margin-top: 12px">
-                <n-tag :bordered="false" type="success" style="cursor:pointer"
-                       size="medium" @click="applyRune(rune)">
-                  应用
-                </n-tag>
-              </div>
-            </n-space>
-          </n-space>
-        </n-card>
-      </n-gi>
-    </n-grid>
-    <n-card class="boxShadow bottomTip" size="small">
-      <n-space :size="[44,0]">
-        <div class="skillDiv slide-in-bottom" v-for="skills in skillsAndItems[0]">
-          <img class="itemImg" :src="skills[0]">
-          <strong class="skillText">{{ skills[1] }}</strong>
-        </div>
-        <div class="skillDiv slide-in-bottom" v-for="items in skillsAndItems[itemCount]">
-          <img :src="items" class="itemImg">
-        </div>
-      </n-space>
-      <div class="itemsTotal slide-in-bottom" v-if="skillsAndItems.length !=0">
-        <n-space>
-          <n-button size="tiny" text text-color="#9aa4af" @click="changeItemsImg">
-            切换装备
-          </n-button>
+    <!--            </n-space>-->
+    <!--            <n-space vertical :size=[1,-5]>-->
+    <!--              <img :src="getImaUrl(rune.selectedPerkIds[4])" alt="" class="runImg">-->
+    <!--              <img :src="getImaUrl(rune.selectedPerkIds[5])" alt="" class="runImg">-->
+    <!--              <div class="runSondary">-->
+    <!--                <img :src="getImaUrl(rune.selectedPerkIds[6])" alt="" class="runImgseSondary">-->
+    <!--                <img :src="getImaUrl(rune.selectedPerkIds[7])" alt="" class="runImgseSondary">-->
+    <!--                <img :src="getImaUrl(rune.selectedPerkIds[8])" alt="" class="runImgseSondary">-->
+    <!--              </div>-->
+    <!--              <div style="margin-top: 12px">-->
+    <!--                <n-tag :bordered="false" type="success" style="cursor:pointer"-->
+    <!--                       size="medium" @click="applyRune(rune)">-->
+    <!--                  应用-->
+    <!--                </n-tag>-->
+    <!--              </div>-->
+    <!--            </n-space>-->
+    <!--          </n-space>-->
+    <!--        </n-card>-->
+    <!--      </n-gi>-->
+    <!--    </n-grid>-->
+    <!--    <n-card class="boxShadow bottomTip" size="small">-->
+    <!--      <n-space :size="[44,0]">-->
+    <!--        <div class="skillDiv slide-in-bottom" v-for="skills in skillsAndItems[0]">-->
+    <!--          <img class="itemImg" :src="skills[0]">-->
+    <!--          <strong class="skillText">{{ skills[1] }}</strong>-->
+    <!--        </div>-->
+    <!--        <div class="skillDiv slide-in-bottom" v-for="items in skillsAndItems[itemCount]">-->
+    <!--          <img :src="items" class="itemImg">-->
+    <!--        </div>-->
+    <!--      </n-space>-->
+    <!--      <div class="itemsTotal slide-in-bottom" v-if="skillsAndItems.length !=0">-->
+    <!--        <n-space>-->
+    <!--          <n-button size="tiny" text text-color="#9aa4af" @click="changeItemsImg">-->
+    <!--            切换装备-->
+    <!--          </n-button>-->
 
-          <div style="width: 32px;">
-            <span>{{ itemCount }}</span>
-            <span>/</span>
-            <span>{{ skillsAndItems.length - 1 }}</span>
-          </div>
-        </n-space>
-      </div>
-      <div class="runesTotal slide-in-bottom" v-if="skillsAndItems.length !=0">
-        <n-space>
-          <n-button size="tiny" text text-color="#9aa4af">
-            符文数量
-            <p style="font-size: 14px;margin-left: 8px">{{runeDataCount}}</p>
-          </n-button>
-        </n-space>
-      </div>
-    </n-card>
+    <!--          <div style="width: 32px;">-->
+    <!--            <span>{{ itemCount }}</span>-->
+    <!--            <span>/</span>-->
+    <!--            <span>{{ skillsAndItems.length - 1 }}</span>-->
+    <!--          </div>-->
+    <!--        </n-space>-->
+    <!--      </div>-->
+    <!--      <div class="runesTotal slide-in-bottom" v-if="skillsAndItems.length !=0">-->
+    <!--        <n-space>-->
+    <!--          <n-button size="tiny" text text-color="#9aa4af">-->
+    <!--            符文数量-->
+    <!--            <p style="font-size: 14px;margin-left: 8px">{{runeDataCount}}</p>-->
+    <!--          </n-button>-->
+    <!--        </n-space>-->
+    <!--      </div>-->
+    <!--    </n-card>-->
 
-    <n-drawer :auto-focus="false" v-model:show="restraintActive"
-              style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-              :height="546" placement="bottom">
-      <n-drawer-content >
-        <restraint :champ="currentChamp" @autoRune="autoRune"></restraint>
-      </n-drawer-content>
-    </n-drawer>
+    <!--    <n-drawer :auto-focus="false" v-model:show="restraintActive"-->
+    <!--              style="border-top-left-radius: 12px;border-top-right-radius: 12px"-->
+    <!--              :height="546" placement="bottom">-->
+    <!--      <n-drawer-content >-->
+    <!--        <restraint :champ="currentChamp" @autoRune="autoRune"></restraint>-->
+    <!--      </n-drawer-content>-->
+    <!--    </n-drawer>-->
   </div>
 
   <div v-else>
@@ -124,16 +126,21 @@ import {
   NBadge, NButton, useMessage,NDrawer, NDrawerContent,NSelect
 } from 'naive-ui'
 import Restraint from "./restraint.vue";
+import RuneHeader from "./runeHeader.vue";
+import RuneMain from "./runeMain.vue";
 import {Ref, ref} from "vue";
-import {champDict, mapNameFromUrl} from '../../resources/champList'
+import {champDict, mapNameFromUrl} from '../../../resources/champList'
 import {ArrowBigRightLine, ArrowBigLeftLine} from '@vicons/tabler'
-import {request} from "../../utils/request"
-import {applyRunePage} from "../../lcu/runeLcu";
-import {get101Runes} from "../../utils/rune/get101Runes";
-import {isStoreageHas} from "../../lcu/utils";
-import {invokeLcu} from "../../lcu";
-import {OnlineRunes, Block} from "../../interface/runeTypes";
+import {request} from "../../../utils/request"
+import {applyRunePage} from "../../../lcu/runeLcu";
+import {get101Runes} from "../../../utils/rune/get101Runes";
+import {isStoreageHas} from "../../../lcu/utils";
+import {invokeLcu} from "../../../lcu";
+import {OnlineRunes, Block} from "../../../interface/runeTypes";
 
+import runeStore from "../../../store/runeStore";
+
+const storeRune = runeStore()
 const currentChamp:Ref<number> = ref(0)
 const currentChampImgUrl = ref('')
 const currentChampAlias = ref('')
@@ -205,12 +212,12 @@ const getChampInfo = async (gameMode:string):Promise<OnlineRunes[]> => {
   const timestamp = new Date().getTime()
   if (gameMode === 'aram' && currentGameMode === 'aram') {
     return (await request({
-      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${currentChampAlias.value}.json?date${timestamp}`,
+      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${storeRune.currentChampAlias}.json?date${timestamp}`,
       method: 'GET',
     })).data
   } else {
     return (await request({
-      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${currentChampAlias.value}.json?date${timestamp}`,
+      url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${storeRune.currentChampAlias}.json?date${timestamp}`,
       method: 'GET',
     })).data
   }
@@ -221,8 +228,8 @@ const getChampInfo = async (gameMode:string):Promise<OnlineRunes[]> => {
 // https://lol.ps/api/champ/34/versus.json?region=0&version=64&tier=2&lane=2
 const getRuneData = async (gameMode:string) => {
   // 判断当前英雄是否配置看自动符文
-  if (isStoreageHas('autoRunes',String(currentChamp.value))){
-    const runeData = JSON.parse(String(localStorage.getItem('autoRunes')))[String(currentChamp.value)]
+  if (isStoreageHas('autoRunes',String(storeRune.currentChamp))){
+    const runeData = JSON.parse(String(localStorage.getItem('autoRunes')))[String(storeRune.currentChamp)]
     applyRunePage(runeData)
   }
 
@@ -231,9 +238,9 @@ const getRuneData = async (gameMode:string) => {
     // 技能
     getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
     // 自动写入装备
-    if (await autoWriteBlock(JSON.parse(JSON.stringify(champInfo)))){
-      message.success('自动写入装备成功')
-    }
+    // if (await autoWriteBlock(JSON.parse(JSON.stringify(champInfo)))){
+    //   message.success('自动写入装备成功')
+    // }
 
     for (const champ of champInfo) {
       // 符文
@@ -247,17 +254,15 @@ const getRuneData = async (gameMode:string) => {
       getItemImgUrl(champ.itemBuilds[0].blocks)
     }
     if (runeValue.value ==='国服数据' && gameMode !== 'aram'){
-      runeDataList = await get101Runes(currentChamp.value)
+      runeDataList = await get101Runes(storeRune.currentChamp)
     }
     runeDataCount.value = runeDataList.length
     pageStart = 0
     pageEnd = runeDataList.length > 4 ? 4 : runeDataList.length
     runeDataListFor.value = runeDataList.slice(pageStart, pageEnd)
-
     if (isStoreageHas('autoRunes',String(currentChamp.value))) {
       message.success('自动配置符文成功')
     }
-
   } catch (e) {
     console.log(e)
   }
@@ -268,7 +273,7 @@ const getRuneData = async (gameMode:string) => {
 const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
   if (!config.autoWriteBlock){return false}
   const blockPath = (await invokeLcu('get','/data-store/v1/install-dir')).
-    replace('LeagueClient','Game')+"/Config/Global/Recommended/frank.json"
+  replace('LeagueClient','Game')+"/Config/Global/Recommended/frank.json"
   let blocksList:any[] = []
   // 合并不同路的出装
   for (const champ of champInfo) {
@@ -283,9 +288,9 @@ const autoWriteBlock = async (champInfo:OnlineRunes[]):Promise<boolean> => {
   buildItems.blocks = blocksList
 
   return await cube.io
-          .writeFileContents(blockPath, JSON.stringify(buildItems))
-          .then((res) => true)
-          .catch((err) => false)
+    .writeFileContents(blockPath, JSON.stringify(buildItems))
+    .then((res) => true)
+    .catch((err) => false)
 }
 
 // 处理出装字段
@@ -296,8 +301,8 @@ const handleBlocks = (blocks:Block[],position:string) => {
   for (const block of blocks) {
     if (block.type.indexOf('Starter') !== -1 && startItemCount< 2){
       block.type = position+' '+ block.type.replace('Starter Items,','出门装:').
-        replace('Pick','选择次数').
-        replace('Win Rate','胜率')
+      replace('Pick','选择次数').
+      replace('Win Rate','胜率')
       startItemCount+=1
       blocksResult.push(block)
     }else if (block.type.indexOf('Core') !== -1 && coreItemCount< 3) {
@@ -311,13 +316,13 @@ const handleBlocks = (blocks:Block[],position:string) => {
   return blocksResult
 }
 
-// const test = () => {
-//   currentChampAlias.value = 'Viktor'
-//   currentChamp.value = 112
-//   currentChampImgUrl.value = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
-//   getRuneData('')
-// }
-// test()
+const test = () => {
+  storeRune.currentChampAlias = 'Viktor'
+  storeRune.currentChamp = 112
+  storeRune.currentChampImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png`
+  getRuneData('')
+}
+test()
 
 // 切换不同服务器的符文数据
 const changeRuneType = (type:string) => {
@@ -371,6 +376,7 @@ const getSkillsImgUrl = (skillsImg:any, skills:any) => {
     const skillImgUrl = `https://game.gtimg.cn/images/lol/act/img/spell/${skillsImg[i]}`
     skillsList.push([skillImgUrl, skills[i]])
   }
+  console.log(skillsList)
   skillsAndItems.value.push(skillsList)
 }
 
