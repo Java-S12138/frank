@@ -1,18 +1,8 @@
 import {defineStore} from 'pinia'
 import {champDict} from "../resources/champList";
+import {Rune,ItemBuild} from "../interface/runeTypes";
 
-interface Rune {
-  alias: string;
-  name: string;
-  position: string;
-  pickCount: number;
-  winRate: string;
-  primaryStyleId: number;
-  subStyleId: number;
-  selectedPerkIds: number[];
-  score: number;
-  type: string;
-}
+
 
 const runeStore = defineStore('runeStore', {
   state: () => {
@@ -22,6 +12,7 @@ const runeStore = defineStore('runeStore', {
       currentChampAlias: '',
       currentChampTitle: '',
       runeDataList: [] as Rune[],
+      blockDataList: [] as {position:string,buildItems:ItemBuild,ps:string} [],
       skillsList: [] as string[][],
       restraintActive: false,
       isAutoRune: '',
@@ -44,6 +35,7 @@ const runeStore = defineStore('runeStore', {
     resetStore() {
       this.currentChamp = 0
       this.runeDataList = []
+      this.blockDataList = []
       this.skillsList = []
       this.isAutoRune = ''
       this.restraintActive = false

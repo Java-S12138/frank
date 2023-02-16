@@ -1,7 +1,7 @@
 <template>
   <n-scrollbar style="max-height: 475px;padding-right: 10px">
     <n-grid :cols="2" x-gap="15" style="margin-top: 4px">
-      <n-gi v-for="rune in storeRune.runeDataList">
+      <n-gi v-for="rune in props.runeList">
         <div class="runeDiv">
           <n-space :size=[-5,0] align="stretch" justify="space-between">
             <n-space vertical align="center"  :size=[1,-5]>
@@ -40,23 +40,48 @@
 
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon,
-  NBadge, NButton, useMessage,NDrawer, NDrawerContent,NScrollbar
+  NSpace, NTag, NGrid, NGi,useMessage,NScrollbar
 } from 'naive-ui'
 import runeStore from "../../../store/runeStore";
 import {mapNameFromUrl} from "../../../resources/champList";
-import {applyRunePage} from "../../../lcu/runeLcu";
+import {applyRunePage,applyBlockPage} from "../../../lcu/runeLcu";
+import {PropType} from "vue";
+import {Rune} from "../../../interface/runeTypes";
 
 const storeRune = runeStore()
 const message = useMessage()
 
-// 应用符文
-const applyRune = (data:any) => {
+const props = defineProps({
+  runeList:{
+    default:[],
+    type:Array as PropType<Rune[]>
+  }
+})
+
+// 应用符文&装备
+const applyRune = async (data:any) => {
   const tempData = JSON.parse(JSON.stringify(data))
   tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"
+  const isAutoWriteBlock =  JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock
+
   applyRunePage(tempData).then((isApplySuccess) => {
     if (isApplySuccess){
-      message.success('符文配置成功')
+      if (isAutoWriteBlock){
+        const block = storeRune.blockDataList.find((i) => i.ps===data.position)
+        if (block===undefined){
+          message.success('符文配置成功')
+          return
+        }
+        applyBlockPage(JSON.parse(JSON.stringify(block.buildItems))).then((v) => {
+          if (v){
+            message.success('符文&装备 配置成功')
+          }else {
+            message.success('符文配置成功')
+          }
+        })
+      }else {
+        message.success('符文配置成功')
+      }
     }else {
       message.error('符文配置失败')
     }
@@ -121,6 +146,6 @@ const getPosition = (pos:string) => {
   color: #666666;
 }
 .tipBottom p {
-  padding-top: 2px
+  padding-top: 3px
 }
 </style>

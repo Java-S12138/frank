@@ -27,9 +27,10 @@ import {request} from "../../../utils/request"
 import {applyRunePage} from "../../../lcu/runeLcu";
 import {isStoreageHas} from "../../../lcu/utils";
 import {invokeLcu} from "../../../lcu";
-import {OnlineRunes,RuneEventType} from "../../../interface/runeTypes";
+import {Block, OnlineRunes, RuneEventType} from "../../../interface/runeTypes";
 
 import runeStore from "../../../store/runeStore";
+import {mapNameFromUrl} from "../../../resources/champList";
 
 const message = useMessage()
 const storeRune = runeStore()
@@ -37,7 +38,7 @@ const emits = defineEmits(['changePage'])
 
 onMounted(() => {
   const runeClass = new RuneClass()
-  runeClass.setChampInfo(113)
+  // runeClass.setChampInfo(112)
   cube.windows.message.on('received',async (id, content) => {
     if (id==='champion'){
       const champ = JSON.parse(content.value) as RuneEventType
@@ -63,6 +64,7 @@ class RuneClass {
   public setChampInfo = async (champId:number) => {
     emits('changePage',true)
     storeRune.runeDataList = []
+    storeRune.blockDataList = []
     storeRune.isAutoRune = isStoreageHas('autoRunes',String(champId)) == true ?
       'auto' : ''
     storeRune.mapChampInfo(champId)
@@ -106,7 +108,6 @@ class RuneClass {
       const champInfo:OnlineRunes[] = await this.getChampInfo(gameMode)
       // 技能
       storeRune.getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
-
       for (const champ of champInfo) {
         // 符文
         for (const rune of champ.runes) {
@@ -115,12 +116,71 @@ class RuneClass {
           }
           storeRune.runeDataList.push(rune)
         }
+        // 出装
+        const block = this.getBlocksData(JSON.parse(JSON.stringify(champ)))
+        if (block!==null){
+          storeRune.blockDataList.push(block)
+        }
       }
       if (isStoreageHas('autoRunes',String(storeRune.currentChamp))) {
         message.success('自动配置符文成功')
       }
     } catch (e) {
       console.log(e)
+    }
+  }
+  // 获取出装数据
+  public getBlocksData = (champ: OnlineRunes) => {
+    try {
+      const position = this.getPosition(champ.position)
+      const buildItems = champ.itemBuilds[0]
+      const name = mapNameFromUrl[champ.alias].label +'-' +mapNameFromUrl[champ.alias].name
+      buildItems.title = name + ' 推荐出装 ' + 'lolfrank.cn'
+      buildItems.blocks = this.handleBlocks(buildItems.blocks)
+      return {position:position as string,buildItems:buildItems,ps:champ.position}
+    }catch (e) {
+      return null
+    }
+  }
+  // 处理出装字段
+  public handleBlocks = (blocks:Block[]) => {
+    const blocksResult:Block[] = []
+    for (const block of blocks) {
+      if (block.type.indexOf('Starter') !== -1){
+        blocksResult.push(this.translateTitle(block,'Starter Items,','出门:'))
+      }else if (block.type.indexOf('Core') !== -1) {
+        blocksResult.push(this.translateTitle(block,'Core Items,','核心:'))
+      }
+    }
+    return blocksResult
+  }
+  // 翻译中文
+  public translateTitle = (block:Block,english:string,chinese:string) =>  {
+    block.type = block.type.replace(english,chinese).
+    replace('Pick','选择次数').
+    replace('Win Rate','胜率')
+    if (block.items.length>3){
+      block.items = block.items.slice(0,3)
+    }
+    return block
+  }
+  // 获取位置信息
+  public getPosition = (pos:string) => {
+    switch (pos) {
+      case 'middle':
+        return '中单';
+      case 'top':
+        return '上单';
+      case 'support':
+        return '辅助';
+      case 'jungle':
+        return '打野';
+      case 'bottom':
+        return '射手';
+      case 'aram':
+        return '极地';
+      case 'mid':
+        return '中单';
     }
   }
 }

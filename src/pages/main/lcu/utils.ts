@@ -58,11 +58,11 @@ export const getspellImgUrl = (spellId:number) => {
 
 // 通过物品id获取图片地址
 export const getItemImgUrl = (item:number) => {
-  if (item == 7013){
-    return `https://game.gtimg.cn/images/lol/act/img/item/3802.png`
-  }else if (item== 7004){
-    return `https://game.gtimg.cn/images/lol/act/img/item/3068.png`
-  }
+  // if (item == 7013){
+  //   return `https://game.gtimg.cn/images/lol/act/img/item/3802.png`
+  // }else if (item== 7004){
+  //   return `https://game.gtimg.cn/images/lol/act/img/item/3068.png`
+  // }
   if (item == 0){
     return 'https://gw.alipayobjects.com/zos/rmsportal/wYnHWSXDmBhiEmuwXsym.png?x-oss-process=image%2Fresize%2Cm_fill%2Cw_64%2Ch_64%2Fformat%2Cpng'
   }else {

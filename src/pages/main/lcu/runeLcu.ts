@@ -19,3 +19,13 @@ export const applyRunePage = async (data: {}) => {
     return false
   }
 }
+
+export const applyBlockPage = async (buildItems:any) => {
+  const blockPath = (await invokeLcu('get','/data-store/v1/install-dir')).
+  replace('LeagueClient','Game')+"/Config/Global/Recommended/frank.json"
+
+  return await cube.io
+    .writeFileContents(blockPath, JSON.stringify(buildItems))
+    .then((res) => true)
+    .catch((err) => false)
+}
