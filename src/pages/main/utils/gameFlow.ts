@@ -38,7 +38,7 @@ export class GameFlow {
   // 选择英雄阶段结束后执行的操作
   public initGameInWindow = async () => {
     const currentScreen = (await cube.utils.getPrimaryDisplay()).size
-  //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
+    //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
     cube.games.on('launched', () => {
       //游戏启动关闭桌面窗口和战绩历史窗口，打开游戏内窗口
       this.coloseWin('main')
@@ -112,13 +112,14 @@ export class GameFlow {
     }
 
     // 检测到进入英雄联盟大厅后, 获取首页数据
-    if (JSON.parse(<string>(localStorage.getItem('config'))).isAutoLaunchGame){
-      cube.games.launchers.on('launched', () => {
+    const closeOn =  cube.games.launchers.on('launched', () => {
+      closeOn()
+      setTimeout(() => {
         cube.windows.getWindowByName('main').then((win) => {
           cube.windows.message.send(win.id,'initHome','')
         })
-      })
-    }
+      },3000)
+    })
   }
   // 自动(禁用)选择英雄
   public autoPickBanChamp = () => {

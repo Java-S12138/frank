@@ -10,7 +10,7 @@
                   <BrandGithub></BrandGithub>
                 </n-icon>
               </template>
-              <span>Github 点亮✨吧 !</span>
+              <span>Github 点亮✨</span>
             </n-popover>
           </n-button>
           <n-button text>
@@ -20,7 +20,7 @@
                   <Code></Code>
                 </n-icon>
               </template>
-              <span>来我的个人网站喝杯茶吧🍺 !</span>
+              <span>来我的个人网站喝杯茶吧</span>
             </n-popover>
           </n-button>
           <n-button text>
@@ -40,7 +40,7 @@
                   <ArrowUpCircle></ArrowUpCircle>
                 </n-icon>
               </template>
-              <span>Version {{ config.version }}</span>
+              <span>当前版本 {{ config.version }}</span>
             </n-popover>
           </n-button>
         </n-space>

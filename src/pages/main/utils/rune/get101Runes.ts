@@ -64,7 +64,9 @@ const makePerkData = (perk:any, champion:string, position:string) => {
       subStyleId: ``,
     },
   );
-
+  if (position==='mid'){
+    position = 'middle'
+  }
   data.selectedPerkIds = runes.map(Number);
   data.alias = champion;
   data.position = position;

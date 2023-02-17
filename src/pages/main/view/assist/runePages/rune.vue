@@ -111,7 +111,7 @@ class RuneClass {
       for (const champ of champInfo) {
         // 符文
         for (const rune of champ.runes) {
-          if (gameMode == 'aram') {
+          if (gameMode === 'aram') {
             rune.position = 'aram'
           }
           storeRune.runeDataList.push(rune)
@@ -132,6 +132,9 @@ class RuneClass {
   // 获取出装数据
   public getBlocksData = (champ: OnlineRunes) => {
     try {
+      if (this.currentGameMode === 'aram') {
+        champ.position = 'aram'
+      }
       const position = this.getPosition(champ.position)
       const buildItems = champ.itemBuilds[0]
       const name = mapNameFromUrl[champ.alias].label +'-' +mapNameFromUrl[champ.alias].name

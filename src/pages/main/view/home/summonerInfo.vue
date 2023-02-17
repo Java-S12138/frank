@@ -1,17 +1,14 @@
 <template>
   <div class="mainCard">
-    <n-card class="boxShadow" size="small">
-      <n-avatar class="imgFull" v-if="xp!==null"
+
+    <n-card class="boxShadow" size="small" v-if="xp!==null">
+      <n-avatar class="imgFull"
                 round
                 :bordered="false"
                 :size="60"
                 :src="rankData[7]"
                 fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
       />
-      <div v-else class="spinnerDiv">
-        <div class="spinner"></div>
-      </div>
-
       <n-space vertical :size="[2,10]">
         <n-space justify="space-between">
           <!--                昵称-->
@@ -24,7 +21,7 @@
             <p v-if="xp!==null">查询战绩</p>
           </n-tag>
         </n-space>
-        <n-space justify="space-between" v-if="xp!==null">
+        <n-space justify="space-between">
           <n-tag type="warning" size="small" round style="width: 56px;justify-content: center"
                  :bordered="false"> {{ rankData[1] }}
           </n-tag>
@@ -44,14 +41,16 @@
             </n-space>
           </n-tag>
         </n-space>
-        <n-tag v-else type="info" size="small"
-               round style="width: 241px;justify-content: center"
-               :bordered="false">
-          <p v-if="config.isAutoLaunchGame">进入英雄联盟大厅后⌛自动获取数据</p>
-          <p v-else @click="init">点击此处 获取游戏数据</p>
-        </n-tag>
+<!--        <n-tag v-else type="info" size="small"-->
+<!--               round style="width: 241px;justify-content: center"-->
+<!--               :bordered="false">-->
+<!--          <p v-if="config.isAutoLaunchGame">进入英雄联盟大厅后⌛自动获取数据</p>-->
+<!--          <p v-else @click="init">点击此处 获取游戏数据</p>-->
+<!--        </n-tag>-->
       </n-space>
     </n-card>
+
+    <start-game v-else/>
 
     <n-card class="boxShadow pointCard" size="small">
       <n-tabs type="segment" :animated="true">
@@ -245,27 +244,46 @@ import {
   NList, NListItem, NScrollbar, useMessage, NTabs, NTabPane, NRate, NIcon
 } from 'naive-ui'
 import {Diamond} from '@vicons/tabler'
+import StartGame from "./startGame.vue";
 import {getCurrentSummonerInfo, queryCurrentChampStatstones} from "../../lcu/homeLcu";
 
-const rankData: Ref<any[]> = ref([])
-const summonerHonor: Ref<any[]> = ref([])
-const summonerChampLevel: Ref<any[]> = ref([])
+const rankData: Ref = ref([])
+const summonerHonor: Ref = ref([])
+const summonerChampLevel: Ref = ref([])
 const xp: Ref = ref(null)
-const statstonesList: Ref<any[]> = ref([])
+const statstonesList: Ref = ref([])
 const message = useMessage()
 const active = ref(false)
-const currentChampStatstones: Ref<any[]> = ref([])
+const currentChampStatstones: Ref = ref([])
 const currentChampIndex = ref(0)
 const config = JSON.parse(<string>(localStorage.getItem('config')))
 
-onMounted(async () => {
+onMounted(() => {
   init()
+  const closeMessageOn =  cube.windows.message.on('received', async (id) => {
+    if (id === 'initHome') {
+      await init()
+      let timer = 0
+      const interval = setInterval(async () => {
+        timer += 1
+        if (xp.value === null){
+          init()
+        }else {
+          clearInterval(interval)
+          closeMessageOn()
+        }
+        if (timer===8){
+          clearInterval(interval)
+          closeMessageOn()
+        }
+      },3000)
+    }
+  })
 })
 
 const init = async () => {
   const homeData: any = await getCurrentSummonerInfo()
-  if (homeData === null && config.isAutoLaunchGame) {
-    autoStartGame()
+  if (homeData === null) {
     return
   }
   rankData.value = homeData.rank
@@ -274,33 +292,6 @@ const init = async () => {
   xp.value = parseInt(String((homeData.rank[6][0] / homeData.rank[6][1]) * 100))
   statstonesList.value = homeData.statstones
   initAfter()
-}
-
-const autoStartGame = async () => {
-  let isAuto = true
-  const launchers = await cube.games.launchers.getRunningLaunchers()
-  launchers.forEach((v) => {
-    if (v.path.indexOf('Riot Games') !== -1) {
-      message.loading('若长时间无数据 请重启Frank', {duration: 5000})
-      isAuto = false
-      setTimeout(() => {
-        init()
-      },5000)
-      return
-    }
-  })
-  if (isAuto){
-    message.loading('英雄联盟客户端启动中...', {duration: 5000})
-    cube.utils.launchGame(54261).then(() => {
-      cube.windows.message.on('received', (id) => {
-        if (id === 'initHome') {
-          setTimeout(() => {
-            init()
-          }, 3000)
-        }
-      })
-    })
-  }
 }
 
 const initAfter = async () => {
@@ -337,5 +328,5 @@ const showCurrentChampstatstones = async (champId: any, champIndex: any) => {
 
 <style scoped>
 @import url(@/assets/css/animationCommon.css);
-@import url(@/assets/css/homeLoader.css);
+@import url(@/assets/css/homeCommon.css);
 </style>

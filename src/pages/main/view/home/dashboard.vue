@@ -8,6 +8,19 @@
     </n-space>
 
     <n-space class="rightCorner">
+      <n-popover :show-arrow="false" trigger="hover">
+        <template #trigger>
+          <n-button
+            @click="handleMinimize"
+            text
+            color="black">
+            <n-icon size="22">
+              <heart/>
+            </n-icon>
+          </n-button>
+        </template>
+        解锁全部功能 & 关闭广告
+      </n-popover>
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
         <template #trigger>
           <n-button
@@ -48,7 +61,7 @@
 
 <script setup lang="ts">
 import {NIcon, NSpace, NButton, NPopover,NPopconfirm} from 'naive-ui'
-import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
+import {ChevronsDownRight, Settings, CircleX,Heart} from '@vicons/tabler'
 
 const emits = defineEmits(['changePage'])
 
@@ -86,6 +99,7 @@ header {
 .rightCorner {
   padding-top: 8px;
   margin-right: 3px;
+  align-items: center;
 }
 
 .frankTitle {

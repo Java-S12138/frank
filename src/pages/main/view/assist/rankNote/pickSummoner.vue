@@ -1,77 +1,77 @@
 <template>
-  <div>
-    <n-modal v-model:show="showSummonerInfoModal"
-             :mask-closable="false"
-             :auto-focus="false">
-      <n-card
-        class="summonerInfoDiv"
-        :bordered="false"
-        size="small"
-        role="dialog"
-        aria-modal="true"
-        content-style="padding: 0"
-      >
+  <n-modal v-model:show="showSummonerInfoModal"
+           :mask-closable="false"
+           :auto-focus="false">
+    <n-card
+      class="summonerInfoDiv"
+      :bordered="false"
+      size="small"
+      role="dialog"
+      aria-modal="true"
+      content-style="padding: 0"
+    >
 
-        <n-tabs animated
-                type="line"
-                :tabs-padding="20"
-                pane-style="padding: 20px;">
-          <n-tab-pane name="我方召唤师" tab="我方召唤师" style="width: 280px">
-            <n-space vertical :size="[2,18]" style="width:100% ">
-              <n-space justify="space-between" class="alignItemCenter"  v-for="summoner in summonersList">
-                <n-avatar
-                  round
-                  :size="50"
-                  :src="summoner[2]"
-                  style="display: block"
-                />
-                <n-tag type="success" :bordered="false" style="width: 145px;" class="alignCenter">{{ summoner[0] }}</n-tag>
-                <n-button size="small" type="error" @click="preAddBlacklist(summoner[0],summoner[1])">拉黑</n-button>
-              </n-space>
+      <n-tabs animated
+              type="line"
+              :tabs-padding="20"
+              pane-style="padding: 20px;">
+        <n-tab-pane name="友方召唤师" tab="友方召唤师" style="width: 280px">
+          <n-space vertical :size="[2,18]" style="width:100% ">
+            <n-space justify="space-between" class="alignItemCenter"  v-for="summoner in summonersList">
+              <n-avatar
+                round
+                :size="50"
+                :src="summoner[2]"
+                style="display: block"
+                @click="showMatch(summoner)"
+              />
+              <n-tag type="success" :bordered="false" style="width: 145px;" class="alignCenter">{{ summoner[0] }}</n-tag>
+              <n-button size="small" type="error" @click="preAddBlacklist(summoner[0],summoner[1])">拉黑</n-button>
             </n-space>
-          </n-tab-pane>
-          <n-tab-pane name="敌方召唤师" tab="敌方召唤师" style="width: 280px">
-            <n-space vertical :size="[2,18]">
-              <n-space justify="space-between" class="alignItemCenter" v-for="summoner in enemySummonersList">
-                <n-avatar
-                  round
-                  :size="50"
-                  :src="summoner[2]"
-                  style="display: block"
-                />
-                <n-tag type="success" :bordered="false" style="width: 145px;" class="alignCenter">{{ summoner[0] }}</n-tag>
-                <n-button size="small" type="error"  @click="preAddBlacklist(summoner[0],summoner[1])">拉黑</n-button>
-              </n-space>
+          </n-space>
+        </n-tab-pane>
+        <n-tab-pane name="敌方召唤师" tab="敌方召唤师" style="width: 280px">
+          <n-space vertical :size="[2,18]">
+            <n-space justify="space-between" class="alignItemCenter" v-for="summoner in enemySummonersList">
+              <n-avatar
+                round
+                :size="50"
+                :src="summoner[2]"
+                style="display: block"
+              />
+              <n-tag type="success" :bordered="false" style="width: 145px;" class="alignCenter">{{ summoner[0] }}</n-tag>
+              <n-button size="small" type="error"  @click="preAddBlacklist(summoner[0],summoner[1])">拉黑</n-button>
             </n-space>
-          </n-tab-pane>
-        </n-tabs>
+          </n-space>
+        </n-tab-pane>
+      </n-tabs>
 
-        <div class="iconDiv">
+      <div class="iconDiv">
 
-          <n-popconfirm @positive-click="closeModal"
-                        :show-icon="false" positive-text="确定" negative-text="取消">
-            <template #trigger>
-              <n-icon size="25">
-                <circle-x></circle-x>
-              </n-icon>
-            </template>
-            是否关闭此窗口
-          </n-popconfirm>
-        </div>
-      </n-card>
+        <n-popconfirm @positive-click="closeModal"
+                      :show-icon="false" positive-text="确定" negative-text="取消">
+          <template #trigger>
+            <n-icon size="25">
+              <circle-x></circle-x>
+            </n-icon>
+          </template>
+          是否关闭此窗口
+        </n-popconfirm>
+      </div>
+      <p class="tipsP">点击头像可查看此召唤师战绩</p>
+    </n-card>
 
-    </n-modal>
+  </n-modal>
 
-    <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-              :height="420" placement="bottom" :auto-focus="false">
-      <add-blacklist @closeDra = "active=false"
-                     :name="blacklistName"
-                     :summonerId="blacklistId"
-                     :gameAfterId="gameAfterId"
-                     :isHandAdd="false"
-      ></add-blacklist>
-    </n-drawer>
-  </div>
+  <n-drawer v-model:show="active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
+            :height="420" placement="bottom" :auto-focus="false">
+    <add-blacklist @closeDra = "active=false"
+                   :name="blacklistName"
+                   :summonerId="blacklistId"
+                   :gameAfterId="gameAfterId"
+                   :isHandAdd="false"
+    ></add-blacklist>
+  </n-drawer>
 </template>
 
 <script setup lang="ts">
@@ -124,6 +124,13 @@ const preAddBlacklist = (summonerName:string, summonerId:string) => {
   blacklistId.value = summonerId
   active.value = true
 }
+const showMatch =async (summoner:any) => {
+  localStorage.setItem('initQueryMatch',JSON.stringify({matchId:summoner[3],summonerId:'4016690740'}))
+  const queryMatch = await cube.windows.obtainDeclaredWindow('queryMatch')
+  if (queryMatch!==undefined){
+    cube.windows.message.send(queryMatch.id,'refresdh-window','')
+  }
+}
 
 </script>
 
@@ -145,5 +152,12 @@ const preAddBlacklist = (summonerName:string, summonerId:string) => {
   bottom: 0px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px
+}
+.tipsP {
+  position: absolute;
+  left: 85px;
+  bottom: 1px;
+  font-size: 12px;
+  color: #9aa4af;
 }
 </style>

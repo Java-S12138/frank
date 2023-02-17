@@ -51,14 +51,6 @@
           <n-switch v-model:value="config.isJungleTime" @click="changeJungleTime"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
-<!--        自动启动游戏-->
-        <n-space>
-          <n-tag :bordered="false">启动游戏</n-tag>
-          <n-tag :bordered="false" type="success"
-                 style="width: 140px;justify-content: center">是否自动启动游戏</n-tag>
-          <n-switch v-model:value="config.isAutoLaunchGame" @click="changeAutoLaunchGeme"
-                    style="margin-left:22px;margin-top: 3px"/>
-        </n-space>
 <!--        游戏窗口-->
         <n-space>
           <n-popover :show-arrow="false" trigger="hover">
@@ -78,18 +70,6 @@
           <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
-        <n-space>
-          <n-popover :show-arrow="false" trigger="hover">
-            <template #trigger>
-              <n-tag :bordered="false">推荐出装</n-tag>
-            </template>
-            游戏内显示Frank提供的推荐出装
-          </n-popover>
-            <n-tag :bordered="false" type="success"
-                   style="width: 140px;justify-content: center">自动配置推荐出装</n-tag>
-          <n-switch v-model:value="config.autoWriteBlock" @click="changeAutoWriteBlock"
-                    style="margin-left:22px;margin-top: 3px"/>
-        </n-space>
 <!--        秒接对局-->
         <n-space>
           <n-popover :show-arrow="false" trigger="hover">
@@ -105,7 +85,7 @@
         <n-space>
           <n-tag :bordered="false" >赞助发电</n-tag>
           <n-button size="small" type="success" style="width: 214px;"
-                    secondary @click="() => {showModal = true}">赞助作者持续开发
+                    secondary @click="">赞助作者持续开发
           </n-button>
         </n-space>
         <!--Cube平台-->
@@ -216,22 +196,12 @@ const changeJungleTime = () => {
   commoneChnage('isJungleTime')
   alert('目前野怪计时还不太稳定, 开启后请重启Frank~~~')
 }
-// 设置是否自动启动游戏
-const changeAutoLaunchGeme = () => {
-  commoneChnage('isAutoLaunchGame')
-}
+
 // 设置是否开启自动打开游戏内窗口
 const changeAutoGameInWin = () => {
   commoneChnage('isGameInWindow')
 }
-// 设置是否开启自动配置推荐出装
-const changeAutoWriteBlock = () => {
-  cube.windows.getWindowByName('assist').then((v) => {
-    cube.windows.message.send(v.id,'refresh','')
-  })
 
-  commoneChnage('autoWriteBlock')
-}
 // 通过选择器选择英雄后, 执行的函数 选择
 const handleUpdatePick = () => {
   localStorage.setItem('config',JSON.stringify(config))
@@ -247,6 +217,7 @@ const handleUpdateAccept = () => {
 const openCubeSite = () => {
   cube.utils.openUrlInDefaultBrowser('https://cubedao.cn/')
 }
+
 </script>
 
 <style scoped>

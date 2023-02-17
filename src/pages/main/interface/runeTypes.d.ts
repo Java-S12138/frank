@@ -26,12 +26,12 @@ export interface Rune {
   name: string;
   position: string;
   pickCount: number;
-  winRate: string;
+  winRate?: string;
   primaryStyleId: number;
   subStyleId: number;
   selectedPerkIds: number[];
-  score: number;
-  type: string;
+  score?: number;
+  type?: string;
 }
 
 export interface OnlineRunes {

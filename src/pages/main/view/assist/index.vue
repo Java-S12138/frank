@@ -10,16 +10,16 @@
     <champ-rank v-show="transValue==='champRank'" :trans-value-rank="transValue" class="slide-in-bottom"></champ-rank>
     <rune v-show="transValue==='rune'"  @changePage="changePage"
           class="slide-in-bottom" ></rune>
-<!--    <div v-if="isSwitchBlacklist" >-->
-<!--      <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>-->
-<!--      <n-drawer v-model:show="queryMatchAddition.active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"-->
-<!--                :height="420" placement="bottom" :auto-focus="false">-->
-<!--        <add-blacklist @closeDra="closeDrawer"-->
-<!--                       :name="queryMatchAddition.blacklistName"-->
-<!--                       :summonerId="queryMatchAddition.blacklistId"-->
-<!--                       :gameAfterId="queryMatchAddition.gameAfterId"></add-blacklist>-->
-<!--      </n-drawer>-->
-<!--    </div>-->
+    <div v-if="isSwitchBlacklist" >
+      <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>
+      <n-drawer v-model:show="queryMatchAddition.active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
+                :height="420" placement="bottom" :auto-focus="false">
+        <add-blacklist @closeDra="closeDrawer"
+                       :name="queryMatchAddition.blacklistName"
+                       :summonerId="queryMatchAddition.blacklistId"
+                       :gameAfterId="queryMatchAddition.gameAfterId"></add-blacklist>
+      </n-drawer>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -74,6 +74,73 @@ cube.windows.message.on('received',async (id,content:any) => {
     if (locale==='zh_CN'){
       setTimeout(async () => {
         const res = await queryEnemySummonerIdAndSummonerName()
+        // const res = [
+        //   [
+        //     {
+        //       "name": "Tey史忽恒",
+        //       "summonerId": 4013465288,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Malphite.png",
+        //       "index": 1
+        //     },
+        //     {
+        //       "name": "南宁小叮当",
+        //       "summonerId": 4004370604,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Elise.png",
+        //       "index": 2
+        //     },
+        //     {
+        //       "name": "多元函数积分学",
+        //       "summonerId": 2947489903,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Akali.png",
+        //       "index": 3
+        //     },
+        //     {
+        //       "name": "mua一口小穗",
+        //       "summonerId": 4011731339,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Samira.png",
+        //       "index": 4
+        //     },
+        //     {
+        //       "name": "虐你妹叫大爷",
+        //       "summonerId": 4002112679,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Nautilus.png",
+        //       "index": 5
+        //     }
+        //   ],
+        //   [
+        //     {
+        //       "name": "BABA腊只鸡亦比你",
+        //       "summonerId": 2935173990,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Gangplank.png",
+        //       "index": 1
+        //     },
+        //     {
+        //       "name": "别高估自己的眼泪",
+        //       "summonerId": 4009650116,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/MonkeyKing.png",
+        //       "index": 2
+        //     },
+        //     {
+        //       "name": "131458470",
+        //       "summonerId": 4004032333,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Yone.png",
+        //       "index": 3
+        //     },
+        //     {
+        //       "name": "这个瑞文好抠脚丶",
+        //       "summonerId": 4000557119,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Ashe.png",
+        //       "index": 4
+        //     },
+        //     {
+        //       "name": "坑爹猪儿怪",
+        //       "summonerId": 2928803974,
+        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Brand.png",
+        //       "index": 5
+        //     }
+        //   ],
+        //   2155911657
+        // ]
         endGameAfterInfo.value = [[], []]
         endGameAfterInfo.value = res
       }, 1500)

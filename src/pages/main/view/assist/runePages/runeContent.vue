@@ -1,5 +1,5 @@
 <template>
-  <n-scrollbar style="max-height: 475px;padding-right: 10px">
+  <n-scrollbar style="max-height: 477px;padding-right: 10px">
     <n-grid :cols="2" x-gap="15" style="margin-top: 4px">
       <n-gi v-for="rune in props.runeList">
         <div class="runeDiv">
@@ -63,7 +63,6 @@ const applyRune = async (data:any) => {
   const tempData = JSON.parse(JSON.stringify(data))
   tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"
   const isAutoWriteBlock =  JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock
-
   applyRunePage(tempData).then((isApplySuccess) => {
     if (isApplySuccess){
       if (isAutoWriteBlock){
@@ -136,6 +135,7 @@ const getPosition = (pos:string) => {
   border:1px dashed #dfdfdf;
 }
 .tipBottom {
+  margin-top: 2px;
   display: flex;
   justify-content: center;
   align-items: center;

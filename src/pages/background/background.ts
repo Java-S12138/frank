@@ -2,9 +2,10 @@ import '../main/utils/config'
 import '../main/utils/tray.ts'
 import { GameFlow } from '../main/utils/gameFlow'
 
-cube.extensions.on('launch-triggered', async (s) => {
+const closeExtensionOn =  cube.extensions.on('launch-triggered', async (s) => {
   if (!s.gamein){
     cube.windows.obtainDeclaredWindow('main')
+    closeExtensionOn()
   }
 })
 
@@ -39,29 +40,8 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
   }
 })
 
-let update = false
-cube.extensions.on('updated', () => {
-  update = true
-  cube.games.launchers.getRunningLaunchers().then(async (v) => {
-    const lol = v.find((t) => t.classId == 10902)
-    if (lol == undefined) {
-      cube.extensions.relaunch()
-    } else {
-      const info = await cube.games.launchers.events.getInfo(10902)
-      if (info.game_flow && info.game_flow.phase == 'None') {
-        cube.extensions.relaunch()
-      }
-    }
-  })
-})
-cube.games.on('stopped', (classId) => {
-  if (classId === 5426 && update) {
-    cube.extensions.relaunch()
-  }
-})
 cube.games.launchers.on('stopped', (classId) => {
   if (classId === 10902){
     cube.extensions.terminate()
   }
 })
-// 2023/1/21 大年三十 新年快乐 ٩(◕‿◕｡)۶

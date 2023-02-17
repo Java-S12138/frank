@@ -2,7 +2,6 @@ import {invokeLcu} from "../lcu";
 import {champDict} from "../resources/champList"
 import {lcuSummonerInfo} from "../lcu/types/homeLcuTypes";
 import {Hater, HaterItem} from "../interface/blacklistTypes";
-import {request} from "./request";
 
 // 查询本地召唤师信息
 const queryLoaclSummoner = async () => {
