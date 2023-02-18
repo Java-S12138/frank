@@ -218,24 +218,27 @@ const isGameDetalistNull = ref(false)
 const {querySummonerId,summoner,currentMode,currentGameId}:any = storeToRefs(queryStore())
 const titleList:Ref<any[]> = ref([])
 const summonersDataList:Ref<any[]> = ref([])
-const otherData:Ref<any> = ref(null)
-const otherDataKey:Ref<any> = ref('tddtc')
-const otherDataText:Ref<any> = ref('输出伤害')
-const otherDataCount:Ref<any> = ref(1)
+const otherData:Ref = ref(null)
+const otherDataKey:Ref = ref('tddtc')
+const otherDataText:Ref = ref('输出伤害')
+const otherDataCount:Ref = ref(1)
 const otherDataPercent = []
 const message = useMessage()
-const personalDetails:Ref<any> = ref(null)
+const personalDetails:Ref = ref(null)
 const parentPage = ref('')
 const curSummonerId = ref(0) //当前召唤师ID
 
 const props = defineProps({
   currentGameIdProps: {
     type: Number
+  },
+  summonerId:{
+    type:Number
   }
 })
 
 onMounted(async () => {
-  if (props.currentGameIdProps ===undefined){
+  if (props.currentGameIdProps === undefined){
     const {currentQueryGameId,querySummonerId}:any = storeToRefs(matchStore())
     gameDetalisList = await queryGameDetailsData(currentQueryGameId.value)
     isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
@@ -244,8 +247,13 @@ onMounted(async () => {
   }else {
     gameDetalisList = await queryGameDetailsData(props.currentGameIdProps)
     isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
-    curSummonerId.value =summoner.value.summonerInfo.currentId
-    parentPage.value = 'query'
+    if (props.summonerId !== undefined){
+      curSummonerId.value= props.summonerId
+      parentPage.value = 'match'
+    }else {
+      curSummonerId.value =summoner.value.summonerInfo.currentId
+      parentPage.value = 'query'
+    }
   }
   queryOtherMax(gameDetalisList)
   titleList.value = gameDetalisList[5]

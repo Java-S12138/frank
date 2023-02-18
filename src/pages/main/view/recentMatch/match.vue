@@ -3,7 +3,7 @@
     <n-space style="margin:8px"  :size="[8,0]" >
       <n-space vertical style="width: 100px;" :size="[0,8]"
                v-for="match in props.matchList">
-        <n-space :size="[5,0]">
+        <n-space :size="[5,0]" style="position:relative">
           <n-avatar
             :size="50"
             :src="match.championUrl"
@@ -20,6 +20,7 @@
               {{ match.rankPoint[1] }}
             </div>
           </n-space>
+          <div class="heroTip" v-if="match.summonerState.state!==0">{{match.summonerState.title}}</div>
         </n-space>
         <n-tag size="tiny" type="info" v-if="blackList.length===0"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
@@ -30,7 +31,8 @@
         <n-tag size="tiny" type="error" v-else @click="openDra(match.summonerId,match.summonerName)"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
                >{{ match.summonerName }} </n-tag>
-        <n-space :size="[8,0]" v-for="champ in match.matchHistory">
+        <n-space :size="[8,0]"  @click="queryMatchDetail(champ.gameId,match.summonerId)"
+                 v-for="champ in match.matchHistory">
           <n-avatar
             :size="30"
             :src="champ.champImg"
@@ -44,11 +46,16 @@
       </n-space>
     </n-space>
   </div>
+  <n-drawer v-model:show="active" content-style="padding-top:3px;padding-left:6px"
+            :width="678" placement="right">
+      <game-details :current-game-id-props="curGId" :summoner-id="curSId"/>
+  </n-drawer>
 </template>
 
 <script setup lang="ts">
-import {NSpace,NAvatar,NTag} from 'naive-ui'
-import {onMounted} from "vue";
+import GameDetails from "../components/gameDetails.vue";
+import {NSpace,NAvatar,NTag,NDrawer} from 'naive-ui'
+import {onMounted, ref} from "vue";
 import {invokeLcu} from "../../lcu";
 import {champDict} from "../../resources/champList";
 
@@ -70,15 +77,19 @@ const props:any = defineProps({
     default:420
   }
 })
+const active = ref(false)
+const curGId = ref(0)
+const curSId = ref(0)
 
 onMounted(async () => {
+  console.log(props.matchList)
   for (const summonerInfo of props.matchList) {
+    summonerInfo.matchHistory = []
     summonerInfo.matchHistory = summonerInfo.matchHistory.concat(
       await queryMatchHistory(summonerInfo.puuid,props.gameType))
   }
 })
-
-
+const locale = <string>localStorage.getItem('locale')
 const emits = defineEmits(['openDrawer'])
 
 const openDra = (summonerId:string,summonerName:string) => {
@@ -86,15 +97,17 @@ const openDra = (summonerId:string,summonerName:string) => {
 }
 
 // 查询比赛记录 (最近10场排位)
-const queryMatchHistory = async (summonerId: string,gameType:number) => {
+const queryMatchHistory = async (puuid:string,gameType:number) => {
   let classicMode: any = []
   let matchCount = 0
   let winCount = 0
+
   mainfor:
     for (let i = 0; i < 100; i += 20) {
-      const matchList = (await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [i, i + 20]))?.games?.games.reverse()
+      const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
+      const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse():matchGet['games']['games']
       for (let j = 0; j < matchList?.length; j++) {
-        if (matchList[j].queueId === gameType) {
+        // if (matchList[j].queueId === gameType) {
           if (matchCount === 10) {
             break mainfor
           }
@@ -106,14 +119,22 @@ const queryMatchHistory = async (summonerId: string,gameType:number) => {
             deaths: matchList[j].participants[0].stats.deaths,
             assists: matchList[j].participants[0].stats.assists,
             isWin: matchList[j].participants[0].stats.win,
+            gameId:matchList[j].gameId
           })
-        }
+        // }
       }
     }
   props.winCount[0] += winCount
   props.winCount[1] += matchCount
   return classicMode
 }
+
+const queryMatchDetail = (gameId: number,summonerId:number) => {
+  curGId.value = gameId
+  curSId.value = summonerId
+  active.value = true
+}
+
 
 </script>
 
@@ -142,5 +163,17 @@ const queryMatchHistory = async (summonerId: string,gameType:number) => {
   justify-content: center;
   align-items: center;
   color: #2080f0;
+}
+.heroTip {
+  box-sizing: border-box;
+  position: absolute;
+  font-size: 11px;
+  padding:1.5px 4px 0px 4px ;
+  border-radius: 2px;
+  height: 20px;
+  bottom: 0px;
+  right: 50px;
+  color: #ffffff;
+  background-color: #ff6666;
 }
 </style>

@@ -5,8 +5,12 @@
     </div>
     <n-space vertical>
       <n-space justify="space-between">
-        <n-select  v-model:value="serveValue" :options="options" style="width: 84px;"/>
-        <n-button type="success" @click="startGame(serveValue)">启动游戏</n-button>
+        <n-dropdown trigger="click" :options="subscribes" @select="handleSub">
+          <n-button type="success" secondary>订阅服务</n-button>
+        </n-dropdown>
+        <n-dropdown trigger="click" :options="options" @select="startGame">
+          <n-button type="success">开始游戏</n-button>
+        </n-dropdown>
       </n-space>
       <n-tag  type="success" size="small" style="width: 241px;justify-content: center"
               :bordered="false">
@@ -17,27 +21,51 @@
 </template>
 
 <script setup lang="ts">
-import {NCard,NSpace, NTag, NSelect, useMessage, NButton} from 'naive-ui'
-import {ref} from "vue"
+import {NCard,NSpace, NTag, NDropdown, useMessage, NButton} from 'naive-ui'
 
 const message = useMessage()
-const serveValue = ref(54261)
 const options = [
   {
-    label: '国服',
-    value: 54261
+    label: '启动国服',
+    key: 54261
   },
   {
-    label: '台服',
-    value: 65131
-  }
+    label: '启动台服',
+    key: 65131
+  },
+  {
+    label: '其它地区',
+    key: 10086
+  },
+]
+const subscribes = [
+  {
+    label: '订阅说明',
+    key: 1
+  },
+  {
+    label: '支持一下',
+    key: 2
+  },
 ]
 
 const startGame = (gameId:number) => {
+  if (gameId===10086){
+    message.warning('请先手动启动客户端 再打开Frank', {duration: 5000})
+    return
+  }
   cube.utils.launchGame(gameId).then(() => {
     message.loading('英雄联盟客户端启动中...', {duration: 5000})
   })
 }
+const handleSub = (key:number) => {
+  if (key===1){
+    cube.utils.openUrlInDefaultBrowser('https://cubedao.cn/')
+  }else if (key===2){
+
+  }
+}
+
 
 </script>
 

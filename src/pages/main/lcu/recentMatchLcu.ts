@@ -1,6 +1,20 @@
 import {invokeLcu} from "./index";
 import {englishToChinese, getPosition} from "./utils";
-import {champDict} from "../resources/champList";
+import {aliasToId, champDict} from "../resources/champList";
+interface SuperChampTypes {
+  championId: number;
+  championLevel: number;
+  championPoints: number;
+  championPointsSinceLastLevel: number;
+  championPointsUntilNextLevel: number;
+  chestGranted: boolean;
+  formattedChampionPoints: string;
+  formattedMasteryGoal: string;
+  highestGrade: string;
+  lastPlayTime: number;
+  playerId: number;
+  tokensEarned: number;
+}
 
 export class recentMatch {
   public matchSession: any
@@ -27,6 +41,7 @@ export class recentMatch {
   public simplifySummonerInfo = async (summonerList: {}[]) => {
     try {
       const info: any = await summonerList.reduce(async (res: any, item: any) => {
+        const aliasOrIcon = (this.gameType === 420 || this.gameType === 440) ? champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias : item.profileIconId
         return (await res).concat({
           summonerId:`${item.summonerId}`,
           puuid:item.puuid,
@@ -34,8 +49,9 @@ export class recentMatch {
           summonerName: item.summonerName,
           matchHistory:[],
           index: getPosition(item.selectedPosition),
-          championUrl: (this.gameType === 420 || this.gameType === 440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias}.png`:
-            `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${item.profileIconId}.png`
+          champAlias:aliasOrIcon,
+          championUrl: (this.gameType === 420 || this.gameType === 440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${aliasOrIcon}.png`:
+            `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${aliasOrIcon}.png`
         })
       }, [])
       return info.sort((x: any, y: any) => {
@@ -49,11 +65,12 @@ export class recentMatch {
   // 检测LCU接口数据是否正常
   public checkmatchSession = async () => {
     await this.init()
-    if (this.matchSession?.gameData?.teamOne.length !== 0 ){
-      return true
-    }else {
-      return false
-    }
+    // if (this.matchSession?.gameData?.teamOne.length !== 0 ){
+    //   return true
+    // }else {
+    //   return false
+    // }
+    return false
   }
 
   // 获取段位数据
@@ -114,6 +131,10 @@ export class recentMatch {
       return null
     }
   }
+  // 根据召唤师名称puuid查询信息
+  public querySummonerId = async (puuid:string) => {
+    return (await invokeLcu('get',`/lol-summoner/v1/summoners-by-puuid-cached/${puuid}`))?.summonerId
+  }
 
   // 通过日志查询数据
   public fromLogQuery = async () => {
@@ -136,9 +157,10 @@ export class recentMatch {
         const championUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champName}.png`
         const puuid = (logList[13].match(re) as RegExpMatchArray)[0].replace(/\(|\)/g,'')
         const rankPoint = await this.queryRankPoint(puuid)
-
+        const summonerId = await this.querySummonerId(puuid)
+        const summonerState = await this.querySummonerSuperChampData(summonerId,champName)
         const result = {
-          puuid,rankPoint,summonerName,matchHistory,championUrl
+          puuid,rankPoint,summonerName,matchHistory,championUrl,summonerId,summonerState
         }
         if (logList[6] === 'TeamOrder'){
           friendList.push(result)
@@ -161,5 +183,24 @@ export class recentMatch {
       isTeamOne === true ? this.simplifySummonerInfo(this.matchSession.gameData.teamTwo) : this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
     ])
     return {friendList, enemyList,gameType:this.gameType}
+  }
+  // 获取召唤师英雄绝活数据 0:正常 1:绝活 2:熟练 3:小代
+  public querySummonerSuperChampData = async (summonerId:number,champAlias:string) => {
+    const superList:SuperChampTypes[] = (await invokeLcu('get',`/lol-collections/v1/inventories/${summonerId}/champion-mastery`)).slice(0,20)
+    const champId = aliasToId[champAlias]
+    let isExist = false // 当前英雄是否存在与前20之中
+    for (let i = 0; i < superList.length; i++) {
+      if (champId === superList[i].championId && superList[i].championLevel > 5 && i<3){
+        return {state:1,title:'绝活',content:'绝活英雄 谨慎处理'}
+      }else if (champId === superList[i].championId && superList[i].championLevel > 5){
+        return {state:2,title:'熟悉',content:'熟悉英雄 谦虚对待'}
+      }else if (champId === superList[i].championId){
+        isExist = true
+      }
+    }
+    if (isExist) {
+      return {state:0,title:'正常'}
+    }
+    return {state:3,title:'小代',content:'疑似小代 齐心协力'}
   }
 }

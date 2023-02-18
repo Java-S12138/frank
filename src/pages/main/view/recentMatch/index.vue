@@ -86,6 +86,7 @@ onMounted(async () => {
     const interval = setInterval(async () => {
       timer += 1
       const matchList = await RecentMatch.fromLogQuery()
+      console.log(matchList)
       if (matchList.friendList.length !== 0){
         init(matchList)
         clearInterval(interval)
