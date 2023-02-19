@@ -31,7 +31,7 @@
         <n-tag size="tiny" type="error" v-else @click="openDra(match.summonerId,match.summonerName)"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
                >{{ match.summonerName }} </n-tag>
-        <n-space :size="[8,0]"  @click="queryMatchDetail(champ.gameId,match.summonerId)"
+        <n-space :size="[8,0]"  @click="openMatchDra(champ.gameId,match.summonerId)"
                  v-for="champ in match.matchHistory">
           <n-avatar
             :size="30"
@@ -46,16 +46,11 @@
       </n-space>
     </n-space>
   </div>
-  <n-drawer v-model:show="active" content-style="padding-top:3px;padding-left:6px"
-            :width="678" placement="right">
-      <game-details :current-game-id-props="curGId" :summoner-id="curSId"/>
-  </n-drawer>
 </template>
 
 <script setup lang="ts">
-import GameDetails from "../components/gameDetails.vue";
-import {NSpace,NAvatar,NTag,NDrawer} from 'naive-ui'
-import {onMounted, ref} from "vue";
+import {NSpace,NAvatar,NTag} from 'naive-ui'
+import {onMounted} from "vue";
 import {invokeLcu} from "../../lcu";
 import {champDict} from "../../resources/champList";
 
@@ -77,9 +72,7 @@ const props:any = defineProps({
     default:420
   }
 })
-const active = ref(false)
-const curGId = ref(0)
-const curSId = ref(0)
+
 
 onMounted(async () => {
   console.log(props.matchList)
@@ -90,10 +83,13 @@ onMounted(async () => {
   }
 })
 const locale = <string>localStorage.getItem('locale')
-const emits = defineEmits(['openDrawer'])
+const emits = defineEmits(['openDrawer','openMatchDrawer'])
 
 const openDra = (summonerId:string,summonerName:string) => {
   emits('openDrawer',summonerId,summonerName)
+}
+const openMatchDra = (gameId: number,summonerId:number) => {
+  emits('openMatchDrawer',gameId,summonerId)
 }
 
 // 查询比赛记录 (最近10场排位)
@@ -128,13 +124,6 @@ const queryMatchHistory = async (puuid:string,gameType:number) => {
   props.winCount[1] += matchCount
   return classicMode
 }
-
-const queryMatchDetail = (gameId: number,summonerId:number) => {
-  curGId.value = gameId
-  curSId.value = summonerId
-  active.value = true
-}
-
 
 </script>
 

@@ -2,12 +2,18 @@
   <div class="mainDiv" v-if="!isPageNull">
     <dashboard/>
     <div class="matchs">
-      <match :matchList="friendList" :win-count="friendTeamList" :game-type="gameType"></match>
+      <match :matchList="friendList"
+             :win-count="friendTeamList"
+             :game-type="gameType"
+             @open-match-drawer="openMatchDrawer"
+
+      ></match>
       <match :matchList="enemyList"
              :win-count="enemyTeamTwoList"
              :game-type="gameType"
              :blackList="blackList"
              @openDrawer="openDrawer"
+             @open-match-drawer="openMatchDrawer"
       ></match>
     </div>
     <div class="winStat">
@@ -15,7 +21,7 @@
       <span class="winCount">敌方胜利次数 {{ enemyTeamTwoList[0] }}/{{ enemyTeamTwoList[1] }} 次</span>
     </div>
 
-    <n-drawer v-model:show="blacklistActice"
+<!--    <n-drawer v-model:show="blacklistActice"
               :width="336" :placement="'right'">
       <n-drawer-content>
         <div v-for="detialsJson in detialsJsonList" style="margin-bottom: 20px">
@@ -40,10 +46,15 @@
               </template>
               <p>当前数据由此用户提供</p>
             </n-popover>
-
           </n-space>
         </div>
       </n-drawer-content>
+    </n-drawer>-->
+
+    <n-drawer v-if="matchActive" v-model:show="matchActive"
+              content-style="padding-top:3px;padding-left:7px"
+              :width="678" placement="right">
+      <game-details :current-game-id-props="curGId" :summoner-id="curSId"/>
     </n-drawer>
   </div>
   <div v-else>
@@ -56,6 +67,7 @@
 import {NSpace,NPopover,NTag,NDrawer,NDrawerContent} from 'naive-ui'
 import Dashboard from "./dashboard.vue"
 import Match from "./match.vue"
+import GameDetails from "../components/gameDetails.vue";
 import NullPage from "../components/nullPage.vue"
 import {recentMatch} from "../../lcu/recentMatchLcu"
 import {onMounted,ref} from "vue"
@@ -72,7 +84,9 @@ const blackList:any = ref([])
 const detialsNickname =ref('')
 const detialsJsonList:any = ref([])
 const gameType = ref(420)
-
+const curGId = ref(0)
+const curSId = ref(0)
+const matchActive = ref(false)
 
 onMounted(async () => {
   const RecentMatch = new recentMatch()
@@ -103,7 +117,7 @@ const init = (matchList:any) => {
   }else {
     return
   }
-  checkBlacklist(matchList.enemyList)
+  // checkBlacklist(matchList.enemyList)
   gameType.value = <number>matchList.gameType
   friendList.value = matchList.friendList
   enemyList.value = matchList.enemyList
@@ -152,6 +166,11 @@ const openDrawer = (summonerId:string,summonerName:string) => {
   detialsNickname.value = summonerName
   blacklistActice.value=true
   detialsJsonList.value = blacklistDict.value[summonerId]
+}
+const openMatchDrawer = (mId:number,sId:number) => {
+  curGId.value = mId
+  curSId.value = sId
+  matchActive.value=true
 }
 const formatDate = (dateStr:string) => {
   return dateStr.split('T')[0]
