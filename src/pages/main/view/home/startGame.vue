@@ -5,9 +5,7 @@
     </div>
     <n-space vertical>
       <n-space justify="space-between">
-        <n-dropdown trigger="click" :options="subscribes" @select="handleSub">
-          <n-button type="success" secondary>订阅服务</n-button>
-        </n-dropdown>
+        <n-button type="success" @click="openGuideSite" secondary>使用手册</n-button>
         <n-dropdown trigger="click" :options="options" @select="startGame">
           <n-button type="success">开始游戏</n-button>
         </n-dropdown>
@@ -38,16 +36,6 @@ const options = [
     key: 10086
   },
 ]
-const subscribes = [
-  {
-    label: '订阅说明',
-    key: 1
-  },
-  {
-    label: '支持一下',
-    key: 2
-  },
-]
 
 const startGame = (gameId:number) => {
   if (gameId===10086){
@@ -58,14 +46,9 @@ const startGame = (gameId:number) => {
     message.loading('英雄联盟客户端启动中...', {duration: 5000})
   })
 }
-const handleSub = (key:number) => {
-  if (key===1){
-    cube.utils.openUrlInDefaultBrowser('https://cubedao.cn/')
-  }else if (key===2){
-
-  }
+const openGuideSite = () => {
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank')
 }
-
 
 </script>
 

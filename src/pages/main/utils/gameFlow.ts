@@ -132,6 +132,9 @@ export class GameFlow {
   }
   // 自动接收对局
   public autoAcceptGame = async () => {
+    if (localStorage.getItem('isSubscribe') === 'f'){
+      return
+    }
     const isAutoAccept = (JSON.parse(<string>(localStorage.getItem('config')))).autoAccept
     if (isAutoAccept < 50) {
       return

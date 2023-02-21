@@ -63,6 +63,10 @@ const applyRune = async (data:any) => {
   const tempData = JSON.parse(JSON.stringify(data))
   tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"
   const isAutoWriteBlock =  JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock
+  if (localStorage.getItem('isSubscribe') === 'f'){
+    message.warning('一键符文 需要订阅 请手动配置',{duration: 5000})
+    return
+  }
   applyRunePage(tempData).then((isApplySuccess) => {
     if (isApplySuccess){
       if (isAutoWriteBlock){

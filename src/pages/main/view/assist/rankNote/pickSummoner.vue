@@ -125,7 +125,7 @@ const preAddBlacklist = (summonerName:string, summonerId:string) => {
   active.value = true
 }
 const showMatch =async (summoner:any) => {
-  localStorage.setItem('initQueryMatch',JSON.stringify({matchId:summoner[3],summonerId:'4016690740'}))
+  localStorage.setItem('initQueryMatch',JSON.stringify({matchId:summoner[3],summonerId:summoner[1]}))
   const queryMatch = await cube.windows.obtainDeclaredWindow('queryMatch')
   if (queryMatch!==undefined){
     cube.windows.message.send(queryMatch.id,'refresdh-window','')

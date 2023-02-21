@@ -1,6 +1,6 @@
 <template>
   <div>
-    <n-card class="mainCard boxShadow" content-style="padding-right:0px">
+    <n-card v-if="isSubscribe ==='t'" class="mainCard boxShadow" content-style="padding-right:0px">
       <n-space>
         <n-list  style="margin-left: 20px;
         margin-top: 20px;width: 440px;" >
@@ -104,7 +104,6 @@
           </n-scrollbar>
         </n-list>
       </n-space>
-
       <div class="suspension">
         <n-space>
           <n-tag :bordered="false" :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
@@ -137,12 +136,23 @@
         </n-space>
       </div>
     </n-card>
+    <n-card v-else class="mainCard boxShadow" content-style="padding-right:0px;padding-top:110px">
+      <n-result size="large" status="404" title="召唤师最近20场对局"
+                description="需要订阅服务 订阅说明请在主页查看">
+        <template #footer>
+          <n-space justify="center">
+            <n-button @click="backPage">返回上页</n-button>
+            <n-button @click="openSubscribePage">支持一下</n-button>
+          </n-space>
+        </template>
+      </n-result>
+    </n-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NSpace, NTag, NIcon, NButton, NPopover,NList, NListItem,NScrollbar,
+  NCard, NAvatar, NSpace, NTag, NIcon, NButton, NPopover,NList, NListItem,NScrollbar,NResult,
 } from 'naive-ui'
 import {ThumbUp,ThumbDown,ChevronsDownLeft, ArrowBackUp, Ballon} from '@vicons/tabler'
 
@@ -152,7 +162,7 @@ const props = defineProps({
   }
 })
 const emits = defineEmits(['changePage','toGameDetailsPage'])
-
+const isSubscribe =  localStorage.getItem('isSubscribe')
 const handleChangePosition = () => {
   cube.windows.current.dragMove()
 }
@@ -165,7 +175,9 @@ const toGameDetailsPage = (gameId:any) => {
 const handleMin =async () => {
   cube.windows.minimize((await cube.windows.getCurrentWindow()).id)
 }
-
+const openSubscribePage = () => {
+  cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
+}
 </script>
 
 <style scoped>

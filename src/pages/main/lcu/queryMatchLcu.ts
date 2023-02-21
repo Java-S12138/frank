@@ -27,8 +27,10 @@ const querySummonerInfo = async (summonerId: number): Promise<summonerInfo> => {
 // 获取召唤师英雄绝活数据
 const querySummonerSuperChampData = async (summonerId: number) => {
   try {
+    const isSubscribe =  localStorage.getItem('isSubscribe')
+    const dataCount = isSubscribe === 't' ? 20 : 10
     const summonerSuperChampData: any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
-    return  summonerSuperChampData.slice(0, 20).reduce((res: any, item: any) => {
+    return  summonerSuperChampData.slice(0, dataCount).reduce((res: any, item: any) => {
       return res.concat({
         champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
         champLevel: item.championLevel,

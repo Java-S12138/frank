@@ -6,12 +6,15 @@
       <img src="@/assets/icon/app-icon-bw.png" draggable="false"  alt="" width="40"  v-else>
       <img src="@/assets/icon/Frank.png" draggable="false"  style="margin-top: 4px">
     </n-space>
-
+    <n-dropdown v-if="isSubscribe==='f'"
+      trigger="click" :options="subscribes" @select="handleSub">
+      <n-button type="warning" size="large" style="margin-left: 35px" text>订阅服务✨</n-button>
+    </n-dropdown>
     <n-space class="rightCorner">
-      <n-popover :show-arrow="false" trigger="hover">
+<!--      <n-popover v-if="isSubscribe ==='f'" :show-arrow="false" trigger="hover">
         <template #trigger>
           <n-button
-            @click="handleMinimize"
+            @click="openSubscribePage"
             text
             color="black">
             <n-icon size="22">
@@ -20,7 +23,7 @@
           </n-button>
         </template>
         解锁全部功能 & 关闭广告
-      </n-popover>
+      </n-popover>-->
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
         <template #trigger>
           <n-button
@@ -56,19 +59,29 @@
         是否退出Frank?
       </n-popconfirm>
     </n-space>
+
   </header>
 </template>
 
 <script setup lang="ts">
-import {NIcon, NSpace, NButton, NPopover,NPopconfirm} from 'naive-ui'
-import {ChevronsDownRight, Settings, CircleX,Heart} from '@vicons/tabler'
+import {NIcon, NSpace, NButton, NPopover,NPopconfirm,NDropdown} from 'naive-ui'
+import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
 
 const emits = defineEmits(['changePage'])
-
+const isSubscribe = localStorage.getItem('isSubscribe')
 const changePage = () => {
   emits('changePage')
 }
-
+const subscribes = [
+  {
+    label: '订阅须知',
+    key: 1
+  },
+  {
+    label: '支持一下',
+    key: 2
+  },
+]
 const dragMove = () => {
   cube.windows.current.dragMove()
 }
@@ -83,6 +96,13 @@ const handleClose = async () => {
   cube.extensions.terminate()
 }
 
+const handleSub = (key:number) => {
+  if (key===1){
+    cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/proposal')
+  }else if (key===2){
+    cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
+  }
+}
 </script>
 
 <style scoped>

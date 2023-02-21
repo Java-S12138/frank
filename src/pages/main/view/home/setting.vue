@@ -71,7 +71,7 @@
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
 <!--        秒接对局-->
-        <n-space>
+        <n-space v-if="isSubscribe !== 'f'">
           <n-popover :show-arrow="false" trigger="hover">
             <template #trigger>
               <n-tag :bordered="false">秒接对局</n-tag>
@@ -81,12 +81,13 @@
           <n-slider v-model:value="config.autoAccept" :step="10" @update:value="handleUpdateAccept"
                     style="width: 213px;margin-top: 5px"/>
         </n-space>
-<!--        赞助发电-->
-        <n-space>
-          <n-tag :bordered="false" >赞助发电</n-tag>
-          <n-button size="small" type="success" style="width: 214px;"
-                    secondary @click="">赞助作者持续开发
-          </n-button>
+        <n-space v-else>
+          <n-space>
+            <n-tag :bordered="false" >订阅服务</n-tag>
+            <n-button size="small" type="warning" style="width: 214px;"
+                      secondary @click="openSubscribePage">自动接收对局 需要订阅服务
+            </n-button>
+          </n-space>
         </n-space>
         <!--Cube平台-->
         <n-space>
@@ -104,56 +105,22 @@
         </n-space>
       </n-space>
     </n-card>
-    <n-modal v-model:show="showModal" >
-      <n-card
-        style="width: 356px"
-        :bordered="false"
-        size="small"
-        role="dialog"
-      >
-
-        <div>
-          <n-space justify="space-between" style="padding: 0px 4px 0px 4px">
-            <n-tag type="success" :bordered = false style="width: 142px;justify-content: center">
-              微信 ٩(◕‿◕｡)۶
-            </n-tag>
-            <n-tag type="info" :bordered = false style="width: 142px;justify-content: center">
-              支付宝(●'◡'●)
-            </n-tag>
-          </n-space>
-          <n-space justify="space-between">
-            <img style="width: 150px;" src="@/assets/pay/wxpay.jpg">
-            <img style="width: 150px;" src="@/assets/pay/zfbpay.jpg">
-          </n-space>
-        </div>
-        <template #footer>
-         <div style="margin-left: 4px">
-           <p>
-             Frank 全新的 LOL助手软件 [永久免费 代码开源]
-           </p>
-           <p>
-             您的赞助会使作者越做越好 感谢您的大力支持❤️
-           </p>
-         </div>
-        </template>
-      </n-card>
-    </n-modal>
   </div>
 
 </template>
 
 <script setup lang="ts">
-import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NModal,NPopover} from 'naive-ui'
+import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover} from 'naive-ui'
 import {optionsChampion} from '../../resources/champList'
-import {ref,reactive} from "vue";
+import {reactive} from "vue";
 
 const emits = defineEmits(['changePage'])
 const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
-const showModal = ref(false)
-
+const isSubscribe = localStorage.getItem('isSubscribe')
 const toHomePage = () => {
   emits('changePage')
 }
+
 
 // 设置是否选项共用函数
 const commoneChnage = (option:string) => {
@@ -216,6 +183,10 @@ const handleUpdateAccept = () => {
 }
 const openCubeSite = () => {
   cube.utils.openUrlInDefaultBrowser('https://cubedao.cn/')
+}
+
+const openSubscribePage = () => {
+  cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
 }
 
 </script>

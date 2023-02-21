@@ -19,6 +19,9 @@
     <div class="winStat">
       <span class="winCount">友方胜利次数 {{ friendTeamList[0] }}/{{ friendTeamList[1] }} 次</span>
       <span class="winCount">敌方胜利次数 {{ enemyTeamTwoList[0] }}/{{ enemyTeamTwoList[1] }} 次</span>
+      <n-tag size="medium" v-if="isSubscribe==='f'" @click="matchActive=!matchActive"
+             type="warning" style="height: 22px;font-size: 13px"
+             :bordered="false">轮播广告</n-tag>
     </div>
 
 <!--    <n-drawer v-model:show="blacklistActice"
@@ -52,9 +55,10 @@
     </n-drawer>-->
 
     <n-drawer v-if="matchActive" v-model:show="matchActive"
-              content-style="padding-top:3px;padding-left:7px"
+              :content-style="isSubscribe==='t'?'padding-top:3px;padding-left:7px':'padding:0px'"
               :width="678" placement="right">
-      <game-details :current-game-id-props="curGId" :summoner-id="curSId"/>
+      <game-details v-if="isSubscribe==='t'" :current-game-id-props="curGId" :summoner-id="curSId"/>
+      <advertisement v-else/>
     </n-drawer>
   </div>
   <div v-else>
@@ -69,6 +73,7 @@ import Dashboard from "./dashboard.vue"
 import Match from "./match.vue"
 import GameDetails from "../components/gameDetails.vue";
 import NullPage from "../components/nullPage.vue"
+import Advertisement from "./advertisement.vue";
 import {recentMatch} from "../../lcu/recentMatchLcu"
 import {onMounted,ref} from "vue"
 import {blacklistServe} from "../../utils/request";
@@ -86,13 +91,18 @@ const detialsJsonList:any = ref([])
 const gameType = ref(420)
 const curGId = ref(0)
 const curSId = ref(0)
+const isSubscribe =  localStorage.getItem('isSubscribe')
 const matchActive = ref(false)
 
 onMounted(async () => {
+  cube.windows.getCurrentWindow().then((value) => {
+    cube.windows.openDevTools(value.id)
+  })
   const RecentMatch = new recentMatch()
   const isSession = await RecentMatch.checkmatchSession()
   if (isSession){
     RecentMatch.fromLcuQuery().then((matchList) => {
+      console.log(matchList)
       init(matchList)
     })
   }else {
@@ -100,7 +110,6 @@ onMounted(async () => {
     const interval = setInterval(async () => {
       timer += 1
       const matchList = await RecentMatch.fromLogQuery()
-      console.log(matchList)
       if (matchList.friendList.length !== 0){
         init(matchList)
         clearInterval(interval)
@@ -121,6 +130,9 @@ const init = (matchList:any) => {
   gameType.value = <number>matchList.gameType
   friendList.value = matchList.friendList
   enemyList.value = matchList.enemyList
+  if (isSubscribe==='f'){
+    matchActive.value = true
+  }
 }
 
 const checkBlacklist = async (enemyList:[]) => {

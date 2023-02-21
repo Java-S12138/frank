@@ -259,10 +259,47 @@ const currentChampIndex = ref(0)
 const config = JSON.parse(<string>(localStorage.getItem('config')))
 
 onMounted(() => {
-  init()
+  init().then(async (value) =>  {
+    if (!value){
+      const lolCient = (await cube.games.launchers.getRunningLaunchers()).find((i => i.classId===10902))
+      if (lolCient===undefined){
+        onClientLaunch()
+      }else {
+        let timer = 0
+        const interval = setInterval(async () => {
+          timer += 1
+          const isInit = await init()
+          if (!isInit){
+            await init()
+          }else {
+            clearInterval(interval)
+          }
+          if (timer===3){
+            clearInterval(interval)
+          }
+        },1500)
+      }
+    }
+  })
+})
+
+const init = async () => {
+  const homeData: any = await getCurrentSummonerInfo()
+  if (homeData === null) {
+    return false
+  }
+  rankData.value = homeData.rank
+  summonerHonor.value = homeData.honorData
+  summonerChampLevel.value = homeData.champLevel
+  xp.value = parseInt(String((homeData.rank[6][0] / homeData.rank[6][1]) * 100))
+  statstonesList.value = homeData.statstones
+  initAfter()
+  return true
+}
+
+const onClientLaunch = () => {
   const closeMessageOn =  cube.windows.message.on('received', async (id) => {
     if (id === 'initHome') {
-      await init()
       let timer = 0
       const interval = setInterval(async () => {
         timer += 1
@@ -279,19 +316,6 @@ onMounted(() => {
       },3000)
     }
   })
-})
-
-const init = async () => {
-  const homeData: any = await getCurrentSummonerInfo()
-  if (homeData === null) {
-    return
-  }
-  rankData.value = homeData.rank
-  summonerHonor.value = homeData.honorData
-  summonerChampLevel.value = homeData.champLevel
-  xp.value = parseInt(String((homeData.rank[6][0] / homeData.rank[6][1]) * 100))
-  statstonesList.value = homeData.statstones
-  initAfter()
 }
 
 const initAfter = async () => {

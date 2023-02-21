@@ -1,11 +1,11 @@
-import '../main/utils/config'
+import '../main/utils/config.ts'
 import '../main/utils/tray.ts'
+import '../main/utils/subscribe.ts'
 import { GameFlow } from '../main/utils/gameFlow'
 
-const closeExtensionOn =  cube.extensions.on('launch-triggered', async (s) => {
+cube.extensions.on('launch-triggered', (s) => {
   if (!s.gamein){
     cube.windows.obtainDeclaredWindow('main')
-    closeExtensionOn()
   }
 })
 
@@ -37,11 +37,5 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
       const assistWin = await cube.windows.getWindowByName('assist')
       cube.windows.message.send(assistWin.id, 'champion', info)
     }
-  }
-})
-
-cube.games.launchers.on('stopped', (classId) => {
-  if (classId === 10902){
-    cube.extensions.terminate()
   }
 })

@@ -2,7 +2,7 @@
   <div class="boxShadow match">
     <n-space style="margin:8px"  :size="[8,0]" >
       <n-space vertical style="width: 100px;" :size="[0,8]"
-               v-for="match in props.matchList">
+               v-for="(match,index) in props.matchList">
         <n-space :size="[5,0]" style="position:relative">
           <n-avatar
             :size="50"
@@ -20,7 +20,7 @@
               {{ match.rankPoint[1] }}
             </div>
           </n-space>
-          <div class="heroTip" v-if="match.summonerState.state!==0">{{match.summonerState.title}}</div>
+          <div class="heroTip" v-if="match.summonerState.state>0">{{match.summonerState.title}}</div>
         </n-space>
         <n-tag size="tiny" type="info" v-if="blackList.length===0"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
@@ -32,7 +32,7 @@
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
                >{{ match.summonerName }} </n-tag>
         <n-space :size="[8,0]"  @click="openMatchDra(champ.gameId,match.summonerId)"
-                 v-for="champ in match.matchHistory">
+                 v-for="champ in matchInfoList[index]">
           <n-avatar
             :size="30"
             :src="champ.champImg"
@@ -50,9 +50,17 @@
 
 <script setup lang="ts">
 import {NSpace,NAvatar,NTag} from 'naive-ui'
-import {onMounted} from "vue";
+import {onMounted, Ref, ref} from "vue";
 import {invokeLcu} from "../../lcu";
 import {champDict} from "../../resources/champList";
+interface matchTypes {
+  champImg: string;
+  kill: number;
+  deaths: number;
+  assists: number;
+  isWin: boolean;
+  gameId: number;
+}
 
 const props:any = defineProps({
   matchList:{
@@ -73,13 +81,10 @@ const props:any = defineProps({
   }
 })
 
-
+const matchInfoList:Ref<matchTypes[][]> = ref([])
 onMounted(async () => {
-  console.log(props.matchList)
   for (const summonerInfo of props.matchList) {
-    summonerInfo.matchHistory = []
-    summonerInfo.matchHistory = summonerInfo.matchHistory.concat(
-      await queryMatchHistory(summonerInfo.puuid,props.gameType))
+    matchInfoList.value.push(await queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState))
   }
 })
 const locale = <string>localStorage.getItem('locale')
@@ -93,11 +98,10 @@ const openMatchDra = (gameId: number,summonerId:number) => {
 }
 
 // 查询比赛记录 (最近10场排位)
-const queryMatchHistory = async (puuid:string,gameType:number) => {
-  let classicMode: any = []
+const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ state: number, title: string }):Promise<matchTypes[]> => {
+  let classicMode: matchTypes[] = []
   let matchCount = 0
   let winCount = 0
-
   mainfor:
     for (let i = 0; i < 100; i += 20) {
       const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
@@ -120,6 +124,24 @@ const queryMatchHistory = async (puuid:string,gameType:number) => {
         // }
       }
     }
+  // 判断是否为小代
+  if (summonerState.state === - 1){
+    let excellentCount = 0
+    let cycleCount = 0
+    for (let match of classicMode) {
+      cycleCount+=1
+      if (cycleCount>5){
+        break
+      }
+      if (match.kill >= 10){
+        excellentCount += 1
+      }
+    }
+    if (excellentCount >=3){
+      summonerState.title = '小代'
+      summonerState.state = 3
+    }
+  }
   props.winCount[0] += winCount
   props.winCount[1] += matchCount
   return classicMode

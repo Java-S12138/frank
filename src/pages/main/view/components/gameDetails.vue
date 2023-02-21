@@ -60,20 +60,20 @@
 
         <n-space :size="[45,0]" v-for="(singleData,index) in summonersDataList">
             <!--        队伍一-->
-
           <n-space vertical :size="[2,0]" @click="queryPersonalGameDetails(index,0)"
                    style="position: relative">
             <n-space>
-              <n-badge :value="singleData[0].champLevel" :type="singleData[0].teamType === 100?'error':'info'">
+              <div class="champAvatar" >
                 <!--              头像-->
                 <n-avatar
                   :bordered="false"
                   :size="50"
                   :src="singleData[0].champImgUrl"
                   fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-                  style="display: block;margin-right: -6px"
+                  style="display: block;"
                 />
-              </n-badge>
+                <div class="champLevel champAvatarColorRed">{{ singleData[0].champLevel }}</div>
+              </div>
               <!--            物品-->
               <n-space vertical :size="[10,1]" style="margin-left: 8px">
                 <n-space :size="[5,0]">
@@ -119,20 +119,20 @@
           </n-space>
 
             <!--        队伍二-->
-
           <n-space vertical :size="[2,0]" @click="queryPersonalGameDetails(index,1)"
                    style="position: relative">
             <n-space>
-              <n-badge :value="singleData[1].champLevel" :type="singleData[1].teamType === 100?'error':'info'">
+              <div class="champAvatar" >
                 <!--              头像-->
                 <n-avatar
                   :bordered="false"
                   :size="50"
                   :src="singleData[1].champImgUrl"
                   fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-                  style="display: block;margin-right: -6px"
+                  style="display: block;"
                 />
-              </n-badge>
+                <div class="champLevel champAvatarColorBlue" >{{ singleData[1].champLevel }}</div>
+              </div>
               <!--            物品-->
               <n-space vertical :size="[10,1]" style="margin-left: 8px">
                 <n-space :size="[5,0]">
@@ -175,10 +175,7 @@
               <span>{{ otherDataText }}: {{ otherData[index][1][otherDataKey] }}</span>
             </n-popover>
 
-          </n-space>
-
-          </n-space>
-
+          </n-space></n-space>
       </n-space>
     <div>
     <n-drawer
@@ -188,9 +185,19 @@
       :placement="'left'"
     >
       <n-drawer-content :body-content-style="'padding:12px'">
-        <personal-game-details
+        <personal-game-details v-if="isSubscribe ==='t'"
           @queryDetails="queryDetails"
-          :personalDetails="personalDetails" :parentPage="parentPage"></personal-game-details>
+          :personalDetails="personalDetails" :parentPage="parentPage">
+        </personal-game-details>
+        <n-result size="small" status="404" v-else title="召唤师此局详细数据"
+                  description="需要订阅服务 订阅说明请点击须知" style="margin-top: 100px">
+          <template #footer>
+            <n-space justify="center">
+              <n-button @click="subscribeInfo">订阅须知</n-button>
+              <n-button @click="openSubscribePage">支持一下</n-button>
+            </n-space>
+          </template>
+        </n-result>
       </n-drawer-content>
     </n-drawer>
     </div>
@@ -201,8 +208,8 @@
 </template>
 
 <script setup lang="ts">
-import {NAvatar, NSpace, NPopover, NGrid, NGi,NDrawer,NDrawerContent,
-  NBadge, NEllipsis,NResult, useMessage} from 'naive-ui'
+import {NAvatar, NSpace, NPopover, NGrid, NGi,NDrawer,NDrawerContent,NButton,
+  NEllipsis,NResult, useMessage} from 'naive-ui'
 import {onMounted, Ref, ref} from "vue";
 import {matchStore, queryStore} from "../../store";
 import {storeToRefs} from "pinia";
@@ -227,6 +234,7 @@ const message = useMessage()
 const personalDetails:Ref = ref(null)
 const parentPage = ref('')
 const curSummonerId = ref(0) //当前召唤师ID
+const isSubscribe =  localStorage.getItem('isSubscribe')
 
 const props = defineProps({
   currentGameIdProps: {
@@ -397,7 +405,12 @@ function slnotimg(event:any) {
   img.src = "https://gw.alipayobjects.com/zos/rmsportal/wYnHWSXDmBhiEmuwXsym.png?x-oss-process=image%2Fresize%2Cm_fill%2Cw_64%2Ch_64%2Fformat%2Cpng"
   img.onerror = null
 }
+const openSubscribePage = () => {
+  cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
+}
+const subscribeInfo = () => {
 
+}
 </script>
 
 <style scoped>
@@ -426,7 +439,7 @@ function slnotimg(event:any) {
 .itemClassSecond {
   width: 15px;
   height: 15px;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .scale-in-hor-left {
@@ -463,5 +476,28 @@ function slnotimg(event:any) {
 }
 .result404 {
   margin-top: 160px;
+}
+.champAvatar {
+  position: relative;
+  margin-right: -6px
+}
+.champAvatarColorRed {
+  background-color: #ff6666;
+}
+.champAvatarColorBlue {
+  background-color: #2080f0;
+}
+.champLevel {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  width: 15px;
+  height: 15px;
+  bottom:0px;
+  right: 0px;
+  color: #ffffff;
+  border-radius: 2px;
 }
 </style>

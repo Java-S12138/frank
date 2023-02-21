@@ -73,16 +73,20 @@ const dealChampStatstones = (statstones:any) => {
 
 // 获取永痕星碑数据
 const queryStatstones = async (puuid:string) => {
-  const statstones:Array<Object> = await invokeLcu('get',`/lol-statstones/v1/profile-summary/${puuid}`)
-  const statstonesList = statstones.reduce((res:any,item:any) => {
-    return res.concat({
-          championId:`${champDict[String(item.championId)].label}`,
-          name:item.name,
-          imgUrl:(item.imageUrl).split('LCU/')[1],
-          value:item.value
-    })
-  },[])
-  return statstonesList
+  try {
+    const statstones:Array<Object> = await invokeLcu('get',`/lol-statstones/v1/profile-summary/${puuid}`)
+    const statstonesList = statstones.reduce((res:any,item:any) => {
+      return res.concat({
+        championId:`${champDict[String(item.championId)].label}`,
+        name:item.name,
+        imgUrl:(item.imageUrl).split('LCU/')[1],
+        value:item.value
+      })
+    },[])
+    return statstonesList
+  }catch (e) {
+    return []
+  }
 }
 
 

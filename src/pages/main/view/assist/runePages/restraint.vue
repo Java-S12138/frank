@@ -61,7 +61,7 @@ import {request} from "../../../utils/request";
 import {isStoreageHas} from "../../../lcu/utils";
 import {invokeLcu} from "../../../lcu";
 
-const props = defineProps({
+const props:any = defineProps({
   champ: {
     type: Number,
   }

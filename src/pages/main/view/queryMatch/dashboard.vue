@@ -51,14 +51,14 @@
         <n-select v-model:value="currentMode"  :disabled="searchName.length !==0"
                   :options="options" size="small" :show-arrow="true" style="width: 100px;" />
         <n-button type="success" size="small" @click="searchSummonerInfo" >搜索</n-button>
-        <n-button type="success" secondary size="small" @click="showChart =!showChart" >
+        <n-button type="success" secondary size="small" @click="changeContent" >
           <p v-if="!showChart">详细数据</p>
           <p v-else="showChart">数据图表</p>
         </n-button>
       </n-space>
       <n-pagination style="font-family: Arial"
         :on-update-page="changePage(page)"
-        v-model:page="page" :page-count="20" :page-slot="9" />
+        v-model:page="page" :page-count="pageCount" :page-slot="9" />
 
 
     </n-space>
@@ -108,7 +108,8 @@ const options = [
     value: '其它模式'
   },
 ]
-
+const isSubscribe =  localStorage.getItem('isSubscribe')
+const pageCount = isSubscribe === 't' ? 30 : 10
 const searchSummonerInfo = async (event:any,local:any) => {
   if (searchName.value === '' && local === undefined){
     message.error('召唤师昵称不能为空')
@@ -128,7 +129,6 @@ const searchSummonerInfo = async (event:any,local:any) => {
     return
   }
 }
-
 
 const changePage = (page:number) => {
   endIndex.value = (page)*8
@@ -155,6 +155,13 @@ const refresh = () => {
   location.reload()
 }
 
+const changeContent = () => {
+  if (isSubscribe==='f'){
+    message.warning('KDA可视化图表 需要订阅服务')
+    return
+  }
+  showChart.value =!showChart.value
+}
 
 </script>
 
