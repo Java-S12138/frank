@@ -133,7 +133,7 @@ export const dealMatchHistory = async (summonerId: string, begIndex: number, end
 
   let simpleMatchList = []
   let specialSimpleMatchList = []
-  const forMatchList = locale === 'zh_CN' ? matchList.games.games.reverse() : matchList.games.games
+  const forMatchList = locale === 'zh_CN' ? matchList?.games?.games.reverse() : matchList?.games?.games
   for (const matchListElement of forMatchList) {
     // 游戏模式
     let gameModel = queryGameType(matchListElement.queueId)

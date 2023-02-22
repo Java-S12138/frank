@@ -5,7 +5,7 @@ export const request = axios.create({
 })
 
 export const blacklistServe =async (config:any) => {
-  const res = await cube.net.sendHttpRequest('http://43.138.74.180:8412'+config.url,
+  const res = await cube.net.sendHttpRequest('http://43.139.80.183:8412'+config.url,
     {method:config.method,body:JSON.stringify(config?.data)}
     )
   if (res.status === 200){

@@ -14,8 +14,8 @@
             <n-list-item v-for="blackSummoner in currentBlackList" >
               <n-space justify="space-between" class="alignCenter">
                 <n-ellipsis style="
-                max-width: 112px;
-                width:112px;
+                max-width: 110px;
+                width:110px;
                 color: #ff6666;"
                 >
                   {{ blackSummoner.nickName }}
@@ -33,8 +33,8 @@
           <n-list-item v-for="blackSummoner in blacklist">
             <n-space justify="space-between" class="alignCenter">
               <n-ellipsis style="
-                max-width: 112px;
-                width:112px;
+                max-width: 110px;
+                width:110px;
                 color: #9aa4af;"
               >
                 {{ blackSummoner.nickName }}
@@ -231,6 +231,7 @@ const {currentBlackList,onlinePlayerInfo,localSummonerInfo,addHater}: any= store
 const cubeUserId = ref('')
 const onlineListStatus = ref(0)
 const currentBlacklistStatus = ref(false)
+const isSubscribe = localStorage.getItem('isSubscribe')
 
 watch(currentBlackList,() => {
   if (currentBlackList.value.length !== 0){
@@ -359,11 +360,24 @@ const reviseContent = async () => {
   active.value = false
   const res = await blacklistServe({
     url:'/blacklist/updateBlacklist',
-    data:detialsJson.value,
+    data:JSON.parse(JSON.stringify(detialsJson.value)),
     method:'PUT'
   })
   if (res.data?.code===0){
-    detialsJson.value.UpdatedAt = queryCurrenDate()
+    detialsJson.value = {
+      "ID": 0,
+      "CreatedAt": "",
+      "UpdatedAt": queryCurrenDate(),
+      "hId": 0,
+      "playerSumName": "",
+      "playerSumId": "",
+      "matchId": "",
+      "sumId": "",
+      "tag": "",
+      "content": "",
+      "handAdd": false,
+      "isShow": true
+    }
     message.success('修改内容成功')
   }else {
     message.error('提交修改内容失败')
@@ -467,6 +481,10 @@ const handleUpdateArea = (value:string) => {
 }
 // 查看对局
 const toMatch = async (matchId:string,summonerId:string) => {
+  if (isSubscribe==='f'){
+    message.warning('自动弹出查询战绩页面 需要订阅服务')
+    return
+  }
   localStorage.setItem('initQueryMatch',JSON.stringify({matchId:matchId,summonerId:summonerId}))
   const queryMatch = await cube.windows.obtainDeclaredWindow('queryMatch')
   if (queryMatch!==undefined){

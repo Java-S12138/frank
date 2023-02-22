@@ -24,7 +24,7 @@
              :bordered="false">轮播广告</n-tag>
     </div>
 
-<!--    <n-drawer v-model:show="blacklistActice"
+    <n-drawer  v-if="blacklistActice" v-model:show="blacklistActice"
               :width="336" :placement="'right'">
       <n-drawer-content>
         <div v-for="detialsJson in detialsJsonList" style="margin-bottom: 20px">
@@ -52,7 +52,7 @@
           </n-space>
         </div>
       </n-drawer-content>
-    </n-drawer>-->
+    </n-drawer>
 
     <n-drawer v-if="matchActive" v-model:show="matchActive"
               :content-style="isSubscribe==='t'?'padding-top:3px;padding-left:7px':'padding:0px'"
@@ -102,7 +102,6 @@ onMounted(async () => {
   const isSession = await RecentMatch.checkmatchSession()
   if (isSession){
     RecentMatch.fromLcuQuery().then((matchList) => {
-      console.log(matchList)
       init(matchList)
     })
   }else {
@@ -126,7 +125,7 @@ const init = (matchList:any) => {
   }else {
     return
   }
-  // checkBlacklist(matchList.enemyList)
+  checkBlacklist(matchList.enemyList)
   gameType.value = <number>matchList.gameType
   friendList.value = matchList.friendList
   enemyList.value = matchList.enemyList
@@ -136,6 +135,9 @@ const init = (matchList:any) => {
 }
 
 const checkBlacklist = async (enemyList:[]) => {
+  if (localStorage.getItem('isSubscribe')==='f'){
+    return
+  }
   const config = JSON.parse(<string>(localStorage.getItem('config')))
   if (!config.isSwitchBlacklist){
     return

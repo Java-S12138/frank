@@ -38,6 +38,7 @@
                 :size="50"
                 :src="summoner[2]"
                 style="display: block"
+                @click="showMatch(summoner)"
               />
               <n-tag type="success" :bordered="false" style="width: 145px;" class="alignCenter">{{ summoner[0] }}</n-tag>
               <n-button size="small" type="error"  @click="preAddBlacklist(summoner[0],summoner[1])">拉黑</n-button>
@@ -77,7 +78,7 @@
 <script setup lang="ts">
 import {
   NCard, NModal, NSpace, NTag, NButton,NAvatar,
-  NDrawer,NTabs,NTabPane,NIcon,NPopconfirm
+  NDrawer,NTabs,NTabPane,NIcon,NPopconfirm,useMessage
 } from "naive-ui"
 import {CircleX} from '@vicons/tabler'
 import AddBlacklist from './addBlacklist.vue'
@@ -95,6 +96,7 @@ const blacklistName = ref('')
 const blacklistId = ref('')
 const gameAfterId = ref(0)
 const emits = defineEmits(['refreshList'])
+const message = useMessage()
 
 cube.windows.message.on('received',async (id) => {
   if (id==='show-other-summoner'){
@@ -125,6 +127,10 @@ const preAddBlacklist = (summonerName:string, summonerId:string) => {
   active.value = true
 }
 const showMatch =async (summoner:any) => {
+  if (localStorage.getItem('isSubscribe') === 'f'){
+    message.warning('此功能 需要订阅服务')
+    return
+  }
   localStorage.setItem('initQueryMatch',JSON.stringify({matchId:summoner[3],summonerId:summoner[1]}))
   const queryMatch = await cube.windows.obtainDeclaredWindow('queryMatch')
   if (queryMatch!==undefined){

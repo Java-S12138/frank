@@ -102,12 +102,13 @@ const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ st
   let classicMode: matchTypes[] = []
   let matchCount = 0
   let winCount = 0
+  console.log(gameType)
   mainfor:
     for (let i = 0; i < 100; i += 20) {
       const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
-      const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse():matchGet['games']['games']
+      const matchList = locale === 'zh_CN' ? matchGet?.games?.games.reverse():matchGet?.games?.games
       for (let j = 0; j < matchList?.length; j++) {
-        // if (matchList[j].queueId === gameType) {
+        if (matchList[j].queueId === gameType) {
           if (matchCount === 10) {
             break mainfor
           }
@@ -121,7 +122,7 @@ const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ st
             isWin: matchList[j].participants[0].stats.win,
             gameId:matchList[j].gameId
           })
-        // }
+        }
       }
     }
   // 判断是否为小代
