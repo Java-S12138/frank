@@ -89,6 +89,11 @@
             </n-button>
           </n-space>
         </n-space>
+        <n-space v-if="isSubscribe !== 'f'">
+          <n-tag :bordered="false">远程协助</n-tag>
+          <n-tag :bordered="false" type="success"
+                 style="width: 214px;justify-content: center">一对一解决问题 V: lol_frank</n-tag>
+        </n-space>
         <!--Cube平台-->
         <n-space>
           <n-tag :bordered="false" >插件平台</n-tag>

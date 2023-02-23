@@ -246,6 +246,7 @@ import {
 import {Diamond} from '@vicons/tabler'
 import StartGame from "./startGame.vue";
 import {getCurrentSummonerInfo, queryCurrentChampStatstones} from "../../lcu/homeLcu";
+import {TencentRsoPlatformId} from "../../resources/areaList";
 
 const rankData: Ref = ref([])
 const summonerHonor: Ref = ref([])
@@ -257,6 +258,12 @@ const active = ref(false)
 const currentChampStatstones: Ref = ref([])
 const currentChampIndex = ref(0)
 const config = JSON.parse(<string>(localStorage.getItem('config')))
+const props:any = defineProps({
+  initSetup:{
+    default:[false],
+    type:Array
+  }
+})
 
 onMounted(() => {
   init().then(async (value) =>  {
@@ -293,7 +300,10 @@ const init = async () => {
   summonerChampLevel.value = homeData.champLevel
   xp.value = parseInt(String((homeData.rank[6][0] / homeData.rank[6][1]) * 100))
   statstonesList.value = homeData.statstones
-  initAfter()
+  if (props.initSetup[0] === false){
+    props.initSetup[0] = true
+    initAfter()
+  }
   return true
 }
 
@@ -320,7 +330,16 @@ const onClientLaunch = () => {
 
 const initAfter = async () => {
   cube.games.launchers.events.getInfo(10902).then((info) => {
-    localStorage.setItem('locale',info?.summoner_info?.locale)
+    if (info?.summoner_info !== undefined){
+      localStorage.setItem('locale',info?.summoner_info?.locale)
+      const platformId = info?.summoner_info?.platform_id
+      if (platformId !=='' || platformId!==undefined){
+        const area = TencentRsoPlatformId[platformId]
+        if (area !== undefined){
+          localStorage.setItem('currentArea',area)
+        }
+      }
+    }
   })
   const currentScreen = (await cube.utils.getPrimaryDisplay()).size
   cube.windows.obtainDeclaredWindow('assist', {x: currentScreen.width - 320, y: (currentScreen.height - 770) / 2})

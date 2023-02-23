@@ -225,7 +225,7 @@ const detialsJson:Ref<HaterItem> = ref({
 })
 const detialsNickname = ref('')
 const message = useMessage()
-const areaSetting = ref(JSON.parse(<string>(localStorage.getItem('config'))).currentArea)
+const areaSetting = ref(localStorage.getItem('currentArea'))
 const store = assistStore()
 const {currentBlackList,onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
 const cubeUserId = ref('')
@@ -250,7 +250,7 @@ watch(currentBlackList,() => {
 })
 
 watch(addHater,() => {
-  areaSetting.value = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
+  areaSetting.value = localStorage.getItem('currentArea') as string
   findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
 })
 
@@ -461,7 +461,7 @@ const showTagContent = (tag:string) => {
 // 新增黑名单
 const addBlacklistFunc = () => {
   console.log('addBlack')
-  areaSetting.value = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
+  areaSetting.value = localStorage.getItem('currentArea') as string
   findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
 }
 // 更新排位日记

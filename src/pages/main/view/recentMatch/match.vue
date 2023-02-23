@@ -102,7 +102,6 @@ const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ st
   let classicMode: matchTypes[] = []
   let matchCount = 0
   let winCount = 0
-  console.log(gameType)
   mainfor:
     for (let i = 0; i < 100; i += 20) {
       const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])

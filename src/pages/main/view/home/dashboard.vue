@@ -6,24 +6,11 @@
       <img src="@/assets/icon/app-icon-bw.png" draggable="false"  alt="" width="40"  v-else>
       <img src="@/assets/icon/Frank.png" draggable="false"  style="margin-top: 4px">
     </n-space>
-    <n-dropdown v-if="isSubscribe==='f'"
+    <n-dropdown v-if=" isSubscribe==='f' "
       trigger="click" :options="subscribes" @select="handleSub">
       <n-button type="warning" size="large" style="margin-left: 35px" text>订阅服务✨</n-button>
     </n-dropdown>
     <n-space class="rightCorner">
-<!--      <n-popover v-if="isSubscribe ==='f'" :show-arrow="false" trigger="hover">
-        <template #trigger>
-          <n-button
-            @click="openSubscribePage"
-            text
-            color="black">
-            <n-icon size="22">
-              <heart/>
-            </n-icon>
-          </n-button>
-        </template>
-        解锁全部功能 & 关闭广告
-      </n-popover>-->
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
         <template #trigger>
           <n-button
@@ -69,6 +56,7 @@ import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
 
 const emits = defineEmits(['changePage'])
 const isSubscribe = localStorage.getItem('isSubscribe')
+
 const changePage = () => {
   emits('changePage')
 }

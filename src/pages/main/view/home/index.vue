@@ -1,7 +1,7 @@
 <template>
   <Dashboard @changePage="() => { pageCount =  pageCount === 1 ? 2 : 1}"/>
   <div>
-    <summoner-info v-if="pageCount===1" class="slide-in-left "/>
+    <summoner-info :init-setup="initSetup" v-if="pageCount===1" class="slide-in-left "/>
     <fbottom v-if="pageCount===1" class="slide-in-left "
              :notice="notice" :page="page" @changePage="changePage"/>
     <setting v-else-if="pageCount===2"
@@ -20,6 +20,7 @@ import {request} from "../../utils/request";
 const pageCount = ref(1)
 const notice = ref({})
 const page = ref(1)
+const initSetup = ref([false])
 
 onMounted(() => {
   cube.windows.getWindowByName('main').then(async (win) => {

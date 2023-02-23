@@ -128,7 +128,7 @@ const preAddBlacklist = (summonerName:string, summonerId:string) => {
 }
 const showMatch =async (summoner:any) => {
   if (localStorage.getItem('isSubscribe') === 'f'){
-    message.warning('此功能 需要订阅服务')
+    message.warning('跳转查询战绩界面 需要订阅服务')
     return
   }
   localStorage.setItem('initQueryMatch',JSON.stringify({matchId:summoner[3],summonerId:summoner[1]}))

@@ -95,9 +95,6 @@ const isSubscribe =  localStorage.getItem('isSubscribe')
 const matchActive = ref(false)
 
 onMounted(async () => {
-  cube.windows.getCurrentWindow().then((value) => {
-    cube.windows.openDevTools(value.id)
-  })
   const RecentMatch = new recentMatch()
   const isSession = await RecentMatch.checkmatchSession()
   if (isSession){
@@ -129,20 +126,20 @@ const init = (matchList:any) => {
   gameType.value = <number>matchList.gameType
   friendList.value = matchList.friendList
   enemyList.value = matchList.enemyList
-  if (isSubscribe==='f'){
+  if (isSubscribe === 'f'){
     matchActive.value = true
   }
 }
 
 const checkBlacklist = async (enemyList:[]) => {
-  if (localStorage.getItem('isSubscribe')==='f'){
+  if (isSubscribe === 'f'){
     return
   }
   const config = JSON.parse(<string>(localStorage.getItem('config')))
   if (!config.isSwitchBlacklist){
     return
   }
-  const areaSetting = config.currentArea
+  const areaSetting = localStorage.getItem('currentArea')
   const enemySummonerList = enemyList.reduce((res:any,item:any) => {
     return res.concat([
       item.summonerId

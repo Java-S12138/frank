@@ -58,7 +58,7 @@ import {assistStore} from "../../../store";
 import {storeToRefs} from "pinia";
 import {areaOptions} from "../../../resources/areaList";
 
-const areaSetting = ref(JSON.parse(<string>(localStorage.getItem('config'))).currentArea)
+const areaSetting = ref(localStorage.getItem('currentArea'))
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
 const props:any = defineProps({
   name:{
@@ -215,10 +215,8 @@ const querySummonerId = async (nickname:string) => {
 
 // 改变当前大区
 const handleUpdateArea = (value:string) => {
-  const config = JSON.parse(<string>(localStorage.getItem('config')))
   areaSetting.value = value
-  config.currentArea = value
-  localStorage.setItem('config', JSON.stringify(config))
+  localStorage.setItem('currentArea',value)
 }
 </script>
 

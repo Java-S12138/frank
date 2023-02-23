@@ -409,7 +409,7 @@ const openSubscribePage = () => {
   cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
 }
 const subscribeInfo = () => {
-
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/proposal')
 }
 </script>
 

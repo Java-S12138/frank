@@ -162,7 +162,7 @@ cube.windows.message.on('received',async (id,content:any) => {
 
 const getCurrentBlacklist = async (summonerInfo:any) => {
   currentBlackList.value = []
-  const areaSetting = JSON.parse(<string>(localStorage.getItem('config'))).currentArea
+  const areaSetting = localStorage.getItem('currentArea')
   // 获取当前队伍中的召唤师ID
   const summonerList = summonerInfo.reduce((res:String[],item:{name:string,summonerId:number}) => {
     return res.concat([String(item.summonerId)])
