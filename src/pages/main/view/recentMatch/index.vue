@@ -1,6 +1,6 @@
 <template>
   <div class="mainDiv" v-if="!isPageNull">
-    <dashboard/>
+    <dashboard :is-in="isIn"/>
     <div class="matchs">
       <match :matchList="friendList"
              :win-count="friendTeamList"
@@ -62,7 +62,7 @@
     </n-drawer>
   </div>
   <div v-else>
-    <null-page/>
+    <null-page :is-in="isIn"/>
   </div>
 
 </template>
@@ -93,8 +93,14 @@ const curGId = ref(0)
 const curSId = ref(0)
 const isSubscribe =  localStorage.getItem('isSubscribe')
 const matchActive = ref(false)
+const isIn = ref(true)
 
 onMounted(async () => {
+  cube.windows.getCurrentWindow().then(value => {
+    if (value.height===551){
+      isIn.value = false
+    }
+  })
   const RecentMatch = new recentMatch()
   const isSession = await RecentMatch.checkmatchSession()
   if (isSession){

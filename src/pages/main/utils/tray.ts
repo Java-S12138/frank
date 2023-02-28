@@ -8,7 +8,9 @@ const showWin = (win: string) => {
     } else {
       cube.windows.show(v.id)
     }
-  }).catch(() => {})
+  }).catch(() => {
+    cube.windows.obtainDeclaredWindow(win)
+  })
 }
 
 cube.os.tray.setMenu(
@@ -20,6 +22,13 @@ cube.os.tray.setMenu(
           break
         case 'showAssist':
           showWin('assist')
+          break
+        case 'matchDetail':
+          cube.windows.obtainDeclaredWindow('recentMatch',{height:551}).then(value => {
+            if (value!==undefined){
+              cube.windows.show(value.id)
+            }
+          })
           break
         case 'queryMatch':
           cube.windows.obtainDeclaredWindow('queryMatch')
@@ -35,6 +44,7 @@ cube.os.tray.setMenu(
   [
     {type: 'normal', label: '显示主页', id: 'showMain'},
     {type: 'normal', label: '显示助手', id: 'showAssist'},
+    {type: 'normal', label: '对局详情', id: 'matchDetail'},
     {type: 'normal', label: '查询战绩', id: 'queryMatch'},
     {type: 'normal', label: '退出软件', id: 'quit'},
   ],

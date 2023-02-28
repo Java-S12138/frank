@@ -2,6 +2,8 @@
   <header class="frankTitle">
     <img src="@/assets/icon/siteLogo.png" draggable="false" >
     <n-space justify="space-between">
+      <p v-if="!props.isIn" class="headerP" @click="handleClose"
+         style="margin-right: 3px;cursor: pointer">关闭此窗口</p>
       <p class="headerP" @click="handleMin"
          style="margin-right: 3px;cursor: pointer">窗口显示 | 隐藏快捷键 Shift + Tab</p>
       <div style="display: flex">
@@ -18,9 +20,18 @@ import {NSpace,NSwitch} from 'naive-ui'
 import {reactive} from "vue"
 
 const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
+const props = defineProps({
+  isIn:{
+    default:true,
+    type:Boolean
+  }
+})
 
 const handleMin = () => {
   cube.windows.hide(cube.windows.current.id())
+}
+const handleClose = () => {
+  cube.windows.close(cube.windows.current.id())
 }
 const changeAutoGameInWin = () => {
   if (config['isGameInWindow'] !== true) {

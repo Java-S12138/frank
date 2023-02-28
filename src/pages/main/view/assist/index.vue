@@ -192,11 +192,17 @@ const showMatch = async () => {
   // cube.windows.obtainDeclaredWindow('matchHistory')
   // return
   const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
-  if (clientStatus == 'ChampSelect' ||  clientStatus == 'InProgress'){
+  if (clientStatus === 'ChampSelect'){
     cube.windows.obtainDeclaredWindow('matchHistory')
     message.success('获取战绩成功 !')
   }
-  else {
+  else if (clientStatus === 'InProgress') {
+    cube.windows.obtainDeclaredWindow('recentMatch',{height:551}).then(value => {
+      if (value!==undefined){
+        cube.windows.show(value.id)
+      }
+    })
+  }else {
     message.error('请先开始一局游戏哟 !')
   }
 }
