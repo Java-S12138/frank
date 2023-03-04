@@ -104,24 +104,28 @@ const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ st
   let winCount = 0
   mainfor:
     for (let i = 0; i < 100; i += 20) {
-      const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
-      const matchList = locale === 'zh_CN' ? matchGet?.games?.games.reverse():matchGet?.games?.games
-      for (let j = 0; j < matchList?.length; j++) {
-        if (matchList[j].queueId === gameType) {
-          if (matchCount === 10) {
-            break mainfor
+      try {
+        const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
+        const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
+        for (let j = 0; j < matchList?.length; j++) {
+          if (matchList[j].queueId === gameType) {
+            if (matchCount === 10) {
+              break mainfor
+            }
+            matchCount += 1
+            winCount = matchList[j].participants[0].stats.win === true ? winCount+1:winCount
+            classicMode.push({
+              champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList[j].participants[0].championId)].alias}.png`,
+              kill: matchList[j].participants[0].stats.kills,
+              deaths: matchList[j].participants[0].stats.deaths,
+              assists: matchList[j].participants[0].stats.assists,
+              isWin: matchList[j].participants[0].stats.win,
+              gameId:matchList[j].gameId
+            })
           }
-          matchCount += 1
-          winCount = matchList[j].participants[0].stats.win === true ? winCount+1:winCount
-          classicMode.push({
-            champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList[j].participants[0].championId)].alias}.png`,
-            kill: matchList[j].participants[0].stats.kills,
-            deaths: matchList[j].participants[0].stats.deaths,
-            assists: matchList[j].participants[0].stats.assists,
-            isWin: matchList[j].participants[0].stats.win,
-            gameId:matchList[j].gameId
-          })
         }
+      }catch (e) {
+        continue
       }
     }
   // 判断是否为小代

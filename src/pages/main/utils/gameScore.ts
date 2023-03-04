@@ -34,8 +34,8 @@ const queryMatchHistory = async (summonerId: string,locale:string) => {
   let classicMode = []
   let matchCount = 0
   for (let i = 0; i < 100; i += 20) {
-    const matchList = await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [i, i + 20])
     try {
+      const matchList = await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [i, i + 20])
       const forMatchList = locale === 'zh_CN' ? matchList['games']['games'].reverse() : matchList['games']['games']
       for (const matchListElement of forMatchList) {
         if (matchListElement.queueId === currentGameMode && matchCount < 10) {

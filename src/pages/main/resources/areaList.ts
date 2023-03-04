@@ -235,4 +235,6 @@ export const TencentRsoPlatformId: any = {
   'BGP1_NEW': 'o_2',
   'BGP2': 'o_1',
   'BGP2_NEW': 'o_1',
+  'TW2': 'zh_tw',
+  'TW2_NEW': 'zh_tw',
 }

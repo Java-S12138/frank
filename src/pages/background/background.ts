@@ -1,6 +1,6 @@
+import '../main/utils/subscribe.ts'
 import '../main/utils/config.ts'
 import '../main/utils/tray.ts'
-import '../main/utils/subscribe.ts'
 import { GameFlow } from '../main/utils/gameFlow'
 
 cube.extensions.on('launch-triggered', (s) => {

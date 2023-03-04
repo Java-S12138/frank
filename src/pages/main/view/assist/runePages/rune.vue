@@ -15,20 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NCard, NAvatar, NSpace, NTag, NGrid, NGi, NIcon,
-  NBadge, NButton, useMessage,NDrawer, NDrawerContent,NSelect
-} from 'naive-ui'
-import Restraint from "./restraint.vue";
+import {NCard, NSpace,useMessage,} from 'naive-ui'
 import RuneHeader from "./runeHeader.vue";
 import RuneMain from "./runeMain.vue";
 import {onMounted} from "vue";
 import {request} from "../../../utils/request"
-import {applyRunePage} from "../../../lcu/runeLcu";
-import {isStoreageHas} from "../../../lcu/utils";
 import {invokeLcu} from "../../../lcu";
 import {Block, OnlineRunes, RuneEventType} from "../../../interface/runeTypes";
-
 import runeStore from "../../../store/runeStore";
 import {mapNameFromUrl} from "../../../resources/champList";
 
@@ -65,8 +58,7 @@ class RuneClass {
     emits('changePage',true)
     storeRune.runeDataList = []
     storeRune.blockDataList = []
-    storeRune.isAutoRune = isStoreageHas('autoRunes',String(champId)) == true ?
-      'auto' : ''
+    storeRune.isAppleAutoRune = false
     storeRune.mapChampInfo(champId)
     this.currentGameMode = this.currentGameMode===''?
       await this.getGameMode():this.currentGameMode
@@ -98,12 +90,6 @@ class RuneClass {
   }
   // 获取符文数据
   public getRuneData = async (gameMode:string) => {
-    // 判断当前英雄是否配置看自动符文
-    if (isStoreageHas('autoRunes',String(storeRune.currentChamp))){
-      const runeData = JSON.parse(String(localStorage.getItem('autoRunes')))[String(storeRune.currentChamp)]
-      applyRunePage(runeData)
-    }
-
     try {
       const champInfo:OnlineRunes[] = await this.getChampInfo(gameMode)
       // 技能
@@ -121,9 +107,6 @@ class RuneClass {
         if (block!==null){
           storeRune.blockDataList.push(block)
         }
-      }
-      if (isStoreageHas('autoRunes',String(storeRune.currentChamp))) {
-        message.success('自动配置符文成功')
       }
     } catch (e) {
       console.log(e)

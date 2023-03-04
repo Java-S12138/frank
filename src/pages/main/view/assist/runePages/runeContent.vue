@@ -4,7 +4,7 @@
       <n-gi v-for="rune in props.runeList">
         <div class="runeDiv">
           <n-space :size=[-5,0] align="stretch" justify="space-between">
-            <n-space vertical align="center"  :size=[1,-5]>
+            <n-space vertical align="center" :size=[1,-5]>
               <img :src="getImgUrl(rune.selectedPerkIds[0])" alt="" class="runImg">
               <img :src="getImgUrl(rune.selectedPerkIds[1])" alt="" class="runImg">
               <img :src="getImgUrl(rune.selectedPerkIds[2])" alt="" class="runImg">
@@ -33,69 +33,82 @@
       </n-gi>
     </n-grid>
     <div class="tipBottom">
-      <p>{{ storeRune.currentChampTitle }}</p>
+      <n-space align="center">
+        <p>{{ storeRune.currentChampTitle }}</p>
+        <n-tag class="tipTag" @click="openDrawer"
+               type="success" size="small" :bordered="false">自动符文
+        </n-tag>
+      </n-space>
     </div>
   </n-scrollbar>
 </template>
 
 <script setup lang="ts">
 import {
-  NSpace, NTag, NGrid, NGi,useMessage,NScrollbar
+  NSpace, NTag, NGrid, NGi, useMessage, NScrollbar
 } from 'naive-ui'
 import runeStore from "../../../store/runeStore";
 import {mapNameFromUrl} from "../../../resources/champList";
-import {applyRunePage,applyBlockPage} from "../../../lcu/runeLcu";
-import {PropType} from "vue";
+import {applyRunePage, applyBlockPage} from "../../../lcu/runeLcu";
+import {onMounted, PropType} from "vue";
 import {Rune} from "../../../interface/runeTypes";
 
 const storeRune = runeStore()
 const message = useMessage()
 
-const props = defineProps({
-  runeList:{
-    default:[],
-    type:Array as PropType<Rune[]>
+onMounted(() => {
+  if (!storeRune.isAppleAutoRune){
+    autoWriteRune()
+    storeRune.isAppleAutoRune = true
   }
 })
 
+const props = defineProps({
+  runeList: {
+    default: [],
+    type: Array as PropType<Rune[]>
+  }
+})
+const emits = defineEmits(['autoRuneActive'])
+
 // 应用符文&装备
-const applyRune = async (data:any) => {
-  const tempData = JSON.parse(JSON.stringify(data))
-  tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"
-  const isAutoWriteBlock =  JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock
-  if (localStorage.getItem('isSubscribe') === 'f'){
-    message.warning('一键符文 需要订阅 请手动配置',{duration: 5000})
+const applyRune = async (data: any) => {
+  if (localStorage.getItem('isSubscribe') === 'f') {
+    message.warning('一键符文 需要订阅 请手动配置', {duration: 5000})
     return
   }
+  const tempData = JSON.parse(JSON.stringify(data))
+  tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"
+  const isAutoWriteBlock = JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock
   applyRunePage(tempData).then((isApplySuccess) => {
-    if (isApplySuccess){
-      if (isAutoWriteBlock){
-        const block = storeRune.blockDataList.find((i) => i.ps===data.position)
-        if (block===undefined){
+    if (isApplySuccess) {
+      if (isAutoWriteBlock) {
+        const block = storeRune.blockDataList.find((i) => i.ps === data.position)
+        if (block === undefined) {
           message.success('符文配置成功')
           return
         }
         applyBlockPage(JSON.parse(JSON.stringify(block.buildItems))).then((v) => {
-          if (v){
+          if (v) {
             message.success('符文&装备 配置成功')
-          }else {
+          } else {
             message.success('符文配置成功')
           }
         })
-      }else {
+      } else {
         message.success('符文配置成功')
       }
-    }else {
+    } else {
       message.error('符文配置失败')
     }
   })
 }
 // 获取图片地址
-const getImgUrl = (imgId:any) => {
-  return  new URL(`/src/assets/runes/${imgId}.png`, import.meta.url).href
+const getImgUrl = (imgId: any) => {
+  return new URL(`/src/assets/runes/${imgId}.png`, import.meta.url).href
 }
 // 获取位置信息
-const getPosition = (pos:string) => {
+const getPosition = (pos: string) => {
   switch (pos) {
     case 'middle':
       return '中单';
@@ -113,6 +126,25 @@ const getPosition = (pos:string) => {
       return '中单';
   }
 }
+const openDrawer = () => {
+  emits('autoRuneActive')
+}
+// 自动配置符文
+const autoWriteRune = () => {
+  const localRuneStr = localStorage.getItem('autoRune')
+  if (localRuneStr === null || localRuneStr === '{}'){
+    return
+  }
+  const runeData = JSON.parse(localRuneStr)[storeRune.currentChampAlias]
+  if (runeData !== undefined){
+    runeData.name = mapNameFromUrl[runeData.name].name + " lolfrank.cn"
+    applyRunePage(runeData).then((isApplySuccess) => {
+      if (isApplySuccess){
+        message.success('自动配置符文成功')
+      }
+    })
+  }
+}
 </script>
 
 <style scoped>
@@ -126,18 +158,21 @@ const getPosition = (pos:string) => {
   height: 25px;
   margin-bottom: -3px;
 }
+
 .runSondary {
   display: flex;
   flex-direction: column;
   margin-bottom: 2.8px;
 }
+
 .runeDiv {
   width: 102px;
   margin-bottom: 15px;
   padding: 8px;
   border-radius: 8px;
-  border:1px dashed #dfdfdf;
+  border: 1px dashed #dfdfdf;
 }
+
 .tipBottom {
   margin-top: 2px;
   display: flex;
@@ -146,10 +181,18 @@ const getPosition = (pos:string) => {
   width: 254px;
   border-radius: 4px;
   height: 36px;
-  border:1px dashed #dfdfdf;
+  border: 1px dashed #dfdfdf;
   color: #666666;
 }
+
 .tipBottom p {
   padding-top: 3px
+}
+
+.tipTag {
+  border: #18a058 dashed 1px;
+  background-color: #fff;
+  padding-top: 1px;
+  cursor: pointer;
 }
 </style>
