@@ -33,11 +33,9 @@
       </n-gi>
     </n-grid>
     <div class="tipBottom">
-      <n-space align="center">
+      <n-space align="center" size="small">
         <p>{{ storeRune.currentChampTitle }}</p>
-        <n-tag class="tipTag" @click="openDrawer"
-               type="success" size="small" :bordered="false">自动符文
-        </n-tag>
+        <p @click="openDrawer" class="tipTag">自动符文</p>
       </n-space>
     </div>
   </n-scrollbar>
@@ -56,10 +54,11 @@ import {Rune} from "../../../interface/runeTypes";
 const storeRune = runeStore()
 const message = useMessage()
 
+
 onMounted(() => {
   if (!storeRune.isAppleAutoRune){
-    autoWriteRune()
     storeRune.isAppleAutoRune = true
+    autoWriteRune()
   }
 })
 
@@ -131,13 +130,15 @@ const openDrawer = () => {
 }
 // 自动配置符文
 const autoWriteRune = () => {
+  if (localStorage.getItem('isSubscribe') === 'f'){
+    return
+  }
   const localRuneStr = localStorage.getItem('autoRune')
   if (localRuneStr === null || localRuneStr === '{}'){
     return
   }
   const runeData = JSON.parse(localRuneStr)[storeRune.currentChampAlias]
   if (runeData !== undefined){
-    runeData.name = mapNameFromUrl[runeData.name].name + " lolfrank.cn"
     applyRunePage(runeData).then((isApplySuccess) => {
       if (isApplySuccess){
         message.success('自动配置符文成功')
@@ -186,13 +187,14 @@ const autoWriteRune = () => {
 }
 
 .tipBottom p {
-  padding-top: 3px
+  padding-top: 3px;
+  color: rgb(31, 34, 37);
 }
 
 .tipTag {
-  border: #18a058 dashed 1px;
-  background-color: #fff;
-  padding-top: 1px;
   cursor: pointer;
+}
+.tipTag:hover{
+  color: #18a058;
 }
 </style>

@@ -338,6 +338,9 @@ const initAfter = async () => {
         if (area !== undefined){
           localStorage.setItem('currentArea',area)
         }
+        if (area ==='zh_tw' && info?.summoner_info?.locale==='zh_CN'){
+          localStorage.setItem('locale',"zh_TW")
+        }
       }
     }
   })

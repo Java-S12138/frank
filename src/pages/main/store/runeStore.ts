@@ -23,7 +23,7 @@ const runeStore = defineStore('runeStore', {
       this.currentChamp = champId
       this.currentChampImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[champId].alias}.png`
       this.currentChampAlias = champDict[champId].alias
-      this.currentChampTitle = `${champDict[champId].label} ${champDict[champId].title}`
+      this.currentChampTitle = champDict[champId].title
       this.isAutoRune = isStoreageHas('autoRune',this.currentChampAlias) == true ?
         'auto' : ''
     },

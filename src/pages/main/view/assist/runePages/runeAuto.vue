@@ -1,6 +1,6 @@
 <template>
   <n-card :bordered="false" content-style="padding:32px" class="divCard">
-    <n-space>
+    <n-space justify="space-between">
       <div class="runeDiv"  v-if="runeData!==null">
         <n-space style="width: 86px;padding: 5px 8px" align="stretch" justify="space-between">
           <n-space vertical align="center" :size=[0,0]>
@@ -27,12 +27,12 @@
           <n-tag :bordered="false" type="error" v-if="clientRune">召唤师符文页</n-tag>
           <n-tag :bordered="false" type="info" v-else>本地英雄符文</n-tag>
           <n-tag :bordered="false" >选择此英雄时</n-tag>
-          <n-tag :bordered="false" >自动配置符文</n-tag>
+          <n-tag :bordered="false" style="cursor: pointer" @click="openWeb">自动配置符文</n-tag>
         </n-space>
       </div>
     </n-space>
-    <n-space>
-      <n-button v-if="clientRune" type="error" secondary style="width: 120px;">英雄暂无数据</n-button>
+    <n-space justify="space-between">
+      <n-button v-if="clientRune" type="error" secondary style="width: 120px;">暂无符文数据</n-button>
       <n-popconfirm
         v-else
         @positive-click="removeAutoRune"
@@ -72,6 +72,10 @@ const props = defineProps({
   champ:{
     type:String as PropType<string>,
     default:''
+  },
+  champName:{
+    type:String as PropType<string>,
+    default:''
   }
 })
 
@@ -101,7 +105,7 @@ const initRuneData = async () => {
   const current = currentRuneList.find((i:any) => i.current)
   if (current !== undefined){
     runeData.value = {
-      name:props.champ,
+      name:props.champName+ " lolfrank.cn",
       primaryStyleId:current.primaryStyleId,
       subStyleId:current.subStyleId,
       selectedPerkIds:current.selectedPerkIds
@@ -112,6 +116,10 @@ const initRuneData = async () => {
 }
 
 const writeAutoRune = () => {
+  if (localStorage.getItem('isSubscribe') === 'f'){
+    message.warning('自动符文 需要订阅')
+    return
+  }
   if (props.champ ===''){
     return
   }
@@ -146,6 +154,10 @@ const completeSetup = () => {
 }
 const getImgUrl = (imgId: any) => {
   return new URL(`/src/assets/runes/${imgId}.png`, import.meta.url).href
+}
+
+const openWeb = () => {
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction#bKYAM')
 }
 </script>
 

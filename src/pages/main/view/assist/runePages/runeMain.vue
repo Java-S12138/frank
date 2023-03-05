@@ -15,7 +15,9 @@
     <n-drawer
       style="border-top-left-radius: 12px;border-top-right-radius: 12px"
       v-model:show="autoRuneActive" :height="285" :auto-focus="false" placement="bottom">
-      <rune-auto :champ="storeRune.currentChampAlias" @complete-setup="setupAutoRune"/>
+      <rune-auto :champ="storeRune.currentChampAlias"
+                 :champ-name="storeRune.currentChampTitle"
+                 @complete-setup="setupAutoRune"/>
     </n-drawer>
   </n-card>
 

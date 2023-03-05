@@ -2,7 +2,7 @@
   <n-tabs type="segment" :animated=true @mousedown="handldDrge"
           ref="tabsInstRef" :value="transValue">
     <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'"></n-tab>
-    <n-tab name="match" tab="查看战绩" @click="showMatch"></n-tab>
+    <n-tab name="match" tab="对局详情" @click="showMatch"></n-tab>
     <n-tab v-if="isSwitchBlacklist" name="blacklist" tab="排位笔记" @click="transValue='blacklist'"></n-tab>
     <n-tab name="rune" tab="符文配置" @click="transValue='rune'"></n-tab>
   </n-tabs>
@@ -74,73 +74,6 @@ cube.windows.message.on('received',async (id,content:any) => {
     if (locale==='zh_CN'){
       setTimeout(async () => {
         const res = await queryEnemySummonerIdAndSummonerName()
-        // const res = [
-        //   [
-        //     {
-        //       "name": "Tey史忽恒",
-        //       "summonerId": 4013465288,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Malphite.png",
-        //       "index": 1
-        //     },
-        //     {
-        //       "name": "南宁小叮当",
-        //       "summonerId": 4004370604,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Elise.png",
-        //       "index": 2
-        //     },
-        //     {
-        //       "name": "多元函数积分学",
-        //       "summonerId": 2947489903,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Akali.png",
-        //       "index": 3
-        //     },
-        //     {
-        //       "name": "mua一口小穗",
-        //       "summonerId": 4011731339,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Samira.png",
-        //       "index": 4
-        //     },
-        //     {
-        //       "name": "虐你妹叫大爷",
-        //       "summonerId": 4002112679,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Nautilus.png",
-        //       "index": 5
-        //     }
-        //   ],
-        //   [
-        //     {
-        //       "name": "BABA腊只鸡亦比你",
-        //       "summonerId": 2935173990,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Gangplank.png",
-        //       "index": 1
-        //     },
-        //     {
-        //       "name": "别高估自己的眼泪",
-        //       "summonerId": 4009650116,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/MonkeyKing.png",
-        //       "index": 2
-        //     },
-        //     {
-        //       "name": "131458470",
-        //       "summonerId": 4004032333,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Yone.png",
-        //       "index": 3
-        //     },
-        //     {
-        //       "name": "这个瑞文好抠脚丶",
-        //       "summonerId": 4000557119,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Ashe.png",
-        //       "index": 4
-        //     },
-        //     {
-        //       "name": "坑爹猪儿怪",
-        //       "summonerId": 2928803974,
-        //       "selectChamp": "https://game.gtimg.cn/images/lol/act/img/champion/Brand.png",
-        //       "index": 5
-        //     }
-        //   ],
-        //   2155911657
-        // ]
         endGameAfterInfo.value = [[], []]
         endGameAfterInfo.value = res
       }, 1500)
