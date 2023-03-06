@@ -54,11 +54,10 @@ import {ref,onBeforeMount} from "vue";
 import {isStoreageHas} from "../../../lcu/utils";
 import {invokeLcu} from "../../../lcu";
 import {blacklistServe} from "../../../utils/request";
-import {assistStore} from "../../../store";
-import {storeToRefs} from "pinia";
+import assistStore from "../../../store/assistStore";
 import {areaOptions} from "../../../resources/areaList";
 
-const areaSetting = ref(localStorage.getItem('currentArea'))
+const areaSetting = ref(localStorage.getItem('currentArea') as string)
 let localBlacklist:any = JSON.parse(String(localStorage.getItem('blacklist'))) === null ? {}: JSON.parse(String(localStorage.getItem('blacklist')))
 const props:any = defineProps({
   name:{
@@ -100,7 +99,7 @@ const options = [
 const blacklistContent = ref('')
 const blacklistName = ref('')
 const store = assistStore()
-const {onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
+// const {onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
 const message = useMessage()
 const emits = defineEmits(['closeDra'])
 const isCommit = ref(false)
@@ -117,16 +116,16 @@ onBeforeMount(() => {
 
 // 更新玩家信息
 const updatePlayerInfo = async (haterSumId:string,areaSetting:string,playerSumId:string) => {
-  if (onlinePlayerInfo.value.haterIdList[areaSetting]===undefined){
-    onlinePlayerInfo.value.haterIdList[areaSetting]={}
+  if (store.onlinePlayerInfo.haterIdList[areaSetting]===undefined){
+    store.onlinePlayerInfo.haterIdList[areaSetting]={}
   }
-  if (onlinePlayerInfo.value.haterIdList[areaSetting][playerSumId]===undefined){
-    onlinePlayerInfo.value.haterIdList[areaSetting][playerSumId]={
+  if (store.onlinePlayerInfo.haterIdList[areaSetting][playerSumId]===undefined){
+    store.onlinePlayerInfo.haterIdList[areaSetting][playerSumId]={
       sumIdList:[],
-      nickname:localSummonerInfo.value.playerSumName
+      nickname:store.localSummonerInfo.playerSumName
     }
   }
-  const tempBlacklist = onlinePlayerInfo.value.haterIdList
+  const tempBlacklist = store.onlinePlayerInfo.haterIdList
   if (tempBlacklist[areaSetting][playerSumId]?.sumIdList.includes(haterSumId)){
     return true
   }
@@ -135,9 +134,9 @@ const updatePlayerInfo = async (haterSumId:string,areaSetting:string,playerSumId
     url:'/player/updatePlayer',
     method:'PUT',
     data:{
-      ID: onlinePlayerInfo.value.ID,
-      CreatedAt:onlinePlayerInfo.value.CreatedAt,
-      playerId: onlinePlayerInfo.value.playerId,
+      ID: store.onlinePlayerInfo.ID,
+      CreatedAt:store.onlinePlayerInfo.CreatedAt,
+      playerId: store.onlinePlayerInfo.playerId,
       haterIdList: JSON.stringify(tempBlacklist)
     }
   })
@@ -154,8 +153,8 @@ const updateHaterInfo = async (summonerId:string,areaSetting:string,currentName:
     "isShow":true
   }
   const blacklistStruct =[{
-    "playerSumName": localSummonerInfo.value.playerSumName,
-    "PlayerSumId": localSummonerInfo.value.playerSumId,
+    "playerSumName": store.localSummonerInfo.playerSumName,
+    "PlayerSumId": store.localSummonerInfo.playerSumId,
     "matchId": gameId,
     "sumId": summonerId,
     "tag": selectValue.value,
@@ -194,11 +193,11 @@ const confirmShielding = async () => {
   }
   emits('closeDra','closeDra')
 
-  const updatePlayer = await updatePlayerInfo(String(summonerId),areaSetting.value,localSummonerInfo.value.playerSumId)
+  const updatePlayer = await updatePlayerInfo(String(summonerId),areaSetting.value,store.localSummonerInfo.playerSumId)
   const updateHater = await updateHaterInfo(String(summonerId),areaSetting.value,currentName)
   if (updateHater && updatePlayer){
     message.success(`${currentName}   拉黑成功😡`)
-    addHater.value += 1
+    store.addHater += 1
   }else {
     message.error(`${currentName}   拉黑失败`)
   }

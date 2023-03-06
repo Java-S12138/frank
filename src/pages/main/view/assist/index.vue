@@ -10,6 +10,7 @@
     <champ-rank v-show="transValue==='champRank'" :trans-value-rank="transValue" class="slide-in-bottom"></champ-rank>
     <rune v-show="transValue==='rune'"  @changePage="changePage"
           class="slide-in-bottom" ></rune>
+
     <div v-if="isSwitchBlacklist" >
       <blacklist v-show="transValue==='blacklist'" class="slide-in-bottom"></blacklist>
       <n-drawer v-model:show="queryMatchAddition.active" style="border-top-left-radius: 12px;border-top-right-radius: 12px"
@@ -23,17 +24,18 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NTabs, NTab, useMessage,NDrawer
-} from "naive-ui";
+import {NDrawer, NTab, NTabs, useMessage} from "naive-ui";
 import Rune from './runePages/rune.vue'
 import ChampRank from './champRank.vue'
 import Blacklist from "./rankNote/blacklist.vue"
 import AddBlacklist from "./rankNote/addBlacklist.vue"
 import {onMounted, ref} from "vue";
-import {assistStore} from "../../store";
-import {storeToRefs} from "pinia";
-import {querySummonerIdAndSummonerName,queryEnemySummonerIdAndSummonerName,handleHaterListBySumId} from "../../utils/blacklistUtils"
+import assistStore from "../../store/assistStore";
+import {
+  handleHaterListBySumId,
+  queryEnemySummonerIdAndSummonerName,
+  querySummonerIdAndSummonerName
+} from "../../utils/blacklistUtils"
 import {invokeLcu} from "../../lcu";
 import {blacklistServe} from "../../utils/request";
 
@@ -44,11 +46,12 @@ onMounted(() => {
   // @ts-ignore
   nTabsRail.style.margin = "12px 12px 0 12px";champRank.style['border-radius'] = '5px';champRank.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' + ' color 1s var(--n-bezier),\n' + ' background-color 1s var(--n-bezier),\n' + ' border-color 1s var(--n-bezier)';rune.style['border-radius'] = '5px';rune.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' + ' color 1s var(--n-bezier),\n' + ' background-color 1s var(--n-bezier),\n' + ' border-color 1s var(--n-bezier)'
 })
-const tabsInstRef = ref(['champRank', 'rune','blacklist'])
+const tabsInstRef = ['champRank', 'rune','blacklist']
 const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
-const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,localSummonerInfo}:any = storeToRefs(store)
+
+// const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,localSummonerInfo}:any = storeToRefs(store)
 const isSwitchBlacklist = JSON.parse(<string>(localStorage.getItem('config'))).isSwitchBlacklist
 const queryMatchAddition = ref({
   active:false,
@@ -60,26 +63,22 @@ const queryMatchAddition = ref({
 cube.windows.message.on('received',async (id,content:any) => {
   // 查询我方召唤师
   if (id==='query-other-summoner' && isSwitchBlacklist){
-    showSummonerInfoModal.value = false
+    store.showSummonerInfoModal = false
     transValue.value = 'champRank'
     setTimeout( async () => {
-      const res =  await querySummonerIdAndSummonerName()
-      summonerInfo.value = []
-      summonerInfo.value = res
-      getCurrentBlacklist(summonerInfo.value)
+      store.summonerInfo = await querySummonerIdAndSummonerName()
+      getCurrentBlacklist(store.summonerInfo)
     },1500)
   }else if (id==='query-enemy-summoner'&& isSwitchBlacklist){
     // 查询敌方召唤师
     const locale = <string>(localStorage.getItem('locale'))
     if (locale==='zh_CN'){
       setTimeout(async () => {
-        const res = await queryEnemySummonerIdAndSummonerName()
-        endGameAfterInfo.value = [[], []]
-        endGameAfterInfo.value = res
+        store.endGameAfterInfo = await queryEnemySummonerIdAndSummonerName()
       }, 1500)
     }
   }else if (id==='show-other-summoner'&& isSwitchBlacklist){
-    currentBlackList.value.length = 0
+    store.currentBlackList = []
     transValue.value = 'blacklist'
   }else if (id==='refresh'){
     location.reload()
@@ -93,11 +92,11 @@ cube.windows.message.on('received',async (id,content:any) => {
 })
 
 
-const getCurrentBlacklist = async (summonerInfo:any) => {
-  currentBlackList.value = []
+const getCurrentBlacklist = async (summonerInfo:{name: string, summonerId: string}[]) => {
+  store.currentBlackList = []
   const areaSetting = localStorage.getItem('currentArea')
   // 获取当前队伍中的召唤师ID
-  const summonerList = summonerInfo.reduce((res:String[],item:{name:string,summonerId:number}) => {
+  const summonerList = summonerInfo.reduce((res:string[],item:{name:string,summonerId:string}) => {
     return res.concat([String(item.summonerId)])
   },[])
 
@@ -110,8 +109,8 @@ const getCurrentBlacklist = async (summonerInfo:any) => {
     return
   }
   if (res.data.data?.length !==0){
-      handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId).then((res) => {
-        currentBlackList.value = res.blackList
+      handleHaterListBySumId(res.data.data,store.localSummonerInfo.playerSumId).then((res) => {
+        store.currentBlackList = res.blackList
         if (res.blackList.length > 1){
           transValue.value = 'blacklist'
         }

@@ -1,7 +1,7 @@
 import {invokeLcu} from "../lcu";
 import {champDict} from "../resources/champList"
 import {lcuSummonerInfo} from "../lcu/types/homeLcuTypes";
-import {Hater, HaterItem} from "../interface/blacklistTypes";
+import {Hater, HaterItem,PCSelections,SumListDetail} from "../interface/blacklistTypes";
 
 // 查询本地召唤师信息
 const queryLoaclSummoner = async () => {
@@ -9,11 +9,14 @@ const queryLoaclSummoner = async () => {
   return summonerInfo.summonerId
 }
 // 根据召唤师ID查询信息
-const querySummonerInfo = async (summonerId: number): Promise<lcuSummonerInfo> => {
+const querySummonerInfo = async (summonerId: number|string): Promise<lcuSummonerInfo> => {
   return await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
 }
+
+
+
 // 获取召唤师的英雄
-const getSelectChamp = (playerChampionSelections: any) => {
+const getSelectChamp = (playerChampionSelections: PCSelections[]) => {
   const champDict:any = {}
   for (const summonerSelect of playerChampionSelections) {
     champDict[summonerSelect.summonerInternalName] = summonerSelect.championId
@@ -36,15 +39,15 @@ const getPosition = (selectedPosition: string) => {
     case 'NONE':
       return 0;
   }
+  return 0
 }
 
 const getDetailedInfo = (summonerInfo:any[],playerChampionSelections:any,gameType:number) => {
-  const infoList = []
+  const infoList:SumListDetail[] = []
   for (const infoElement of summonerInfo) {
       infoList.push({
-        name: infoElement.summonerName,
-        summonerId: infoElement.accountId,
-        // @ts-ignore
+        name: infoElement.summonerName as string,
+        summonerId: infoElement.accountId as number,
         selectChamp:  (gameType === 420 || gameType === 440) ?
           "https://game.gtimg.cn/images/lol/act/img/champion/" + champDict[`${playerChampionSelections[infoElement.summonerInternalName]}`].alias + ".png" :
           `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${infoElement.profileIconId}.png`,
@@ -58,7 +61,7 @@ const getDetailedInfo = (summonerInfo:any[],playerChampionSelections:any,gameTyp
 }
 
 // 查询敌方召唤师ID和昵称
-export const queryEnemySummonerIdAndSummonerName = async () => {
+export const queryEnemySummonerIdAndSummonerName = async ():Promise<[SumListDetail[], SumListDetail[], number]> => {
   const currentId = await queryLoaclSummoner()
   const mactchSession = await invokeLcu('get','/lol-gameflow/v1/session')
 
@@ -78,7 +81,7 @@ export const queryEnemySummonerIdAndSummonerName = async () => {
   return [
     getDetailedInfo(friendInfo,playerChampionSelections,gameType),
     getDetailedInfo(enemyInfo,playerChampionSelections,gameType),
-    mactchSession.gameData.gameId
+    mactchSession.gameData.gameId as number
   ]
 }
 
@@ -95,21 +98,17 @@ const getChatSelectChampId = async () => {
 // 查询对局中的所有召唤师的Id
 export const queryAllSummonerId = async () => {
   // todo 测试
-  // const summonerIdList = [2947489903,2943068890,2205753043394816,2937983583,2941902122]
-  // const summonerIdList = [2947489903, 2943068890, 2205753043394816, 2937983583, 4013465288]
-  // return summonerIdList
-  let summonerIdList = []
+  let summonerIdList:string[] = []
   const chatId = await getChatSelectChampId()
   if (chatId === null){return null}
 
   const summonersId = await invokeLcu('get',`/lol-chat/v1/conversations/${chatId}/messages`)
-
+  console.log(summonersId)
   for (const summonersIdElement of summonersId) {
     summonerIdList.push(summonersIdElement.fromSummonerId)
   }
   // 数组去重
-  summonerIdList = [... new Set(summonerIdList)]
-  return summonerIdList
+  return [... new Set(summonerIdList)]
 }
 
 // 获取我方召唤师ID和昵称
@@ -121,7 +120,7 @@ export const querySummonerIdAndSummonerName = async () => {
     return []
   }
 
-  for (const allSummonerIdElement of <[]>allSummonerId) {
+  for (const allSummonerIdElement of allSummonerId) {
     const currentNickname = (await querySummonerInfo(allSummonerIdElement)).displayName
     summonerInfoList.push({name: currentNickname, summonerId: allSummonerIdElement})
   }

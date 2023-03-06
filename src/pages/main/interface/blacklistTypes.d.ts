@@ -7,8 +7,8 @@ export interface PlayerInfo {
 }
 
 export interface OnlineBlacklistTpye {
-  sumIdList:string[],
-  nickname:string
+  sumIdList: string[],
+  nickname: string
 }
 
 export interface Hater {
@@ -35,4 +35,19 @@ export interface HaterItem {
   content: string;
   handAdd: boolean;
   isShow: boolean;
+}
+
+export interface PCSelections {
+  championId: number;
+  selectedSkinIndex: number;
+  spell1Id: number;
+  spell2Id: number;
+  summonerInternalName: string;
+}
+
+export interface SumListDetail {
+  name: string,
+  summonerId: number,
+  selectChamp: string,
+  index: number
 }

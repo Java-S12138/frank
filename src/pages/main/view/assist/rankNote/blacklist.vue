@@ -225,7 +225,7 @@ const detialsJson:Ref<HaterItem> = ref({
 })
 const detialsNickname = ref('')
 const message = useMessage()
-const areaSetting = ref(localStorage.getItem('currentArea'))
+const areaSetting = ref(localStorage.getItem('currentArea') as string)
 const store = assistStore()
 const {currentBlackList,onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
 const cubeUserId = ref('')
