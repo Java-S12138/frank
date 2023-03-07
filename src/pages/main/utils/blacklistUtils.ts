@@ -12,9 +12,6 @@ const queryLoaclSummoner = async () => {
 const querySummonerInfo = async (summonerId: number|string): Promise<lcuSummonerInfo> => {
   return await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
 }
-
-
-
 // 获取召唤师的英雄
 const getSelectChamp = (playerChampionSelections: PCSelections[]) => {
   const champDict:any = {}
@@ -103,7 +100,6 @@ export const queryAllSummonerId = async () => {
   if (chatId === null){return null}
 
   const summonersId = await invokeLcu('get',`/lol-chat/v1/conversations/${chatId}/messages`)
-  console.log(summonersId)
   for (const summonersIdElement of summonersId) {
     summonerIdList.push(summonersIdElement.fromSummonerId)
   }

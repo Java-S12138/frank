@@ -38,7 +38,6 @@ import {
 } from "../../utils/blacklistUtils"
 import {invokeLcu} from "../../lcu";
 import {blacklistServe} from "../../utils/request";
-
 onMounted(() => {
   let nTabsRail = document.querySelector('.n-tabs-rail')
   let champRank = document.querySelector('#app > div.n-tabs.n-tabs--segment-type.n-tabs--medium-size > div > div > div:nth-child(1) > div')
@@ -51,7 +50,6 @@ const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
 
-// const {summonerInfo,showSummonerInfoModal,currentBlackList,endGameAfterInfo,localSummonerInfo}:any = storeToRefs(store)
 const isSwitchBlacklist = JSON.parse(<string>(localStorage.getItem('config'))).isSwitchBlacklist
 const queryMatchAddition = ref({
   active:false,
@@ -63,8 +61,9 @@ const queryMatchAddition = ref({
 cube.windows.message.on('received',async (id,content:any) => {
   // 查询我方召唤师
   if (id==='query-other-summoner' && isSwitchBlacklist){
-    store.showSummonerInfoModal = false
+    store.currentBlackList = []
     transValue.value = 'champRank'
+    store.showSummonerInfoModal = false
     setTimeout( async () => {
       store.summonerInfo = await querySummonerIdAndSummonerName()
       getCurrentBlacklist(store.summonerInfo)
@@ -78,7 +77,6 @@ cube.windows.message.on('received',async (id,content:any) => {
       }, 1500)
     }
   }else if (id==='show-other-summoner'&& isSwitchBlacklist){
-    store.currentBlackList = []
     transValue.value = 'blacklist'
   }else if (id==='refresh'){
     location.reload()
@@ -93,13 +91,11 @@ cube.windows.message.on('received',async (id,content:any) => {
 
 
 const getCurrentBlacklist = async (summonerInfo:{name: string, summonerId: string}[]) => {
-  store.currentBlackList = []
   const areaSetting = localStorage.getItem('currentArea')
   // 获取当前队伍中的召唤师ID
   const summonerList = summonerInfo.reduce((res:string[],item:{name:string,summonerId:string}) => {
     return res.concat([String(item.summonerId)])
   },[])
-
   const res = await blacklistServe({
     url:'/hater/findHaterBySumId',
     data:{'sumIdList':summonerList,'area':areaSetting},
@@ -138,7 +134,6 @@ const showMatch = async () => {
     message.error('请先开始一局游戏哟 !')
   }
 }
-
 const changePage = (e:string) => {
   if (e){
     transValue.value = 'rune'

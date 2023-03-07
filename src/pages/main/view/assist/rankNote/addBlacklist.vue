@@ -99,7 +99,6 @@ const options = [
 const blacklistContent = ref('')
 const blacklistName = ref('')
 const store = assistStore()
-// const {onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
 const message = useMessage()
 const emits = defineEmits(['closeDra'])
 const isCommit = ref(false)

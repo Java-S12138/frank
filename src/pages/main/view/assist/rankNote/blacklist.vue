@@ -11,7 +11,7 @@
         <n-list style="margin-right:13px;margin-left: 13px"
                 class="fade-in-bottom" :key="blacklist.length">
           <div v-if="currentBlacklistStatus">
-            <n-list-item v-for="blackSummoner in currentBlackList" >
+            <n-list-item v-for="blackSummoner in store.currentBlackList" >
               <n-space justify="space-between" class="alignCenter">
                 <n-ellipsis style="
                 max-width: 110px;
@@ -22,7 +22,7 @@
                 </n-ellipsis>
                 <p style="color: #ff6666"> {{ formatDate(blackSummoner.blacklist.UpdatedAt) }}</p>
                 <n-button size="small" type="error"
-                          :secondary="localSummonerInfo.playerSumId===blackSummoner.blacklist.playerSumId ? false : true"
+                          :secondary="store.localSummonerInfo.playerSumId===blackSummoner.blacklist.playerSumId ? false : true"
                           @click="getDetails(blackSummoner.nickName,blackSummoner.blacklist)">
                   {{ showTagContent(blackSummoner.blacklist.tag) }}
                 </n-button>
@@ -42,7 +42,7 @@
 
               <p style="color: #9aa4af;"> {{ formatDate(blackSummoner.blacklist.UpdatedAt) }}</p>
               <n-button size="small" type="error"
-                        :secondary="localSummonerInfo.playerSumId===blackSummoner.blacklist.playerSumId ? false : true"
+                        :secondary="store.localSummonerInfo.playerSumId===blackSummoner.blacklist.playerSumId ? false : true"
                         @click="getDetails(blackSummoner.nickName,blackSummoner.blacklist)">
                         {{ showTagContent(blackSummoner.blacklist.tag) }}
               </n-button>
@@ -100,7 +100,7 @@
           </n-space>
         </template>
         <template #footer>
-          <n-space v-if="localSummonerInfo.playerSumId===detialsJson.playerSumId" style="width: 270px;" justify="space-between">
+          <n-space v-if="store.localSummonerInfo.playerSumId===detialsJson.playerSumId" style="width: 270px;" justify="space-between">
 
             <n-popconfirm
               @positive-click="reviseContent"
@@ -175,7 +175,7 @@
             />
           </n-scrollbar>
 
-        <p class="tipText" v-if="localSummonerInfo.playerSumId===detialsJson.playerSumId">点击文字区域可以修改黑名单内容</p>
+        <p class="tipText" v-if="store.localSummonerInfo.playerSumId===detialsJson.playerSumId">点击文字区域可以修改黑名单内容</p>
       </n-drawer-content>
     </n-drawer>
 
@@ -197,18 +197,15 @@ import {NCard,NSpace,NList,NPopover,NInput,NTag,NPopconfirm,NTreeSelect,
 import {onMounted, Ref, ref, watch} from "vue"
 import PickSummoner from "./pickSummoner.vue"
 import AddBlacklist from "./addBlacklist.vue"
-import {assistStore} from "../../../store";
-import {storeToRefs} from "pinia";
+import assistStore from "../../../store/assistStore";
 import {blacklistServe} from "../../../utils/request";
 import {OnlineBlacklistTpye, HaterItem} from "../../../interface/blacklistTypes";
 import {areaOptions} from "../../../resources/areaList";
 import {handleHaterListBySumId} from "../../../utils/blacklistUtils";
-import {lcuSummonerInfo} from "../../../lcu/types/homeLcuTypes";
-import {invokeLcu} from "../../../lcu";
 
 const active = ref(false)
 const addBlacklistActive = ref(false)
-const blacklist:Ref<any> = ref([])
+const blacklist:Ref = ref([])
 const detialsJson:Ref<HaterItem> = ref({
   "ID": 0,
   "CreatedAt": "",
@@ -227,18 +224,17 @@ const detialsNickname = ref('')
 const message = useMessage()
 const areaSetting = ref(localStorage.getItem('currentArea') as string)
 const store = assistStore()
-const {currentBlackList,onlinePlayerInfo,localSummonerInfo,addHater}: any= storeToRefs(store)
 const cubeUserId = ref('')
 const onlineListStatus = ref(0)
 const currentBlacklistStatus = ref(false)
 const isSubscribe = localStorage.getItem('isSubscribe')
 
-watch(currentBlackList,() => {
-  if (currentBlackList.value.length !== 0){
+watch(() => store.currentBlackList,() => {
+  if (store.currentBlackList.length !== 0){
     currentBlacklistStatus.value = true
     onlineListStatus.value = 1
-    if (currentBlackList.value.length === 1){
-      const haterItem = currentBlackList.value[0]
+    if (store.currentBlackList.length === 1){
+      const haterItem = store.currentBlackList[0]
       getDetails(haterItem.nickName,haterItem.blacklist)
     }
   }else {
@@ -247,15 +243,15 @@ watch(currentBlackList,() => {
       onlineListStatus.value = 0
     }
   }
-})
+}, {flush:'post'})
 
-watch(addHater,() => {
+watch(() => store.addHater,() => {
   areaSetting.value = localStorage.getItem('currentArea') as string
-  findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
+  findHaterByHaterId((store.onlinePlayerInfo.haterIdList)[areaSetting.value][store.localSummonerInfo.playerSumId].sumIdList)
 })
 
 onMounted(async () => {
-  await queryLocalSummonerInfo()
+  store.queryLocalSummonerInfo()
   cubeUserId.value =(await cube.profile.getCurrentUser()).userId
   queryBlacklist()
 })
@@ -276,13 +272,13 @@ const queryBlacklist = async () => {
     message.error('接口出现异常')
     return
   }
-  onlinePlayerInfo.value = res.data.data
-  onlinePlayerInfo.value.haterIdList = JSON.parse(res.data.data.haterIdList)
-  if (onlinePlayerInfo.value.haterIdList[areaSetting.value] === undefined){
+  store.onlinePlayerInfo = res.data.data
+  store.onlinePlayerInfo.haterIdList = JSON.parse(res.data.data.haterIdList)
+  if (store.onlinePlayerInfo.haterIdList[areaSetting.value] === undefined){
     onlineListStatus.value = 0
     return
   }
-  const onlineBlacklist:OnlineBlacklistTpye = onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId]
+  const onlineBlacklist:OnlineBlacklistTpye = store.onlinePlayerInfo.haterIdList[areaSetting.value][store.localSummonerInfo.playerSumId]
   if (onlineBlacklist?.sumIdList?.length > 0){
     findHaterByHaterId(onlineBlacklist.sumIdList)
   }else {
@@ -304,7 +300,7 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
     return
   }
   if (res.data.data?.length !== 0){
-    const hater = await handleHaterListBySumId(res.data.data,localSummonerInfo.value.playerSumId)
+    const hater = await handleHaterListBySumId(res.data.data,store.localSummonerInfo.playerSumId)
     blacklist.value = hater.blackList
     if (hater.existHater.length !== haterIdList.length){
       // 玩家的haterList长度发生变化改变
@@ -322,14 +318,14 @@ const findHaterByHaterId = async (haterIdList:string[]) => {
 
 // 玩家的haterList长度发生变化改变
 const changePlayerSumIdList =async (list:any[]) => {
-  onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList = list
+  store.onlinePlayerInfo.haterIdList[areaSetting.value][store.localSummonerInfo.playerSumId].sumIdList = list
   blacklistServe({
     url: '/player/updatePlayer',
     method: 'PUT',
     data: {
-      ID: onlinePlayerInfo.value.ID,
-      playerId: onlinePlayerInfo.value.playerId,
-      haterIdList: JSON.stringify(onlinePlayerInfo.value.haterIdList)
+      ID: store.onlinePlayerInfo.ID,
+      playerId: store.onlinePlayerInfo.playerId,
+      haterIdList: JSON.stringify(store.onlinePlayerInfo.haterIdList)
     }
   })
 }
@@ -397,7 +393,7 @@ const deleteBlackElement = async () => {
   })
   if (res.data?.code===0){
     if (await isHavaItem(detialsJson.value.sumId,detialsJson.value.hId)){
-      const haterIdList:OnlineBlacklistTpye =  onlinePlayerInfo.value.haterIdList[areaSetting.value][localSummonerInfo.value.playerSumId]
+      const haterIdList:OnlineBlacklistTpye =  store.onlinePlayerInfo.haterIdList[areaSetting.value][store.localSummonerInfo.playerSumId]
       message.success('删除成功')
       findHaterByHaterId(haterIdList.sumIdList)
     }else {
@@ -421,19 +417,19 @@ const isHavaItem = async (sumId:string,hId:number) => {
       // 判断Hater的黑名单中是否还存在 本地召唤师添加的数据
       // 如果不存在, 需要更新Player里面的数据
       const isHasLocal = res.data?.data?.list.find(
-        (i: HaterItem) => (i.playerSumId === localSummonerInfo.value.playerSumId))
+        (i: HaterItem) => (i.playerSumId === store.localSummonerInfo.playerSumId))
       if (isHasLocal === undefined) {
-        const tempBlacklist = onlinePlayerInfo.value.haterIdList
-        const index = tempBlacklist[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList.indexOf(sumId)
+        const tempBlacklist = store.onlinePlayerInfo.haterIdList
+        const index = tempBlacklist[areaSetting.value][store.localSummonerInfo.playerSumId].sumIdList.indexOf(sumId)
         if (index > -1) {
-          tempBlacklist[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList.splice(index, 1)
+          tempBlacklist[areaSetting.value][store.localSummonerInfo.playerSumId].sumIdList.splice(index, 1)
         }
         blacklistServe({
           url: '/player/updatePlayer',
           method: 'PUT',
           data: {
-            ID: onlinePlayerInfo.value.ID,
-            playerId: onlinePlayerInfo.value.playerId,
+            ID: store.onlinePlayerInfo.ID,
+            playerId: store.onlinePlayerInfo.playerId,
             haterIdList: JSON.stringify(tempBlacklist)
           }
         })
@@ -457,12 +453,6 @@ const isHavaItem = async (sumId:string,hId:number) => {
 // 通过字数判断展示标签的内容
 const showTagContent = (tag:string) => {
   return tag.length === 2 ? tag : '原因'
-}
-// 新增黑名单
-const addBlacklistFunc = () => {
-  console.log('addBlack')
-  areaSetting.value = localStorage.getItem('currentArea') as string
-  findHaterByHaterId((onlinePlayerInfo.value.haterIdList)[areaSetting.value][localSummonerInfo.value.playerSumId].sumIdList)
 }
 // 更新排位日记
 cube.windows.message.on('received',(id:any) => {
@@ -490,12 +480,6 @@ const toMatch = async (matchId:string,summonerId:string) => {
   if (queryMatch!==undefined){
     cube.windows.message.send(queryMatch.id,'refresdh-window','')
   }
-}
-// 获取本地召唤师信息
-const queryLocalSummonerInfo = async () => {
-  const summonerInfo:lcuSummonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
-  localSummonerInfo.value.playerSumId = `${summonerInfo.summonerId}`
-  localSummonerInfo.value.playerSumName = summonerInfo.displayName
 }
 
 const openWeb = (url:string) => {

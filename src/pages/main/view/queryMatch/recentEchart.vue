@@ -70,7 +70,7 @@ const store = queryStore()
 const {showChart,matchList,currentGameId,currentMatchIndex} = storeToRefs(store)
 const echartData = ref({champ:[],kills:[],deaths:[],assists:[]})
 
-const props = defineProps({
+const props:any = defineProps({
   matchList: {
     type: Object
   }

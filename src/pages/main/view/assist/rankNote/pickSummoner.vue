@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="showSummonerInfoModal"
+  <n-modal v-model:show="store.showSummonerInfoModal"
            :mask-closable="false"
            :auto-focus="false">
     <n-card
@@ -83,15 +83,12 @@ import {
 import {CircleX} from '@vicons/tabler'
 import AddBlacklist from './addBlacklist.vue'
 import {Ref, ref} from "vue";
-import {assistStore} from "../../../store";
-import {storeToRefs} from "pinia";
-
+import assistStore from "../../../store/assistStore";
 
 const active = ref(false)
-const summonersList:Ref<any> = ref([])
-const enemySummonersList:Ref<any> = ref([])
+const summonersList:Ref = ref([])
+const enemySummonersList:Ref = ref([])
 const store = assistStore()
-const {endGameAfterInfo, showSummonerInfoModal}:any = storeToRefs(store)
 const blacklistName = ref('')
 const blacklistId = ref('')
 const gameAfterId = ref(0)
@@ -100,25 +97,25 @@ const message = useMessage()
 
 cube.windows.message.on('received',async (id) => {
   if (id==='show-other-summoner'){
-    if (endGameAfterInfo.value[0].length !== 0) {
+    if (store.endGameAfterInfo[0].length !== 0) {
       summonersList.value = []
-      for (const summoner of endGameAfterInfo.value[0]) {
-        summonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
+      for (const summoner of store.endGameAfterInfo[0]) {
+        summonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.index])
       }
     }
-    if (endGameAfterInfo.value[1].length!== 0) {
+    if (store.endGameAfterInfo[1].length!== 0) {
       enemySummonersList.value = []
-      for (const summoner of  endGameAfterInfo.value[1]) {
-        enemySummonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.position])
+      for (const summoner of store.endGameAfterInfo[1]) {
+        enemySummonersList.value.push([summoner.name, `${summoner.summonerId}`,summoner.selectChamp,summoner.index])
       }
     }
-    gameAfterId.value = endGameAfterInfo.value[2]
-    showSummonerInfoModal.value = true
+    gameAfterId.value = store.endGameAfterInfo[2]
+    store.showSummonerInfoModal = true
   }
 })
 
 const closeModal = () => {
-  showSummonerInfoModal.value = false
+  store.showSummonerInfoModal = false
 }
 
 const preAddBlacklist = (summonerName:string, summonerId:string) => {
