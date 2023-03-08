@@ -1,13 +1,15 @@
 <template>
-  <n-tabs type="segment" :animated=true @mousedown="handldDrge"
+  <n-tabs type="segment" :animated=false @mousedown="handldDrge"
           ref="tabsInstRef" :value="transValue">
     <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'"></n-tab>
-    <n-tab name="match" tab="对局详情" @click="showMatch"></n-tab>
+    <n-tab name="matchDetail" tab="对局详情" @click="showMatch"></n-tab>
     <n-tab v-if="isSwitchBlacklist" name="blacklist" tab="排位笔记" @click="transValue='blacklist'"></n-tab>
     <n-tab name="rune" tab="符文配置" @click="transValue='rune'"></n-tab>
   </n-tabs>
 
-    <champ-rank v-show="transValue==='champRank'" :trans-value-rank="transValue" class="slide-in-bottom"></champ-rank>
+    <champ-rank v-show="transValue==='champRank'"
+                :trans-value-rank="transValue" class="slide-in-bottom"></champ-rank>
+    <match-detail  v-show="transValue==='matchDetail'" class="slide-in-bottom"/>
     <rune v-show="transValue==='rune'"  @changePage="changePage"
           class="slide-in-bottom" ></rune>
 
@@ -29,6 +31,7 @@ import Rune from './runePages/rune.vue'
 import ChampRank from './champRank.vue'
 import Blacklist from "./rankNote/blacklist.vue"
 import AddBlacklist from "./rankNote/addBlacklist.vue"
+import MatchDetail from "./matchDetail/index.vue"
 import {onMounted, ref} from "vue";
 import assistStore from "../../store/assistStore";
 import {
@@ -45,7 +48,7 @@ onMounted(() => {
   // @ts-ignore
   nTabsRail.style.margin = "12px 12px 0 12px";champRank.style['border-radius'] = '5px';champRank.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' + ' color 1s var(--n-bezier),\n' + ' background-color 1s var(--n-bezier),\n' + ' border-color 1s var(--n-bezier)';rune.style['border-radius'] = '5px';rune.style['transition'] = 'box-shadow 1s var(--n-bezier),\n' + ' color 1s var(--n-bezier),\n' + ' background-color 1s var(--n-bezier),\n' + ' border-color 1s var(--n-bezier)'
 })
-const tabsInstRef = ['champRank', 'rune','blacklist']
+const tabsInstRef = ['champRank', 'rune','blacklist','matchDetail']
 const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
@@ -119,20 +122,21 @@ const showMatch = async () => {
   // todo dev game mode
   // cube.windows.obtainDeclaredWindow('matchHistory')
   // return
-  const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
-  if (clientStatus === 'ChampSelect'){
-    cube.windows.obtainDeclaredWindow('matchHistory')
-    message.success('获取战绩成功 !')
-  }
-  else if (clientStatus === 'InProgress') {
-    cube.windows.obtainDeclaredWindow('recentMatch',{height:551}).then(value => {
-      if (value!==undefined){
-        cube.windows.show(value.id)
-      }
-    })
-  }else {
-    message.error('请先开始一局游戏哟 !')
-  }
+  // const clientStatus = await invokeLcu('get','/lol-gameflow/v1/gameflow-phase')
+  // if (clientStatus === 'ChampSelect'){
+  //   cube.windows.obtainDeclaredWindow('matchHistory')
+  //   message.success('获取战绩成功 !')
+  // }
+  // else if (clientStatus === 'InProgress') {
+  //   cube.windows.obtainDeclaredWindow('recentMatch',{height:551}).then(value => {
+  //     if (value!==undefined){
+  //       cube.windows.show(value.id)
+  //     }
+  //   })
+  // }else {
+  //   message.error('请先开始一局游戏哟 !')
+  // }
+  transValue.value = 'matchDetail'
 }
 const changePage = (e:string) => {
   if (e){

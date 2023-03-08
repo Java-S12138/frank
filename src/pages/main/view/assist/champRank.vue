@@ -618,14 +618,10 @@ const champSelectPatchAction = async (actionID:any, champId:any) => {
   border-radius: 10px;
   width: auto;
 }
-
-
 .isHover:hover {
   background-color: #ffffff;
   color: #4098fc;
 }
-
-
 .addMargin {
   margin-top: -1.5px;
   margin-left: 8px;
