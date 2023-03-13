@@ -3,8 +3,8 @@
           ref="tabsInstRef" :value="transValue">
     <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'"></n-tab>
     <n-tab name="matchDetail" tab="对局详情" @click="showMatch"></n-tab>
-    <n-tab v-if="isSwitchBlacklist" name="blacklist" tab="排位笔记" @click="transValue='blacklist'"></n-tab>
     <n-tab name="rune" tab="符文配置" @click="transValue='rune'"></n-tab>
+    <n-tab v-if="isSwitchBlacklist" name="blacklist" tab="排位笔记" @click="transValue='blacklist'"></n-tab>
   </n-tabs>
 
     <champ-rank v-show="transValue==='champRank'"
@@ -61,25 +61,35 @@ const queryMatchAddition = ref({
   gameAfterId:0
 })
 
+// todo 测试
+store.summonerInfo = [
+  {
+    "name": "18岁游走型中单",
+    "summonerId": "4016690740",
+    "puuid": "c9b0fd7a-59cd-54c6-bf7e-6b5241ebee84",
+    "profileIconId": 5430,
+    "summonerLevel":258
+  }
+]
+
 cube.windows.message.on('received',async (id,content:any) => {
   // 查询我方召唤师
-  if (id==='query-other-summoner' && isSwitchBlacklist){
+  if (id==='query-other-summoner'){
     store.currentBlackList = []
     transValue.value = 'champRank'
     store.showSummonerInfoModal = false
     setTimeout( async () => {
       store.summonerInfo = await querySummonerIdAndSummonerName()
-      getCurrentBlacklist(store.summonerInfo)
+      if (isSwitchBlacklist){
+        getCurrentBlacklist(store.summonerInfo)
+      }
     },1500)
-  }else if (id==='query-enemy-summoner'&& isSwitchBlacklist){
+  }else if (id==='query-enemy-summoner' && isSwitchBlacklist){
     // 查询敌方召唤师
-    const locale = <string>(localStorage.getItem('locale'))
-    if (locale==='zh_CN'){
-      setTimeout(async () => {
-        store.endGameAfterInfo = await queryEnemySummonerIdAndSummonerName()
-      }, 1500)
-    }
-  }else if (id==='show-other-summoner'&& isSwitchBlacklist){
+    setTimeout(async () => {
+      store.endGameAfterInfo = await queryEnemySummonerIdAndSummonerName()
+    }, 1500)
+  }else if (id==='show-other-summoner' && isSwitchBlacklist){
     transValue.value = 'blacklist'
   }else if (id==='refresh'){
     location.reload()

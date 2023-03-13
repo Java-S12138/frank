@@ -21,8 +21,7 @@ export class GameFlow {
   // 游戏结束后,根据用户设置判断是否弹出拉黑召唤师的抽屉
   public isShowBlack = async () => {
     const config = JSON.parse(<string>(localStorage.getItem('config')))
-    const locale = <string>(localStorage.getItem('locale'))
-    if (config.isSwitchBlacklist && locale==='zh_CN') {
+    if (config.isSwitchBlacklist) {
       const assistWin = await cube.windows.getWindowByName('assist')
       cube.windows.show(assistWin.id)
       cube.windows.message.send(assistWin.id, 'show-other-summoner', '')

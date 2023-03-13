@@ -1,12 +1,12 @@
 import {defineStore} from "pinia";
-import {SumListDetail} from "../interface/blacklistTypes";
+import {SumListDetail,SummonerInfoList} from "../interface/blacklistTypes";
 import {lcuSummonerInfo} from "../lcu/types/homeLcuTypes";
 import {invokeLcu} from "../lcu";
 
 const assistStore = defineStore('assist', {
   state: () => {
     return {
-      summonerInfo: [] as { name: string, summonerId: string }[],// 当前对局中队友的信息
+      summonerInfo: [] as SummonerInfoList[],// 当前对局中队友的信息
       endGameAfterInfo: [[], [], 0] as [SumListDetail[], SumListDetail[], number],// 当前对局敌我双方信息
       currentBlackList: [] as any[],// 当前对局中出现的黑名单队友
       showSummonerInfoModal: false,

@@ -1,7 +1,7 @@
 import {invokeLcu} from "../lcu";
 import {champDict} from "../resources/champList"
 import {lcuSummonerInfo} from "../lcu/types/homeLcuTypes";
-import {Hater, HaterItem,PCSelections,SumListDetail} from "../interface/blacklistTypes";
+import {Hater, HaterItem,PCSelections,SumListDetail,SummonerInfoList} from "../interface/blacklistTypes";
 
 // 查询本地召唤师信息
 const queryLoaclSummoner = async () => {
@@ -69,7 +69,7 @@ export const queryEnemySummonerIdAndSummonerName = async ():Promise<[SumListDeta
   const gameType = mactchSession?.gameData?.queue?.id
   const playerChampionSelections = getSelectChamp(mactchSession.gameData.playerChampionSelections)
 
-  if (mactchSession.gameData.teamOne.find((i: any) => i.accountId === currentId)) {
+  if (mactchSession.gameData.teamOne.find((i: any) => i.summonerId === currentId)) {
     var [enemyInfo,friendInfo] = [mactchSession.gameData.teamTwo,mactchSession.gameData.teamOne]
   } else {
     var [friendInfo,enemyInfo] = [mactchSession.gameData.teamTwo,mactchSession.gameData.teamOne]
@@ -108,17 +108,23 @@ export const queryAllSummonerId = async () => {
 }
 
 // 获取我方召唤师ID和昵称
-export const querySummonerIdAndSummonerName = async () => {
+export const querySummonerIdAndSummonerName = async ():Promise<[]| SummonerInfoList[]> => {
   console.log('获取我方召唤师ID和昵称')
-  const summonerInfoList = []
+  const summonerInfoList:SummonerInfoList[] = []
   const allSummonerId = await queryAllSummonerId()
   if (allSummonerId === null) {
     return []
   }
 
   for (const allSummonerIdElement of allSummonerId) {
-    const currentNickname = (await querySummonerInfo(allSummonerIdElement)).displayName
-    summonerInfoList.push({name: currentNickname, summonerId: allSummonerIdElement})
+    const currentSummonerInfo = await querySummonerInfo(allSummonerIdElement)
+    summonerInfoList.push({
+      name: currentSummonerInfo.displayName,
+      summonerId: `${allSummonerIdElement}`,
+      puuid:currentSummonerInfo.puuid,
+      profileIconId:currentSummonerInfo.profileIconId,
+      summonerLevel:currentSummonerInfo.summonerLevel
+    })
   }
   return summonerInfoList
 }

@@ -123,7 +123,7 @@ onMounted(async () => {
 })
 
 const init = (matchList:any) => {
-  if (matchList.friendList.length !== 0){
+  if (matchList.friendList.length !== 0 || matchList.enemyList.length !== 0){
     isPageNull.value = false
   }else {
     return

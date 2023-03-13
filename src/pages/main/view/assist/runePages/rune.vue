@@ -7,8 +7,8 @@
   <div v-else>
     <n-card class="boxShadow" size="small">
       <n-space justify="center" vertical>
-        <p style="color: #9aa4af;">符文来源 OP.GG or 101.QQ.com</p>
-        <p style="color: #9aa4af;">英雄选择完毕才可以使用符文配置功能</p>
+        <p style="color: rgb(102, 111, 117)">符文来源 OP.GG or 101.QQ.com</p>
+        <p style="color: rgb(102, 111, 117)">英雄选择完毕才可以使用符文配置功能</p>
       </n-space>
     </n-card>
   </div>

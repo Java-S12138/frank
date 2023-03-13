@@ -51,3 +51,11 @@ export interface SumListDetail {
   selectChamp: string,
   index: number
 }
+
+export interface SummonerInfoList {
+  name: string,
+  summonerId: string,
+  puuid: string,
+  profileIconId:number,
+  summonerLevel:number
+}

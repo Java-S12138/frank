@@ -65,7 +65,7 @@ export class recentMatch {
   // 检测LCU接口数据是否正常
   public checkmatchSession = async () => {
     await this.init()
-    if (this.matchSession?.gameData?.teamOne.length !== 0 ){
+    if (this.matchSession?.gameData?.teamOne.length !== 0 || this.matchSession?.gameData?.teamTwo.length !== 0){
       return true
     }else {
       return false
@@ -175,7 +175,7 @@ export class recentMatch {
   // 通过Lcu接口查询数据
   public fromLcuQuery = async () => {
     if (this.gameType===undefined){return {friendList: <any[]>[]}}
-    const isTeamOne = this.matchSession.gameData.teamOne.find((i: any) => i.accountId === this.currentId) !== undefined?true:false
+    const isTeamOne = this.matchSession.gameData.teamOne.find((i: any) => i.summonerId === this.currentId) !== undefined?true:false
     const [friendList,enemyList] = await Promise.all([
       isTeamOne === true ? this.simplifySummonerInfo(this.matchSession.gameData.teamOne) : this.simplifySummonerInfo(this.matchSession.gameData.teamTwo),
       isTeamOne === true ? this.simplifySummonerInfo(this.matchSession.gameData.teamTwo) : this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
