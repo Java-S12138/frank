@@ -1,69 +1,82 @@
 <template>
-  <!--    <n-layout class="contain" has-sider>
-        <n-layout-sider content-style="padding: 0px;">
-          <n-avatar
-            :size="55"
-            src="https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png"
-            style="display: block"
-          />
-        </n-layout-sider>
-        <n-layout>
-          <n-layout-content>
-            <n-space :size="[5,0]">
-              <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-              <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-              <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-              <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-              <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-              <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-              <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-            </n-space>
-          </n-layout-content>
+  <n-scrollbar v-if="matchList !== null" style="max-height: 378px;padding-right: 10px">
+    <n-space vertical :size="[0,15]" style="margin-top: 3px">
+        <n-layout v-for="match in matchList"
+                  style="height: 55px" has-sider>
+          <n-layout-sider width="55" style="margin-right: 8px;">
+            <div class="siderDiv">
+              <n-avatar
+                :size="55"
+                :src="match.champImgUrl"
+                style="display: block"
+                class="siderDiv"
+              />
+              <div class="summonerSkill">
+                <img class="imgItemSecond" :src="match.spell1Id">
+                <img class="imgItemSecond" :src="match.spell2Id">
+              </div>
+            </div>
+          </n-layout-sider>
+          <n-layout>
+            <n-layout-content>
+              <div class="itemImgDiv">
+                <img class="imgItem" :src="match.item0">
+                <img class="imgItem" :src="match.item1">
+                <img class="imgItem" :src="match.item2">
+                <img class="imgItem" :src="match.item3">
+                <img class="imgItem" :src="match.item4">
+                <img class="imgItem" :src="match.item5">
+                <img class="imgItem" :src="match.item6">
+              </div>
+            </n-layout-content>
+            <n-layout-content class="infoLayout">
+              <div class="infoDiv">
+                <n-tag class="tagKDA" :bordered="false" size="small"
+                       :type="match.isWin ? 'success' : 'error'">
+                  {{ match.kills }}-{{match.deaths}}-{{match.assists}}
+                </n-tag>
+                <n-tag class="typeTag"
+                       :bordered="false" size="small" type="default">{{ match.gameModel }}|{{ match.lane }}•{{match.level}}
+                </n-tag>
+                <n-tag class="tagKDA" :color="{ color: '#f1f1f1', textColor: '#8a8a8a' }"
+                       size="small" :bordered="false" type="default">{{match.matchTime}}</n-tag>
+              </div>
+            </n-layout-content>
+          </n-layout>
         </n-layout>
-      </n-layout>-->
-  <n-layout style="height: 55px" has-sider>
-    <n-layout-sider width="55" style="margin-right: 8px">
-      <n-avatar
-        :size="55"
-        src="https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png"
-        style="display: block"
-      />
-    </n-layout-sider>
-    <n-layout>
-      <n-layout-content>
-        <div class="itemImgDiv">
-          <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-          <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-          <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-          <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-          <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-          <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-          <img class="imgItem" src="https://game.gtimg.cn/images/lol/act/img/item/6655.png">
-        </div>
-      </n-layout-content>
-      <n-layout-content class="infoLayout">
-        <div class="infoDiv">
-          <n-tag class="tagKDA" :bordered="false"
-                 size="small" type="success">12-5-8</n-tag>
-          <n-tag  class="tagKDA" :bordered="false"
-                  size="small" type="success">中单•16</n-tag>
-          <!--          <n-tag   :bordered="false"-->
-          <!--                 size="small" type="success">3/15/22</n-tag>-->
-          <img class="imgItemSecond" src="https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png">
-          <img class="imgItemSecond" src="https://game.gtimg.cn/images/lol/act/img/spell/SummonerIgnite.png">
-
-        </div>
-      </n-layout-content>
-    </n-layout>
-  </n-layout>
-
+      </n-space>
+  </n-scrollbar>
+  <drawer-error v-else/>
 </template>
 
 <script setup lang="ts">
-import {
-  NSpace, NAvatar, NTag, NTabs, NLayout, NLayoutSider, NLayoutContent,
-  NLayoutHeader, NLayoutFooter
-} from 'naive-ui'
+import {NSpace,NScrollbar,NAvatar, NTag, NLayout, NLayoutSider, NLayoutContent,} from 'naive-ui'
+import {onMounted, PropType, Ref, ref} from "vue";
+import {queryMatch} from "../../../lcu/assistMatchDetailLcu";
+import {simpleMatchTypes} from "../../../lcu/types/queryMatchLcuTypes";
+import DrawerError from "./drawerError.vue";
+const props = defineProps({
+  summonerId:{
+    default:'',
+    type:String as PropType<string>
+  },
+  summonerPuuid:{
+    default:'',
+    type:String as PropType<string>
+  },
+})
+
+const matchList:Ref<simpleMatchTypes[] | null> = ref([])
+
+onMounted(() => {
+  queryMatch(props.summonerPuuid,localStorage.getItem('locale') as string).then((value) => {
+    if (value===null){
+      return
+    }
+    matchList.value = value
+  })
+})
+
 </script>
 
 <style scoped>
@@ -72,27 +85,47 @@ import {
   height: 25px;
   border-radius: 3px;
 }
+
 .imgItemSecond {
-  margin-top: 10px;
   width: 15px;
   height: 15px;
   border-radius: 2px;
 }
+
 .itemImgDiv {
   display: flex;
   justify-content: space-between
 }
+
 .infoDiv {
   display: flex;
   gap: 8px;
 }
+
 .infoLayout {
-  margin-top: 5px;
-  height: 25px;
+  margin-top: 8px;
+  height: 22px;
 }
+
 .tagKDA {
-  height: 25px;
-  width: 58px;
+  height: 22px;
+  width: 58.5px;
   justify-content: center;
+}
+
+.typeTag {
+  height: 22px;
+  width: 91.5px;
+  justify-content: center;
+}
+.siderDiv {
+  position: relative;
+}
+.summonerSkill {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  display: flex;
+  gap: 3px;
 }
 </style>

@@ -60,14 +60,38 @@ const queryMatchAddition = ref({
 })
 
 // todo 测试
-store.summonerInfo = [
+store.summonerInfo =   [
   {
     "name": "18岁游走型中单",
     "summonerId": "4016690740",
     "puuid": "c9b0fd7a-59cd-54c6-bf7e-6b5241ebee84",
     "profileIconId": 5430,
-  }
-]
+  },
+    {
+      "name": "捉只TAMU烤来吃",
+      "summonerId": "2973065473205536",
+      "puuid": "d07f0dc9-fa09-513a-8213-3692c19aa16a",
+      "profileIconId": 5675,
+    },
+    {
+      "name": "苏城旧梦",
+      "summonerId": "2928701827",
+      "puuid": "c3f03f56-1a70-53ee-9bf0-33920159b7d5",
+      "profileIconId": 1296,
+    },
+    {
+      "name": "捉只Timor烤来吃",
+      "summonerId": "2316548464919392",
+      "puuid": "4da9b56c-8699-5805-8b31-27c08f823fc9",
+      "profileIconId": 4864,
+    },
+    {
+      "name": "那一抹忧伤88",
+      "summonerId": "4014910477",
+      "puuid": "27f4909d-93c4-55a7-b847-80692c8f14d1",
+      "profileIconId": 5528,
+    }
+  ]
 
 cube.windows.message.on('received',async (id,content:any) => {
   // 查询我方召唤师

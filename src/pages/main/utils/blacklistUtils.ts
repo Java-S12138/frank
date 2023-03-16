@@ -123,7 +123,6 @@ export const querySummonerIdAndSummonerName = async ():Promise<[]| SummonerInfoL
       summonerId: `${allSummonerIdElement}`,
       puuid:currentSummonerInfo.puuid,
       profileIconId:currentSummonerInfo.profileIconId,
-      summonerLevel:currentSummonerInfo.summonerLevel
     })
   }
   return summonerInfoList

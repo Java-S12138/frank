@@ -216,3 +216,24 @@ export interface MatchList {
   matchTime: string;
   gameModel: string;
 }
+
+export interface simpleMatchTypes {
+  champImgUrl: string;
+  level: number;
+  isWin: boolean;
+  kills: number;
+  deaths: number;
+  assists: number;
+  matchTime: string;
+  gameModel: string;
+  spell1Id: string;
+  spell2Id: string;
+  item0: string;
+  item1: string;
+  item2: string;
+  item3: string;
+  item4: string;
+  item5: string;
+  item6: string;
+  lane: string;
+}

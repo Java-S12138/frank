@@ -8,7 +8,7 @@
           round
           :src="getImgUrl(summoner.profileIconId)"
           style="display: block;cursor: pointer"
-          @click="active=true"
+          @click="getCurrentSum(summoner.name,extraData[index]?.rank,summoner.summonerId,summoner.puuid,summoner.profileIconId)"
         />
         <n-space vertical :size="[0,5]">
           <n-tag round class="titleTag" :bordered="false" type="success">{{ summoner.name }}</n-tag>
@@ -20,7 +20,6 @@
         <n-avatar
           v-for="img in extraData[index]?.champImgs"
           :size="32"
-          round
           :src="img"
           style="display: block"
         />
@@ -37,8 +36,14 @@
   </n-list>
 
   <n-drawer style="border-top-left-radius: 12px;border-top-right-radius: 12px"
-    v-model:show="active" :height="502" placement="bottom">
-    <summoner-detail/>
+    v-model:show="active" :height="523" placement="bottom">
+    <summoner-detail
+      :summoner-name="currentSumInfo.name"
+      :summoner-level="currentSumInfo.level"
+      :summoner-puuid="currentSumInfo.puuid"
+      :summoner-id="currentSumInfo.summonerId"
+      :summoner-icon="currentSumInfo.icon">
+    </summoner-detail>
   </n-drawer>
 </template>
 
@@ -52,6 +57,7 @@ import SummonerDetail from "./summonerDetail.vue";
 const store = assistStore()
 const extraData:Ref<{rank:string,champImgs:string[]}[]> = ref([])
 const active = ref(false)
+const currentSumInfo = ref({name:'',level:'',summonerId:'',puuid:'',icon:0})
 
 onMounted(async () => {
   for (const summoner of store.summonerInfo) {
@@ -61,8 +67,19 @@ onMounted(async () => {
       champImgs: await querySuperChampList(summoner.summonerId,6)
     })
   }
-  console.log(extraData.value)
 })
+
+const getCurrentSum = (sumName:string,sumLevel:string,sumId:string,sumPuuid:string,sumIcon:number) => {
+  currentSumInfo.value = {
+    name: sumName,
+    level: sumLevel,
+    summonerId: sumId,
+    puuid: sumPuuid,
+    icon: sumIcon
+  }
+  console.log(currentSumInfo.value)
+  active.value = true
+}
 
 const getImgUrl = (profileIconId:number) => {
   return `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${profileIconId}.png`

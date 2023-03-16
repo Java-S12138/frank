@@ -32,6 +32,7 @@ export const config: any = {
   'isAutoLaunchGame':true,
   'currentArea':'t_1',
   'autoWriteBlock':true,
+  'showMatchDetail':true
 }
 
 if (localStorage.getItem('config') === null) {

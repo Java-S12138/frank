@@ -106,8 +106,11 @@ const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ st
     for (let i = 0; i < 100; i += 20) {
       try {
         const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
+        if (matchGet['games']['games'] === undefined) {
+          continue
+        }
         const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
-        for (let j = 0; j < matchList?.length; j++) {
+        for (let j = 0; j < matchList.length; j++) {
           if (matchList[j].queueId === gameType) {
             if (matchCount === 10) {
               break mainfor

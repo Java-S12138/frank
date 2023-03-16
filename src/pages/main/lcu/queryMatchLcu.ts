@@ -87,20 +87,16 @@ export const returnRankData = async (summonerId: number) => {
 // matchDetailed Page ==================================================================== //
 
 // 根据召唤师ID查询战绩
-const queryMatchHistory = async (summonerId: string, begIndex: number, endIndex: number): Promise<LcuMatchList> => {
-  const locale = localStorage.getItem('locale')
+const queryMatchHistory = async (summonerId: string, begIndex: number, endIndex: number,locale:string): Promise<LcuMatchList|null> => {
   endIndex = locale==='zh_CN'?endIndex:endIndex-1
-  return await invokeLcu(
+  const res = await invokeLcu(
     'get',
     `/lol-match-history/v1/products/lol/${summonerId}/matches`,
-    [begIndex, endIndex]
-  )
-  // return await invokeLcu(
-  //   'get',
-  //   `/lol-match-history/v3/matchlist/account/${summonerId}`,
-  //   [begIndex, endIndex]
-  // )
-
+    [begIndex, endIndex])
+  if (res?.success === false){
+    return null
+  }
+  return res
 }
 
 // 获取简单的对局数据
@@ -125,14 +121,14 @@ const getSimpleMatch = (match: Game,gameModel:string):MatchList => {
 }
 
 // 处理战绩数据
-export const dealMatchHistory = async (summonerId: string, begIndex: number, endIndex: number, mode?: string,locale?:string):Promise<Array<MatchList> | null>  => {
-  const matchList = await queryMatchHistory(summonerId, begIndex, endIndex)
+export const dealMatchHistory = async (summonerId: string, begIndex: number, endIndex: number, mode: string|undefined,locale:string):Promise<Array<MatchList> | null>  => {
+  const matchList = await queryMatchHistory(summonerId, begIndex, endIndex,locale)
 
-  if (matchList.httpStatus === 500) {return null}
-  if (matchList?.games?.games?.length === 0 ||matchList?.games?.games ===undefined ) {return null}
+  if (matchList === null) {return null}
+  if (matchList?.games?.games?.length === 0 || matchList?.games?.games ===undefined ) {return null}
 
-  let simpleMatchList = []
-  let specialSimpleMatchList = []
+  const simpleMatchList = []
+  const specialSimpleMatchList = []
   const forMatchList = locale === 'zh_CN' ? matchList?.games?.games.reverse() : matchList?.games?.games
   for (const matchListElement of forMatchList) {
     // 游戏模式
