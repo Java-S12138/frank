@@ -2,6 +2,7 @@ import {invokeLcu} from "../lcu";
 import {champDict} from "../resources/champList"
 import {lcuSummonerInfo} from "../lcu/types/homeLcuTypes";
 import {Hater, HaterItem,PCSelections,SumListDetail,SummonerInfoList} from "../interface/blacklistTypes";
+import {querySummonerRank, querySuperChampList} from "../lcu/assistMatchDetailLcu";
 
 // 查询本地召唤师信息
 const queryLoaclSummoner = async () => {
@@ -118,13 +119,19 @@ export const querySummonerIdAndSummonerName = async ():Promise<[]| SummonerInfoL
 
   for (const allSummonerIdElement of allSummonerId) {
     const currentSummonerInfo = await querySummonerInfo(allSummonerIdElement)
+    const rankHandler = await querySummonerRank(currentSummonerInfo.puuid)
     summonerInfoList.push({
       name: currentSummonerInfo.displayName,
       summonerId: `${allSummonerIdElement}`,
       puuid:currentSummonerInfo.puuid,
       profileIconId:currentSummonerInfo.profileIconId,
+      extraData:{
+        rank: `${rankHandler[0]} • ${rankHandler[1]}`,
+        champImgs: await querySuperChampList(allSummonerIdElement)
+      }
     })
   }
+  console.log(summonerInfoList)
   return summonerInfoList
 }
 

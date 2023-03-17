@@ -3,16 +3,33 @@ import {champDict} from "../resources/champList";
 import {dealDivsion, englishToChinese, getItemImgUrl, getspellImgUrl, querySummonerPosition} from "./utils";
 import {Game, LcuMatchList,simpleMatchTypes} from "./types/queryMatchLcuTypes";
 
-export const querySuperChampList = async (summonerId: string,dataCount:number) => {
+export const querySuperChampList = async (summonerId: string) => {
   try {
     const summonerSuperChampData:any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
-    return  summonerSuperChampData.slice(0, dataCount).reduce((res: any, item: any) => {
+    return  summonerSuperChampData.slice(0, 6).reduce((res: any, item: any) => {
       return res.concat([
        `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`
       ])
     }, [])
   } catch (e) {
     return []
+  }
+}
+export const queryChampList = async (summonerId: string) => {
+  if (summonerId==='') {
+    return null
+  }
+  try {
+    const summonerSuperChampData:any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
+    return  summonerSuperChampData.slice(0, 20).reduce((res: any, item: any) => {
+      return res.concat([[
+       `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
+       `${champDict[String(item.championId)].label} ${champDict[String(item.championId)].title}`,
+        `英雄等级 ${item.championLevel} | 熟练度 ${item.championPoints}`
+      ]])
+    }, [])
+  } catch (e) {
+    return null
   }
 }
 
@@ -98,7 +115,6 @@ export const queryMatch = async (puuid:string,locale:string) => {
   if (matchList === null || matchList?.games?.games.length ===0){
     return null
   }
-  console.log(matchList)
   const MatchList = locale === 'zh_CN' ? matchList?.games?.games.reverse() : matchList?.games?.games
   const simpleMatchList:simpleMatchTypes[] = MatchList?.reduce((res:any,item:any) => {
     return res.concat([getSimpleMatch(item,queryGameType(item.queueId))])

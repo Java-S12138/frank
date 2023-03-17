@@ -1,24 +1,24 @@
 <template>
-  <n-list hoverable :show-divider="false" class="listFlex">
+  <n-list  :show-divider="false" class="listFlex">
     <n-list-item
-      v-for="(summoner,index) in store.summonerInfo" style="padding: 5px">
+      v-for="summoner in store.summonerInfo" style="padding: 5px">
       <n-space :size="[12,0]">
         <n-avatar
           :size="55"
           round
           :src="getImgUrl(summoner.profileIconId)"
-          style="display: block;cursor: pointer"
-          @click="getCurrentSum(summoner.name,extraData[index]?.rank,summoner.summonerId,summoner.puuid,summoner.profileIconId)"
+          class="champImg"
+          @click="getCurrentSum(summoner.name,summoner.extraData.rank,summoner.summonerId,summoner.puuid,summoner.profileIconId)"
         />
         <n-space vertical :size="[0,5]">
-          <n-tag round class="titleTag" :bordered="false" type="success">{{ summoner.name }}</n-tag>
-          <n-tag round class="titleTag" :bordered="false" type="info">
-             {{ extraData[index]?.rank }}</n-tag>
+          <n-tag  class="titleTag" :bordered="false" type="success">{{ summoner.name }}</n-tag>
+          <n-tag  class="titleTag" :bordered="false" type="info">
+             {{ summoner.extraData.rank }}</n-tag>
         </n-space>
       </n-space>
       <n-space style="margin-top: 10px" justify="space-between">
         <n-avatar
-          v-for="img in extraData[index]?.champImgs"
+          v-for="img in summoner.extraData.champImgs"
           :size="32"
           :src="img"
           style="display: block"
@@ -48,26 +48,14 @@
 </template>
 
 <script setup lang="ts">
-import {NSpace, useMessage, NList, NListItem, NAvatar, NTag,NDrawer} from 'naive-ui'
+import {NSpace, NList, NListItem, NAvatar, NTag,NDrawer} from 'naive-ui'
 import assistStore from "../../../store/assistStore";
-import {querySummonerRank,querySuperChampList} from "../../../lcu/assistMatchDetailLcu"
-import {onMounted, ref, Ref} from "vue";
+import {ref} from "vue";
 import SummonerDetail from "./summonerDetail.vue";
 
 const store = assistStore()
-const extraData:Ref<{rank:string,champImgs:string[]}[]> = ref([])
 const active = ref(false)
 const currentSumInfo = ref({name:'',level:'',summonerId:'',puuid:'',icon:0})
-
-onMounted(async () => {
-  for (const summoner of store.summonerInfo) {
-    const rankHandler = await querySummonerRank(summoner.puuid)
-    extraData.value.push({
-      rank: `${rankHandler[0]} • ${rankHandler[1]}`,
-      champImgs: await querySuperChampList(summoner.summonerId,6)
-    })
-  }
-})
 
 const getCurrentSum = (sumName:string,sumLevel:string,sumId:string,sumPuuid:string,sumIcon:number) => {
   currentSumInfo.value = {
@@ -121,5 +109,13 @@ const openWin = () => {
   font-size: 13px;
   justify-content: center;
   cursor: pointer;
+}
+.champImg {
+  display: block;
+  cursor: pointer;
+  transition:  border-radius .5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.champImg:hover {
+  border-radius: 3px;
 }
 </style>

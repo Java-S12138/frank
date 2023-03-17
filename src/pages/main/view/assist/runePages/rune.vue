@@ -7,18 +7,24 @@
   <div v-else>
     <n-card class="boxShadow" size="small">
       <n-space justify="center" vertical>
-        <p style="color: rgb(102, 111, 117)">符文来源 OP.GG or 101.QQ.com</p>
-        <p style="color: rgb(102, 111, 117)">英雄选择完毕才可以使用符文配置功能</p>
+        <p style="color: rgb(102, 111, 117)">符文来源 OP.GG or Tencent</p>
+        <p style="color: rgb(102, 111, 117)">英雄选择完毕才可使用符文配置功能</p>
+        <n-space>
+          <p style="color: rgb(102, 111, 117)">是否选择应用符文时自动应用装备</p>
+          <n-switch style="margin-bottom: 2.5px" v-model:value="active" size="small"  @click="changeSetting" />
+        </n-space>
       </n-space>
+      <img style="height: 250px;margin-top: 15px" src="../../../../../assets/svg/runeNull.svg">
+      <img style="height: 250px" src="../../../../../assets/svg/runeNull2.svg">
     </n-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import {NCard, NSpace,useMessage,} from 'naive-ui'
+import {NCard, NSpace,useMessage,NSwitch} from 'naive-ui'
 import RuneHeader from "./runeHeader.vue";
 import RuneMain from "./runeMain.vue";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {request} from "../../../utils/request"
 import {invokeLcu} from "../../../lcu";
 import {Block, OnlineRunes, RuneEventType} from "../../../interface/runeTypes";
@@ -27,6 +33,7 @@ import {mapNameFromUrl} from "../../../resources/champList";
 
 const message = useMessage()
 const storeRune = runeStore()
+const active = ref(JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock)
 const emits = defineEmits(['changePage'])
 
 onMounted(() => {
@@ -171,6 +178,11 @@ class RuneClass {
   }
 }
 
+const changeSetting = () => {
+  const config = JSON.parse(<string>(localStorage.getItem('config')))
+  config['autoWriteBlock'] = active.value
+  localStorage.setItem('config',JSON.stringify(config))
+}
 </script>
 
 <style scoped>

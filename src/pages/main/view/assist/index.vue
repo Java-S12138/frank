@@ -60,7 +60,7 @@ const queryMatchAddition = ref({
 })
 
 // todo 测试
-store.summonerInfo =   [
+/*store.summonerInfo =   [
   {
     "name": "18岁游走型中单",
     "summonerId": "4016690740",
@@ -91,7 +91,7 @@ store.summonerInfo =   [
       "puuid": "27f4909d-93c4-55a7-b847-80692c8f14d1",
       "profileIconId": 5528,
     }
-  ]
+  ]*/
 
 cube.windows.message.on('received',async (id,content:any) => {
   // 查询我方召唤师
@@ -101,6 +101,9 @@ cube.windows.message.on('received',async (id,content:any) => {
     store.showSummonerInfoModal = false
     setTimeout( async () => {
       store.summonerInfo = await querySummonerIdAndSummonerName()
+      if (store.summonerInfo.length !==0){
+        transValue.value='matchDetail'
+      }
       if (isSwitchBlacklist){
         getCurrentBlacklist(store.summonerInfo)
       }

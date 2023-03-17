@@ -1,6 +1,11 @@
 <template>
-  <n-scrollbar v-if="matchList !== null" style="max-height: 378px;padding-right: 10px">
-    <n-space vertical :size="[0,15]" style="margin-top: 3px">
+  <n-scrollbar v-if="matchList !== null" style="max-height: 378px;padding-right: 14px">
+    <div v-if="matchList?.length === 0">
+      <n-skeleton text :repeat="2" />
+      <n-skeleton text style="width: 60%" />
+    </div>
+    <div v-else class="fade-in-bottom">
+      <n-space vertical :size="[0,15]" style="margin-top: 3px">
         <n-layout v-for="match in matchList"
                   style="height: 55px" has-sider>
           <n-layout-sider width="55" style="margin-right: 8px;">
@@ -9,7 +14,6 @@
                 :size="55"
                 :src="match.champImgUrl"
                 style="display: block"
-                class="siderDiv"
               />
               <div class="summonerSkill">
                 <img class="imgItemSecond" :src="match.spell1Id">
@@ -45,37 +49,23 @@
           </n-layout>
         </n-layout>
       </n-space>
+    </div>
   </n-scrollbar>
   <drawer-error v-else/>
 </template>
 
 <script setup lang="ts">
-import {NSpace,NScrollbar,NAvatar, NTag, NLayout, NLayoutSider, NLayoutContent,} from 'naive-ui'
-import {onMounted, PropType, Ref, ref} from "vue";
-import {queryMatch} from "../../../lcu/assistMatchDetailLcu";
+import {NSpace,NScrollbar,NAvatar, NTag, NSkeleton,NLayout, NLayoutSider, NLayoutContent,} from 'naive-ui'
+import {PropType} from "vue";
 import {simpleMatchTypes} from "../../../lcu/types/queryMatchLcuTypes";
 import DrawerError from "./drawerError.vue";
 const props = defineProps({
-  summonerId:{
-    default:'',
-    type:String as PropType<string>
-  },
-  summonerPuuid:{
-    default:'',
-    type:String as PropType<string>
+  matchList:{
+    default:[],
+    type:Array as PropType<simpleMatchTypes[] | null>
   },
 })
 
-const matchList:Ref<simpleMatchTypes[] | null> = ref([])
-
-onMounted(() => {
-  queryMatch(props.summonerPuuid,localStorage.getItem('locale') as string).then((value) => {
-    if (value===null){
-      return
-    }
-    matchList.value = value
-  })
-})
 
 </script>
 
@@ -128,4 +118,6 @@ onMounted(() => {
   display: flex;
   gap: 3px;
 }
+.fade-in-bottom{animation:fade-in-bottom .6s cubic-bezier(.39,.575,.565,1.000) both}
+@keyframes fade-in-bottom{0%{transform:translateY(50px);opacity:0}100%{transform:translateY(0);opacity:1}}
 </style>

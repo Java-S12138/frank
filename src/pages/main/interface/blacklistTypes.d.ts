@@ -57,4 +57,5 @@ export interface SummonerInfoList {
   summonerId: string,
   puuid: string,
   profileIconId:number,
+  extraData:any
 }
