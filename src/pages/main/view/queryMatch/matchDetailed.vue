@@ -32,7 +32,7 @@
                   </n-space>
                   <p style="font-size: 12px;color: #9aa4af">{{ match.gameModel }}</p>
                   <n-icon size="16" color="#18a058" style="position: absolute;right: 0px;top: 25px"
-                          v-if="((match.kills+match.assists)/match.deaths)*3 >=10">
+                          v-if="match.isWin">
                     <ThumbUp/>
                   </n-icon>
                   <n-icon size="16" color="#ff6666" style="position: absolute;right: 0px;top: 26px"

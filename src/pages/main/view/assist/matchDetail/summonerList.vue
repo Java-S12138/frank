@@ -8,17 +8,17 @@
           round
           :src="getImgUrl(summoner.profileIconId)"
           class="champImg"
-          @click="getCurrentSum(summoner.name,summoner.extraData.rank,summoner.summonerId,summoner.puuid,summoner.profileIconId)"
+          @click="getCurrentSum(summoner.name,summoner.match.rank,summoner.summonerId,summoner.puuid,summoner.profileIconId)"
         />
         <n-space vertical :size="[0,5]">
           <n-tag  class="titleTag" :bordered="false" type="success">{{ summoner.name }}</n-tag>
           <n-tag  class="titleTag" :bordered="false" type="info">
-             {{ summoner.extraData.rank }}</n-tag>
+             {{ summoner.match.rank }}</n-tag>
         </n-space>
       </n-space>
       <n-space style="margin-top: 10px" justify="space-between">
         <n-avatar
-          v-for="img in summoner.extraData.champImgs"
+          v-for="img in summoner.match.champImgs"
           :size="32"
           :src="img"
           style="display: block"
@@ -48,16 +48,22 @@
 </template>
 
 <script setup lang="ts">
-import {NSpace, NList, NListItem, NAvatar, NTag,NDrawer} from 'naive-ui'
+import {NSpace, NList, NListItem, NAvatar, NTag,NDrawer,useMessage} from 'naive-ui'
 import assistStore from "../../../store/assistStore";
 import {ref} from "vue";
 import SummonerDetail from "./summonerDetail.vue";
 
 const store = assistStore()
 const active = ref(false)
+const message = useMessage()
 const currentSumInfo = ref({name:'',level:'',summonerId:'',puuid:'',icon:0})
+const isSubscribe = localStorage.getItem('isSubscribe')
 
 const getCurrentSum = (sumName:string,sumLevel:string,sumId:string,sumPuuid:string,sumIcon:number) => {
+  if (isSubscribe ==='f'){
+    message.warning('查看更多信息 需要订阅服务')
+    return
+  }
   currentSumInfo.value = {
     name: sumName,
     level: sumLevel,
@@ -65,7 +71,6 @@ const getCurrentSum = (sumName:string,sumLevel:string,sumId:string,sumPuuid:stri
     puuid: sumPuuid,
     icon: sumIcon
   }
-  console.log(currentSumInfo.value)
   active.value = true
 }
 

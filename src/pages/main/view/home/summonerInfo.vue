@@ -266,6 +266,7 @@ const props:any = defineProps({
 })
 
 onMounted(() => {
+  cube.profile.getCurrentUser().catch(() => {message.error('Cube账号未登录 登录后请重启Frank',{duration: 10000})})
   init().then(async (value) =>  {
     if (!value){
       const lolCient = (await cube.games.launchers.getRunningLaunchers()).find((i => i.classId===10902))
@@ -308,7 +309,7 @@ const init = async () => {
 }
 
 const onClientLaunch = () => {
-  const closeMessageOn =  cube.windows.message.on('received', async (id) => {
+  const closeMessageOn = cube.windows.message.on('received', async (id) => {
     if (id === 'initHome') {
       let timer = 0
       const interval = setInterval(async () => {

@@ -34,22 +34,6 @@ import {mapNameFromUrl} from "../../../resources/champList";
 const message = useMessage()
 const storeRune = runeStore()
 const active = ref(JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock)
-const emits = defineEmits(['changePage'])
-
-onMounted(() => {
-  const runeClass = new RuneClass()
-  // runeClass.setChampInfo(112)
-  cube.windows.message.on('received',async (id, content) => {
-    if (id==='champion'){
-      const champ = JSON.parse(content.value) as RuneEventType
-      if (champ.data === 0) {
-        runeClass.resetChampInfo()
-      }else if (champ.data !==  storeRune.currentChamp) {
-        runeClass.setChampInfo(champ.data)
-      }
-    }
-  })
-})
 
 class RuneClass {
   public currentGameMode = ''
@@ -58,11 +42,9 @@ class RuneClass {
   public resetChampInfo = () => {
     this.currentGameMode = ''
     storeRune.resetStore()
-    emits('changePage',false)
   }
   // 设置英雄信息
   public setChampInfo = async (champId:number) => {
-    emits('changePage',true)
     storeRune.runeDataList = []
     storeRune.blockDataList = []
     storeRune.isAppleAutoRune = false
@@ -177,12 +159,21 @@ class RuneClass {
     }
   }
 }
+const runeClass = new RuneClass()
 
 const changeSetting = () => {
   const config = JSON.parse(<string>(localStorage.getItem('config')))
   config['autoWriteBlock'] = active.value
   localStorage.setItem('config',JSON.stringify(config))
 }
+const watchChampSelect = (champ:RuneEventType) => {
+  if (champ.data === 0) {
+    runeClass.resetChampInfo()
+  }else if (champ.data !==  storeRune.currentChamp) {
+    runeClass.setChampInfo(champ.data)
+  }
+}
+defineExpose({watchChampSelect})
 </script>
 
 <style scoped>

@@ -229,22 +229,6 @@ const onlineListStatus = ref(0)
 const currentBlacklistStatus = ref(false)
 const isSubscribe = localStorage.getItem('isSubscribe')
 
-watch(() => store.currentBlackList,() => {
-  if (store.currentBlackList.length !== 0){
-    currentBlacklistStatus.value = true
-    onlineListStatus.value = 1
-    if (store.currentBlackList.length === 1){
-      const haterItem = store.currentBlackList[0]
-      getDetails(haterItem.nickName,haterItem.blacklist)
-    }
-  }else {
-    currentBlacklistStatus.value = false
-    if (blacklist.value.length === 0){
-      onlineListStatus.value = 0
-    }
-  }
-}, {flush:'post'})
-
 watch(() => store.addHater,() => {
   areaSetting.value = localStorage.getItem('currentArea') as string
   findHaterByHaterId((store.onlinePlayerInfo.haterIdList)[areaSetting.value][store.localSummonerInfo.playerSumId].sumIdList)
@@ -485,6 +469,25 @@ const toMatch = async (matchId:string,summonerId:string) => {
 const openWeb = (url:string) => {
   cube.utils.openUrlInDefaultBrowser(url)
 }
+
+// 处理选择英雄阶段检测排位笔记的操作
+const watchCheckRankNote = (length:number) => {
+  if (length !== 0){
+    currentBlacklistStatus.value = true
+    onlineListStatus.value = 1
+    if (store.currentBlackList.length === 1){
+      const haterItem = store.currentBlackList[0]
+      getDetails(haterItem.nickName,haterItem.blacklist)
+    }
+  }else {
+    currentBlacklistStatus.value = false
+    if (blacklist.value.length === 0){
+      onlineListStatus.value = 0
+    }
+  }
+}
+
+defineExpose({watchCheckRankNote})
 </script>
 
 <style scoped>

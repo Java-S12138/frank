@@ -29,7 +29,7 @@ export const autoBanChampion = async (actionID:any, type:string) => {
 }
 
 // 获取选人会话
-export const champSelectSession = async (idSetInterval:any) => {
+export const champSelectSession = async (idSetInterval:number,isPick:boolean) => {
   const config = JSON.parse(<string>(localStorage.getItem('config')))
   try {
     const res = await invokeLcu('get','/lol-champ-select/v1/session')
@@ -48,6 +48,9 @@ export const champSelectSession = async (idSetInterval:any) => {
           } else if (actionElement.type == 'ban' && !actionElement.completed && config.autoBanChampion.isAuto) {
             console.log('ban')
             autoBanChampion( userActionID, 'ban')
+            if (!isPick){
+              clearInterval(idSetInterval)
+            }
             return true
           } else {
             return
@@ -56,6 +59,7 @@ export const champSelectSession = async (idSetInterval:any) => {
       }
     }
   }catch (e:any){
+    clearInterval(idSetInterval)
     return false
   }
 }

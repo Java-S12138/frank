@@ -43,6 +43,8 @@
       <loading-anime v-else></loading-anime>
       <div class="suspension">
         <n-space>
+          <n-tag :bordered="false" :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+                 style="font-size: 12px">点击右侧图标可查看队友评分</n-tag>
           <n-button
             text
             @click="() => {pageCount=4}" color="black">

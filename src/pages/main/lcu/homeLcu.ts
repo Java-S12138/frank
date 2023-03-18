@@ -124,7 +124,6 @@ export const queryCurrentChampStatstones = async (champId:any) => {
     }
     return champStatstonesList
   }catch (e) {
-    console.log(e)
     return null
   }
 }

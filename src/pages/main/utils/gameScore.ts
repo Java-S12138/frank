@@ -26,7 +26,6 @@ const getRencentMatchHistoty = async (summonerId: string,locale:string) => {
 // 查询比赛记录 (最近10场排位)
 const queryMatchHistory = async (summonerId: string,locale:string) => {
   const currentGameMode = await queryCurrentGameMode()
-  console.log('当前游戏模式:', currentGameMode)
   if (currentGameMode === null || currentGameMode === -1) {
     return await getRencentMatchHistoty(summonerId,locale)
   }

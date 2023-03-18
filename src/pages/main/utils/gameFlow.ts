@@ -5,18 +5,26 @@ import WindowInfo = cube.windows.WindowInfo;
 export class GameFlow {
 
   public jungleWin:WindowInfo|null = null
+  public assistWin:WindowInfo|null = null
   public recentMatchWin:WindowInfo|null = null
   public isJungleSuccess = false
 
   // 显示或者隐藏助手窗口
-  public showOrHideAssist = async (isShow: boolean, message: string) => {
-    const assistWin = await cube.windows.getWindowByName('assist')
-    if (isShow) {
-      cube.windows.show(assistWin.id)
-    } else {
-      cube.windows.hide(assistWin.id)
+  public showOrHideAssist = async (isShow: boolean, message: string,content:any) => {
+    if (this.assistWin === null){
+      this.assistWin = await cube.windows.getWindowByName('assist')
     }
-    cube.windows.message.send(assistWin.id, message, '')
+    if (content === null){
+      if (isShow) {
+        cube.windows.show(this.assistWin.id)
+      } else {
+        cube.windows.hide(this.assistWin.id)
+      }
+      cube.windows.message.send(this.assistWin.id, message, '')
+    }else {
+      cube.windows.message.send(this.assistWin.id, message, content)
+    }
+
   }
   // 游戏结束后,根据用户设置判断是否弹出拉黑召唤师的抽屉
   public isShowBlack = async () => {
@@ -125,7 +133,7 @@ export class GameFlow {
     const config = JSON.parse(<string>(localStorage.getItem('config')))
     if (config.autoPickChampion.isAuto || config.autoBanChampion.isAuto) {
       const idSetInterval = setInterval(async () => {
-        champSelectSession(idSetInterval)
+        champSelectSession(idSetInterval,config.autoPickChampion.isAuto)
       }, 1000)
     }
   }
