@@ -2,7 +2,7 @@
   "name": "frank",
   "author": "Java_S",
   "private": true,
-  "version": "1.650.135",
+  "version": "1.651.135",
   "type": "module",
   "scripts": {
     "dev": "node ./scripts/debug && vite --mode development",
@@ -22,7 +22,7 @@
     "echarts": "^5.4.0",
     "naive-ui": "^2.33.5",
     "pinia": "^2.0.23",
-    "typescript": "^4.6.4",
+    "typescript": "^5.0.2",
     "vite": "^3.2.0",
     "vue-echarts": "^6.2.3",
     "vue-router": "^4.1.2",

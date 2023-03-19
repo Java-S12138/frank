@@ -133,7 +133,7 @@ export class GameFlow {
     const config = JSON.parse(<string>(localStorage.getItem('config')))
     if (config.autoPickChampion.isAuto || config.autoBanChampion.isAuto) {
       const idSetInterval = setInterval(async () => {
-        champSelectSession(idSetInterval,config.autoPickChampion.isAuto)
+        champSelectSession(idSetInterval,config)
       }, 1000)
     }
   }

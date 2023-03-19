@@ -128,7 +128,7 @@ const showMatch =async (summoner:any) => {
     message.warning('跳转查询战绩界面 需要订阅服务')
     return
   }
-  localStorage.setItem('initQueryMatch',JSON.stringify({matchId:summoner[3],summonerId:summoner[1]}))
+  localStorage.setItem('initQueryMatch',JSON.stringify({matchId:undefined,summonerId:summoner[1]}))
   const queryMatch = await cube.windows.obtainDeclaredWindow('queryMatch')
   if (queryMatch!==undefined){
     cube.windows.message.send(queryMatch.id,'refresdh-window','')

@@ -49,8 +49,8 @@ onMounted(() => {
 const transValue = ref('champRank')
 const message = useMessage()
 const store = assistStore()
-
-const isSwitchBlacklist = JSON.parse(<string>(localStorage.getItem('config'))).isSwitchBlacklist
+const config = JSON.parse(<string>(localStorage.getItem('config')))
+const isSwitchBlacklist = config.isSwitchBlacklist
 const queryMatchAddition = ref({
   active:false,
   blacklistName:'',
@@ -67,7 +67,7 @@ cube.windows.message.on('received',async (id,content:any) => {
     store.showSummonerInfoModal = false
     setTimeout( async () => {
       store.summonerInfo = await querySummonerIdAndSummonerName()
-      if (store.summonerInfo.length !==0){
+      if (store.summonerInfo.length !==0 && config.showMatchDetail){
         transValue.value='matchDetail'
       }
       if (isSwitchBlacklist){

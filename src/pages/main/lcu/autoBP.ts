@@ -15,51 +15,33 @@ const champSelectPatchAction = async (actionID:any, champId:any, type:string) =>
   }
 }
 
-//自动秒选英雄
-export const autoPickChampion = async (actionID:any, type:string) => {
-  const config = JSON.parse(<string>(localStorage.getItem('config')))
-  const championPickId =config.autoPickChampion.championId
-  return champSelectPatchAction(actionID, championPickId, type)
-}
-// 自动禁用英雄
-export const autoBanChampion = async (actionID:any, type:string) => {
-  const config = JSON.parse(<string>(localStorage.getItem('config')))
-  const championBanId =config.autoBanChampion.championId
-  return champSelectPatchAction(actionID, championBanId, type)
-}
-
 // 获取选人会话
-export const champSelectSession = async (idSetInterval:number,isPick:boolean) => {
-  const config = JSON.parse(<string>(localStorage.getItem('config')))
+export const champSelectSession = async (idSetInterval:number,config:any) => {
   try {
     const res = await invokeLcu('get','/lol-champ-select/v1/session')
-    const localPlayerCellId = res.localPlayerCellId
-    const actions = res.actions
-    let userActionID
+    const localPlayerCellId = res?.localPlayerCellId
+    const actions = res?.actions
+    if (actions === undefined){
+      clearInterval(idSetInterval)
+    }
+
     for (let action of actions) {
       for (let actionElement of action) {
         if (actionElement.actorCellId == localPlayerCellId && actionElement.isInProgress) {
-          userActionID = actionElement.id
-          if (actionElement.type == 'pick' && !actionElement.completed && config.autoPickChampion.isAuto) {
-            console.log('pick')
-            autoPickChampion(userActionID, 'pick')
+          if (actionElement.type === 'pick' && config.autoPickChampion.isAuto) {
+            champSelectPatchAction(actionElement.id,config.autoPickChampion.championId,'pick')
+          } else if (actionElement.type === 'ban'&& config.autoBanChampion.isAuto) {
+            champSelectPatchAction(actionElement.id,config.autoBanChampion.championId,'ban')
+          }
+        }
+        if (actionElement.actorCellId == localPlayerCellId && !actionElement.isInProgress){
+          if (actionElement.type === 'pick' && actionElement.championId !== 0){
             clearInterval(idSetInterval)
-            return true
-          } else if (actionElement.type == 'ban' && !actionElement.completed && config.autoBanChampion.isAuto) {
-            console.log('ban')
-            autoBanChampion( userActionID, 'ban')
-            if (!isPick){
-              clearInterval(idSetInterval)
-            }
-            return true
-          } else {
-            return
           }
         }
       }
     }
   }catch (e:any){
     clearInterval(idSetInterval)
-    return false
   }
 }
