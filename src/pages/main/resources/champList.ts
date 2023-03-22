@@ -160,7 +160,8 @@ export const champDict:any = {
   '887': {'champId': '887', 'label': '灵罗娃娃', 'alias': 'Gwen', 'title': '格温'},
   '888': {'champId': '888', 'label': '炼金男爵', 'alias': 'Renata', 'title': '烈娜塔 · 戈拉斯克'},
   '895': {'champId': '895', 'label': '不羁之悦', 'alias': 'Nilah', 'title': '尼菈'},
-  '897': {'champId': '897', 'label': '纳祖芒荣耀', 'alias': 'KSante', 'title': '奎桑提'}
+  '897': {'champId': '897', 'label': '纳祖芒荣耀', 'alias': 'KSante', 'title': '奎桑提'},
+  '902': {'champId': '902', 'label': '明烛', 'alias': 'Milio', 'title': '米利欧'},
 }
 export const optionsChampion = [
   {
@@ -651,6 +652,10 @@ export const optionsChampion = [
   {
     'value': '897',
     'label': '纳祖芒荣耀'
+  },
+  {
+    'value': '902',
+    'label': '明烛'
   }
 ]
 export const mapNameFromUrl:any = {
@@ -816,7 +821,8 @@ export const mapNameFromUrl:any = {
   'Gwen': {'label': '灵罗娃娃', 'name': '格温'},
   'Renata': {'label': '炼金男爵', 'name': '烈娜塔 · 戈拉斯克'},
   'Nilah': {'label': '不羁之悦', 'name': '尼菈'},
-  'KSante': {'label': '纳祖芒荣耀', 'name': '奎桑提'}
+  'KSante': {'label': '纳祖芒荣耀', 'name': '奎桑提'},
+  'Milio': {'label': '明烛', 'name': '米利欧'},
 }
 export const aliasToId:any = {
   "Annie": 1,
@@ -980,5 +986,6 @@ export const aliasToId:any = {
   "Gwen": 887,
   "Renata": 888,
   "Nilah": 895,
-  "KSante": 897
+  "KSante": 897,
+  "Milio": 90,
 }

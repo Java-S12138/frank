@@ -16,7 +16,7 @@
                 style="display: block"
               />
               <div class="summonerSkill">
-                <img class="imgItemSecond" :src="match.spell1Id">
+                <img class="imgItemSecond"  :src="match.spell1Id">
                 <img class="imgItemSecond" :src="match.spell2Id">
               </div>
             </div>
