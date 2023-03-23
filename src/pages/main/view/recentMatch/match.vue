@@ -109,6 +109,9 @@ const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ st
         if (matchGet['games']['games'] === undefined) {
           continue
         }
+        if (matchGet['games']['games'].length === 0 ) {
+          break mainfor
+        }
         const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
         for (let j = 0; j < matchList.length; j++) {
           if (matchList[j].queueId === gameType) {

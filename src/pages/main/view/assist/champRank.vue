@@ -71,7 +71,7 @@
                 :src=chapm.imgUrl
                 fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                 style="display: block"
-
+                class="champImg"
               />
               <n-space vertical :size=[0,0] justify="center" style="height: 50px">
                 <n-space justify="space-between">

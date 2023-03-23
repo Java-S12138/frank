@@ -98,6 +98,7 @@ class RuneClass {
         }
       }
     } catch (e) {
+      message.error('当前英雄暂无符文数据')
       console.log(e)
     }
   }
