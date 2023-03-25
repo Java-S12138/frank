@@ -6,9 +6,9 @@
       <img src="@/assets/icon/app-icon-bw.png" draggable="false"  alt="" width="40"  v-else>
       <img src="@/assets/icon/Frank.png" draggable="false"  style="margin-top: 4px">
     </n-space>
-    <n-dropdown v-if=" isSubscribe==='f' "
+    <n-dropdown v-if="isShowSub"
       trigger="click" :options="subscribes" @select="handleSub">
-      <n-button type="warning" size="large" style="margin-left: 35px" text>订阅服务✨</n-button>
+      <n-button type="warning" size="large" style="margin-left: 35px" text>{{subInfo}}✨</n-button>
     </n-dropdown>
     <n-space class="rightCorner">
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
@@ -53,13 +53,10 @@
 <script setup lang="ts">
 import {NIcon, NSpace, NButton, NPopover,NPopconfirm,NDropdown} from 'naive-ui'
 import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
+import {onMounted, ref} from "vue";
 
 const emits = defineEmits(['changePage'])
 const isSubscribe = localStorage.getItem('isSubscribe')
-
-const changePage = () => {
-  emits('changePage')
-}
 const subscribes = [
   {
     label: '订阅须知',
@@ -70,6 +67,23 @@ const subscribes = [
     key: 2
   },
 ]
+const subInfo = ref('订阅服务')
+const isShowSub = ref(isSubscribe==='f'?true:false)
+
+onMounted(() => {
+  if (isSubscribe==='t'){
+    const remainSub = localStorage.getItem('remainSub')
+    if (remainSub !== '' && remainSub !==null){
+      subInfo.value = `${remainSub}天后到期`
+      isShowSub.value = true
+    }
+  }
+})
+
+const changePage = () => {
+  emits('changePage')
+}
+
 const dragMove = () => {
   cube.windows.current.dragMove()
 }

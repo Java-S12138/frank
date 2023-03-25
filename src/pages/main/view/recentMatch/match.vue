@@ -82,12 +82,8 @@ const props:any = defineProps({
 })
 
 const matchInfoList:Ref<matchTypes[][]> = ref([])
-onMounted(async () => {
-  for (const summonerInfo of props.matchList) {
-    matchInfoList.value.push(await queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState))
-  }
-})
 const locale = <string>localStorage.getItem('locale')
+
 const emits = defineEmits(['openDrawer','openMatchDrawer'])
 
 const openDra = (summonerId:string,summonerName:string) => {
@@ -97,66 +93,115 @@ const openMatchDra = (gameId: number,summonerId:number) => {
   emits('openMatchDrawer',gameId,summonerId)
 }
 
-// 查询比赛记录 (最近10场排位)
-const queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ state: number, title: string }):Promise<matchTypes[]> => {
-  let classicMode: matchTypes[] = []
-  let matchCount = 0
-  let winCount = 0
-  mainfor:
-    for (let i = 0; i < 100; i += 20) {
-      try {
-        const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
-        if (matchGet['games']['games'] === undefined) {
-          continue
-        }
-        if (matchGet['games']['games'].length === 0 ) {
-          break mainfor
-        }
-        const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
-        for (let j = 0; j < matchList.length; j++) {
-          if (matchList[j].queueId === gameType) {
-            if (matchCount === 10) {
-              break mainfor
-            }
-            matchCount += 1
-            winCount = matchList[j].participants[0].stats.win === true ? winCount+1:winCount
-            classicMode.push({
-              champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList[j].participants[0].championId)].alias}.png`,
-              kill: matchList[j].participants[0].stats.kills,
-              deaths: matchList[j].participants[0].stats.deaths,
-              assists: matchList[j].participants[0].stats.assists,
-              isWin: matchList[j].participants[0].stats.win,
-              gameId:matchList[j].gameId
-            })
-          }
-        }
-      }catch (e) {
-        continue
-      }
-    }
-  // 判断是否为小代
-  if (summonerState.state === - 1){
-    let excellentCount = 0
-    let cycleCount = 0
-    for (let match of classicMode) {
-      cycleCount+=1
-      if (cycleCount>5){
-        break
-      }
-      if (match.kill >= 10){
-        excellentCount += 1
-      }
-    }
-    if (excellentCount >=3){
-      summonerState.title = '小代'
-      summonerState.state = 3
+onMounted(async () => {
+  const mathcClass = new Match()
+  for (const summonerInfo of props.matchList) {
+    matchInfoList.value.push(await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState))
+  }
+})
+
+
+class Match {
+  public classicMode: matchTypes[] = []
+  public matchCount = 0
+  public winCount = 0
+
+  public queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ state: number, title: string }):Promise<matchTypes[]> =>  {
+    if (locale !== 'zh_CN'){
+      const matchLists =  await this.extraQuery(puuid)
+      this.isExcelPlayer(summonerState)
+      return matchLists
+    }else if (gameType !== 420 && gameType !== 440){
+      const matchLists = await this.extraQuery(puuid)
+      this.isExcelPlayer(summonerState)
+      return matchLists
+    }else {
+      const matchLists = await this.rankQuery(puuid,gameType)
+      this.isExcelPlayer(summonerState)
+      return matchLists
     }
   }
-  props.winCount[0] += winCount
-  props.winCount[1] += matchCount
-  return classicMode
-}
 
+  public queryMatch = async (matchList:any) => {
+    this.winCount = matchList.participants[0].stats.win === true ? this.winCount+1:this.winCount
+    this.classicMode.push({
+      champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList.participants[0].championId)].alias}.png`,
+      kill: matchList.participants[0].stats.kills,
+      deaths: matchList.participants[0].stats.deaths,
+      assists: matchList.participants[0].stats.assists,
+      isWin: matchList.participants[0].stats.win,
+      gameId:matchList.gameId
+    })
+  }
+
+  public isExcelPlayer = (summonerState:{ state: number, title: string }) => {
+    // 判断是否为小代
+    if (summonerState.state === - 1){
+      let excellentCount = 0
+      let cycleCount = 0
+      for (let match of this.classicMode) {
+        cycleCount+=1
+        if (cycleCount>5){
+          break
+        }
+        if (match.kill >= 12){
+          excellentCount += 1
+        }
+      }
+      if (excellentCount >=3){
+        summonerState.title = '小代'
+        summonerState.state = 3
+      }
+    }
+    props.winCount[0] += this.winCount
+    props.winCount[1] += this.matchCount
+    this.winCount = 0
+    this.matchCount = 0
+    this.classicMode = []
+  }
+
+  public extraQuery = async (puuid:string) => {
+    try {
+      const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`)
+      const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
+      for (let j = 0; j < matchList.length; j++) {
+        if (this.matchCount === 10) {
+          break
+        }
+        this.matchCount += 1
+        await this.queryMatch(matchList[j])
+      }
+      return this.classicMode
+    }catch (e) {
+      return []
+    }
+  }
+
+  public rankQuery = async (puuid:string,gameType:number) => {
+    mainfor:
+      for (let i = 0; i < 100; i += 20) {
+        try {
+          const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
+          if (matchGet['games']['games'].length === 0 ) {
+            break mainfor
+          }
+          const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
+          for (let j = 0; j < matchList.length; j++) {
+            if (this.matchCount === 10) {
+              break mainfor
+            }
+            if (matchList[j].queueId === gameType) {
+              this.matchCount += 1
+              await this.queryMatch(matchList[j])
+            }
+          }
+        }catch (e) {
+          continue
+        }
+      }
+    return this.classicMode
+  }
+}
 </script>
 
 <style scoped>

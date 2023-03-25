@@ -51,6 +51,7 @@ const message = useMessage()
 const store = assistStore()
 const config = JSON.parse(<string>(localStorage.getItem('config')))
 const isSwitchBlacklist = config.isSwitchBlacklist
+const localeTime = localStorage.getItem('locale')==='zh_CN' ? 1500 : 3500
 const queryMatchAddition = ref({
   active:false,
   blacklistName:'',
@@ -73,13 +74,13 @@ cube.windows.message.on('received',async (id,content:any) => {
       if (isSwitchBlacklist){
         getCurrentBlacklist(store.summonerInfo)
       }
-    },1500)
+    },localeTime)
   }else if (id==='GameStart' && isSwitchBlacklist){
     // 查询敌方召唤师
     store.summonerInfo = []
     setTimeout(async () => {
       store.endGameAfterInfo = await queryEnemySummonerIdAndSummonerName()
-    }, 1500)
+    }, localeTime)
   }else if (id==='show-other-summoner' && isSwitchBlacklist){
     transValue.value = 'blacklist'
   }else if (id==='refresh'){
