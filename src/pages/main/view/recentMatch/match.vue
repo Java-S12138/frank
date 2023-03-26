@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import {NSpace,NAvatar,NTag} from 'naive-ui'
-import {onMounted, Ref, ref} from "vue";
+import {onMounted, PropType, Ref, ref} from "vue";
 import {invokeLcu} from "../../lcu";
 import {champDict} from "../../resources/champList";
 interface matchTypes {
@@ -64,19 +64,19 @@ interface matchTypes {
 
 const props:any = defineProps({
   matchList:{
-    type:Array,
+    type:Array as PropType<any[]>,
     default:[]
   },
   blackList:{
-    type:Array,
+    type:Array as PropType<any[]>,
     default:[]
   },
   winCount:{
-    type:Array,
+    type:Array as PropType<number[]>,
     default:[0,0]
   },
   gameType:{
-    type:Number,
+    type:Number as PropType<number>,
     default:420
   }
 })
@@ -95,9 +95,27 @@ const openMatchDra = (gameId: number,summonerId:number) => {
 
 onMounted(async () => {
   const mathcClass = new Match()
-  for (const summonerInfo of props.matchList) {
-    matchInfoList.value.push(await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState))
+  if (locale !== 'zh_CN'){
+    const puuidList = props.matchList.reduce((res: any, item: any) => {
+      return res.concat([
+        item.puuid
+      ])
+    },[])
+
   }
+  else if (props.gameType !== 420 && props.gameType !== 440){
+    const puuidList = props.matchList.reduce((res: any, item: any) => {
+      return res.concat([
+        item.puuid
+      ])
+    },[])
+    await queryMatchCommonHis(puuidList,) // todo 普通模式 match的计算 和 summonerInfo.summonerState
+  }else {
+    for (const summonerInfo of props.matchList) {
+      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState)
+    }
+  }
+
 })
 
 
@@ -107,31 +125,24 @@ class Match {
   public winCount = 0
 
   public queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ state: number, title: string }):Promise<matchTypes[]> =>  {
-    if (locale !== 'zh_CN'){
-      const matchLists =  await this.extraQuery(puuid)
-      this.isExcelPlayer(summonerState)
-      return matchLists
-    }else if (gameType !== 420 && gameType !== 440){
-      const matchLists = await this.extraQuery(puuid)
-      this.isExcelPlayer(summonerState)
-      return matchLists
-    }else {
-      const matchLists = await this.rankQuery(puuid,gameType)
-      this.isExcelPlayer(summonerState)
-      return matchLists
-    }
+    await this.rankQuery(puuid,gameType)
+    this.isExcelPlayer(summonerState)
+  }
+  public queryMatchCommonHis = async (puuidList:string[],summonerState:{ state: number, title: string }) => {
+    await this.extraQuery(puuidList)
+    this.isExcelPlayer(summonerState)
   }
 
   public queryMatch = async (matchList:any) => {
     this.winCount = matchList.participants[0].stats.win === true ? this.winCount+1:this.winCount
-    this.classicMode.push({
+    return {
       champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList.participants[0].championId)].alias}.png`,
       kill: matchList.participants[0].stats.kills,
       deaths: matchList.participants[0].stats.deaths,
       assists: matchList.participants[0].stats.assists,
       isWin: matchList.participants[0].stats.win,
       gameId:matchList.gameId
-    })
+    }
   }
 
   public isExcelPlayer = (summonerState:{ state: number, title: string }) => {
@@ -160,20 +171,26 @@ class Match {
     this.classicMode = []
   }
 
-  public extraQuery = async (puuid:string) => {
-    try {
+  public extraQuery = async (puuidList:string[]) => {
+    for (const puuid of puuidList) {
+      this.matchCount = 0
+      let matchDictList:matchTypes[] = []
+
       const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`)
+      if (matchGet['games'] === undefined){
+        matchInfoList.value.push([])
+        continue
+      }
+
       const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
       for (let j = 0; j < matchList.length; j++) {
         if (this.matchCount === 10) {
           break
         }
         this.matchCount += 1
-        await this.queryMatch(matchList[j])
+        matchDictList.push(await this.queryMatch(matchList[j]))
       }
-      return this.classicMode
-    }catch (e) {
-      return []
+      matchInfoList.value.push(matchDictList)
     }
   }
 
@@ -199,7 +216,7 @@ class Match {
           continue
         }
       }
-    return this.classicMode
+    matchInfoList.value.push(this.classicMode)
   }
 }
 </script>

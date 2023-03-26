@@ -35,7 +35,7 @@ export const champSelectSession = async (idSetInterval:number,config:any) => {
           }
         }
         if (actionElement.actorCellId == localPlayerCellId && !actionElement.isInProgress){
-          if (actionElement.type === 'pick' && actionElement.championId !== 0){
+          if (actionElement.type === 'pick' && actionElement.completed){
             clearInterval(idSetInterval)
           }
         }

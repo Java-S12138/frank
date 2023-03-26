@@ -28,7 +28,6 @@ export const applyRunePage = async (data: T) => {
     await invokeLcu('post', '/lol-perks/v1/pages', [data])
     return true
   } catch (e) {
-    console.log(e)
     return false
   }
 }
