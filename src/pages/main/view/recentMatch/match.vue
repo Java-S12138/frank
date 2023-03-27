@@ -77,72 +77,75 @@ const props:any = defineProps({
   },
   gameType:{
     type:Number as PropType<number>,
-    default:420
+    default:0
+  },
+  isLeft:{
+    type:Boolean as PropType<boolean>
   }
 })
 
 const matchInfoList:Ref<matchTypes[][]> = ref([])
 const locale = <string>localStorage.getItem('locale')
 
-const emits = defineEmits(['openDrawer','openMatchDrawer'])
+const emits = defineEmits(['openDrawer','openMatchDrawer','doneRender'])
 
-const openDra = (summonerId:string,summonerName:string) => {
-  emits('openDrawer',summonerId,summonerName)
+const openDra = (summonerId:any,summonerName:string) => {
+  emits('openDrawer',Number(summonerId),summonerName)
 }
-const openMatchDra = (gameId: number,summonerId:number) => {
-  emits('openMatchDrawer',gameId,summonerId)
+const openMatchDra = (gameId: number,summonerId:any) => {
+  emits('openMatchDrawer',gameId,Number(summonerId))
 }
 
 onMounted(async () => {
-  const mathcClass = new Match()
-  if (locale !== 'zh_CN'){
-    const puuidList = props.matchList.reduce((res: any, item: any) => {
-      return res.concat([
-        item.puuid
-      ])
-    },[])
-
+  if (props.isLeft){
+    await initMatchList()
+    emits('doneRender')
   }
-  else if (props.gameType !== 420 && props.gameType !== 440){
-    const puuidList = props.matchList.reduce((res: any, item: any) => {
-      return res.concat([
-        item.puuid
-      ])
-    },[])
-    await queryMatchCommonHis(puuidList,) // todo 普通模式 match的计算 和 summonerInfo.summonerState
-  }else {
-    for (const summonerInfo of props.matchList) {
-      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState)
-    }
-  }
-
 })
 
-
+const initMatchList = async () => {
+  if (props.matchList.length === 0){
+    return
+  }
+  const mathcClass = new Match()
+  if (locale !== 'zh_CN'){
+    for (const summonerInfo of props.matchList) {
+      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState,false)
+    }
+  }
+  else if (props.gameType !== 420 && props.gameType !== 440){
+    for (const summonerInfo of props.matchList) {
+      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState,false)
+    }
+  }
+  else {
+    for (const summonerInfo of props.matchList) {
+      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState,true)
+    }
+  }
+}
 class Match {
   public classicMode: matchTypes[] = []
   public matchCount = 0
   public winCount = 0
 
-  public queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ state: number, title: string }):Promise<matchTypes[]> =>  {
-    await this.rankQuery(puuid,gameType)
-    this.isExcelPlayer(summonerState)
-  }
-  public queryMatchCommonHis = async (puuidList:string[],summonerState:{ state: number, title: string }) => {
-    await this.extraQuery(puuidList)
+  public queryMatchHistory = async (puuid:string,gameType:number,summonerState:{ state: number, title: string },isRank:boolean)=>  {
+    await this.rankQuery(puuid,gameType,isRank)
     this.isExcelPlayer(summonerState)
   }
 
   public queryMatch = async (matchList:any) => {
     this.winCount = matchList.participants[0].stats.win === true ? this.winCount+1:this.winCount
-    return {
-      champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList.participants[0].championId)].alias}.png`,
-      kill: matchList.participants[0].stats.kills,
-      deaths: matchList.participants[0].stats.deaths,
-      assists: matchList.participants[0].stats.assists,
-      isWin: matchList.participants[0].stats.win,
-      gameId:matchList.gameId
-    }
+    this.classicMode.push(
+      {
+        champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(matchList.participants[0].championId)].alias}.png`,
+        kill: matchList.participants[0].stats.kills,
+        deaths: matchList.participants[0].stats.deaths,
+        assists: matchList.participants[0].stats.assists,
+        isWin: matchList.participants[0].stats.win,
+        gameId:matchList.gameId
+      }
+    )
   }
 
   public isExcelPlayer = (summonerState:{ state: number, title: string }) => {
@@ -171,34 +174,14 @@ class Match {
     this.classicMode = []
   }
 
-  public extraQuery = async (puuidList:string[]) => {
-    for (const puuid of puuidList) {
-      this.matchCount = 0
-      let matchDictList:matchTypes[] = []
-
-      const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`)
-      if (matchGet['games'] === undefined){
-        matchInfoList.value.push([])
-        continue
-      }
-
-      const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
-      for (let j = 0; j < matchList.length; j++) {
-        if (this.matchCount === 10) {
-          break
-        }
-        this.matchCount += 1
-        matchDictList.push(await this.queryMatch(matchList[j]))
-      }
-      matchInfoList.value.push(matchDictList)
-    }
-  }
-
-  public rankQuery = async (puuid:string,gameType:number) => {
+  public rankQuery = async (puuid:string,gameType:number,isRank:boolean) => {
     mainfor:
       for (let i = 0; i < 100; i += 20) {
         try {
           const matchGet = await invokeLcu('get', `/lol-match-history/v1/products/lol/${puuid}/matches`, [i, i + 20])
+          if (matchGet['games'] === undefined){
+            continue
+          }
           if (matchGet['games']['games'].length === 0 ) {
             break mainfor
           }
@@ -207,7 +190,10 @@ class Match {
             if (this.matchCount === 10) {
               break mainfor
             }
-            if (matchList[j].queueId === gameType) {
+            if (matchList[j].queueId === gameType && isRank) {
+              this.matchCount += 1
+              await this.queryMatch(matchList[j])
+            }else if (!isRank) {
               this.matchCount += 1
               await this.queryMatch(matchList[j])
             }
@@ -219,6 +205,8 @@ class Match {
     matchInfoList.value.push(this.classicMode)
   }
 }
+
+defineExpose({initMatchList})
 </script>
 
 <style scoped>

@@ -5,13 +5,16 @@
       <match :matchList="friendList"
              :win-count="friendTeamList"
              :game-type="gameType"
+             :is-left = "true"
              @open-match-drawer="openMatchDrawer"
-
+             @done-render = "renderRightMatch"
       ></match>
       <match :matchList="enemyList"
              :win-count="enemyTeamTwoList"
              :game-type="gameType"
+             :is-left = "false"
              :blackList="blackList"
+             ref="rightMatch"
              @openDrawer="openDrawer"
              @open-match-drawer="openMatchDrawer"
       ></match>
@@ -94,6 +97,7 @@ const curSId = ref(0)
 const isSubscribe =  localStorage.getItem('isSubscribe')
 const matchActive = ref(false)
 const isIn = ref(true)
+const rightMatch = ref()
 
 onMounted(async () => {
   cube.windows.getCurrentWindow().then(value => {
@@ -184,13 +188,19 @@ const openDrawer = (summonerId:string,summonerName:string) => {
   blacklistActice.value=true
   detialsJsonList.value = blacklistDict.value[summonerId]
 }
+
 const openMatchDrawer = (mId:number,sId:number) => {
   curGId.value = mId
   curSId.value = sId
   matchActive.value=true
 }
+
 const formatDate = (dateStr:string) => {
   return dateStr.split('T')[0]
+}
+
+const renderRightMatch = () => {
+  rightMatch.value.initMatchList()
 }
 </script>
 
