@@ -7,7 +7,8 @@ export class GameFlow {
   public jungleWin:WindowInfo|null = null
   public assistWin:WindowInfo|null = null
   public recentMatchWin:WindowInfo|null = null
-  public isJungleSuccess = false
+  public isJungleSuccess:boolean = false
+  public isTFT:boolean = false
 
   // 显示或者隐藏助手窗口
   public showOrHideAssist = async (isShow: boolean, message: string,content:any) => {
@@ -29,10 +30,12 @@ export class GameFlow {
   // 游戏结束后,根据用户设置判断是否弹出拉黑召唤师的抽屉
   public isShowBlack = async () => {
     const config = JSON.parse(<string>(localStorage.getItem('config')))
-    if (config.isSwitchBlacklist) {
+    if (config.isSwitchBlacklist && !this.isTFT) {
       const assistWin = await cube.windows.getWindowByName('assist')
       cube.windows.show(assistWin.id)
       cube.windows.message.send(assistWin.id, 'show-other-summoner', '')
+    }else {
+      this.isTFT = false
     }
   }
   // 关闭某个窗口
@@ -64,7 +67,7 @@ export class GameFlow {
           })
         }
         // 当前模式不是云顶之亦才打开战绩历史窗口
-        if (queueId !== 1090 || queueId !== 1100 || queueId !== 1160 || queueId !== 1130 || queueId !== 1170){
+        if (queueId !== 1090 && queueId !== 1100 && queueId !== 1160 && queueId !== 1130 && queueId !== 1170){
           cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
             this.recentMatchWin = v
             if (!isGameInWindow ){
@@ -73,6 +76,8 @@ export class GameFlow {
               })
             }
           })
+        }else {
+          this.isTFT = true
         }
       })
     })

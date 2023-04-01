@@ -78,7 +78,7 @@ import GameDetails from "../components/gameDetails.vue";
 import NullPage from "../components/nullPage.vue"
 import Advertisement from "./advertisement.vue";
 import {recentMatch} from "../../lcu/recentMatchLcu"
-import {onMounted,ref} from "vue"
+import {onMounted, Ref, ref} from "vue"
 import {blacklistServe} from "../../utils/request";
 
 const friendList = ref([])
@@ -88,7 +88,7 @@ const friendTeamList = ref([0,0])
 const enemyTeamTwoList = ref([0,0])
 const blacklistActice = ref(false)
 const blacklistDict:any = ref({})
-const blackList:any = ref([])
+const blackList:Ref = ref([])
 const detialsNickname =ref('')
 const detialsJsonList:any = ref([])
 const gameType = ref(420)

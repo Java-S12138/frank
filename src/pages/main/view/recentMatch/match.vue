@@ -22,10 +22,10 @@
           </n-space>
           <div class="heroTip" v-if="match.summonerState.state>0">{{match.summonerState.title}}</div>
         </n-space>
-        <n-tag size="tiny" type="info" v-if="blackList.length===0"
+        <n-tag size="tiny" type="info" v-if="blackList?.length===0"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
                >{{ match.summonerName }} </n-tag>
-        <n-tag size="tiny" type="info" v-else-if="blackList.indexOf(match.summonerId) === -1"
+        <n-tag size="tiny" type="info" v-else-if="blackList?.indexOf(match.summonerId) === -1"
                :bordered="false" style="width: 100px;height: 24px;justify-content: center;font-size: 11px"
                >{{ match.summonerName }} </n-tag>
         <n-tag size="tiny" type="error" v-else @click="openDra(match.summonerId,match.summonerName)"
