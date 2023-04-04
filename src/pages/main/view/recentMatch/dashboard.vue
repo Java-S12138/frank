@@ -2,12 +2,12 @@
   <header class="frankTitle">
     <img src="@/assets/icon/siteLogo.png" draggable="false" >
     <n-space justify="space-between">
-      <p v-if="!props.isIn" class="headerP" @click="handleClose"
+      <p v-if="!props.isIn" class="headerP winCountTheme" @click="handleClose"
          style="margin-right: 3px;cursor: pointer">关闭此窗口</p>
-      <p class="headerP" @click="handleMin"
+      <p class="headerP winCountTheme" @click="handleMin"
          style="margin-right: 3px;cursor: pointer">窗口显示 | 隐藏快捷键 Shift + Tab</p>
       <div style="display: flex">
-        <p class="headerP" style="  margin-right: 13px;">
+        <p class="headerP winCountTheme" style="  margin-right: 13px;">
           游戏启动时自动打开此窗口</p>
         <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"/>
       </div>
@@ -56,9 +56,7 @@ header {
 }
 .headerP {
   display: flex;
-  color: #666666;
   height: 22px;
-  background-color: #e3e3e3;
   font-size: 13px;
   padding: 0px 5px 0px 5px;
   border-radius: 2px;

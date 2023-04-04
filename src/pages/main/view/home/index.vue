@@ -16,6 +16,7 @@ import Fbottom from './fbottom.vue'
 import Setting from './setting.vue'
 import {onMounted, ref} from 'vue'
 import {request} from "../../utils/request";
+import {useRoute} from "vue-router";
 
 const pageCount = ref(1)
 const notice = ref({})
@@ -23,6 +24,9 @@ const page = ref(1)
 const initSetup = ref([false])
 
 onMounted(() => {
+  const route = useRoute()
+  console.log(route.query)
+
   cube.windows.getWindowByName('main').then(async (win) => {
     if (win.show){
       const timestamp = new Date().getTime()

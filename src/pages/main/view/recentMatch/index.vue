@@ -20,8 +20,8 @@
       ></match>
     </div>
     <div class="winStat">
-      <span class="winCount">友方胜利次数 {{ friendTeamList[0] }}/{{ friendTeamList[1] }} 次</span>
-      <span class="winCount">敌方胜利次数 {{ enemyTeamTwoList[0] }}/{{ enemyTeamTwoList[1] }} 次</span>
+      <span class="winCount winCountTheme">友方胜利次数 {{ friendTeamList[0] }}/{{ friendTeamList[1] }} 次</span>
+      <span class="winCount winCountTheme">敌方胜利次数 {{ enemyTeamTwoList[0] }}/{{ enemyTeamTwoList[1] }} 次</span>
       <n-tag size="medium" v-if="isSubscribe==='f'" @click="matchActive=!matchActive"
              type="warning" style="height: 22px;font-size: 13px"
              :bordered="false">轮播广告</n-tag>
@@ -221,9 +221,7 @@ const renderRightMatch = () => {
 }
 .winCount {
   display: flex;
-  color: #666666;
   height: 22px;
-  background-color: #e3e3e3;
   font-size: 13px;
   padding: 0px 5px 0px 5px;
   border-radius: 2px;

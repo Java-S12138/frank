@@ -46,3 +46,7 @@ if (localStorage.getItem('config') === null) {
     }
   }
 }
+
+if (localStorage.getItem('theme') === null){
+  localStorage.setItem('theme', 'light')
+}

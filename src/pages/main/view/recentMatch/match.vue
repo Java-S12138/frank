@@ -1,5 +1,5 @@
 <template>
-  <div class="boxShadow match">
+  <div class="boxShadow match matchColor">
     <n-space style="margin:8px"  :size="[8,0]" >
       <n-space vertical style="width: 100px;" :size="[0,8]"
                v-for="(match,index) in props.matchList">
@@ -10,9 +10,8 @@
             fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
             style="display:block"
           />
-          <n-space style="width: 45px;height: 50px;border-radius:3px ;
-          background-color: rgba(32, 128, 240, 0.12);"
-                   vertical justify="space-between">
+          <n-space style="width: 45px;height: 50px;border-radius:3px;"
+                   vertical justify="space-between" class="recentRankPoint">
             <div class="rankPoint">
               {{match.rankPoint[0]}}
             </div>
@@ -120,7 +119,7 @@ const initMatchList = async () => {
   }
   else {
     for (const summonerInfo of props.matchList) {
-      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState,true)
+      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState,false)
     }
   }
 }
@@ -214,7 +213,7 @@ defineExpose({initMatchList})
   width: 548px;
   height: 477px;
   border-radius: 3px;
-  background: #ffffff;
+
 }
 .avatarOne > div > div > div > p{
   color: #ffffff;
@@ -233,7 +232,7 @@ defineExpose({initMatchList})
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #2080f0;
+
 }
 .heroTip {
   box-sizing: border-box;

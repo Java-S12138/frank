@@ -2,6 +2,27 @@
   <div class="mainCard">
     <n-card class="boxShadow">
       <n-space vertical :size="[2,20]">
+<!--        选择模式-->
+        <n-space align="center">
+            <n-tag :bordered="false">主题样式</n-tag>
+            <n-radio
+                    :checked="themeValue === 'light'"
+                    value="light"
+                    name="basic-demo"
+                    @change="handleThemeChange"
+            >
+                浅色
+            </n-radio>
+            <n-radio
+                    :checked="themeValue === 'dark'"
+                    value="dark"
+                    name="basic-demo"
+                    @change="handleThemeChange"
+
+            >
+                深色
+            </n-radio>
+        </n-space>
 <!--        秒选英雄-->
         <n-space>
           <n-tag :bordered="false">秒选英雄</n-tag>
@@ -115,17 +136,23 @@
 </template>
 
 <script setup lang="ts">
-import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover} from 'naive-ui'
+import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover,NRadio} from 'naive-ui'
 import {optionsChampion} from '../../resources/champList'
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 
 const emits = defineEmits(['changePage'])
 const config = reactive(JSON.parse(<string>(localStorage.getItem('config'))))
+const themeValue = ref(localStorage.getItem('theme'))
 const isSubscribe = localStorage.getItem('isSubscribe')
 const toHomePage = () => {
   emits('changePage')
 }
 
+const handleThemeChange = (e:Event) => {
+  themeValue.value = (e.target as HTMLInputElement).value
+  localStorage.setItem('theme',(e.target as HTMLInputElement).value)
+  alert('切换主题后 请重启Frank ^_^')
+}
 
 // 设置是否选项共用函数
 const commoneChnage = (option:string) => {
