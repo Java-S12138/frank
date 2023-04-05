@@ -2,7 +2,7 @@
   <n-scrollbar style="max-height: 475px;padding-right: 10px">
     <n-grid :cols="2" x-gap="15" style="margin-top: 4px">
       <n-gi v-for="blockItems in storeRune.blockDataList">
-        <div class="blockMain">
+        <div class="blockMain runeDivDash">
           <div v-for="block in blockItems.buildItems.blocks">
             <n-space :size=[8,0] style="height: 28.5px;">
               <img class="itemImg" draggable="false" v-for="img in block.items"
@@ -21,11 +21,11 @@
         </div>
       </n-gi>
     </n-grid>
-    <div class="tipBottom">
+    <div class="tipBottom runeDivDash">
       <p>应用符文时自动应用装备</p>
       <n-switch v-model:value="active" size="small"  @click="changeSetting" />
     </div>
-    <div class="tipBottom">
+    <div class="tipBottom runeDivDash">
       <p>删除游戏内现有配装方案</p>
       <n-popconfirm
         @positive-click="removeItem"
@@ -93,7 +93,6 @@ const removeItem = async () => {
   margin-bottom: 15px;
   padding: 8px;
   border-radius: 8px;
-  border:1px dashed #dfdfdf;
   display: flex;
   flex-direction: column;
   gap: 8px 0px;
@@ -109,7 +108,6 @@ const removeItem = async () => {
   align-items: center;
   border-radius: 4px;
   height: 36px;
-  border:1px dashed #dfdfdf;
   color: #666666;
   margin-bottom: 15px;
 }

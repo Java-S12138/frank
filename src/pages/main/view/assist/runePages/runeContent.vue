@@ -2,7 +2,7 @@
   <n-scrollbar style="max-height: 477px;padding-right: 10px">
     <n-grid :cols="2" x-gap="15" style="margin-top: 4px">
       <n-gi v-for="rune in props.runeList">
-        <div class="runeDiv">
+        <div class="runeDiv runeDivDash">
           <n-space :size=[-5,0] align="stretch" justify="space-between">
             <n-space vertical align="center" :size=[1,-5]>
               <img :src="getImgUrl(rune.selectedPerkIds[0])" alt="" class="runImg">
@@ -32,10 +32,10 @@
         </div>
       </n-gi>
     </n-grid>
-    <div class="tipBottom">
+    <div class="tipBottom runeDivDash">
       <n-space align="center" size="small">
-        <p>{{ storeRune.currentChampTitle }}</p>
-        <p @click="openDrawer" class="tipTag">自动符文</p>
+        <p class="runeTipColor">{{ storeRune.currentChampTitle }}</p>
+        <p  @click="openDrawer" class="runeTipTag runeTipColor">自动符文</p>
       </n-space>
     </div>
   </n-scrollbar>
@@ -171,7 +171,6 @@ const autoWriteRune = () => {
   margin-bottom: 15px;
   padding: 8px;
   border-radius: 8px;
-  border: 1px dashed #dfdfdf;
 }
 
 .tipBottom {
@@ -182,19 +181,9 @@ const autoWriteRune = () => {
   width: 254px;
   border-radius: 4px;
   height: 36px;
-  border: 1px dashed #dfdfdf;
-  color: #666666;
 }
 
-.tipBottom p {
-  padding-top: 3px;
-  color: rgb(31, 34, 37);
-}
-
-.tipTag {
+.runeTipTag {
   cursor: pointer;
-}
-.tipTag:hover{
-  color: #18a058;
 }
 </style>

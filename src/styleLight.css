@@ -8,6 +8,10 @@ html {
     0 5px 12px 4px rgba(0, 0, 0, 0.04);
 }
 
+.textButtonColor {
+    color: #18181C;
+}
+
 .matchColor {
     background: #f5f5f5;
 }
@@ -20,4 +24,14 @@ html {
 .recentRankPoint {
     background-color: rgba(32, 128, 240, 0.12);
     color: #2080f0;
+}
+.runeDivDash {
+    border: 1px dashed #dfdfdf;
+}
+.runeTipColor {
+    padding-top: 3px;
+    color: #666666;
+}
+.runeTipTag:hover{
+    color: #18a058;
 }

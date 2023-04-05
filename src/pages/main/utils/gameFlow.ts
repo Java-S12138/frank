@@ -3,11 +3,8 @@ import {invokeLcu} from "../lcu";
 import WindowInfo = cube.windows.WindowInfo;
 
 export class GameFlow {
-
-  public jungleWin:WindowInfo|null = null
   public assistWin:WindowInfo|null = null
   public recentMatchWin:WindowInfo|null = null
-  public isJungleSuccess:boolean = false
   public isTFT:boolean = false
 
   // 显示或者隐藏助手窗口
@@ -47,7 +44,6 @@ export class GameFlow {
 
   // 选择英雄阶段结束后执行的操作
   public initGameInWindow = async () => {
-    const currentScreen = (await cube.utils.getPrimaryDisplay()).size
     //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
     cube.games.on('launched', () => {
       //游戏启动关闭桌面窗口和战绩历史窗口，打开游戏内窗口
@@ -56,16 +52,8 @@ export class GameFlow {
       invokeLcu('get','/lol-lobby/v1/parties/gamemode').then((res:any) => {
         const queueId = res?.queueId
         const config = JSON.parse(<string>(localStorage.getItem('config')))
-        const isJungleTime = config.isJungleTime
         const isGameInWindow = config.isGameInWindow
-        // 当前模式是召唤师峡谷之类的模式才打开野怪计时窗口
-        if ((queueId === 430 ||queueId === 420 ||queueId === 440||queueId === 840||queueId === 830||queueId === 850)&&isJungleTime){
-          cube.windows.obtainDeclaredWindow('jungleTime',
-            {gamein: true,x:currentScreen.width-220,y:currentScreen.height-350}).then((v) => {
-            cube.windows.hide(v.id)
-            this.jungleWin = v
-          })
-        }
+
         // 当前模式不是云顶之亦才打开战绩历史窗口
         if (queueId !== 1090 && queueId !== 1100 && queueId !== 1160 && queueId !== 1130 && queueId !== 1170){
           cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
@@ -81,19 +69,11 @@ export class GameFlow {
         }
       })
     })
-    // 接收战绩历史窗口发送过来的消息,表示查询已经完成
-    cube.windows.message.on('received',(id:string) => {
-      if (id === 'jungle_success'){
-        this.isJungleSuccess = true
-      }
-     })
 
     //游戏结束创建桌面窗口
     cube.games.on('stopped', () => {
       cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
-      this.jungleWin = null
       this.recentMatchWin = null
-      this.isJungleSuccess = false
     })
 
     // 游戏内监听按键, 显示或隐藏游戏内窗口
@@ -110,18 +90,6 @@ export class GameFlow {
         }
       }
     })
-    // 游戏内监听按键, 显示或隐藏野怪计时窗口
-    if (JSON.parse(<string>(localStorage.getItem('config'))).isJungleTime){
-      cube.settings.hotkeys.game.on('hold',(name, state) => {
-        if (name ==='show_jungleTime' && this.isJungleSuccess ){
-          if (state==="down"){
-            cube.windows.show(<number>this.jungleWin?.id)
-          }else {
-            cube.windows.hide(<number>this.jungleWin?.id)
-          }
-        }
-      })
-    }
 
     // 检测到进入英雄联盟大厅后, 获取首页数据
     const closeOn =  cube.games.launchers.on('launched', () => {

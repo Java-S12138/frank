@@ -32,9 +32,9 @@
             </n-space>
           </n-space>
             <n-space style="width: 200px">
-              <n-tag :bordered="false" round :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+              <n-tag :bordered="false" round
                      size="small" class="tipTag">进入游戏后可查看敌方信息</n-tag>
-              <n-tag :bordered="false" round :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+              <n-tag :bordered="false" round
                      size="small" class="tipTag">点击召唤师的头像查看战绩</n-tag>
            </n-space>
          </n-space>
@@ -76,6 +76,5 @@ const clickCurrentSummoner = (e:any, summonerId:number, name:string,puuid:string
 .tipTag {
   width: 200px;
   justify-content: center;
-  color: #9aa4af;
 }
 </style>

@@ -3,7 +3,7 @@
     <div class="fade-in-bottom">
       <n-space vertical :size="[0,15]" style="margin-top: 3px">
         <n-layout v-for="champ in champList"
-                  style="height: 55px" has-sider>
+                  style="height: 55px" has-sider class="assistMatchLayout">
           <n-layout-sider width="55" style="margin-right: 8px;">
               <n-avatar
                 :size="55"
@@ -11,11 +11,11 @@
                 style="display: block"/>
           </n-layout-sider>
           <n-layout>
-            <n-layout-content>
+            <n-layout-content >
               <n-tag :bordered="false" type="success"
                      class="tagDiv" style="height: 25px;">{{champ[1]}}</n-tag>
             </n-layout-content>
-            <n-layout-content>
+            <n-layout-content class="assistMatchLayout">
               <n-tag :bordered="false" type="info"
                      class="tagDiv infoLayout">{{ champ[2] }}</n-tag>
             </n-layout-content>

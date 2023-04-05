@@ -117,11 +117,11 @@
 
         <div class="suspension">
           <n-space>
-            <n-tag :bordered="false" :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+            <n-tag :bordered="false"
                    style="font-size: 12px">点击右侧图标可查看队友战绩</n-tag>
             <n-button
               text
-              @click="() => {pageCount=1}" color="black">
+              @click="() => {pageCount=1}" class="textButtonColor">
               <n-icon size="25">
                 <PictureInPictureTop/>
               </n-icon>
@@ -129,7 +129,7 @@
 
             <n-button
               text
-              @click="handleMin" color="black">
+              @click="handleMin" class="textButtonColor">
               <n-icon size="25">
                 <ChevronsDownLeft/>
               </n-icon>
@@ -138,7 +138,7 @@
             <n-popconfirm @positive-click="closeWindow" :show-icon="false"
                           negative-text="取消" positive-text="确认">
               <template #trigger>
-                <n-button text circle color="black">
+                <n-button text circle class="textButtonColor">
                   <n-icon size="24">
                     <circle-x/>
                   </n-icon>
@@ -147,9 +147,9 @@
               是否关闭当前页面
             </n-popconfirm>
 
-            <n-popover :show-arrow="false" trigger="hover" :delay="1000">
+            <n-popover :show-arrow="false"  trigger="hover" :delay="1000">
               <template #trigger>
-                <n-icon size="24" @mousedown="handleChangePosition">
+                <n-icon size="24"  class="textButtonColor" @mousedown="handleChangePosition">
                   <Ballon/>
                 </n-icon>
               </template>

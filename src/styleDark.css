@@ -3,14 +3,19 @@ html {
 }
 
 .boxShadow {
-    box-shadow: 0 1px 2px -2px rgba(255,255, 255, 0.04),
-    0 3px 6px 0 rgba(255, 255,255, 0.03),
-    0 5px 12px 4px rgba(255, 255,255, 0.02);
+    box-shadow: 0 1px 2px -2px rgba(255, 255, 255, 0.04),
+    0 3px 6px 0 rgba(255, 255, 255, 0.03),
+    0 5px 12px 4px rgba(255, 255, 255, 0.02);
+}
+
+.textButtonColor {
+    color: #666666;
 }
 
 .matchColor {
     background: #18181C;
 }
+
 .winCountTheme {
     background-color: #ffffff14;
     color: #ffffff85;
@@ -19,4 +24,18 @@ html {
 .recentRankPoint {
     background-color: rgba(112, 192, 232, 0.16);
     color: #70c0e8;
+}
+
+.runeDivDash {
+    border: 1px dashed rgba(255, 255, 255, 0.24);
+}
+.runeTipColor {
+    padding-top: 3px;
+    color: #666666;
+}
+.runeTipTag:hover{
+    color: #63E2B7;
+}
+.assistMatchLayout {
+    background-color: #2C2C32;
 }

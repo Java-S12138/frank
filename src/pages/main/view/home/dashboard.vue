@@ -14,9 +14,8 @@
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
         <template #trigger>
           <n-button
-            @click="handleMinimize"
-            text
-            :color="buttonColor">
+            @click="handleMinimize" class="textButtonColor"
+            text>
             <n-icon size="25">
               <chevrons-down-right/>
             </n-icon>
@@ -26,7 +25,7 @@
       </n-popover>
       <n-popover :show-arrow="false" trigger="hover" :delay="1000">
         <template #trigger>
-          <n-button text circle :color="buttonColor" @click="changePage">
+          <n-button text circle @click="changePage" class="textButtonColor">
             <n-icon size="24">
               <settings/>
             </n-icon>
@@ -37,7 +36,7 @@
       <n-popconfirm @positive-click="handleClose"  :show-icon="false"
                     negative-text="取消" positive-text="确认">
         <template #trigger>
-          <n-button text circle :color="buttonColor">
+          <n-button text circle class="textButtonColor">
             <n-icon size="24">
               <circle-x/>
             </n-icon>
@@ -57,8 +56,6 @@ import {onMounted, ref} from "vue";
 
 const emits = defineEmits(['changePage'])
 const isSubscribe = localStorage.getItem('isSubscribe')
-const theme = localStorage.getItem('theme')
-const buttonColor = ref('black')
 const subscribes = [
   {
     label: '订阅须知',
@@ -80,11 +77,6 @@ onMounted(() => {
       isShowSub.value = true
     }
   }
-
-  if(theme === 'dark') {
-    buttonColor.value = '#666666'
-  }
-
 })
 
 const changePage = () => {

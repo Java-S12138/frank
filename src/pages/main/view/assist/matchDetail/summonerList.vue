@@ -26,7 +26,7 @@
       </n-space>
     </n-list-item>
 
-    <div class="tipBottom">
+    <div class="tipBottom runeDivDash">
       <n-space justify="space-between" style="width: 100%;">
         <n-tag @click="openWin" class="tipTag" type="success" :bordered="false" round>对局分析</n-tag>
         <n-tag type="info" round style="font-size: 13px"
@@ -106,7 +106,6 @@ const openWin = () => {
   width: 100%;
   border-radius: 20px;
   height: 40px;
-  border: 1px dashed #dfdfdf;
 }
 
 .tipTag {

@@ -6,9 +6,9 @@
     </div>
     <div v-else class="fade-in-bottom">
       <n-space vertical :size="[0,15]" style="margin-top: 3px">
-        <n-layout v-for="match in matchList"
+        <n-layout v-for="match in matchList" class="assistMatchLayout"
                   style="height: 55px" has-sider>
-          <n-layout-sider width="55" style="margin-right: 8px;">
+          <n-layout-sider width="55"  style="margin-right: 8px;">
             <div class="siderDiv">
               <n-avatar
                 :size="55"
@@ -21,8 +21,8 @@
               </div>
             </div>
           </n-layout-sider>
-          <n-layout>
-            <n-layout-content>
+          <n-layout class="assistMatchLayout">
+            <n-layout-content class="assistMatchLayout">
               <div class="itemImgDiv">
                 <img class="imgItem" :src="match.item0">
                 <img class="imgItem" :src="match.item1">
@@ -32,8 +32,8 @@
                 <img class="imgItem" :src="match.item5">
                 <img class="imgItem" :src="match.item6">
               </div>
-            </n-layout-content>
-            <n-layout-content class="infoLayout">
+            </n-layout-content >
+            <n-layout-content class="infoLayout assistMatchLayout">
               <div class="infoDiv">
                 <n-tag class="tagKDA" :bordered="false" size="small"
                        :type="match.isWin ? 'success' : 'error'">
@@ -42,7 +42,7 @@
                 <n-tag class="typeTag"
                        :bordered="false" size="small" type="default">{{ match.gameModel }}|{{ match.lane }}•{{match.level}}
                 </n-tag>
-                <n-tag class="tagKDA" :color="{ color: '#f1f1f1', textColor: '#8a8a8a' }"
+                <n-tag class="tagKDA"
                        size="small" :bordered="false" type="default">{{match.matchTime}}</n-tag>
               </div>
             </n-layout-content>

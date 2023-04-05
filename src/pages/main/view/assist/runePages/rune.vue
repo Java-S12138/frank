@@ -24,7 +24,7 @@
 import {NCard, NSpace,useMessage,NSwitch} from 'naive-ui'
 import RuneHeader from "./runeHeader.vue";
 import RuneMain from "./runeMain.vue";
-import {onMounted, ref} from "vue";
+import {Ref, ref} from "vue";
 import {request} from "../../../utils/request"
 import {invokeLcu} from "../../../lcu";
 import {Block, OnlineRunes, RuneEventType} from "../../../interface/runeTypes";
@@ -33,7 +33,7 @@ import {mapNameFromUrl} from "../../../resources/champList";
 
 const message = useMessage()
 const storeRune = runeStore()
-const active = ref(JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock)
+const active:Ref = ref(JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock)
 
 class RuneClass {
   public currentGameMode = ''

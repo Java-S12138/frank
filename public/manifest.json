@@ -16,12 +16,6 @@
         "title": "显示隐藏战绩历史窗口",
         "default": "SHIFT+TAB",
         "passthrough": false
-      },
-      "show_jungleTime": {
-        "title": "显示隐藏打野计时窗口",
-        "default": "TAB",
-        "passthrough": false,
-        "hold": true
       }
     },
     "launcher_hotkeys": {},
@@ -76,19 +70,6 @@
         "resizable": false,
         "in_game_only": false,
         "title_bar_height": 20
-      },
-      "jungleTime": {
-        "file": "src/pages/main/index.html/#/jungleTime",
-        "frame": false,
-        "width": 220,
-        "height": 280,
-        "min_width": 150,
-        "resizable": false,
-        "in_game_only": true,
-        "title_bar_height": 10,
-        "maximizable": false,
-        "show_center": false,
-        "opacity": 0.8
       }
     }
   },

@@ -9,7 +9,7 @@
                     :checked="themeValue === 'light'"
                     value="light"
                     name="basic-demo"
-                    @change="handleThemeChange"
+                    @click="handleThemeChange"
             >
                 浅色
             </n-radio>
@@ -17,7 +17,7 @@
                     :checked="themeValue === 'dark'"
                     value="dark"
                     name="basic-demo"
-                    @change="handleThemeChange"
+                    @click="handleThemeChange"
 
             >
                 深色
@@ -62,14 +62,6 @@
                  style="width: 140px;justify-content: center">是否使用排位笔记</n-tag>
 
           <n-switch v-model:value="config.isSwitchBlacklist" @click="changeBlacklist"
-                    style="margin-left:22px;margin-top: 3px"/>
-        </n-space>
-<!--        野怪计时-->
-        <n-space>
-          <n-tag :bordered="false">野怪计时</n-tag>
-          <n-tag :bordered="false" type="success"
-                 style="width: 140px;justify-content: center">是否使用野怪计时</n-tag>
-          <n-switch v-model:value="config.isJungleTime" @click="changeJungleTime"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
 <!--        游戏窗口-->
@@ -149,9 +141,14 @@ const toHomePage = () => {
 }
 
 const handleThemeChange = (e:Event) => {
-  themeValue.value = (e.target as HTMLInputElement).value
-  localStorage.setItem('theme',(e.target as HTMLInputElement).value)
-  alert('切换主题后 请重启Frank ^_^')
+  const r = confirm("如果你想切换主题 请点击 [确定] Frank会自动重启 ^_^")
+  if (r == true) {
+    themeValue.value = (e.target as HTMLInputElement).value
+    localStorage.setItem('theme',(e.target as HTMLInputElement).value)
+    cube.extensions.relaunch()
+  } else {
+    alert("哎呀~~~ 你取消了切换主题")
+  }
 }
 
 // 设置是否选项共用函数
@@ -189,11 +186,6 @@ const changeBlacklist = () => {
   })
 
   commoneChnage('isSwitchBlacklist')
-}
-// 设置是否开启野怪计时
-const changeJungleTime = () => {
-  commoneChnage('isJungleTime')
-  alert('目前野怪计时还不太稳定, 开启后请重启Frank~~~')
 }
 
 // 设置是否开启自动打开游戏内窗口

@@ -13,7 +13,7 @@
               style="display: block"
               @click="clickCurrentSummoner($event,summoner.summonerId,summoner.name,summoner.puuid)"
             />
-            <n-tag type="default" :bordered="false" :color="{ color: '#fafafc'}"
+            <n-tag type="default" :bordered="false"
                    round size="small" style="width: 120px;justify-content: center">{{summoner.name}}
             </n-tag>
             <n-tag type="info" :bordered="false"
@@ -43,11 +43,11 @@
       <loading-anime v-else></loading-anime>
       <div class="suspension">
         <n-space>
-          <n-tag :bordered="false" :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+          <n-tag :bordered="false"
                  style="font-size: 12px">点击右侧图标可查看队友评分</n-tag>
           <n-button
             text
-            @click="() => {pageCount=4}" color="black">
+            @click="() => {pageCount=4}" class="textButtonColor">
             <n-icon size="25">
               <PictureInPictureTop/>
             </n-icon>
@@ -55,7 +55,7 @@
 
           <n-button
             text
-            @click="handleMin" color="black">
+            @click="handleMin" class="textButtonColor">
             <n-icon size="25">
               <ChevronsDownLeft/>
             </n-icon>
@@ -64,7 +64,7 @@
           <n-popconfirm @positive-click="closeWindow" :show-icon="false"
                         negative-text="取消" positive-text="确认">
             <template #trigger>
-              <n-button text circle color="black">
+              <n-button text circle class="textButtonColor">
                 <n-icon size="24">
                   <circle-x/>
                 </n-icon>
@@ -75,7 +75,7 @@
 
           <n-popover :show-arrow="false" trigger="hover" :delay="1000">
             <template #trigger>
-              <n-icon size="24">
+              <n-icon size="24" class="textButtonColor">
                 <Ballon @mousedown="handleChangePosition"/>
               </n-icon>
             </template>
