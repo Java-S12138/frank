@@ -45,8 +45,8 @@
           </n-list>
 
         </n-layout-sider>
-        <n-layout>
-          <n-layout-content v-if="currentGameId !==0">
+        <n-layout class="queryMatchColor">
+          <n-layout-content v-if="currentGameId !==0" class="queryMatchColor">
             <game-details class="slide-in-right"
                           :currentGameIdProps="currentGameId" :key="currentGameId"
             ></game-details>

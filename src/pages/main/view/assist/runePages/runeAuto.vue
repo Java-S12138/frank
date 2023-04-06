@@ -1,7 +1,7 @@
 <template>
   <n-card :bordered="false" content-style="padding:32px" class="divCard">
     <n-space justify="space-between">
-      <div class="runeDiv"  v-if="runeData!==null">
+      <div class="runeDiv runeDivDash"  v-if="runeData!==null">
         <n-space style="width: 86px;padding: 5px 8px" align="stretch" justify="space-between">
           <n-space vertical align="center" :size=[0,0]>
             <img :src="getImgUrl(runeData.selectedPerkIds[0])" alt="" class="runImg">
@@ -21,7 +21,7 @@
         </n-space>
       </div>
 
-      <div class="runeDiv">
+      <div class="runeDiv runeDivDash">
         <n-space vertical align="center" :size="[0,12]" style="padding-top: 4px">
           <n-tag :bordered="false" >左侧显示数据</n-tag>
           <n-tag :bordered="false" type="error" v-if="clientRune">召唤师符文页</n-tag>
@@ -178,7 +178,6 @@ const openWeb = () => {
   margin-bottom: 15px;
   padding: 8px;
   border-radius: 8px;
-  border: 1px dashed #dfdfdf;
 }
 
 .runImg {

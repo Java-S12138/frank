@@ -40,10 +40,6 @@ import {blacklistServe} from "../../utils/request";
 import {SummonerInfoList} from "../../interface/blacklistTypes";
 
 onMounted(() => {
-  cube.windows.getCurrentWindow().then(value => {
-    cube.windows.openDevTools(value.id)
-  })
-
   let nTabsRail = document.querySelector('.n-tabs-rail')
   let champRank = document.querySelector('#assistTabs > div > div > div:nth-child(1) > div')
   let rune = document.querySelector('#assistTabs > div > div > div:nth-child(2) > div.n-tabs-tab')

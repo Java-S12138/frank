@@ -64,7 +64,7 @@ export const getItemImgUrl = (item:number) => {
   //   return `https://game.gtimg.cn/images/lol/act/img/item/3068.png`
   // }
   if (item == 0){
-    return 'https://gw.alipayobjects.com/zos/rmsportal/wYnHWSXDmBhiEmuwXsym.png?x-oss-process=image%2Fresize%2Cm_fill%2Cw_64%2Ch_64%2Fformat%2Cpng'
+    return new URL("/src/assets/svg/image.png", import.meta.url).href
   }else {
     return `https://game.gtimg.cn/images/lol/act/img/item/${item}.png`
   }

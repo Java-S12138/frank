@@ -6,7 +6,7 @@
         <n-space :size="[2,0]">
           <n-button
             text
-            @click="handleMin" color="black">
+            @click="handleMin" class="textButtonColor">
             <n-icon size="25">
               <ChevronsDownLeft/>
             </n-icon>
@@ -14,7 +14,7 @@
           <n-popover :show-arrow="false" trigger="hover" :delay="1000">
             <template #trigger>
               <n-button text circle color="black" @click="backPageSencond">
-                <n-icon size="24">
+                <n-icon size="24"  class="textButtonColor">
                   <ArrowBackUp/>
                 </n-icon>
               </n-button>

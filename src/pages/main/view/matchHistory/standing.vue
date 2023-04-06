@@ -64,7 +64,7 @@
                       </div>
 
                     </n-icon>
-                    <div class="kdadiv">{{match.kills }}/{{match.deaths }}/{{match.assists }}</div>
+                    <div class="kdadiv winCountTheme">{{match.kills }}/{{match.deaths }}/{{match.assists }}</div>
                     <n-space style="margin-left: 8px" :size="[1,0]">
                       <span style="color: #9AA4AF;font-size: 13px">{{match.matchTime}}</span>
                     </n-space>
@@ -80,7 +80,7 @@
         <n-list  style="margin-left: 22px;" >
           <n-scrollbar style="max-height: 485px;margin-top: 20px;padding-right: 13px">
               <n-list-item style="height: 70px;width: 162px"
-                v-for="superChamp in props.matchData[props.matchData.length-1]">
+                v-for="superChamp in props.matchData?.[props.matchData.length-1]">
                 <n-space>
                   <n-avatar
                     :bordered="false"
@@ -106,18 +106,18 @@
       </n-space>
       <div class="suspension">
         <n-space>
-          <n-tag :bordered="false" :color="{ color: '#fafafc', textColor: '#9AA4AF' }"
+          <n-tag :bordered="false"
                  style="font-size: 12px">点击英雄头像可查看完整战绩</n-tag>
           <n-button
             text
-            @click="handleMin" color="black">
+            @click="handleMin" class="textButtonColor">
             <n-icon size="25">
               <ChevronsDownLeft/>
             </n-icon>
           </n-button>
           <n-popover :show-arrow="false" trigger="hover" :delay="1000">
             <template #trigger>
-              <n-button text circle color="black" @click="backPage">
+              <n-button text circle class="textButtonColor" @click="backPage">
                 <n-icon size="24">
                   <ArrowBackUp/>
                 </n-icon>
@@ -128,7 +128,7 @@
           <n-popover :show-arrow="false" trigger="hover" :delay="2000">
             <template #trigger>
               <n-icon size="24" @mousedown="handleChangePosition">
-                <Ballon/>
+                <Ballon class="textButtonColor"/>
               </n-icon>
             </template>
             移动窗口位置
@@ -199,9 +199,8 @@ const openSubscribePage = () => {
   right: 3px;
 }
 .kdadiv {
-  background-color: #eee;
   height: 18px;
-  color: #000;font-size: 13px;
+  font-size: 13px;
   padding:0px 5px 0px 5px;
   border-radius: 3px;
 }

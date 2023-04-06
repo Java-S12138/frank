@@ -15,6 +15,9 @@ html {
 .matchColor {
     background: #18181C;
 }
+.queryMatchColor {
+    background: #18181C;
+}
 
 .winCountTheme {
     background-color: #ffffff14;
@@ -29,13 +32,16 @@ html {
 .runeDivDash {
     border: 1px dashed rgba(255, 255, 255, 0.24);
 }
+
 .runeTipColor {
     padding-top: 3px;
     color: #666666;
 }
-.runeTipTag:hover{
+
+.runeTipTag:hover {
     color: #63E2B7;
 }
+
 .assistMatchLayout {
     background-color: #2C2C32;
 }

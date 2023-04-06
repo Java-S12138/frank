@@ -153,7 +153,7 @@ header {
   border-radius: 3px;
 }
 .runeSpace {
-  background: #fafafc;
+  background: #ffffff00;
   border-radius: 3px;
   padding: 2px 5px 2px 5px;
   width: 96%;

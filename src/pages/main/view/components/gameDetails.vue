@@ -101,7 +101,7 @@
                     {{ singleData[0].name }}
                   </n-ellipsis>
 
-                  <div class="kdadiv">
+                  <div class="kdadiv winCountTheme">
                     {{ singleData[0].kills }}-{{ singleData[0].deaths }}-{{ singleData[0].assists }}
                   </div>
                 </n-space>
@@ -160,7 +160,7 @@
                     {{ singleData[1].name }}
                   </n-ellipsis>
 
-                  <div class="kdadiv">
+                  <div class="kdadiv winCountTheme">
                     {{ singleData[1].kills }}-{{ singleData[1].deaths }}-{{ singleData[1].assists }}
                   </div>
                 </n-space>
@@ -402,7 +402,7 @@ const getOtherData = (gameDetalisList:any) => {
 // 图片不存在显示默认图片
 function slnotimg(event:any) {
   var img = event.srcElement
-  img.src = "https://gw.alipayobjects.com/zos/rmsportal/wYnHWSXDmBhiEmuwXsym.png?x-oss-process=image%2Fresize%2Cm_fill%2Cw_64%2Ch_64%2Fformat%2Cpng"
+  img.src = new URL("/src/assets/svg/image.png", import.meta.url).href
   img.onerror = null
 }
 const openSubscribePage = () => {
@@ -465,9 +465,8 @@ const subscribeInfo = () => {
 }
 
 .kdadiv {
-  background-color: #eee;
   height: 18px;
-  color: #000;font-size: 13px;
+  font-size: 13px;
   position: absolute;
   right: 0px;
   bottom: 12px;

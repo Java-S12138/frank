@@ -11,7 +11,7 @@
           <template #trigger>
             <n-button
               text
-              @click="handleMin" color="black">
+              @click="handleMin"  class="textButtonColor">
               <n-icon size="25">
                 <chevrons-down-left/>
               </n-icon>
@@ -23,7 +23,7 @@
         <n-popconfirm @positive-click="backHome" :show-icon="false"
                       negative-text="取消" positive-text="确认">
           <template #trigger>
-            <n-button text circle color="black" style="margin-right: 2px">
+            <n-button text circle  class="textButtonColor" style="margin-right: 2px">
               <n-icon size="24">
                 <smart-home/>
               </n-icon>
@@ -35,7 +35,7 @@
         <n-popconfirm @positive-click="handleClose" :show-icon="false"
                       negative-text="取消" positive-text="确认">
           <template #trigger>
-            <n-button text circle color="black">
+            <n-button text circle  class="textButtonColor">
               <n-icon size="24">
                 <circle-x/>
               </n-icon>
