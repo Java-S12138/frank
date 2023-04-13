@@ -33,8 +33,10 @@ export class GameFlow {
       cube.windows.message.send(assistWin.id, 'show-other-summoner', '')
     }else {
       this.isTFT = false
+
     }
   }
+
   // 关闭某个窗口
   private coloseWin = (winName:string) => {
     cube.windows.getWindowByName(winName, false).then((v) => {

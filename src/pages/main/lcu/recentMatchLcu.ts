@@ -65,8 +65,7 @@ export class recentMatch {
   // 检测LCU接口数据是否正常
   public checkmatchSession = async () => {
     await this.init()
-    return true
-    if (this.matchSession?.gameData?.teamOne.length !== 0 || this.matchSession?.gameData?.teamTwo.length !== 0){
+    if (this.matchSession?.gameData?.teamOne.length !== 0 && this.matchSession?.gameData?.teamTwo.length !== 0){
       return true
     }else {
       return false
