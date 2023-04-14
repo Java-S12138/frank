@@ -18,7 +18,6 @@ interface SuperChampTypes {
 
 export class recentMatch {
   public matchSession: any
-  public playerChampionSelections: any = {}
   public currentId: number = 0
   public gameType: number = 420
 
@@ -32,16 +31,13 @@ export class recentMatch {
     this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
     this.gameType = this.matchSession?.gameData?.queue?.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
-    this.matchSession?.gameData?.playerChampionSelections.forEach((res: any) => {
-      this.playerChampionSelections[(res.summonerInternalName)] = res.championId
-    })
   }
 
   // 通过lcu接口获取数据再次进行解析
   public simplifySummonerInfo = async (summonerList: {}[]) => {
     try {
       const info: any = await summonerList.reduce(async (res: any, item: any) => {
-        const aliasOrIcon = (this.gameType === 420 || this.gameType === 440) ? champDict[String(this.playerChampionSelections[(item.summonerName.toLowerCase())])].alias : item.profileIconId
+        const aliasOrIcon =  item?.championId !== undefined ? champDict[item.championId].alias : item?.profileIconId
         const summonerState = await this.querySummonerSuperChampData(item.summonerId, aliasOrIcon)
         return (await res).concat({
           summonerId: `${item.summonerId}`,

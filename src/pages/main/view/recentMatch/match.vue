@@ -119,7 +119,7 @@ const initMatchList = async () => {
   }
   else {
     for (const summonerInfo of props.matchList) {
-      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState,false)
+      await mathcClass.queryMatchHistory(summonerInfo.puuid,props.gameType,summonerInfo.summonerState,true)
     }
   }
 }
