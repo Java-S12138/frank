@@ -20,24 +20,33 @@ export class recentMatch {
   public matchSession: any
   public currentId: number = 0
   public gameType: number = 420
+  public playerChampionSelections: any = {}
 
   // 初始化数据
   public init = async () => {
-    // this.matchSession = (await request({
-    //   'url': 'https://cdn.syjun.vip/frank/sessionTest.json',
-    //   method: 'GET',
-    // })).data
-
     this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session')
     this.gameType = this.matchSession?.gameData?.queue?.id
     this.currentId = (await invokeLcu('get', '/lol-summoner/v1/current-summoner')).summonerId
+    this.matchSession?.gameData?.playerChampionSelections.forEach((res: any) => {
+      this.playerChampionSelections[res.summonerInternalName] = res.championId
+    })
   }
 
   // 通过lcu接口获取数据再次进行解析
   public simplifySummonerInfo = async (summonerList: {}[]) => {
     try {
       const info: any = await summonerList.reduce(async (res: any, item: any) => {
-        const aliasOrIcon =  item?.championId !== undefined ? champDict[item.championId].alias : item?.profileIconId
+        let isIcon = false
+        let aliasOrIcon:any
+        if (item?.championId !== undefined){
+          aliasOrIcon = champDict[item.championId]?.alias
+        }else if (this.playerChampionSelections[item.summonerName?.toLowerCase()] !== undefined){
+          aliasOrIcon = champDict[this.playerChampionSelections[(item.summonerName.toLowerCase())]]?.alias
+        }else {
+          isIcon = true
+          aliasOrIcon = item?.profileIconId
+        }
+
         const summonerState = await this.querySummonerSuperChampData(item.summonerId, aliasOrIcon)
         return (await res).concat({
           summonerId: `${item.summonerId}`,
@@ -46,7 +55,7 @@ export class recentMatch {
           summonerName: item.summonerName,
           index: getPosition(item.selectedPosition),
           summonerState: summonerState,
-          championUrl: (this.gameType === 420 || this.gameType === 440) ? `https://game.gtimg.cn/images/lol/act/img/champion/${aliasOrIcon}.png` :
+          championUrl: !isIcon ? `https://game.gtimg.cn/images/lol/act/img/champion/${aliasOrIcon}.png` :
             `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${aliasOrIcon}.png`
         })
       }, [])
