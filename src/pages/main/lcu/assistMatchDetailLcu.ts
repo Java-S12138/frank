@@ -21,8 +21,7 @@ export const queryChampList = async (summonerId: string) => {
   }
 }
 
-const queryMatchHistory = async (puuid: string, begIndex: number, endIndex: number,locale:string): Promise<LcuMatchList|null> => {
-  endIndex = locale==='zh_CN'?endIndex:endIndex-1
+const queryMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<LcuMatchList|null> => {
   const res = await invokeLcu(
     'get',
     `/lol-match-history/v1/products/lol/${puuid}/matches`,
@@ -86,17 +85,25 @@ const queryGameType = (queueId:number) => {
   return '其它'
 }
 
-export const queryMatch = async (puuid:string,locale:string) => {
+export const queryMatch = async (puuid:string) => {
   if (puuid === ''){
     return null
   }
-  const matchList = await queryMatchHistory(puuid, 0, 20,locale)
+  const matchList = await queryMatchHistory(puuid, 0, 20)
   if (matchList === null || matchList?.games?.games.length ===0){
     return null
   }
-  const MatchList = locale === 'zh_CN' ? matchList?.games?.games.reverse() : matchList?.games?.games
-  const simpleMatchList:simpleMatchTypes[] = MatchList?.reduce((res:any,item:any) => {
+  const simpleMatchList:simpleMatchTypes[] = isRevGames(matchList.games.games).reduce((res:any,item:any) => {
     return res.concat([getSimpleMatch(item,queryGameType(item.queueId))])
   },[])
   return simpleMatchList
+}
+
+const isRevGames = (games:Game[]):Game[]  =>  {
+  let len = games.length
+
+  if (games[0].gameCreation > games[len-1].gameCreation) {
+    return games
+  }
+  return games.reverse()
 }

@@ -87,8 +87,7 @@ export const returnRankData = async (summonerId: number) => {
 // matchDetailed Page ==================================================================== //
 
 // 根据召唤师ID查询战绩
-const queryMatchHistory = async (summonerId: string, begIndex: number, endIndex: number,locale:string): Promise<LcuMatchList|null> => {
-  endIndex = locale==='zh_CN'?endIndex:endIndex-1
+const queryMatchHistory = async (summonerId: string, begIndex: number, endIndex: number): Promise<LcuMatchList|null> => {
   const res = await invokeLcu(
     'get',
     `/lol-match-history/v1/products/lol/${summonerId}/matches`,
@@ -121,16 +120,15 @@ const getSimpleMatch = (match: Game,gameModel:string):MatchList => {
 }
 
 // 处理战绩数据
-export const dealMatchHistory = async (summonerId: string, begIndex: number, endIndex: number, mode: string|undefined,locale:string):Promise<Array<MatchList> | null>  => {
-  const matchList = await queryMatchHistory(summonerId, begIndex, endIndex,locale)
+export const dealMatchHistory = async (summonerId: string, begIndex: number, endIndex: number, mode: string|undefined):Promise<Array<MatchList> | null>  => {
+  const matchList = await queryMatchHistory(summonerId, begIndex, endIndex)
 
   if (matchList === null) {return null}
   if (matchList?.games?.games?.length === 0 || matchList?.games?.games ===undefined ) {return null}
 
   const simpleMatchList = []
   const specialSimpleMatchList = []
-  const forMatchList = locale === 'zh_CN' ? matchList?.games?.games.reverse() : matchList?.games?.games
-  for (const matchListElement of forMatchList) {
+  for (const matchListElement of isRevGames(matchList.games.games)) {
     // 游戏模式
     let gameModel = queryGameType(matchListElement.queueId)
     if (gameModel === mode) {
@@ -145,20 +143,34 @@ export const dealMatchHistory = async (summonerId: string, begIndex: number, end
     return specialSimpleMatchList
   }
 }
+
 const timestampToDate = (timestamp: number) => {
   var date = new Date(timestamp)
   return (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-' + date.getDate()
 }
 
 // 查看特定模式的战绩
-export const querySpecialMatchHistory = async (summonerId: string, mode: string,locale:string):Promise<Array<MatchList>> => {
+export const querySpecialMatchHistory = async (summonerId: string, mode: string):Promise<Array<MatchList>> => {
   let specialDict: any = []
   for (let i = 0; i < 8; i++) {
-    const matchHistory: any = await dealMatchHistory(summonerId, 20 * i, 20 * (i + 1), mode,locale)
+    const matchHistory: any = await dealMatchHistory(summonerId, 20 * i, 20 * (i + 1), mode)
     if (matchHistory===null){
       return specialDict
     }
     specialDict = [...specialDict, ...matchHistory]
   }
   return specialDict
+}
+
+const isRevGames = (games:Game[]):Game[]  =>  {
+  let len = games.length
+  if ( len>8 ) {
+    len = 8
+    games =  games.slice(0,8)
+  }
+
+  if (games[0].gameCreation > games[len-1].gameCreation) {
+    return games
+  }
+  return games.reverse()
 }

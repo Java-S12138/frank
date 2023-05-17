@@ -1,5 +1,6 @@
 import {champDict} from "../resources/champList";
 import {invokeLcu} from "../lcu";
+import {Game} from "../lcu/types/queryMatchLcuTypes";
 
 
 // 查询当前游戏模式
@@ -19,8 +20,21 @@ export const queryCurrentGameMode = async () => {
 
 // 获取最近的比赛记录
 const getRencentMatchHistoty = async (summonerId: string,locale:string) => {
-  const matchList = await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [0, 10])
-  return locale === 'zh_CN' ? matchList['games']['games'].reverse() : matchList['games']['games']
+  try {
+    const matchList = await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [0, 10])
+    let games:any[] = matchList['games']['games']
+    let len = games.length
+    if (len>10) {
+      len = 10
+      games = games.slice(0,10)
+    }
+    if (games[0].gameCreation > games[len-1].gameCreation) {
+      return games
+    }
+    return games.reverse()
+  }catch (e) {
+    return []
+  }
 }
 
 // 查询比赛记录 (最近10场排位)
@@ -35,8 +49,7 @@ const queryMatchHistory = async (summonerId: string,locale:string) => {
   for (let i = 0; i < 100; i += 20) {
     try {
       const matchList = await invokeLcu('get', `/lol-match-history/v1/products/lol/${summonerId}/matches`, [i, i + 20])
-      const forMatchList = locale === 'zh_CN' ? matchList['games']['games'].reverse() : matchList['games']['games']
-      for (const matchListElement of forMatchList) {
+      for (const matchListElement of isRevGames(matchList['games']['games'])) {
         if (matchListElement.queueId === currentGameMode && matchCount < 10) {
           matchCount += 1
           classicMode.push(matchListElement)
@@ -49,6 +62,15 @@ const queryMatchHistory = async (summonerId: string,locale:string) => {
     }
   }
   return classicMode
+}
+
+const isRevGames = (games:Game[]):Game[]  =>  {
+  let len = games.length
+
+  if (games[0].gameCreation > games[len-1].gameCreation) {
+    return games
+  }
+  return games.reverse()
 }
 
 // 获取召唤师游戏评分分数

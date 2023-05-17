@@ -52,6 +52,7 @@ import {NSpace,NAvatar,NTag} from 'naive-ui'
 import {onMounted, PropType, Ref, ref} from "vue";
 import {invokeLcu} from "../../lcu";
 import {champDict} from "../../resources/champList";
+import {Game} from "../../lcu/types/queryMatchLcuTypes";
 interface matchTypes {
   champImg: string;
   kill: number;
@@ -184,7 +185,7 @@ class Match {
           if (matchGet['games']['games'].length === 0 ) {
             break mainfor
           }
-          const matchList = locale === 'zh_CN' ? matchGet['games']['games'].reverse() : matchGet['games']['games']
+          const matchList = this.isRevGames(matchGet['games']['games'])
           for (let j = 0; j < matchList.length; j++) {
             if (this.matchCount === 10) {
               break mainfor
@@ -202,6 +203,15 @@ class Match {
         }
       }
     matchInfoList.value.push(this.classicMode)
+  }
+
+  public isRevGames = (games:Game[]):Game[]  =>  {
+    let len = games.length
+
+    if (games[0].gameCreation > games[len-1].gameCreation) {
+      return games
+    }
+    return games.reverse()
   }
 }
 

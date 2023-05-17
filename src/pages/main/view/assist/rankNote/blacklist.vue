@@ -454,7 +454,7 @@ const handleUpdateArea = (value:string) => {
   queryBlacklist()
 }
 // 查看对局
-const toMatch = async (matchId:string,summonerId:string) => {
+const toMatch = async (matchId:string|undefined,summonerId:string) => {
   if (isSubscribe==='f'){
     message.warning('自动弹出查询战绩页面 需要订阅服务')
     return

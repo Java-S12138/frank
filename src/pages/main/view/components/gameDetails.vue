@@ -443,22 +443,17 @@ const subscribeInfo = () => {
 }
 
 .scale-in-hor-left {
-  -webkit-animation: scale-in-hor-left 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
   animation: scale-in-hor-left 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 @keyframes scale-in-hor-left {
   0% {
-    -webkit-transform: scaleX(0);
     transform: scaleX(0);
-    -webkit-transform-origin: 0% 0%;
     transform-origin: 0% 0%;
     opacity: 1;
   }
   100% {
-    -webkit-transform: scaleX(1);
     transform: scaleX(1);
-    -webkit-transform-origin: 0% 0%;
     transform-origin: 0% 0%;
     opacity: 1;
   }

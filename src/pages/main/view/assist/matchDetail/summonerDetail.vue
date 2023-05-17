@@ -60,7 +60,7 @@ const props = defineProps({
 const matchList:Ref<simpleMatchTypes[] | null> = ref([])
 
 onMounted(() => {
-  queryMatch(props.summonerPuuid,localStorage.getItem('locale') as string).then((value) => {
+  queryMatch(props.summonerPuuid as string).then((value) => {
     setTimeout(() => {
       if (value===null){
         return

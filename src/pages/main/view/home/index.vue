@@ -24,8 +24,6 @@ const page = ref(1)
 const initSetup = ref([false])
 
 onMounted(() => {
-  const route = useRoute()
-  console.log(route.query)
 
   cube.windows.getWindowByName('main').then(async (win) => {
     if (win.show){
