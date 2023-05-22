@@ -66,12 +66,7 @@
         </n-space>
 <!--        游戏窗口-->
         <n-space>
-          <n-popover :show-arrow="false" trigger="hover">
-            <template #trigger>
-              <n-tag :bordered="false">游戏窗口</n-tag>
-            </template>
-            游戏内显示战绩历史窗口 隐藏|显示 SHIFT+TAB
-          </n-popover>
+          <n-tag :bordered="false">游戏窗口</n-tag>
           <n-popover :show-arrow="false" trigger="hover">
             <template #trigger>
               <n-tag :bordered="false" type="success"
@@ -82,17 +77,16 @@
 
           <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"
                     style="margin-left:22px;margin-top: 3px"/>
+          <n-tag :disabled="true" :bordered="false"
+                 size="small" style="width: 300px;justify-content: center">游戏内显示战绩历史窗口 隐藏|显示 SHIFT+TAB</n-tag>
         </n-space>
 <!--        秒接对局-->
         <n-space v-if="isSubscribe !== 'f'">
-          <n-popover :show-arrow="false" trigger="hover">
-            <template #trigger>
-              <n-tag :bordered="false">秒接对局</n-tag>
-            </template>
-            数值=50-->秒接, 数值=60-->延迟2秒, 以此类推
-          </n-popover>
+          <n-tag :bordered="false">秒接对局</n-tag>
           <n-slider v-model:value="config.autoAccept" :step="10" @update:value="handleUpdateAccept"
                     style="width: 213px;margin-top: 5px"/>
+          <n-tag :disabled="true" :bordered="false"
+                 size="small" style="width: 300px;justify-content: center">滑块的值: [ {{'<'}}50  关闭 ] [ =50 开启 ] [ =60 延迟两秒 ] </n-tag>
         </n-space>
         <n-space v-else>
           <n-space>
@@ -113,6 +107,8 @@
           <n-button size="small" type="success" style="width: 214px;"
                     secondary @click="openCubeSite">CUBE 为改善游戏体验而生
           </n-button>
+          <n-tag :disabled="true" :bordered="false"
+                 size="small" style="width: 300px;justify-content: center">修改快捷键 可点击上方按钮 在Cube平台里面设置</n-tag>
         </n-space>
 <!--        回到首页-->
         <n-space>
@@ -206,7 +202,7 @@ const handleUpdateAccept = () => {
   localStorage.setItem('config',JSON.stringify(config))
 }
 const openCubeSite = () => {
-  cube.utils.openUrlInDefaultBrowser('https://cubedao.cn/')
+  cube.utils.openSettings()
 }
 
 const openSubscribePage = () => {
