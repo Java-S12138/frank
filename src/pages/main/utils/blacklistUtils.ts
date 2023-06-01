@@ -111,8 +111,8 @@ const querySummonerRank = async (puuid:string) => {
   const rankPoint = (await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`)).queues
   const rankSolo = rankPoint.find((i: any) => i.queueType === "RANKED_SOLO_5x5")
   const rankSr = rankPoint.find((i: any) => i.queueType === "RANKED_FLEX_SR")
-  const RANKED_SOLO = rankSolo.tier === "NONE" ? '未定级' : `${englishToChinese(rankSolo.tier)}${dealDivsion(rankSolo.division)} ${rankSolo.leaguePoints}`
-  const RANKED_FLEX_SR = rankSr.tier === "NONE" ? '未定级' : `${englishToChinese(rankSr.tier)}${dealDivsion(rankSr.division)} ${rankSr.leaguePoints}`
+  const RANKED_SOLO = rankSolo.tier === "" ? '未定级' : `${englishToChinese(rankSolo.tier)}${dealDivsion(rankSolo.division)} ${rankSolo.leaguePoints}`
+  const RANKED_FLEX_SR = rankSr.tier === "" ? '未定级' : `${englishToChinese(rankSr.tier)}${dealDivsion(rankSr.division)} ${rankSr.leaguePoints}`
   return [RANKED_SOLO, RANKED_FLEX_SR]
 }
 

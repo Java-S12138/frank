@@ -10,6 +10,7 @@ export const englishToChinese = (tier:string) => {
     case 'SILVER' :return '白银';
     case 'BRONZE' :return '青铜';
     case 'IRON' :return '黑铁';
+    default:return '未定级'
   }
 }
 // 处理段位数据

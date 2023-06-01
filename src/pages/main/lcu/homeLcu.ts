@@ -25,10 +25,9 @@ export const queryCurrentRankPoint = async ():Promise<[string,string,string]> =>
   let rankSolo = rankPoint.find((i:any) => i.queueType==="RANKED_SOLO_5x5")
   let rankSr = rankPoint.find((i:any) => i.queueType==="RANKED_FLEX_SR")
   let rankTft = rankPoint.find((i:any) => i.queueType==="RANKED_TFT")
-
-  let RANKED_SOLO =  rankSolo.tier ==="NONE" ? '未定级': `${englishToChinese(rankSolo.tier)}${dealDivsion(rankSolo.division)} ${rankSolo.leaguePoints}`
-  let RANKED_FLEX_SR =  rankSr.tier ==="NONE" ? '未定级':`${englishToChinese(rankSr.tier)}${dealDivsion(rankSr.division)} ${rankSr.leaguePoints}`
-  let RANKED_TFT =  rankTft.tier ==="NONE" ? '未定级':`${englishToChinese(rankTft.tier)}${dealDivsion(rankTft.division)} ${rankTft.leaguePoints}`
+  let RANKED_SOLO =  rankSolo.tier ==="" ? '未定级': `${englishToChinese(rankSolo.tier)}${dealDivsion(rankSolo.division)} ${rankSolo.leaguePoints}`
+  let RANKED_FLEX_SR =  rankSr.tier ==="" ? '未定级':`${englishToChinese(rankSr.tier)}${dealDivsion(rankSr.division)} ${rankSr.leaguePoints}`
+  let RANKED_TFT =  rankTft.tier ==="" ? '未定级':`${englishToChinese(rankTft.tier)}${dealDivsion(rankTft.division)} ${rankTft.leaguePoints}`
 
   return [RANKED_SOLO,RANKED_FLEX_SR,RANKED_TFT]
 }
