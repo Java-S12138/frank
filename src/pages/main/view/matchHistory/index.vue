@@ -45,7 +45,7 @@ const {
   currentSummonerName,
   pageCount,
   querySummonerId
-}:any = storeToRefs(store)
+}: { any } = storeToRefs(store)
 
 // 获取对应的图表数据
 const getChartsData = (res:any) => {

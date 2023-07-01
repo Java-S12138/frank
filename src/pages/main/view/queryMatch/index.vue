@@ -1,5 +1,5 @@
 <template>
-  <div v-if="locale!=='zh_CN'">
+  <div v-if="isSubscribe">
       <dashboard></dashboard>
       <n-space>
           <summoner-info></summoner-info>
@@ -9,7 +9,6 @@
 
   <div v-else>
     <div class="recordDiv">
-
       <div class="recordInfoDiv">
         <n-alert title="应游戏官方要求 下架国服战绩查询功能" type="warning">
           推荐使用查询战绩平替软件 [ Record ] <br>
@@ -33,9 +32,9 @@ import Dashboard from './dashboard.vue'
 import SummonerInfo from "./summonerInfo.vue";
 import MatchDetailed from "./matchDetailed.vue";
 import '../../utils/echarts';
-
+const isSubscribe =  localStorage.getItem('isSubscribe')
 const recordImg = new URL("/src/assets/svg/record.png", import.meta.url).href
-const locale = <string>localStorage.getItem('locale')
+// const locale = <string>localStorage.getItem('locale')
 cube.windows.message.on('received',async (id) => {
   if (id==='refresdh-window'){
     location.reload()
@@ -43,7 +42,7 @@ cube.windows.message.on('received',async (id) => {
 })
 
 const colseWin = () => {
-  cube.windows.getCurrentWindow().then((v) => {
+  cube.windows.getCurrentWindow().then((v:any) => {
     cube.windows.close(v.id)
   })
 }

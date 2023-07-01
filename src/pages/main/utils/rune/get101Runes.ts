@@ -1,4 +1,5 @@
 import {request} from "../request";
+// @ts-ignore
 import _orderBy from "lodash/orderBy";
 import {flatRunes} from './runes'
 import {champDict} from "../../resources/champList";
@@ -93,9 +94,9 @@ export const get101Runes = async (champId:string|number) => {
         return result.concat(vals);
       }, []);
 
-      const sorted = _orderBy(pData, (i) => i.igamecnt, [`desc`]);
+      const sorted = _orderBy(pData, (i:any) => i.igamecnt, [`desc`]);
 
-      var pages:any = sorted.slice(0, 2).map((i) => makePerkData(i, champDict[champId].alias, position));
+      var pages:any = sorted.slice(0, 2).map((i:any) => makePerkData(i, champDict[champId].alias, position));
     }
     return res.concat(pages);
   }, []);

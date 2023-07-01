@@ -56,7 +56,7 @@
         </n-grid>
       </n-space>
       <n-space vertical
-               style="margin-top: 33px;margin-left: 20px;" :size="[2,31]">
+               style="margin-top: 30px;margin-left: 20px;" :size="[2,10]">
 
         <n-space :size="[45,0]" v-for="(singleData,index) in summonersDataList">
             <!--        队伍一-->
@@ -92,11 +92,11 @@
                     <img class="itemClassSecond" :src="singleData[0].spell2Id" alt="">
                   </n-space>
                   <!--                召唤师昵称-->
-                  <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
+                  <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px;margin-left: -8px"
                               v-if="singleData[0].accountId!==curSummonerId">
                     {{ singleData[0].name }}
                   </n-ellipsis>
-                  <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
+                  <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px;margin-left: -8px"
                               v-else>
                     {{ singleData[0].name }}
                   </n-ellipsis>
@@ -107,15 +107,16 @@
                 </n-space>
               </n-space>
             </n-space>
-            <n-popover trigger="hover" :show-arrow="false">
-              <template #trigger>
+            <n-space style="margin-top: 5px">
+              <div class="winCountTheme otherScore">
+                {{ otherData[index][0][otherDataKey] }}
+              </div>
+              <div class="otherBar">
                 <p class="scale-in-hor-left" :key="otherDataCount"
                    :style="'width:'+otherDataPercent[index][0][otherDataKey]" style="height: 7px;border-radius: 2px;
         background-color:#ff6666;"></p>
-              </template>
-              <span>{{ otherDataText }}: {{ otherData[index][0][otherDataKey] }}</span>
-            </n-popover>
-
+              </div>
+            </n-space>
           </n-space>
 
             <!--        队伍二-->
@@ -151,11 +152,11 @@
                     <img class="itemClassSecond" :src="singleData[1].spell2Id" alt="">
                   </n-space>
                   <!--                召唤师昵称-->
-                  <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px"
+                  <n-ellipsis style="max-width: 110px;color: #9AA4AF;font-size: 13px;width: 110px;margin-bottom: 2px;margin-left: -8px"
                               v-if="singleData[1].accountId!==curSummonerId">
                     {{ singleData[1].name }}
                   </n-ellipsis>
-                  <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px"
+                  <n-ellipsis style="max-width: 110px;color: #18a058;font-size: 13px;width: 110px;margin-bottom: 2px;margin-left: -8px"
                               v-else>
                     {{ singleData[1].name }}
                   </n-ellipsis>
@@ -166,15 +167,16 @@
                 </n-space>
               </n-space>
             </n-space>
-            <n-popover trigger="hover" :show-arrow="false">
-              <template #trigger>
+            <n-space style="margin-top: 5px">
+              <div class="winCountTheme otherScore">
+                {{ otherData[index][1][otherDataKey] }}
+              </div>
+              <div class="otherBar">
                 <p class="scale-in-hor-left" :key="otherDataCount"
                    :style="'width:'+otherDataPercent[index][1][otherDataKey]" style="height: 7px;border-radius: 2px;
         background-color:#4098fc;"></p>
-              </template>
-              <span>{{ otherDataText }}: {{ otherData[index][1][otherDataKey] }}</span>
-            </n-popover>
-
+              </div>
+            </n-space>
           </n-space></n-space>
       </n-space>
     <div>
@@ -222,7 +224,7 @@ import {lcuSummonerInfo} from "../../lcu/types/homeLcuTypes";
 const active = ref(false)
 let gameDetalisList:any = []
 const isGameDetalistNull = ref(false)
-const {querySummonerId,summoner,currentMode,currentGameId}:any = storeToRefs(queryStore())
+const {querySummonerId,summoner,currentMode,currentGameId}: { any } = storeToRefs(queryStore())
 const titleList:Ref<any[]> = ref([])
 const summonersDataList:Ref<any[]> = ref([])
 const otherData:Ref = ref(null)
@@ -247,7 +249,7 @@ const props = defineProps({
 
 onMounted(async () => {
   if (props.currentGameIdProps === undefined){
-    const {currentQueryGameId,querySummonerId}:any = storeToRefs(matchStore())
+    const {currentQueryGameId,querySummonerId}: { any } = storeToRefs(matchStore())
     gameDetalisList = await queryGameDetailsData(currentQueryGameId.value)
     isGameDetalistNull.value = gameDetalisList.length === 0 ? true : false
     curSummonerId.value = querySummonerId.value
@@ -263,6 +265,7 @@ onMounted(async () => {
       parentPage.value = 'query'
     }
   }
+  console.log(gameDetalisList)
   queryOtherMax(gameDetalisList)
   titleList.value = gameDetalisList[5]
   summonersDataList.value = gameDetalisList.slice(0, 5)
@@ -464,7 +467,7 @@ const subscribeInfo = () => {
   font-size: 13px;
   position: absolute;
   right: 0px;
-  bottom: 12px;
+  bottom: 30px;
   padding:0px 5px 0px 5px;
   border-radius: 3px;
 }
@@ -493,5 +496,20 @@ const subscribeInfo = () => {
   right: 0px;
   color: #ffffff;
   border-radius: 2px;
+}
+.otherScore {
+  width: 50px;
+  height: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 12px;
+}
+.otherBar {
+  width: 208px;
+  height: 20px;
+  display: flex;
+  align-items:  center;
 }
 </style>
