@@ -26,7 +26,7 @@
 <!--        秒选英雄-->
         <n-space>
           <n-tag :bordered="false">秒选英雄</n-tag>
-          <n-select
+          <n-tree-select
             v-model:value="config.autoPickChampion.championId"
             filterable
             :disabled="!config.autoPickChampion.isAuto"
@@ -35,14 +35,18 @@
             :options="optionsChampion"
             @update:value="handleUpdatePick"
             style="width: 140px"
-          />
+          >
+            <template #action>
+              点击箭头即可展开
+            </template>
+          </n-tree-select>
           <n-switch v-model:value="config.autoPickChampion.isAuto" @click="changePick"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
 <!--        秒禁英雄-->
         <n-space>
           <n-tag :bordered="false">秒禁英雄</n-tag>
-          <n-select
+          <n-tree-select
             v-model:value="config.autoBanChampion.championId"
             filterable
             :disabled="!config.autoBanChampion.isAuto"
@@ -51,7 +55,11 @@
             :options="optionsChampion"
             @update:value="handleUpdateBan"
             style="width: 140px"
-          />
+          >
+            <template #action>
+              点击箭头即可展开
+            </template>
+          </n-tree-select>
           <n-switch v-model:value="config.autoBanChampion.isAuto" @click="changeBan"
                     style="margin-left:22px;margin-top: 3px"/>
         </n-space>
@@ -99,7 +107,7 @@
         <n-space v-if="isSubscribe !== 'f'">
           <n-tag :bordered="false">远程协助</n-tag>
           <n-tag :bordered="false" type="success"
-                 style="width: 214px;justify-content: center">一对一解决问题 V: lol_frank</n-tag>
+                 style="width: 214px;justify-content: center">一对一服务: java_s@qq.com</n-tag>
         </n-space>
         <!--Cube平台-->
         <n-space>
@@ -124,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover,NRadio} from 'naive-ui'
+import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover,NRadio,NTreeSelect} from 'naive-ui'
 import {optionsChampion} from '../../resources/champList'
 import {reactive, ref} from "vue";
 
@@ -177,7 +185,7 @@ const changeBan = () => {
 }
 // 设置是否开启排位日记
 const changeBlacklist = () => {
-  cube.windows.getWindowByName('assist').then((v) => {
+  cube.windows.getWindowByName('assist').then((v:any) => {
     cube.windows.message.send(v.id,'refresh','')
   })
 
