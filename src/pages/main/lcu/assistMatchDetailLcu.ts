@@ -81,6 +81,7 @@ const queryGameType = (queueId:number) => {
     case 430 : return '匹配';
     case 440 : return '组排';
     case 450 : return '极地';
+    case 1700 : return '斗魂';
   }
   return '其它'
 }

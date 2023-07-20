@@ -46,7 +46,6 @@ export class recentMatch {
           isIcon = true
           aliasOrIcon = item?.profileIconId
         }
-
         const summonerState = await this.querySummonerSuperChampData(item.summonerId, aliasOrIcon)
         return (await res).concat({
           summonerId: `${item.summonerId}`,

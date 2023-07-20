@@ -5,6 +5,9 @@ import {GameDetailedInfo} from  "./types/queryDetailedGameTypes"
 
 export const queryGameDetailsData = async (gameId:number)  => {
   const response:GameDetailedInfo = await invokeLcu('get',`/lol-match-history/v1/games/${gameId}`)
+  if (response.queueId === 1700) {
+    return getFighterInfo(response,response.participants, response.participantIdentities,gameId)
+  }
   return getParticipantsDetails(response,response.participants, response.participantIdentities,gameId)
 }
 
@@ -108,4 +111,27 @@ const getDetailsTitle = (gameInfo:any) => {
 }
 const goldToStr = (gold:number) => {
   return Number((gold/1000).toFixed(1))
+}
+
+// 斗魂竞技场
+const getFighterInfo = (res:any,participants:any, participantIdentities:any,gameId:number) => {
+  try {
+    const nameList = getparticipantIdAndName(participantIdentities)
+    let titleList = getDetailsTitle(res)
+    const result = []
+    for (let i = 0; i < nameList.length; i++) {
+      result.push(analyticalData(participants[i],nameList[i],nameList[i].summonerId,gameId))
+    }
+    result.sort((a, b) => b.goldEarned - a.goldEarned)
+    let groupedPlayers = []
+
+    for(let i = 0; i < result.length; i+=2) {
+      groupedPlayers.push([result[i], result[i+1]])
+    }
+    return {
+      title:titleList,groupedPlayers:groupedPlayers
+    }
+  } catch (e) {
+    return {title: [],groupedPlayers: []}
+  }
 }

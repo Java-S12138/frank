@@ -25,6 +25,7 @@ export const queryGameType = (queueId:number) => {
     case 430 : return '匹配模式';
     case 440 : return '排位赛 灵活排位';
     case 450 : return '极地大乱斗';
+    case 1700 : return '斗魂竞技场';
   }
   return '其它模式'
 }
@@ -53,18 +54,18 @@ export const getspellImgUrl = (spellId:number) => {
     case 1:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_boost.png';
     case 7:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_heal.png';
     case 32:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_Mark.png'
+    case 2201:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_teleport.png'
+    case 2202:return 'https://game.gtimg.cn/images/lol/act/img/spell/Summoner_flash.png'
   }
   return 'https://game.gtimg.cn/images/lol/act/img/spell/SummonerMana.png'
 }
 
 // 通过物品id获取图片地址
 export const getItemImgUrl = (item:number) => {
-  // if (item == 7013){
-  //   return `https://game.gtimg.cn/images/lol/act/img/item/3802.png`
-  // }else if (item== 7004){
-  //   return `https://game.gtimg.cn/images/lol/act/img/item/3068.png`
-  // }
-  if (item == 0){
+  if (item>220000){
+    item -= 220000
+  }
+  if (item == 0 ){
     return new URL("/src/assets/svg/image.png", import.meta.url).href
   }else {
     return `https://game.gtimg.cn/images/lol/act/img/item/${item}.png`

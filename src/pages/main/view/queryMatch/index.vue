@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isSubscribe==='t'">
+  <div v-if="isSubscribe ==='t'">
       <dashboard></dashboard>
       <n-space>
           <summoner-info></summoner-info>

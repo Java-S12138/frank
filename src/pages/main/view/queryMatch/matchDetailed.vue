@@ -6,7 +6,7 @@
         <n-layout-sider :width="189">
           <n-list>
             <n-list-item v-for="(match,index) in matchList" style="width: 172px;">
-              <n-space @click="showDetiledData(match.gameId,index)" style="position: relative">
+              <n-space @click="showDetiledData(match.gameId,index,match.gameModel)" style="position: relative">
                 <n-avatar
                   :bordered="false"
                   :size="40"
@@ -46,10 +46,12 @@
 
         </n-layout-sider>
         <n-layout class="queryMatchColor">
-          <n-layout-content v-if="currentGameId !==0" class="queryMatchColor">
-            <game-details class="slide-in-right"
-                          :currentGameIdProps="currentGameId" :key="currentGameId"
+          <n-layout-content v-if="currentGameId !==0 " class="queryMatchColor">
+            <game-details v-if = "curModeName !=='斗魂竞技场' "
+              class="slide-in-right" :currentGameIdProps="Number(currentGameId)" :key="currentGameId"
             ></game-details>
+            <game-fighter-details v-else
+              class="slide-in-right" :currentGameIdProps="Number(currentGameId)" :key="currentGameId"/>
           </n-layout-content>
         </n-layout>
       </n-layout>
@@ -62,7 +64,7 @@
                 :width="665" :placement="'right'">
         <n-drawer-content :body-content-style ="'padding:0px'">
           <div style="margin-top: 60px">
-            <game-details class="slide-in-right" :currentGameIdProps="Number(assistGameId)"
+            <game-details  class="slide-in-right" :currentGameIdProps="Number(assistGameId)"
             ></game-details>
           </div>
         </n-drawer-content>
@@ -92,17 +94,20 @@ import {MatchList} from "../../lcu/types/queryMatchLcuTypes"
 
 import GameDetails from "../components/gameDetails.vue";
 import RecentEchart from "./recentEchart.vue";
+import GameFighterDetails from "../components/gameFighterDetails.vue";
 
 const store = queryStore()
 const {
   querySummonerId, begIndex, endIndex, page, currentMode,
   showChart, matchList, currentGameId, currentMatchIndex,assistGameId
 }: { any } = storeToRefs(store)
+
 const active = ref(false)
 const message = useMessage()
 let messageReactive:any = null
 const specialMatchDict:Ref<Array<MatchList>> = ref([])
 let isInit = true
+const curModeName = ref('')
 
 watch(querySummonerId, async () => {
   if (page.value !== 1) {
@@ -162,9 +167,10 @@ watch(currentMode, async () => {
     }
   }
 })
-const showDetiledData = (gameId:any, index:any) => {
+const showDetiledData = (gameId:any, index:any,gameModel:string) => {
   currentGameId.value = gameId
   currentMatchIndex.value = index
+  curModeName.value = gameModel
 }
 const initHomeData = async () => {
   const matchDict = await dealMatchHistory(querySummonerId.value, begIndex.value, endIndex.value,undefined)
@@ -178,6 +184,7 @@ const initHomeData = async () => {
     currentGameId.value = matchDict[0].gameId
     matchList.value = matchDict
     currentMatchIndex.value = 0
+    curModeName.value = matchDict[0].gameModel
   }
   if (isInit){active.value=true}else {active.value=false}
   isInit = false

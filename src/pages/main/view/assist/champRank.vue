@@ -329,7 +329,7 @@ const queryKoreaServe = async (tier:number,lane:string) => {
   config.champRankOption.tier = tier
   localStorage.setItem('config',JSON.stringify(config))
   try {
-    const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=75&tier=${tier}&lane=${lane}`
+    const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=76&tier=${tier}&lane=${lane}`
     const res = await request({
       url:url,
       method:"GET"
@@ -466,7 +466,7 @@ const getRestraintData = async (champId:any, position:string, imgUrl:string, lev
   if (!is101.value){
     tierRes = tier.value
   }
-  const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=75&tier=${tierRes}&lane=${position}`
+  const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=76&tier=${tierRes}&lane=${position}`
   const result = await request({
     'url': url,
     method: 'GET'

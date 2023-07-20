@@ -265,7 +265,6 @@ onMounted(async () => {
       parentPage.value = 'query'
     }
   }
-  console.log(gameDetalisList)
   queryOtherMax(gameDetalisList)
   titleList.value = gameDetalisList[5]
   summonersDataList.value = gameDetalisList.slice(0, 5)
