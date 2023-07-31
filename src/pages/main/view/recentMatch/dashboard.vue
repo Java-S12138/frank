@@ -5,7 +5,7 @@
       <p v-if="!props.isIn" class="headerP winCountTheme" @click="handleClose"
          style="margin-right: 3px;cursor: pointer">关闭此窗口</p>
       <p class="headerP winCountTheme" @click="handleMin"
-         style="margin-right: 3px;cursor: pointer">窗口显示 | 隐藏快捷键 Shift + Tab</p>
+         style="margin-right: 3px;cursor: pointer">{{ getRandomString() }}</p>
       <div style="display: flex">
         <p class="headerP winCountTheme" style="  margin-right: 13px;">
           游戏启动时自动打开此窗口</p>
@@ -41,6 +41,13 @@ const changeAutoGameInWin = () => {
     config['isGameInWindow'] = true
     localStorage.setItem('config',JSON.stringify(config))
   }
+}
+
+const strings = ['窗口显示 | 隐藏快捷键 Shift + Tab', '点击下方战绩标签 | 即可查看此局详细数据'];
+
+function getRandomString() {
+  const index = Math.floor(Math.random() * strings.length);
+  return strings[index];
 }
 </script>
 

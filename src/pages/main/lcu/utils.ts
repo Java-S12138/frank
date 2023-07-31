@@ -5,6 +5,7 @@ export const englishToChinese = (tier:string) => {
     case 'GRANDMASTER' :return '宗师';
     case 'MASTER' :return '大师';
     case 'DIAMOND' :return '钻石';
+    case 'EMERALD' :return '翡翠';
     case 'PLATINUM' :return '铂金';
     case 'GOLD' :return '黄金';
     case 'SILVER' :return '白银';

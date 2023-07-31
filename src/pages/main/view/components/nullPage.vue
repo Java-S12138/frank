@@ -12,10 +12,15 @@
             </template>
           </n-switch>
           <n-button @click="closeWin">关闭此窗口</n-button>
+          <n-alert title="温馨提示" type="success">
+            如果无法显示数据，游戏结束后。 请在大厅客户端的设置里面检查<br>
+            [ 在游戏时关闭客户端 ] 选项是否为 [ 从不 ]  建议您拍照，别忘了哟~
+          </n-alert>
         </n-space>
       </template>
     </n-result>
     <n-result v-else status="404" title="如果游戏内无窗口显示" description="可使用此窗口查看对局详情 若长时间无数据 请关闭此窗口" size="huge">
+
       <template #footer>
         <n-space vertical :size="[0,20]">
           <n-button @click="closeWin">关闭此窗口</n-button>
@@ -25,7 +30,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {NResult,NButton,NSwitch,NSpace} from "naive-ui";
+import {NResult,NButton,NSwitch,NSpace,NAlert} from "naive-ui";
 import {Ref, ref} from "vue";
 const config:Ref = ref(JSON.parse(<string>(localStorage.getItem('config'))))
 const props = defineProps({
