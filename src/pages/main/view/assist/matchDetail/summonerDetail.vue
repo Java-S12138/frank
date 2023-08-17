@@ -13,11 +13,11 @@
       </n-space>
     </n-space>
 
-    <n-tabs style="margin-top: 4px" justify-content="space-between" type="line">
-      <n-tab-pane name="最近战绩" tab="最近战绩">
+    <n-tabs style="margin-top: 4px" justify-content="space-between" type="line" >
+      <n-tab-pane name="最近战绩" tab="最近战绩" display-directive="show">
         <summoner-match :match-list="matchList"/>
       </n-tab-pane>
-      <n-tab-pane name="绝活英雄" tab="绝活英雄">
+      <n-tab-pane name="绝活英雄" tab="绝活英雄" display-directive="show">
         <summoner-super-champ :summoner-id="props.summonerId"/>
       </n-tab-pane>
       <n-tab-pane name="温馨提示" tab="温馨提示">

@@ -51,7 +51,6 @@ const message = useMessage()
 const store = assistStore()
 const config = JSON.parse(<string>(localStorage.getItem('config')))
 const isSwitchBlacklist = config.isSwitchBlacklist
-const localeTime = localStorage.getItem('locale')==='zh_CN' ? 1500 : 3500
 const queryMatchAddition = ref({
   active:false,
   blacklistName:'',
@@ -66,21 +65,13 @@ cube.windows.message.on('received',async (id,content:any) => {
   if (id==='ChampSelect'){
     transValue.value = 'champRank'
     store.showSummonerInfoModal = false
-    setTimeout( async () => {
-      store.summonerInfo = await querySummonerIdAndSummonerName()
-      if (store.summonerInfo.length !==0 && config.showMatchDetail){
-        transValue.value='matchDetail'
-      }
-      if (isSwitchBlacklist){
-        getCurrentBlacklist(store.summonerInfo)
-      }
-    },localeTime)
+    retryFunction()
   }else if (id==='GameStart' && isSwitchBlacklist){
     // 查询敌方召唤师
     store.summonerInfo = []
     setTimeout(async () => {
       store.endGameAfterInfo = await queryEnemySummonerIdAndSummonerName()
-    }, localeTime)
+    }, 3000)
   }else if (id==='show-other-summoner' && isSwitchBlacklist){
     transValue.value = 'blacklist'
   }else if (id==='refresh'){
@@ -91,6 +82,36 @@ cube.windows.message.on('received',async (id,content:any) => {
     handleRuneChampSelect(content)
   }
 })
+
+const retryFunction = async (): Promise<any> => {
+  let attempts = 0
+  const maxAttempts = 3
+
+  while (attempts < maxAttempts) {
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    const result = await querySummonerIdAndSummonerName()
+
+    if (result.length === 5) {
+      initSummonerInfo(result)
+      return
+    }else {
+      attempts++
+      if (attempts===3){
+        initSummonerInfo(result)
+      }
+    }
+  }
+}
+
+const initSummonerInfo = (result:SummonerInfoList[]) => {
+  store.summonerInfo = result
+  if (config.showMatchDetail){
+    transValue.value='matchDetail'
+  }
+  if (isSwitchBlacklist){
+    getCurrentBlacklist(store.summonerInfo)
+  }
+}
 
 // 判读是否当前队友存在于共享排位笔记中
 const getCurrentBlacklist = async (summonerInfo:SummonerInfoList[]) => {
