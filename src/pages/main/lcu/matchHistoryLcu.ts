@@ -14,7 +14,11 @@ const querySummonerInfo = async (summonerId:Number):Promise<lcuSummonerInfo> => 
 // 查询不同排位模式的段位分数
 const accordingToRankModeQueryRankPoint = async (mode:number,puuid:string) => {
   const matchType = mode === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR'
-  const rankData = (await invokeLcu('get',`/lol-ranked/v1/ranked-stats/${puuid}`)).queueMap[matchType]
+  const rankD = (await invokeLcu('get',`/lol-ranked/v1/ranked-stats/${puuid}`)).queueMap
+  if (rankD === undefined){
+    return 'error'
+  }
+  const rankData = rankD[matchType]
   const tier = rankData.tier === "" ? '未定级' : englishToChinese(rankData.tier)
   const division = rankData.division === 'NA' ? '' : rankData.division
   const leaguePoints = rankData.leaguePoints

@@ -41,12 +41,7 @@
             </n-space>
           </n-tag>
         </n-space>
-<!--        <n-tag v-else type="info" size="small"-->
-<!--               round style="width: 241px;justify-content: center"-->
-<!--               :bordered="false">-->
-<!--          <p v-if="config.isAutoLaunchGame">进入英雄联盟大厅后⌛自动获取数据</p>-->
-<!--          <p v-else @click="init">点击此处 获取游戏数据</p>-->
-<!--        </n-tag>-->
+
       </n-space>
     </n-card>
 
@@ -257,7 +252,6 @@ const message = useMessage()
 const active = ref(false)
 const currentChampStatstones: Ref = ref([])
 const currentChampIndex = ref(0)
-const config = JSON.parse(<string>(localStorage.getItem('config')))
 const props:any = defineProps({
   initSetup:{
     default:[false],
@@ -266,7 +260,6 @@ const props:any = defineProps({
 })
 
 onMounted(() => {
-  cube.profile.getCurrentUser().catch(() => {message.error('Cube账号未登录 登录后请重启Frank',{duration: 10000})})
   init().then(async (value) =>  {
     if (!value){
       const lolCient = (await cube.games.launchers.getRunningLaunchers()).find((i => i.classId===10902))

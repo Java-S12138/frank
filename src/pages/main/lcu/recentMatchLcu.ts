@@ -80,6 +80,9 @@ export class recentMatch {
   public queryRankPoint = (puuid: string) => {
     return invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`).then((res: any) => {
       const rankData = res.queueMap
+      if (rankData ===undefined){
+        return ['error','error']
+      }
       return ['RANKED_SOLO_5x5', 'RANKED_FLEX_SR'].reduce((res: any, item: string) => {
         const tier = rankData[item].tier === "" ? '未定级' : englishToChinese(rankData[item].tier)
         const division = rankData[item].division === 'NA' ? '' : rankData[item].division

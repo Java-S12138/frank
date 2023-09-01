@@ -45,6 +45,9 @@ const querySummonerSuperChampData = async (summonerId: number) => {
 // 查询召唤师排位分数
 const queryCurrentRankPoint = async (puuid: string) => {
   const rankPoint = (await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`)).queues
+  if (rankPoint === undefined){
+    return ['error','error','error']
+  }
   // 单双排位/ 灵活排位/ 云顶之亦
   let rankSolo = rankPoint.find((i: any) => i.queueType === "RANKED_SOLO_5x5")
   let rankSr = rankPoint.find((i: any) => i.queueType === "RANKED_FLEX_SR")
