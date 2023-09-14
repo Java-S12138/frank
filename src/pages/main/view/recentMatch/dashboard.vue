@@ -46,6 +46,7 @@ const changeAutoGameInWin = () => {
 const strings = ['窗口显示 | 隐藏快捷键 Shift + Tab', '点击下方战绩标签 | 即可查看此局详细数据'];
 
 function getRandomString() {
+  return '下方序号相同的玩家 [ 开黑玩家 ]'
   const index = Math.floor(Math.random() * strings.length);
   return strings[index];
 }

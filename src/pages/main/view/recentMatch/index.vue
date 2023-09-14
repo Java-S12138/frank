@@ -101,7 +101,7 @@ const rightMatch = ref()
 
 onMounted(async () => {
   cube.windows.getCurrentWindow().then(value => {
-    if (value.height===551){
+    if (value.height===556){
       isIn.value = false
     }
   })

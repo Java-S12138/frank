@@ -13,7 +13,7 @@
   </n-carousel>
   <n-space style="height: 50px;" justify="center" align="center">
     <n-tag type="warning" style="width:662px;justify-content: center"
-           size="large">点击左侧可关闭轮播图 | 解锁全部功能&去除广告 ￥9.9/月 | 商务合作 V: lol_frank</n-tag>
+           size="large">点击左侧可关闭轮播图 | 解锁全部功能&去除广告 ￥9.9/月 | 问题反馈 V: java_s@qq.com</n-tag>
   </n-space>
 </template>
 

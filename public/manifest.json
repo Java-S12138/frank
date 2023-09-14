@@ -5,7 +5,7 @@
     "author": "Java_S",
     "icon": "icon.png",
     "window_icon": "icon.ico",
-    "version": "1.688.1317",
+    "version": "1.700.1318",
     "display_name": "Frank",
     "minimumCubeVersion": "0.0.1",
     "description": "A bran-new League of Legends assistant software, Powered By Cube."
@@ -65,8 +65,8 @@
       "recentMatch": {
         "file": "src/pages/main/index.html/#/recentMatch",
         "frame": false,
-        "width": 1130,
-        "height": 550,
+        "width": 1180,
+        "height": 555,
         "resizable": false,
         "in_game_only": false,
         "title_bar_height": 20

@@ -55,7 +55,8 @@ export class recentMatch {
           index: getPosition(item.selectedPosition),
           summonerState: summonerState,
           championUrl: !isIcon ? `https://game.gtimg.cn/images/lol/act/img/champion/${aliasOrIcon}.png` :
-            `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${aliasOrIcon}.png`
+            `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${aliasOrIcon}.png`,
+          teamParticipantId:item.teamParticipantId
         })
       }, [])
       return info.sort((x: any, y: any) => {

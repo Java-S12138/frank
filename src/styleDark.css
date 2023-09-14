@@ -27,6 +27,8 @@ html {
 .recentRankPoint {
     background-color: rgba(112, 192, 232, 0.16);
     color: #70c0e8;
+    padding: 3px 0px 2px 0px;
+    box-sizing: border-box;
 }
 
 .runeDivDash {
