@@ -499,6 +499,9 @@ export const optionsChampion: {label: string, key: string,disabled:boolean, chil
     }, {
       'label': '百裂冥犬',
       'key': '950'
+    }, {
+      'label': '狂厄蔷薇',
+      'key': '233'
     }]
   }, {
     'label': '中单',
