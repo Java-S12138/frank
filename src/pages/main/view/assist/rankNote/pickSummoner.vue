@@ -59,7 +59,7 @@
           是否关闭此窗口
         </n-popconfirm>
       </div>
-      <p class="tipsP">点击头像可查看此召唤师战绩</p>
+      <p class="tipsP">{{ getRandomString() }}</p>
     </n-card>
 
   </n-modal>
@@ -133,6 +133,16 @@ const showMatch =async (summoner:any) => {
   if (queryMatch!==undefined){
     cube.windows.message.send(queryMatch.id,'refresdh-window','')
   }
+}
+const getRandomString = () =>  {
+  const strings = [
+    '点击头像可查看此召唤师战绩',
+    '拉黑玩家将在下次遇见时提示'
+  ];
+
+  const index = Math.floor(Math.random() * strings.length);
+
+  return strings[index];
 }
 
 </script>
