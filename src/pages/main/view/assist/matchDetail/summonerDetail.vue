@@ -18,7 +18,7 @@
         <summoner-match :match-list="matchList"/>
       </n-tab-pane>
       <n-tab-pane name="绝活英雄" tab="绝活英雄" display-directive="show">
-        <summoner-super-champ :summoner-id="props.summonerId"/>
+        <summoner-super-champ :summoner-puuid="props.summonerPuuid"/>
       </n-tab-pane>
       <n-tab-pane name="温馨提示" tab="温馨提示">
         <summoner-tips/>

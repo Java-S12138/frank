@@ -112,13 +112,13 @@ export const queryMatchSummonerInfo = async (puuid:string,summonerId:number) => 
        matchTime : (matchListElement.gameCreationDate).split('T')[0]
     })
   },[])
-  matchInfoList.push(await querySummonerSuperChampData(summonerId))
+  matchInfoList.push(await querySummonerSuperChampData(puuid))
   console.log('[info] 查询战绩函数执行了...')
   return matchInfoList
 }
 // 获取召唤师英雄绝活数据
-const querySummonerSuperChampData = async (summonerId:number) => {
-  const summonerSuperChampData = (await invokeLcu('get',`/lol-collections/v1/inventories/${summonerId}/champion-mastery`)).slice(0,20)
+const querySummonerSuperChampData = async (puuid:string) => {
+  const summonerSuperChampData = (await invokeLcu('get',`/lol-collections/v1/inventories/${puuid}/champion-mastery`)).slice(0,20)
   const superChampList = summonerSuperChampData.reduce((res:any,item:any) => {
     return res.concat({
       champImgUrl:`https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,

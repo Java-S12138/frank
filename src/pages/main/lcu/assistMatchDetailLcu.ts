@@ -3,12 +3,12 @@ import {champDict} from "../resources/champList";
 import {getItemImgUrl, getspellImgUrl, querySummonerPosition} from "./utils";
 import {Game, LcuMatchList,simpleMatchTypes} from "./types/queryMatchLcuTypes";
 
-export const queryChampList = async (summonerId: string) => {
-  if (summonerId==='') {
+export const queryChampList = async (summonerPuuid: string) => {
+  if (summonerPuuid==='') {
     return null
   }
   try {
-    const summonerSuperChampData:any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
+    const summonerSuperChampData:any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
     return  summonerSuperChampData.slice(0, 20).reduce((res: any, item: any) => {
       return res.concat([[
        `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,

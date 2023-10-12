@@ -36,8 +36,8 @@ export const queryCurrentRankPoint = async ():Promise<[string,string,string]> =>
 }
 
 // 查询本地召唤师英雄熟练度
-const queryCurrentChamp = async (currentId:number) => {
-  return await invokeLcu('get',`/lol-collections/v1/inventories/${currentId}/champion-mastery`)
+const queryCurrentChamp = async (puuid:string) => {
+  return await invokeLcu('get',`/lol-collections/v1/inventories/${puuid}/champion-mastery`)
 }
 
 // 查看召唤师荣誉等级
@@ -48,6 +48,7 @@ const querySummonerHonorLevel = async ():Promise<[string,string]> => {
 
 // 处理本地召唤师英雄熟练度数据
 const dealSuperChamp = (summonerSuperChampData:any,index:number,end:number) => {
+  console.log(summonerSuperChampData)
   const superChampList = summonerSuperChampData.slice(index,end).reduce((res:any,item:any) => {
     res.push([
       `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
@@ -100,7 +101,7 @@ export const getCurrentSummonerInfo = async ():Promise<CurrentSummonerInfo | nul
   }
   const [rankList,summonerSuperChampData,honorData,statstones] = await Promise.all([
     queryCurrentRankPoint(),
-    queryCurrentChamp(summonerInfo.currentId),
+    queryCurrentChamp(summonerInfo.puuid),
     querySummonerHonorLevel(),
     queryStatstones(summonerInfo.puuid)
   ])

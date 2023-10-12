@@ -119,9 +119,9 @@ const querySummonerRank = async (puuid:string) => {
   return [RANKED_SOLO, RANKED_FLEX_SR]
 }
 
-const querySuperChampList = async (summonerId: string) => {
+const querySuperChampList = async (puuid: string) => {
   try {
-    const summonerSuperChampData:any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
+    const summonerSuperChampData:any = await invokeLcu('get', `/lol-collections/v1/inventories/${puuid}/champion-mastery`)
     return  summonerSuperChampData.slice(0, 6).reduce((res: any, item: any) => {
       return res.concat([
         `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`
@@ -144,7 +144,7 @@ export const querySummonerIdAndSummonerName = async ():Promise<[]| SummonerInfoL
     const currentSummonerInfo = await querySummonerInfo(summonerId)
     const [rankHandler,champImgs] = await Promise.all([
       querySummonerRank(currentSummonerInfo.puuid),
-      querySuperChampList(summonerId)
+      querySuperChampList(currentSummonerInfo.puuid)
     ])
     summonerInfoList.push({
       name: currentSummonerInfo.displayName,

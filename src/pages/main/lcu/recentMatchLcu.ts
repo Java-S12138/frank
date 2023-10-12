@@ -46,7 +46,7 @@ export class recentMatch {
           isIcon = true
           aliasOrIcon = item?.profileIconId
         }
-        const summonerState = await this.querySummonerSuperChampData(item.summonerId, aliasOrIcon)
+        const summonerState = await this.querySummonerSuperChampData(item.puuid, aliasOrIcon)
         return (await res).concat({
           summonerId: `${item.summonerId}`,
           puuid: item.puuid,
@@ -164,7 +164,7 @@ export class recentMatch {
         const puuid = (logList[13].match(re) as RegExpMatchArray)[0].replace(/\(|\)/g,'')
         const rankPoint = await this.queryRankPoint(puuid)
         const summonerId = await this.querySummonerId(puuid)
-        const summonerState = await this.querySummonerSuperChampData(summonerId,champName)
+        const summonerState = await this.querySummonerSuperChampData(puuid,champName)
         const result = {
           puuid,rankPoint,summonerName,championUrl,summonerId,summonerState
         }
@@ -191,12 +191,12 @@ export class recentMatch {
     return {friendList, enemyList,gameType:this.gameType}
   }
   // 获取召唤师英雄绝活数据 0:正常 1:绝活 2:熟练 3:小代 -1:未知 (需要进行下一步判断)
-  public querySummonerSuperChampData = async (summonerId:number,champAlias:string) => {
+  public querySummonerSuperChampData = async (puuid:string,champAlias:string) => {
     if (localStorage.getItem('isSubscribe') ==='f'){
       return {state:0,title:'正常'}
     }
     if (this.gameType === 420 || this.gameType === 440){
-      const superList:SuperChampTypes[] = (await invokeLcu('get',`/lol-collections/v1/inventories/${summonerId}/champion-mastery`)).slice(0,20)
+      const superList:SuperChampTypes[] = (await invokeLcu('get',`/lol-collections/v1/inventories/${puuid}/champion-mastery`)).slice(0,20)
       const champId = aliasToId[champAlias]
 
       for (let i = 0; i < superList.length; i++) {

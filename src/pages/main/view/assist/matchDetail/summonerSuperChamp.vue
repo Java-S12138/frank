@@ -34,7 +34,7 @@ import DrawerError from "./drawerError.vue";
 import {queryChampList} from "../../../lcu/assistMatchDetailLcu";
 
 const props = defineProps({
-  summonerId:{
+  summonerPuuid:{
     default:'',
     type:String as PropType<string>
   },
@@ -42,7 +42,7 @@ const props = defineProps({
 const champList:any = ref([])
 
 onMounted(() => {
-  queryChampList(props.summonerId).then((value) => {
+  queryChampList(props.summonerPuuid).then((value) => {
     if (value ===null){
       champList.value = null
     }else {

@@ -25,11 +25,11 @@ const querySummonerInfo = async (summonerId: number): Promise<summonerInfo> => {
 }
 
 // 获取召唤师英雄绝活数据
-const querySummonerSuperChampData = async (summonerId: number) => {
+const querySummonerSuperChampData = async (puuid: string) => {
   try {
     const isSubscribe =  localStorage.getItem('isSubscribe')
     const dataCount = isSubscribe === 't' ? 20 : 10
-    const summonerSuperChampData: any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerId}/champion-mastery`)
+    const summonerSuperChampData: any = await invokeLcu('get', `/lol-collections/v1/inventories/${puuid}/champion-mastery`)
     return  summonerSuperChampData.slice(0, dataCount).reduce((res: any, item: any) => {
       return res.concat({
         champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
@@ -77,7 +77,7 @@ export const returnSummonerData = async (summonerId?: number) => {
   const summonerInfo: summonerInfo = await querySummonerInfo(summonerId)
   const [rankData,superChampList] = await Promise.all([
     queryCurrentRankPoint(summonerInfo.puuid),
-    querySummonerSuperChampData(summonerId)
+    querySummonerSuperChampData(summonerInfo.puuid)
   ])
   return {summonerInfo, rankData, superChampList,assistGameId}
 }
