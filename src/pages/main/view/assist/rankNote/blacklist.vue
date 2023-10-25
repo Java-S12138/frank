@@ -64,7 +64,7 @@
             @update:value="handleUpdateArea($event)"
             v-model:value="areaSetting" :options="areaOptions" >
           </n-tree-select>
-          <n-button @click="openWeb('https://frank.syjun.vip/#/index')" size="small">共享笔记</n-button>
+          <n-button @click="shareButton" size="small">共享笔记</n-button>
           <n-button @click="addBlacklistActive=true" size="small">新增</n-button>
         </n-space>
 
@@ -486,7 +486,9 @@ const watchCheckRankNote = (length:number) => {
     }
   }
 }
-
+const shareButton = () => {
+  message.success('排位笔记 将共享内容给同大区玩家使用')
+}
 defineExpose({watchCheckRankNote})
 </script>
 

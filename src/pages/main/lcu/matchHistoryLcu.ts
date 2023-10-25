@@ -5,6 +5,7 @@ import {queryAllSummonerId} from "../utils/blacklistUtils"
 import {getGameScore,queryCurrentGameMode} from "../utils/gameScore"
 import {englishToChinese,queryGameType,getspellImgUrl,getItemImgUrl,querySummonerPosition} from "./utils"
 import {champDict} from "../resources/champList"
+import {Game} from "./types/queryMatchLcuTypes";
 
 // 根据召唤师ID查询信息
 const querySummonerInfo = async (summonerId:Number):Promise<lcuSummonerInfo> => {
@@ -77,7 +78,8 @@ export const getSummonerNickName = async (enemyIdList?:any) => {
 //----- standing page functions
 export const queryMatchSummonerInfo = async (puuid:string,summonerId:number) => {
   const matchGet = (await invokeLcu('get',`/lol-match-history/v1/products/lol/${puuid}/matches`))
-  const matchList = localStorage.getItem('locale') ==='zh_CN'?matchGet['games']['games'].reverse():matchGet['games']['games']
+
+  const matchList = isRevGames(matchGet['games']['games'])
   const matchInfoList = matchList.reduce((res:any,matchListElement:any) => {
     return res.concat({
       // 本局游戏ID
@@ -127,4 +129,13 @@ const querySummonerSuperChampData = async (puuid:string) => {
     })
   },[])
   return superChampList
+}
+
+const isRevGames = (games:Game[]):Game[]  =>  {
+  let len = games.length
+
+  if (games[0].gameCreation > games[len-1].gameCreation) {
+    return games
+  }
+  return games.reverse()
 }

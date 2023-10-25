@@ -48,7 +48,6 @@ const querySummonerHonorLevel = async ():Promise<[string,string]> => {
 
 // 处理本地召唤师英雄熟练度数据
 const dealSuperChamp = (summonerSuperChampData:any,index:number,end:number) => {
-  console.log(summonerSuperChampData)
   const superChampList = summonerSuperChampData.slice(index,end).reduce((res:any,item:any) => {
     res.push([
       `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
