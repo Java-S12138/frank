@@ -49,7 +49,7 @@
 
     <n-card class="boxShadow pointCard" size="small">
       <n-tabs type="segment" :animated="true">
-        <n-tab-pane style="padding-top: 3px" name="chap1" tab="个人生涯" display-directive="show">
+        <n-tab-pane style="padding-top: 3px" name="chap1" tab="个人生涯">
           <n-list style="margin-left: 2px">
             <n-list-item>
               <n-space justify="space-between">
@@ -109,7 +109,7 @@
             </n-list-item>
           </n-list>
         </n-tab-pane>
-        <n-tab-pane style="padding-top: 8px" name="chap2" tab="英雄数据" display-directive="show">
+        <n-tab-pane style="padding-top: 8px" name="chap2" tab="英雄数据">
           <div>
             <n-space vertical>
               <n-list>
@@ -138,7 +138,7 @@
             </n-space>
           </div>
         </n-tab-pane>
-        <n-tab-pane style="padding-top: 5px" name="chap3" tab="永恒星碑" display-directive="show">
+        <n-tab-pane style="padding-top: 5px" name="chap3" tab="永恒星碑">
           <div>
             <n-space vertical>
               <n-list>

@@ -1,9 +1,9 @@
 <template>
   <n-tabs id="assistTabs" type="segment" :animated=false @mousedown="handldDrge" :value="transValue">
-    <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'"></n-tab>
-    <n-tab name="matchDetail" tab="对局详情" @click="transValue='matchDetail'"></n-tab>
-    <n-tab name="rune" tab="符文配置" @click="transValue='rune'"></n-tab>
-    <n-tab v-if="isSwitchBlacklist" name="blacklist" tab="排位笔记" @click="transValue='blacklist'"></n-tab>
+    <n-tab name="champRank" tab="英雄数据" @click="transValue='champRank'" display-directive="show"></n-tab>
+    <n-tab name="matchDetail" tab="对局详情" @click="transValue='matchDetail'" display-directive="show"></n-tab>
+    <n-tab name="rune" tab="符文配置" @click="transValue='rune'" display-directive="show"></n-tab>
+    <n-tab v-if="isSwitchBlacklist" name="blacklist" tab="排位笔记" @click="transValue='blacklist'" display-directive="show"></n-tab>
   </n-tabs>
 
     <champ-rank v-show="transValue==='champRank'" :trans-value-rank="transValue" class="slide-in-bottom"></champ-rank>
