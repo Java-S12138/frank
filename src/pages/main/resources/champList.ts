@@ -164,6 +164,7 @@ export const champDict:any = {
   '902': {'champId': '902', 'label': '明烛', 'alias': 'Milio', 'title': '米利欧'},
   '950': {'champId': '950', 'label': '百裂冥犬', 'alias': 'Naafiri', 'title': '纳亚菲利'},
   '233': {'champId': '233', 'label': '狂厄蔷薇', 'alias': 'Briar', 'title': '贝蕾亚'},
+  '910': {'champId': '910', 'label': '异画师', 'alias': 'Hwei', 'title': '彗'}
 }
 export const optionsChampion: {label: string, key: string,disabled:boolean, children: {label: string, key: string}[]}[] =
   [{
@@ -508,6 +509,9 @@ export const optionsChampion: {label: string, key: string,disabled:boolean, chil
     'key': 'mid',
     'disabled':true,
     'children': [{
+      'label': '异画师',
+      'key': '910'
+    },{
       'label': '黑暗之女',
       'key': '1'
     }, {
@@ -1055,6 +1059,7 @@ export const mapNameFromUrl:any = {
   'Milio': {'label': '明烛', 'name': '米利欧'},
   'Naafiri': {'label': '百裂冥犬', 'name': '纳亚菲利'},
   'Briar': {'label': '狂厄蔷薇', 'name': '贝蕾亚'},
+  'Hwei': {'label': '异画师', 'name': '彗'},
 }
 export const aliasToId:any = {
   "Annie": 1,
@@ -1222,4 +1227,5 @@ export const aliasToId:any = {
   "Milio": 902,
   "Naafiri": 950,
   "Briar": 233,
+  "Hwei": 910,
 }

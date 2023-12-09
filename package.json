@@ -2,7 +2,7 @@
   "name": "frank",
   "author": "Java_S",
   "private": true,
-  "version": "1.722.1321",
+  "version": "1.723.1324",
   "type": "module",
   "scripts": {
     "dev": "node ./scripts/debug && vite --mode development",
