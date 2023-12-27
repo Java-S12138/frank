@@ -5,7 +5,7 @@
     "author": "Java_S",
     "icon": "icon.png",
     "window_icon": "icon.ico",
-    "version": "1.723.1324",
+    "version": "2.0.0",
     "display_name": "Frank",
     "minimumCubeVersion": "0.0.1",
     "description": "A bran-new League of Legends assistant software, Powered By Cube."
@@ -22,54 +22,18 @@
     "start_window": "background",
     "windows": {
       "main": {
-        "file": "src/pages/main/index.html",
+        "file": "src/main/index.html",
         "frame": false,
-        "width": 400,
-        "height": 650,
-        "resizable": false,
-        "desktop_only": true,
-        "keep_window_location": false
-      },
-      "background": {
-        "file": "src/pages/background/index.html",
-        "is_background_page": true,
-        "open_dev_tools": false
-      },
-      "queryMatch": {
-        "file": "src/pages/main/index.html/#/querymatch",
-        "frame": false,
-        "width": 1166,
-        "height": 650,
-        "desktop_only": true,
-        "resizable": false
-      },
-      "assist": {
-        "file": "src/pages/main/index.html/#/assist",
-        "show": false,
-        "frame": false,
-        "resizable": false,
         "width": 320,
         "height": 720,
-        "desktop_only": true,
-        "show_in_taskbar": false
-      },
-      "matchHistory": {
-        "file": "src/pages/main/index.html/#/matchHistory",
-        "frame": false,
-        "width": 1024,
-        "height": 576,
         "resizable": false,
         "desktop_only": true,
-        "keep_window_location": false
+        "keep_window_location": true
       },
-      "recentMatch": {
-        "file": "src/pages/main/index.html/#/recentMatch",
-        "frame": false,
-        "width": 1180,
-        "height": 555,
-        "resizable": false,
-        "in_game_only": false,
-        "title_bar_height": 20
+      "background": {
+        "file": "src/background/index.html",
+        "is_background_page": true,
+        "open_dev_tools": false
       }
     }
   },

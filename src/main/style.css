@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "DingTalk";
+    src: url("../assets/font/DingTalk JinBuTi.ttf");
+}
+
+:root {
+    font-size: 16px;
+}
+::-webkit-scrollbar {
+    width: 0;
+}
+
+body {
+    font-family: DingTalk;
+    -webkit-user-select: none;
+}
+.main {
+    min-height: calc(100vh - 1rem);
+    min-weight: calc(100vw - 1rem);
+    padding: 0.5rem;
+    background-color: #f5f5f5;
+}
