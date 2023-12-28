@@ -10,6 +10,7 @@
 :root {
     font-size: 16px;
 }
+
 ::-webkit-scrollbar {
     width: 0;
 }
@@ -18,9 +19,31 @@ body {
     font-family: DingTalk;
     -webkit-user-select: none;
 }
+
 .main {
     min-height: calc(100vh - 1rem);
     min-weight: calc(100vw - 1rem);
     padding: 0.5rem;
-    background-color: #f5f5f5;
+    position: relative;
+}
+
+.boxShadow {
+    box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.08),
+    0 3px 6px 0 rgba(0, 0, 0, 0.06),
+    0 5px 12px 4px rgba(0, 0, 0, 0.04);
+}
+
+:is(:where(.dark) .dark\:boxShadow) {
+    box-shadow: 0 1px 2px -2px rgba(255, 255, 255, 0.04),
+    0 3px 6px 0 rgba(255, 255, 255, 0.03),
+    0 5px 12px 4px rgba(255, 255, 255, 0.02);
+}
+.navDiv {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100vw;
+    border-top-left-radius: .75rem;
+    border-top-right-radius: .75rem;
+    padding: .2rem 0;
 }

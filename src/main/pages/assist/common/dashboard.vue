@@ -28,7 +28,7 @@ const subscribes = [
 ]
 
 // todo 设置窗口置顶
-cube.windows.setTopmost(cube.windows.current.id(),false)
+cube.windows.setTopmost(cube.windows.current.id(),true)
 
 const dragMove = () => {
   cube.windows.current.dragMove()
@@ -55,8 +55,8 @@ const handleSub = (key:number) => {
   <header
     class="flex justify-between items-center h-10">
     <div class="flex items-center" @mousedown="dragMove()">
-      <img src="@/assets/icon/app-icon.png" class="h-10" draggable="false">
-      <img src="@/assets/icon/Frank.png" draggable="false"  class="pt-1 pl-2">
+      <img src="../../../../assets/icon/app-icon.png" class="h-10" draggable="false">
+      <img src="../../../../assets/icon/Frank.png" draggable="false" class="pt-1 pl-2">
     </div>
 
     <n-dropdown v-if="isShowSub" trigger="hover"
