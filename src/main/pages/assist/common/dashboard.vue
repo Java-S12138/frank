@@ -2,6 +2,7 @@
 import {NIcon, NSpace, NButton, NPopover,NPopconfirm,NDropdown} from 'naive-ui'
 import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
+import {DashboardProps} from "./types";
 
 onMounted(() => {
   if (isSubscribe==='t'){
@@ -12,6 +13,8 @@ onMounted(() => {
     }
   }
 })
+
+const {openSettingDrawer} = defineProps<DashboardProps>()
 
 const isSubscribe = localStorage.getItem('isSubscribe')
 const subInfo = ref('订阅服务')
@@ -53,20 +56,20 @@ const handleSub = (key:number) => {
 
 <template>
   <header
-    class="flex justify-between items-center h-10">
+    class="flex justify-between items-center h-8">
     <div class="flex items-center" @mousedown="dragMove()">
-      <img src="../../../../assets/icon/app-icon.png" class="h-10" draggable="false">
-      <img src="../../../../assets/icon/Frank.png" draggable="false" class="pt-1 pl-2">
+      <img src="../../../../assets/icon/app-icon.png" class="h-8" draggable="false">
+      <img src="../../../../assets/icon/Frank.png" draggable="false" class="pt-1 pl-2 h-6">
     </div>
 
     <n-dropdown v-if="isShowSub" trigger="hover"
                 :options="subscribes" @select="handleSub">
       <n-button type="warning" size="small">
-        {{subInfo}}
+          {{subInfo}}
       </n-button>
     </n-dropdown>
 
-    <n-space class="pt-2" :size=[6,0]>
+    <n-space class="pt-2.5" :size=[6,0]>
       <n-popover :show-arrow="false">
         <template #trigger>
           <n-button @click="handleMin" text>
@@ -79,7 +82,7 @@ const handleSub = (key:number) => {
       </n-popover>
       <n-popover :show-arrow="false">
         <template #trigger>
-          <n-button text circle>
+          <n-button text circle @click="openSettingDrawer">
             <n-icon size="20">
               <settings/>
             </n-icon>

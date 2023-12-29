@@ -13,10 +13,9 @@ const curDraContent = ref('setting')
 
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
-    <dashboard/>
+    <dashboard :open-setting-drawer="() => isShowDrawer = true"/>
     <summoner-info/>
     <navigation/>
-    <button @click="isShowDrawer = true">T</button>
   </div>
   <n-drawer
     class="rounded-t-xl"

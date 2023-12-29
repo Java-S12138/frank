@@ -3,7 +3,7 @@ import {Ref, ref} from "vue";
 import {NDrawerContent,NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover,NRadio,NTreeSelect} from 'naive-ui'
 import {ConfigTypes} from "@/background/utils/config";
 
-const config:Ref<ConfigTypes> = ref(JSON.parse(localStorage.getItem('config')))
+const config:Ref<ConfigTypes> = ref(JSON.parse(localStorage.getItem('config') as string))
 
 const saveConfig = () => {
   localStorage.setItem('config',JSON.stringify(config.value))
