@@ -35,7 +35,7 @@ onMounted(() => {
         // @ts-ignore
         if (res.data.version !== _VERSION){
           // @ts-ignore
-          // handleUpdate(res.data.version,_VERSION)
+          handleUpdate(res.data.version,_VERSION)
         }
       }
     }
