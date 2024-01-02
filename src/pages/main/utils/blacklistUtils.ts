@@ -1,7 +1,7 @@
 import {invokeLcu} from "../lcu";
 import {champDict} from "../resources/champList"
 import {lcuSummonerInfo} from "../lcu/types/homeLcuTypes";
-import {Hater, HaterItem,PCSelections,SumListDetail,SummonerInfoList} from "../interface/blacklistTypes";
+import {Hater, HaterItem,PCSelections,SumListDetail,SummonerInfoList,MyTeamObject} from "../interface/blacklistTypes";
 import {dealDivsion, englishToChinese} from "../lcu/utils";
 
 // 查询本地召唤师信息
@@ -82,29 +82,18 @@ export const queryEnemySummonerIdAndSummonerName = async ():Promise<[SumListDeta
   ]
 }
 
-// 获取选择英雄时的对局聊天组的ID
-const getChatSelectChampId = async () => {
-  try {
-    const chatList = await invokeLcu('get', '/lol-chat/v1/conversations')
-    const chatSelectGroup = chatList.find((i: any) => i.type == "championSelect")
-    return chatSelectGroup.id
-  } catch (e) {
-    return null
+// 获取选择英雄时 获取所以友方召唤师ID /lol-champ-select/v1/session 的值
+const queryAllSummonerId = async () => {
+  const mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
+  const myTeam:MyTeamObject[] = mactchSession?.myTeam
+  let summonerIdList:number[] = []
+  if (myTeam){
+    for (const summoner of myTeam){
+      summonerIdList.push(summoner.summonerId)
+    }
+    return summonerIdList
   }
-}
-// 查询对局中的所有召唤师的Id
-export const queryAllSummonerId = async () => {
-  // todo 测试
-  let summonerIdList:string[] = []
-  const chatId = await getChatSelectChampId()
-  if (chatId === null){return null}
-
-  const summonersId = await invokeLcu('get',`/lol-chat/v1/conversations/${chatId}/messages`)
-  for (const summonersIdElement of summonersId) {
-    summonerIdList.push(summonersIdElement.fromSummonerId)
-  }
-  // 数组去重
-  return [... new Set(summonerIdList)]
+  return null
 }
 
 const querySummonerRank = async (puuid:string) => {

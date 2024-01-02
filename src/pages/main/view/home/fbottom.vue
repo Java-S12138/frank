@@ -40,7 +40,7 @@
                   <ArrowUpCircle></ArrowUpCircle>
                 </n-icon>
               </template>
-              <span>当前版本 {{ config.version }}</span>
+              <span>当前版本 {{ version }}</span>
             </n-popover>
           </n-button>
         </n-space>
@@ -53,32 +53,17 @@
         </div>
       </div>
     </n-card>
-    <n-modal v-model:show="showModal">
-      <n-card
-        style="width: 360px;height: auto;"
-        title="温馨提示"
-        :bordered="false"
-        size="small"
-        role="dialog"
-        aria-modal="true"
-      >
-        <n-alert title="Cube账号未登录" type="error">
-          如果您是订阅用户,<br/>则无法正常使用订阅功能。<br/>请登录Cube账号后，重启Frank。
-        </n-alert>
-
-      </n-card>
-    </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import {NCard, NSpace, NButton, NIcon, NPopover,NModal,NAlert} from 'naive-ui'
+import {NCard, NSpace, NButton, NIcon, NPopover} from 'naive-ui'
 import {BrandGithub, Help, Code, ArrowUpCircle} from '@vicons/tabler'
-import config from "../../../../../package.json"
 import Notice from "./notice.vue"
-import {ref} from "vue";
 
-const showModal = ref(false)
+// @ts-ignore
+const version = _VERSION
+
 const props:any = defineProps({
   notice:{
     type:Object
@@ -89,8 +74,6 @@ const props:any = defineProps({
   }
 })
 const emits = defineEmits(['changePage'])
-
-cube.profile.getCurrentUser().catch(() => {showModal.value=true})
 
 const openUpdate = () => {
   cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/update')

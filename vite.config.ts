@@ -17,5 +17,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve('./src') // @代替src
     }
+  },
+  define: {
+    _VERSION: JSON.stringify(process.env.npm_package_version)
   }
 });

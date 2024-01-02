@@ -85,7 +85,7 @@ cube.windows.message.on('received',async (id,content:any) => {
 
 const retryFunction = async (): Promise<any> => {
   let attempts = 0
-  const maxAttempts = 3
+  const maxAttempts = 2
 
   while (attempts < maxAttempts) {
     await new Promise(resolve => setTimeout(resolve, 1500))
@@ -96,7 +96,7 @@ const retryFunction = async (): Promise<any> => {
       return
     }else {
       attempts++
-      if (attempts===3){
+      if (attempts===2){
         initSummonerInfo(result)
       }
     }

@@ -132,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import {NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover,NRadio,NTreeSelect} from 'naive-ui'
+import {NCard, NSpace, NTag, NButton, useDialog, NSwitch, NSlider,NPopover,NRadio,NTreeSelect} from 'naive-ui'
 import {optionsChampion} from '../../resources/champList'
 import {reactive, ref} from "vue";
 
@@ -143,16 +143,24 @@ const isSubscribe = localStorage.getItem('isSubscribe')
 const toHomePage = () => {
   emits('changePage')
 }
+const dialog = useDialog()
 
 const handleThemeChange = (e:Event) => {
-  const r = confirm("如果你想切换主题 请点击 [确定] Frank会自动重启 ^_^")
-  if (r == true) {
-    themeValue.value = (e.target as HTMLInputElement).value
-    localStorage.setItem('theme',(e.target as HTMLInputElement).value)
-    cube.extensions.relaunch()
-  } else {
-    alert("哎呀~~~ 你取消了切换主题")
-  }
+  dialog.warning({
+    title: '切换主题',
+    closable:false,
+    maskClosable:false,
+    content: '请点击 [确定] Frank 会自动重启 ^_^',
+    positiveText: '确认',
+    negativeText:'取消',
+    style:'width:360px',
+    autoFocus:false,
+    onPositiveClick: () => {
+      themeValue.value = (e.target as HTMLInputElement).value
+      localStorage.setItem('theme',(e.target as HTMLInputElement).value)
+      cube.extensions.relaunch()
+    },
+  })
 }
 
 // 设置是否选项共用函数
