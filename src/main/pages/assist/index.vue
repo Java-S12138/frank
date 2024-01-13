@@ -14,7 +14,7 @@ const curDraContent = ref('setting')
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard :open-setting-drawer="() => isShowDrawer = true"/>
-    <summoner-info/>
+    <router-view></router-view>
     <navigation/>
   </div>
   <n-drawer

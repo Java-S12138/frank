@@ -2,8 +2,10 @@
 import { NSpace, NIcon } from "naive-ui";
 import { SmartHome, Ghost, List, Notebook, Stack2 } from '@vicons/tabler';
 import { ref } from "vue";
+import { useRouter } from 'vue-router';
 
-const curPos = ref(0);
+const router = useRouter();
+const curPos = ref(0)
 const icons = [
   { icon: SmartHome, index: 0 },
   { icon: List, index: 1 },
@@ -12,6 +14,10 @@ const icons = [
   { icon: Notebook, index: 4 },
 ]
 const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
+
+const navigateToPage = (page:string) => {
+  router.push('rank')
+}
 </script>
 
 <template>
@@ -23,7 +29,7 @@ const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
         :key="item.index"
         size="26"
         :color="curPos === item.index ? iconColor[0] : iconColor[1]"
-        @click="curPos = item.index"
+        @click="navigateToPage"
       >
         <component :is="item.icon"/>
       </n-icon>

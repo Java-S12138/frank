@@ -16,7 +16,11 @@ const routes:any[] = Object.entries(pageComps).map(component=>{
 
 const router = createRouter({
   history: createWebHashHistory(''),
-  routes:routes
+  routes:[{
+    path: '',
+    redirect: '/index'
+  }].concat(routes),
+
 });
 
 export default router;
