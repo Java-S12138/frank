@@ -38,6 +38,7 @@ body {
     0 3px 6px 0 rgba(255, 255, 255, 0.03),
     0 5px 12px 4px rgba(255, 255, 255, 0.02);
 }
+
 .navDiv {
     position: absolute;
     bottom: 0px;
@@ -46,4 +47,59 @@ body {
     border-top-left-radius: .75rem;
     border-top-right-radius: .75rem;
     padding: .2rem 0;
+}
+
+.fade-in {
+    -webkit-animation: fade-in 1.2s cubic-bezier(.39, .575, .565, 1.000) both;
+    animation: fade-in 1.2s cubic-bezier(.39, .575, .565, 1.000) both
+}
+
+@-webkit-keyframes fade-in {
+    0% {
+        opacity: 0
+    }
+    100% {
+        opacity: 1
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0
+    }
+    100% {
+        opacity: 1
+    }
+}
+
+.avatarEffect {
+    animation: light 4s ease-in-out infinite;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+@keyframes light {
+    0% {
+        box-shadow: 0 0 4px #ff6666;
+    }
+
+    25% {
+        box-shadow: 0 0 16px #18a058;
+    }
+
+    50% {
+        box-shadow: 0 0 4px #2080f0;
+    }
+
+    75% {
+        box-shadow: 0 0 16px #f0a020;
+    }
+
+    100% {
+        box-shadow: 0 0 4px #d03050;
+    }
+}
+
+.avatarEffect:hover {
+    transform: scale(1.15) rotate(720deg);
 }

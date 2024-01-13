@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 //@ts-ignore
-const pageComps = import.meta.glob('../main/**/index.vue')
+const pageComps = import.meta.glob('../pages/assist/views/**/index.vue')
 const routes:any[] = Object.entries(pageComps).map(component=>{
   const regex =/\/(\w+)\/\w+\.vue/
   const match = component[0].match(regex)
@@ -13,14 +13,12 @@ const routes:any[] = Object.entries(pageComps).map(component=>{
   }
 })
 
-
 const router = createRouter({
   history: createWebHashHistory(''),
   routes:[{
-    path: '',
-    redirect: '/index'
-  }].concat(routes),
-
+    path: '/',
+    redirect: '/home'
+  }].concat(routes)
 });
 
 export default router;

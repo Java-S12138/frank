@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+console.log('Rank')
 </script>
 
 <template>

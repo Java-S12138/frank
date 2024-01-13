@@ -3,5 +3,5 @@
 </script>
 
 <template>
-
+  <h1>TEAMMEAT</h1>
 </template>

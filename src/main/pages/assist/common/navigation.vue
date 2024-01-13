@@ -7,16 +7,17 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const curPos = ref(0)
 const icons = [
-  { icon: SmartHome, index: 0 },
-  { icon: List, index: 1 },
-  { icon: Ghost, index: 2 },
-  { icon: Stack2, index: 3 },
-  { icon: Notebook, index: 4 },
+  { icon: SmartHome, index: 0,route:'home' },
+  { icon: List, index: 1,route:'rank' },
+  { icon: Ghost, index: 2,route:'teammate' },
+  { icon: Stack2, index: 3,route:'rune' },
+  { icon: Notebook, index: 4,route:'record' },
 ]
 const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
 
-const navigateToPage = (page:string) => {
-  router.push('rank')
+const navigateToPage = (page:string,index:number) => {
+  curPos.value = index
+  router.push({name:page})
 }
 </script>
 
@@ -29,7 +30,7 @@ const navigateToPage = (page:string) => {
         :key="item.index"
         size="26"
         :color="curPos === item.index ? iconColor[0] : iconColor[1]"
-        @click="navigateToPage"
+        @click="navigateToPage(item.route,item.index)"
       >
         <component :is="item.icon"/>
       </n-icon>

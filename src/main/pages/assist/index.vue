@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import Dashboard from "./common/dashboard.vue"
-import {ref} from "vue";
-import SummonerInfo from "./views/home/summonerInfo.vue";
-import Navigation from "./common/navigation.vue";
-import {NSpace, NDrawer} from "naive-ui"
+import {NDrawer} from "naive-ui"
+import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
 import Setting from "./common/setting.vue";
+import Dashboard from "./common/dashboard.vue"
+import Navigation from "./common/navigation.vue";
+
+onMounted(() => {
+  useRouter().replace('/home')
+})
 
 const isShowDrawer = ref(false)
 const curDraContent = ref('setting')
@@ -14,7 +18,11 @@ const curDraContent = ref('setting')
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard :open-setting-drawer="() => isShowDrawer = true"/>
-    <router-view></router-view>
+    <router-view class="fade-in" v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
     <navigation/>
   </div>
   <n-drawer
