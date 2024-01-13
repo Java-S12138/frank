@@ -14,6 +14,7 @@ export interface lcuSummonerInfo {
   xpSinceLastLevel: number;
   xpUntilNextLevel: number;
   httpStatus?:number
+  tagLine:string
 }
 
 interface IRerollPoint {
@@ -31,7 +32,8 @@ export interface summonerInfo {
   xpSL:number,
   xpNL:number,
   puuid:string,
-  currentId:number
+  currentId:number,
+  tagLine:string
 }
 
 interface Statstone {

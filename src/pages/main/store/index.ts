@@ -17,7 +17,7 @@ export const queryStore = defineStore('query',{
       matchList: [],          // 战绩列表 (用于查询指定战绩模式的时候)
       currentGameId: 0,       // 当前模式ID
       currentMatchIndex: 0,   // 当前的战绩索引
-      localSummoner: null,     // 本地召唤师的昵称
+      localSummoner: ['',''],     // 本地召唤师的昵称
       assistGameId:undefined
     }
   }

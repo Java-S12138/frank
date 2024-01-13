@@ -111,7 +111,7 @@ const props:any = defineProps({
 // 向夫组件传输数据
 const emits = defineEmits(['queryDetails']);
 const queryDetails = () => {
-  emits('queryDetails', props.personalDetails.name)
+  emits('queryDetails', props.personalDetails.summonerId)
 }
 
 const message = useMessage()

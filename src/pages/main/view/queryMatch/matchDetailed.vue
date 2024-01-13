@@ -100,7 +100,7 @@ const store = queryStore()
 const {
   querySummonerId, begIndex, endIndex, page, currentMode,
   showChart, matchList, currentGameId, currentMatchIndex,assistGameId
-}: { any } = storeToRefs(store)
+}:any = storeToRefs(store)
 
 const active = ref(false)
 const message = useMessage()

@@ -128,7 +128,7 @@ const {querySummonerId,summoner,localSummoner,assistGameId}:any = storeToRefs(st
 
 onMounted(async () => {
   summoner.value = await returnSummonerData()
-  localSummoner.value =summoner.value.summonerInfo.name
+  localSummoner.value = [summoner.value.summonerInfo.name, summoner.value.summonerInfo.tagLine]
   querySummonerId.value = summoner.value.summonerInfo.puuid
   if (summoner.value.assistGameId !== undefined){
     assistGameId.value = summoner.value.assistGameId

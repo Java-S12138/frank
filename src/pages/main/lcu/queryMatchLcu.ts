@@ -20,7 +20,8 @@ const querySummonerInfo = async (summonerId: number): Promise<summonerInfo> => {
     xpSL: summonerInfo.xpSinceLastLevel,
     xpNL: summonerInfo.xpUntilNextLevel,
     puuid: summonerInfo.puuid,
-    currentId: summonerInfo.summonerId
+    currentId: summonerInfo.summonerId,
+    tagLine:summonerInfo.tagLine
   }
 }
 

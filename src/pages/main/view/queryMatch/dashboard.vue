@@ -2,9 +2,9 @@
   <header class="frankTitle" @mousedown="handldDrge()" >
     <n-space class="frankTitle"  >
       <img src="@/assets/icon/app-icon.png" draggable="false"  alt="" width="40" @click="refresh">
-      <n-button style="margin: 0px 5.5px 0px 5.5px"  v-if="summoner.summonerInfo.name !== localSummoner"
+      <n-button style="margin: 0px 5.5px 0px 5.5px"  v-if="summoner.summonerInfo.name !== localSummoner[0]"
                 type="primary"  secondary size="small" :bordered="false"
-                @click="searchSummonerInfo(e,localSummoner)" >我就是我</n-button>
+                @click="searchSummonerInfo(e,localSummoner[0]+'#'+localSummoner[1])" >我就是我</n-button>
       <img src="@/assets/icon/Frank.png" draggable="false" v-else  style="margin-top: 4px;margin-left: 3px">
       <n-space class="rightCorner">
         <n-popover :show-arrow="false" trigger="hover" :delay="1000">
@@ -73,7 +73,6 @@ import {ChevronsDownLeft,CircleX,SmartHome} from '@vicons/tabler'
 import {ref} from "vue";
 import {queryStore} from "../../store";
 import {storeToRefs} from "pinia";
-import {lcuSummonerInfo} from "../../lcu/types/homeLcuTypes";
 import {returnSummonerData} from "../../lcu/queryMatchLcu";
 import {invokeLcu} from "../../lcu";
 

@@ -83,7 +83,7 @@ export const queryEnemySummonerIdAndSummonerName = async ():Promise<[SumListDeta
 }
 
 // 获取选择英雄时 获取所以友方召唤师ID /lol-champ-select/v1/session 的值
-const queryAllSummonerId = async () => {
+export const queryAllSummonerId = async () => {
   const mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
   const myTeam:MyTeamObject[] = mactchSession?.myTeam
   let summonerIdList:number[] = []
