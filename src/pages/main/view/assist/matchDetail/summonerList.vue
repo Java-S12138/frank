@@ -8,6 +8,7 @@
           round
           :src="getImgUrl(summoner.profileIconId)"
           class="champImg"
+          fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
           @click="getCurrentSum(summoner.name,summoner.match.rank,summoner.summonerId,summoner.puuid,summoner.profileIconId)"
         />
         <n-space vertical :size="[0,5]">

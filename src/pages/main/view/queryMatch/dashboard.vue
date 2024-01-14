@@ -115,7 +115,7 @@ const searchSummonerInfo = async (event:any,local:any) => {
     return
   }
   const nickname = local !== undefined ? local :searchName.value
-  const res:lcuSummonerInfo|any = await invokeLcu('get',`/lol-summoner/v1/summoners`,[nickname])
+  const res:any = await invokeLcu('get',`/lol-summoner/v1/summoners`,[nickname])
   if (res?.success === false){
     message.error('当前召唤师不存在')
     return

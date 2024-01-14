@@ -32,11 +32,11 @@ onMounted(() => {
       if (res.status === 200 && res.data.isShow) {
         notice.value = res.data
         page.value = 2
+      }
+      // @ts-ignore
+      if (res?.data?.version !== _VERSION && res?.data?.isUpdate){
         // @ts-ignore
-        if (res.data.version !== _VERSION){
-          // @ts-ignore
-          handleUpdate(res.data.version,_VERSION)
-        }
+        handleUpdate(res.data.version,_VERSION)
       }
     }
   })
@@ -65,11 +65,11 @@ const handleUpdate = (cur:string,old:string) => {
     title: '版本更新',
     closable:false,
     maskClosable:false,
-    content: `当前版本 ${old} --- 最新版本 ${cur}`,
-    positiveText: '点击更新',
+    content: `当前版本 ${old} — 最新版本 ${cur} ——— 为了提供更好的体验；请手动重启 Frank`,
+    positiveText: '关闭软件',
     style:'width:360px',
     onPositiveClick: () => {
-      cube.extensions.relaunch()
+      cube.extensions.terminate()
     }
   })
 }
