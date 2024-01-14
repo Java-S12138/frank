@@ -29,8 +29,7 @@ export interface summonerInfo {
   name:string,
   imgUrl:string,
   lv:string|number,
-  xpSL:number,
-  xpNL:number,
+  xp:number,
   puuid:string,
   currentId:number,
   tagLine:string|undefined

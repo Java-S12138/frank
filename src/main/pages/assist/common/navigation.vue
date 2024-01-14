@@ -25,7 +25,7 @@ const navigateToPage = (page:string,index:number) => {
   <div class="navDiv bg-white dark:bg-zinc-900 boxShadow">
     <n-space justify="space-between" class="mt-2 mx-2">
       <n-icon
-        class="transition"
+        class="transition cursor-pointer"
         v-for="item in icons"
         :key="item.index"
         size="26"

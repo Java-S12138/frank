@@ -11,8 +11,7 @@ export const queryCurrentSummonerInfo = async ():Promise<summonerInfo> => {
     name:summonerInfo.displayName,
     imgUrl:imgUrl,
     lv:"Lv "+summonerInfo.summonerLevel,
-    xpSL:summonerInfo.xpSinceLastLevel,
-    xpNL:summonerInfo.xpUntilNextLevel,
+    xp:parseInt(String((summonerInfo.xpSinceLastLevel / summonerInfo.xpUntilNextLevel ) * 100)),
     puuid:summonerInfo.puuid,
     currentId: summonerInfo.summonerId,
     tagLine:summonerInfo.tagLine
@@ -44,7 +43,7 @@ export const queryChampionExp = async (puuid:string) => {
 // 查看本地召唤师荣誉等级
 export const querySummonerHonorLevel = async ():Promise<[string,string]> => {
   const summonerHonor = await invokeLcu('get','/lol-honor-v2/v1/profile')
-  return ['荣誉等级 '+summonerHonor.honorLevel,'里程点数 '+summonerHonor.checkpoint]
+  return ['荣誉等级 '+summonerHonor.honorLevel,' 里程 '+summonerHonor.checkpoint]
 }
 
 // 获取永痕星碑数据
