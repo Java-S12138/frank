@@ -7,5 +7,8 @@ export const themeOverrides: GlobalThemeOverrides = {
   },
   Drawer:{
     bodyPadding:'0.5rem 0.5rem'
+  },
+  Button:{
+    textColorGhostHover:'#4098fc'
   }
 }

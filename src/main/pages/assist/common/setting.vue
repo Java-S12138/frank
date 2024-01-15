@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {Ref, ref} from "vue";
 import {NDrawerContent,NCard, NSpace, NTag, NButton, NSelect, NSwitch, NSlider,NPopover,NRadio,NTreeSelect} from 'naive-ui'
-import {ConfigTypes} from "@/background/utils/config";
+import {ConfigSettingTypes} from "@/background/utils/configTypes";
 
-const config:Ref<ConfigTypes> = ref(JSON.parse(localStorage.getItem('config') as string))
+const config:Ref<ConfigSettingTypes> = ref(JSON.parse(localStorage.getItem('configSetting') as string))
 
 const saveConfig = () => {
-  localStorage.setItem('config',JSON.stringify(config.value))
+  localStorage.setItem('configSetting',JSON.stringify(config.value))
 }
 
 const handleThemeChange = () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {NIcon, NSpace, NButton, NPopover,NPopconfirm,NDropdown} from 'naive-ui'
-import {ChevronsDownRight, Settings, CircleX} from '@vicons/tabler'
+import {CircleMinus, Settings, CircleX} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
 import {DashboardProps} from "./types";
 
@@ -69,12 +69,12 @@ const handleSub = (key:number) => {
       </n-button>
     </n-dropdown>
 
-    <n-space class="pt-2.5" :size=[6,0]>
+    <n-space class="pt-3" :size=[6,0]>
       <n-popover :show-arrow="false">
         <template #trigger>
           <n-button @click="handleMin" text>
-            <n-icon size="22">
-              <chevrons-down-right/>
+            <n-icon size="20">
+              <circle-minus/>
             </n-icon>
           </n-button>
         </template>

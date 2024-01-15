@@ -3,7 +3,7 @@ import {NMessageProvider, NConfigProvider, zhCN, darkTheme} from 'naive-ui'
 import {themeOverrides} from "./utils/theme";
 import Frank from "../main/pages/assist/index.vue"
 
-const theme: string = JSON.parse(localStorage.getItem('config') as string).theme
+const theme: string = JSON.parse(localStorage.getItem('configSetting') as string).theme
 
 if (theme === 'dark') {
   document.documentElement.classList.add('dark')

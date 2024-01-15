@@ -7,7 +7,7 @@ import Dashboard from "./common/dashboard.vue"
 import Navigation from "./common/navigation.vue";
 
 onMounted(() => {
-  useRouter().replace('/home')
+  useRouter().replace('/rank')
 })
 
 const isShowDrawer = ref(false)
@@ -18,7 +18,7 @@ const curDraContent = ref('setting')
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard :open-setting-drawer="() => isShowDrawer = true"/>
-    <router-view class="fade-in" v-slot="{ Component }">
+    <router-view v-slot="{ Component }">
       <keep-alive>
         <component :is="Component" />
       </keep-alive>

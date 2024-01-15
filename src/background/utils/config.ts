@@ -1,13 +1,7 @@
-export interface ConfigTypes {
-  autoPickChampion: { championId: string; isAuto: boolean };
-  autoBanChampion: { championId: string; isAuto: boolean };
-  autoAccept: number;
-  champRankOption: { tier: number; lane: string };
-  theme: string;
-}
+import {ConfigRank, ConfigSettingTypes} from "./configTypes";
+// cube.windows.openDevTools(cube.windows.current.id())
 
-
-export const config: ConfigTypes = {
+const configSetting: ConfigSettingTypes = {
   'autoPickChampion': {
     championId: "157",
     isAuto: false
@@ -17,22 +11,39 @@ export const config: ConfigTypes = {
     isAuto: false
   },
   'autoAccept': 50,
-  'champRankOption': {
-    'tier': 2,
-    'lane': 'mid'
-  },
-  'theme':'light',
+  'theme': 'light',
 }
 
-if (localStorage.getItem('config') === null) {
-  localStorage.setItem('config', JSON.stringify(config))
-} else {
-  const localS = JSON.parse(<string>(localStorage.getItem('config')))
-  for (const configKey of Object.keys(config)) {
+
+
+const configRank: ConfigRank = {
+  'tier': 2,
+  'lane': 'mid',
+  'is101': false,
+}
+
+const addConfig = (configName:string,configObj:any) => {
+  const localS = JSON.parse(<string>(localStorage.getItem(configName)))
+  if (Object.keys(localS).length === Object.keys(configObj).length){
+    return
+  }
+
+  for (const configKey of Object.keys(configObj)) {
     if (!localS.hasOwnProperty(configKey)) {
       // @ts-ignore
-      localS[configKey] = config[configKey]
-      localStorage.setItem('config', JSON.stringify(localS))
+      localS[configKey] = configObj[configKey]
+      localStorage.setItem(configName, JSON.stringify(localS))
     }
   }
 }
+
+
+if (localStorage.getItem('init') === null) {
+  localStorage.setItem('init', 'SYJun')
+  localStorage.setItem('configSetting', JSON.stringify(configSetting))
+  localStorage.setItem('configRank', JSON.stringify(configRank))
+} else {
+  addConfig('configSetting',configSetting)
+  addConfig('configRank',configRank)
+}
+
