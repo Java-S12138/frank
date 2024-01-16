@@ -6,5 +6,5 @@ export interface ChampInfo {
   win: string;
   ban: string;
   appearance: string;
-  champId: string;
+  champId: number;
 }

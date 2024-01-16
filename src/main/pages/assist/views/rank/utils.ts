@@ -114,8 +114,31 @@ const toPercent = (point:number) => {
   return str;
 }
 
-
-
+// 获取对于的位置
+export const getPostion = (lane:string) => {
+  switch (lane) {
+    case lane = 'top':
+      return '0'
+    case lane = 'jungle':
+      return '1'
+    case lane = 'mid':
+      return '2'
+    case lane = 'bottom':
+      return '3'
+    case lane = 'support':
+      return '4'
+    default:
+      return '2'
+  }
+}
+// 获取当前日期
+export const getLacalDateStr = () => {
+  let currentDate = new Date()
+  let dateList = currentDate.toLocaleDateString().split('/')
+  dateList[1] = dateList[1].length == 1 ? '0' + dateList[1] : dateList[1]
+  dateList[2] = dateList[2].length == 1 ? '0' + dateList[2] : dateList[2]
+  return parseInt(dateList.join('')) - 1
+}
 // 获取国服英雄数据排行
 export const queryCNServe = async (configRank:ConfigRank,tier:number, lane:string, time:number,recursionCount:number):Promise<null|[]|ChampInfo[]|undefined> => {
   if (recursionCount>10){
@@ -157,7 +180,7 @@ export const queryCNServe = async (configRank:ConfigRank,tier:number, lane:strin
       win: toPercent(parseFloat(dataList[2])),
       ban: toPercent(parseFloat(dataList[3])),
       appearance: toPercent(parseFloat(dataList[4])),
-      champId: dataList[0]
+      champId: Number(dataList[0])
     })
   }
   return champSliceList
@@ -191,4 +214,37 @@ export const queryKRServe = async (configRank:ConfigRank,tier:number,lane:string
   }catch (e) {
     return null
   }
+}
+
+// 获取英雄反制数据
+export const getRestraintData = async (champId:number, lane:string,tier:number,is101:boolean) => {
+  let tierRes = 2
+
+  const position = getPostion(lane)
+  if (!is101){
+    tierRes = tier
+  }
+  const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=88&tier=${tierRes}&lane=${position}`
+  const result = await request({
+    'url': url,
+    method: 'GET'
+  })
+
+  if (result.data.data == null || result.status !== 200){
+    return null
+  }
+
+  const resList:[string,string,number,number,number][] = []
+  const counterChampionIdList = JSON.parse(result.data.data['counterChampionIdList'])
+  const counterWinrateList = JSON.parse(result.data.data['counterWinrateList'])
+  const counterCountList = JSON.parse(result.data.data['counterCountList'])
+  for (let i = 0; i < counterChampionIdList.length; i++) {
+    const chapmId:number = counterChampionIdList[i]
+    const label = champDict[chapmId].label +'•' + champDict[chapmId].title
+    const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
+    const winRate:number = counterWinrateList[i]
+    const countMatch:number = counterCountList[i]
+    resList.push([label, imgUrl, winRate,chapmId,countMatch])
+  }
+  return resList
 }

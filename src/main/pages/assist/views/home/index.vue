@@ -35,7 +35,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-card v-if = summonerData.summonerInfo size="small" class="mt-4 boxShadow">
+  <n-card v-if = summonerData.summonerInfo size="small" class="mt-4 shadow">
     <!--    头像 昵称 等级-->
     <div class="h-14 flex gap-x-2">
       <n-avatar class="avatarEffect" round :bordered="false" :size="56"

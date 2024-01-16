@@ -7,7 +7,7 @@ import {
 </script>
 
 <template>
-  <n-card size="small" class="mt-6 boxShadow">
+  <n-card size="small" class="mt-6 shadow">
     123
   </n-card>
 </template>

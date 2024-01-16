@@ -1,21 +1,33 @@
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NAutoComplete, NSpace, NTag, NDrawer, NDrawerContent, NSelect,
-  NList, NListItem, NScrollbar, useMessage, NDropdown, NTabPane, NButton, NIcon,SelectOption
+  NCard, NAvatar, NAutoComplete, NSpace, NSelect,
+  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton,SelectOption
 } from 'naive-ui'
 import './assistCommon.css'
-import {computed, onMounted, Ref, ref,h, VNodeChild } from "vue";
-import {rankOptions, cnOptions, positionOptions,krOptions,queryCNServe,queryKRServe} from "./utils";
+import {computed, onMounted, Ref, ref, h, VNodeChild, provide} from "vue";
+import {
+  rankOptions,
+  cnOptions,
+  positionOptions,
+  krOptions,
+  queryCNServe,
+  queryKRServe,
+  getRestraintData, getPostion, getLacalDateStr
+} from "./utils";
 import {ConfigRank} from "@/background/utils/configTypes";
 import {ChampInfo} from "./rankTypes";
-import {keywordsList} from "@/resources/champList";
+import {aliasToId, champDict, keywordsList} from "@/resources/champList";
+import {useCommonStore} from "@/main/store/useCommon";
+import {useRankStore} from "@/main/store/useRank";
 
 onMounted(() => {
-  queryChampRankData()
+    queryChampRankData()
 })
 
 const configRank:ConfigRank = JSON.parse((localStorage.getItem('configRank')) as string)
 
+const commonStore = useCommonStore()
+const rankStore = useRankStore()
 const tier = ref(configRank.tier)
 const lane = ref(configRank.lane)
 const is101 = ref(configRank.is101)
@@ -38,19 +50,19 @@ const handlePosSelect = (pos:string) => {
   queryChampRankData()
   switch (pos) {
     case pos = 'top':
-      message.success('上单数据更新成功');
+      message.success('上单数据更新成功')
       break;
     case pos = 'jungle':
-      message.success('打野数据更新成功');
+      message.success('打野数据更新成功')
       break;
     case pos = 'mid':
       message.success('中单数据更新成功')
       break;
     case pos = 'bottom':
-      message.success('下路数据更新成功');
+      message.success('下路数据更新成功')
       break;
     case pos = 'support':
-      message.success('辅助数据更新成功');
+      message.success('辅助数据更新成功')
       break;
   }
 }
@@ -80,22 +92,13 @@ const getBanRankData = () => {
   isCheck.value = 4
   quickSort('ban')
 }
-
+// ghostButtons列表
 const ghostButtons = [
   { label: '综合', value: 1, action: getComprehensiveRankData, size: 'small' },
   { label: '胜率', value: 2, action: getWinRankData, size: 'small' },
-  { label: '登场率', value: 3, action: getAppearanceRankData, size: 'small' },
-  { label: '禁用率', value: 4, action: getBanRankData, size: 'small' },
+  { label: '登场', value: 3, action: getAppearanceRankData, size: 'small' },
+  { label: '禁用', value: 4, action: getBanRankData, size: 'small' },
 ]
-
-// 获取当前日期
-const getLacalDateStr = () => {
-  let currentDate = new Date()
-  let dateList = currentDate.toLocaleDateString().split('/')
-  dateList[1] = dateList[1].length == 1 ? '0' + dateList[1] : dateList[1]
-  dateList[2] = dateList[2].length == 1 ? '0' + dateList[2] : dateList[2]
-  return parseInt(dateList.join('')) - 1
-}
 
 // 获取不同服务器的数据
 const queryChampRankData = async () => {
@@ -105,24 +108,7 @@ const queryChampRankData = async () => {
       champSliceList.value = champInfo
     }
   }else {
-    let laneKr = ''
-    switch (lane.value) {
-      case lane.value = 'top':
-        laneKr = '0';
-        break;
-      case lane.value = 'jungle':
-        laneKr = '1';
-        break;
-      case lane.value = 'mid':
-        laneKr = '2';
-        break;
-      case lane.value = 'bottom':
-        laneKr = '3';
-        break;
-      case lane.value = 'support':
-        laneKr = '4';
-        break;
-    }
+    const laneKr = getPostion(lane.value)
     const champInfo = await queryKRServe(configRank,tier.value,laneKr)
     if (champInfo){
       champSliceList.value = champInfo
@@ -132,7 +118,6 @@ const queryChampRankData = async () => {
     }
   }
 }
-
 // 改变不同服务器的数据排行
 const handleRankSelect = () => {
   isCheck.value = 1
@@ -143,7 +128,6 @@ const handleRankSelect = () => {
   configRank.is101 = is101.value
   localStorage.setItem('configRank',JSON.stringify(configRank))
 }
-
 // 渲染提示框
 const renderLabel = (option: SelectOption): VNodeChild => [
   h('div', { style: 'display: flex; align-items: center;' }, [
@@ -156,7 +140,6 @@ const renderLabel = (option: SelectOption): VNodeChild => [
     option.label as string
   ])
 ]
-
 // 生成输入框渲染提示选项
 const autoOptions = computed(() => {
   if (inputValue.value==='' || inputValue.value===null){
@@ -181,8 +164,22 @@ const autoOptions = computed(() => {
 const searchChampData = (alias:string) => {
   if (alias===''){
     message.warning('输入框不能为空')
+    return
   }
-  message.success(alias)
+
+  const resultChamp:ChampInfo|undefined = champSliceList.value.filter(item => item.champId === aliasToId[alias])[0]
+  if (resultChamp){
+    openChampDrawer(resultChamp.champId,resultChamp.imgUrl,resultChamp.tLevel)
+  }else {
+    message.warning('当前英雄在此位置不存在')
+  }
+}
+// 打开英雄详细数据抽屉窗口
+const openChampDrawer = async (champId:number,imgUrl:string,level:string) => {
+  commonStore.showDrawer(444)
+  commonStore.changeContent('restraintList')
+  const selectedList:string[] = [imgUrl, champDict[champId].label +'•' + champDict[champId].title, level,String(champId)]
+  rankStore.initStore(champId,lane.value,tier.value,is101.value,selectedList)
 }
 
 </script>
@@ -215,7 +212,7 @@ const searchChampData = (alias:string) => {
     </n-space>
   </n-card>
 
-  <n-card class="shadow " size="small" style="margin-top: 17px;" content-style="padding-top: 0;">
+  <n-card class="shadow " size="small" style="margin-top: 18px;" content-style="padding:0 12px 10px 12px;">
     <n-list>
       <template #header>
           <div class="h-7 flex gap-x-5">
@@ -225,9 +222,9 @@ const searchChampData = (alias:string) => {
               v-model:value="inputValue"
               @select="searchChampData"
               :options="autoOptions"
-              placeholder="请输入英雄昵称"
+              placeholder="请输入你想查询的英雄"
               :render-label="renderLabel"
-              style="width: 162px;"
+              style="width: 161px;"
             >
             </n-auto-complete>
             <n-button size="small" secondary type="info" @click="searchChampData(inputValue)">搜索</n-button>
@@ -242,6 +239,7 @@ const searchChampData = (alias:string) => {
           <div class="flex gap-x-3" >
             <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer">
               <n-avatar
+                @click="openChampDrawer(chapm.champId,chapm.imgUrl,chapm.tLevel)"
                 :bordered="false"
                 :size="40"
                 lazy
