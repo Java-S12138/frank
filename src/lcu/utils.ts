@@ -63,9 +63,6 @@ export const getspellImgUrl = (spellId:number) => {
 
 // 通过物品id获取图片地址
 export const getItemImgUrl = (item:number) => {
-  if (item>220000){
-    item -= 220000
-  }
   if (item == 0 ){
     // @ts-ignore
     return new URL("/src/assets/svg/image.png", import.meta.url).href
@@ -81,6 +78,7 @@ export const querySummonerPosition = (lane:string) => {
     case 'BOTTOM' : return '下路';
     case 'TOP' : return '上单';
     case 'NONE': return '未知'
+    default:return '未知'
   }
 }
 // 获取位置序号, 方便排序

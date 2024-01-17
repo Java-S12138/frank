@@ -10,7 +10,7 @@ import {useCommonStore} from "@/main/store/useCommon";
 import {useRankStore} from "@/main/store/useRank";
 
 onMounted(() => {
-  useRouter().replace('/home')
+  useRouter().replace('/teammate')
 })
 
 const commonStore = useCommonStore()

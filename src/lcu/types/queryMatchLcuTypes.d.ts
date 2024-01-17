@@ -215,9 +215,10 @@ export interface MatchList {
   assists: number;
   matchTime: string;
   gameModel: string;
+  queueId:number;
 }
 
-export interface simpleMatchTypes {
+export interface SimpleMatchTypes {
   champImgUrl: string;
   level: number;
   isWin: boolean;
@@ -236,4 +237,5 @@ export interface simpleMatchTypes {
   item5: string;
   item6: string;
   lane: string;
+  queueId:number;
 }

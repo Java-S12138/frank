@@ -29,7 +29,6 @@ onMounted(async () => {
     { label: `单双 ${summonerData.rankList?.[0]}`, value: `灵活 ${summonerData.rankList?.[1]}` },
     { label: `云顶 ${summonerData.rankList?.[2]}`, value: honorStr }
   ]
-  console.log(summonerData)
 })
 
 </script>

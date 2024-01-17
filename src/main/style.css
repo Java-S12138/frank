@@ -97,3 +97,9 @@ body {
 .avatarEffect:hover {
     transform: scale(1.15) rotate(720deg);
 }
+.imgItem {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+}
+
