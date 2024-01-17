@@ -272,20 +272,15 @@ onMounted(async () => {
 
 // 获取指定召唤师战绩
 const queryDetails = async (summonerId:number) => {
-  active.value = false
-  const sumInfo:any = await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
-  const nickname = sumInfo.displayName + '#' + sumInfo.tagLine
-  const res:lcuSummonerInfo = await invokeLcu('get',`/lol-summoner/v1/summoners`,[nickname])
-  if (res.httpStatus === 404){
-    message.error('当前召唤师不存在')
-    return
-  }else{
-    summoner.value = await returnSummonerData(res.summonerId)
-    currentGameId.value = 0
-    querySummonerId.value = summoner.value.summonerInfo.puuid
-    currentMode.value='全部模式'
-    return
-  }
+    try {
+      active.value = false
+      summoner.value = await returnSummonerData(summonerId)
+      currentGameId.value = 0
+      querySummonerId.value = summoner.value.summonerInfo.puuid
+      currentMode.value='全部模式'
+    }catch (e) {
+      message.error('当前召唤师不存在或异常')
+    }
 }
 
 
