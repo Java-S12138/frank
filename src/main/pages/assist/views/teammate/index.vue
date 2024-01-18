@@ -1,25 +1,24 @@
 <script setup lang="ts">
 import {queryFriendInfo} from "./utils";
-import {onMounted, Ref, ref} from "vue";
-import {SummonerInfoList} from "./teammateTypes";
-import {NSpace,NDivider,NTag,NCard,NDrawer} from 'naive-ui'
+import {onMounted} from "vue";
+import {NSpace,NDivider,NTag,NCard} from 'naive-ui'
 import {QueryMatch} from "./queryMatch";
 import SummonerList from "./summonerList.vue";
+import {useTeammateStore} from "@/main/store/useTeammate";
 
-const friSummonerInfo:Ref<SummonerInfoList[]> = ref([])
-
+const teammateStore = useTeammateStore()
 
 onMounted(async () => {
   const useMatch = new QueryMatch(0)
-  friSummonerInfo.value = await queryFriendInfo()
+  const infoList = await queryFriendInfo()
 
-  for (const summoner of friSummonerInfo.value) {
-    const matchList = await useMatch.getResultInfo(summoner.puuid)
-    summoner.match.recentMatchList = matchList
-    // console.log(matchList)
+  teammateStore.summonerInfo = infoList
+
+  for (const [index,summoner] of infoList.entries()) {
+    const matchList = await useMatch.getResultInfo(summoner.puuid,index)
+    teammateStore.recentMatchList.push(matchList)
   }
 })
-
 
 const openWin = () => {
 
@@ -28,7 +27,7 @@ const openWin = () => {
 
 <template>
   <n-card size="small" class="mt-4 shadow" content-style="padding-top: 4px;">
-    <summoner-list :fri-summoner-info="friSummonerInfo"/>
+    <summoner-list/>
 
     <n-divider dashed style="margin-top: 0px;margin-bottom: 12px;"/>
 

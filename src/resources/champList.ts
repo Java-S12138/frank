@@ -1,171 +1,1457 @@
-export const champDict:{ [key: string]: { champId: string, label: string, alias: string, title: string } }  = {
-  '1': {'champId': '1', 'label': '黑暗之女', 'alias': 'Annie', 'title': '安妮'},
-  '2': {'champId': '2', 'label': '狂战士', 'alias': 'Olaf', 'title': '奥拉夫'},
-  '3': {'champId': '3', 'label': '正义巨像', 'alias': 'Galio', 'title': '加里奥'},
-  '4': {'champId': '4', 'label': '卡牌大师', 'alias': 'TwistedFate', 'title': '崔斯特'},
-  '5': {'champId': '5', 'label': '德邦总管', 'alias': 'XinZhao', 'title': '赵信'},
-  '6': {'champId': '6', 'label': '无畏战车', 'alias': 'Urgot', 'title': '厄加特'},
-  '7': {'champId': '7', 'label': '诡术妖姬', 'alias': 'Leblanc', 'title': '乐芙兰'},
-  '8': {'champId': '8', 'label': '猩红收割者', 'alias': 'Vladimir', 'title': '弗拉基米尔'},
-  '9': {'champId': '9', 'label': '远古恐惧', 'alias': 'Fiddlesticks', 'title': '费德提克'},
-  '10': {'champId': '10', 'label': '正义天使', 'alias': 'Kayle', 'title': '凯尔'},
-  '11': {'champId': '11', 'label': '无极剑圣', 'alias': 'MasterYi', 'title': '易'},
-  '12': {'champId': '12', 'label': '牛头酋长', 'alias': 'Alistar', 'title': '阿利斯塔'},
-  '13': {'champId': '13', 'label': '符文法师', 'alias': 'Ryze', 'title': '瑞兹'},
-  '14': {'champId': '14', 'label': '亡灵战神', 'alias': 'Sion', 'title': '赛恩'},
-  '15': {'champId': '15', 'label': '战争女神', 'alias': 'Sivir', 'title': '希维尔'},
-  '16': {'champId': '16', 'label': '众星之子', 'alias': 'Soraka', 'title': '索拉卡'},
-  '17': {'champId': '17', 'label': '迅捷斥候', 'alias': 'Teemo', 'title': '提莫'},
-  '18': {'champId': '18', 'label': '麦林炮手', 'alias': 'Tristana', 'title': '崔丝塔娜'},
-  '19': {'champId': '19', 'label': '祖安怒兽', 'alias': 'Warwick', 'title': '沃里克'},
-  '20': {'champId': '20', 'label': '雪原双子', 'alias': 'Nunu', 'title': '努努和威朗普'},
-  '21': {'champId': '21', 'label': '赏金猎人', 'alias': 'MissFortune', 'title': '厄运小姐'},
-  '22': {'champId': '22', 'label': '寒冰射手', 'alias': 'Ashe', 'title': '艾希'},
-  '23': {'champId': '23', 'label': '蛮族之王', 'alias': 'Tryndamere', 'title': '泰达米尔'},
-  '24': {'champId': '24', 'label': '武器大师', 'alias': 'Jax', 'title': '贾克斯'},
-  '25': {'champId': '25', 'label': '堕落天使', 'alias': 'Morgana', 'title': '莫甘娜'},
-  '26': {'champId': '26', 'label': '时光守护者', 'alias': 'Zilean', 'title': '基兰'},
-  '27': {'champId': '27', 'label': '炼金术士', 'alias': 'Singed', 'title': '辛吉德'},
-  '28': {'champId': '28', 'label': '痛苦之拥', 'alias': 'Evelynn', 'title': '伊芙琳'},
-  '29': {'champId': '29', 'label': '瘟疫之源', 'alias': 'Twitch', 'title': '图奇'},
-  '30': {'champId': '30', 'label': '死亡颂唱者', 'alias': 'Karthus', 'title': '卡尔萨斯'},
-  '31': {'champId': '31', 'label': '虚空恐惧', 'alias': 'Chogath', 'title': '科加斯'},
-  '32': {'champId': '32', 'label': '殇之木乃伊', 'alias': 'Amumu', 'title': '阿木木'},
-  '33': {'champId': '33', 'label': '披甲龙龟', 'alias': 'Rammus', 'title': '拉莫斯'},
-  '34': {'champId': '34', 'label': '冰晶凤凰', 'alias': 'Anivia', 'title': '艾尼维亚'},
-  '35': {'champId': '35', 'label': '恶魔小丑', 'alias': 'Shaco', 'title': '萨科'},
-  '36': {'champId': '36', 'label': '祖安狂人', 'alias': 'DrMundo', 'title': '蒙多医生'},
-  '37': {'champId': '37', 'label': '琴瑟仙女', 'alias': 'Sona', 'title': '娑娜'},
-  '38': {'champId': '38', 'label': '虚空行者', 'alias': 'Kassadin', 'title': '卡萨丁'},
-  '39': {'champId': '39', 'label': '刀锋舞者', 'alias': 'Irelia', 'title': '艾瑞莉娅'},
-  '40': {'champId': '40', 'label': '风暴之怒', 'alias': 'Janna', 'title': '迦娜'},
-  '41': {'champId': '41', 'label': '海洋之灾', 'alias': 'Gangplank', 'title': '普朗克'},
-  '42': {'champId': '42', 'label': '英勇投弹手', 'alias': 'Corki', 'title': '库奇'},
-  '43': {'champId': '43', 'label': '天启者', 'alias': 'Karma', 'title': '卡尔玛'},
-  '44': {'champId': '44', 'label': '瓦洛兰之盾', 'alias': 'Taric', 'title': '塔里克'},
-  '45': {'champId': '45', 'label': '邪恶小法师', 'alias': 'Veigar', 'title': '维迦'},
-  '48': {'champId': '48', 'label': '巨魔之王', 'alias': 'Trundle', 'title': '特朗德尔'},
-  '50': {'champId': '50', 'label': '诺克萨斯统领', 'alias': 'Swain', 'title': '斯维因'},
-  '51': {'champId': '51', 'label': '皮城女警', 'alias': 'Caitlyn', 'title': '凯特琳'},
-  '53': {'champId': '53', 'label': '蒸汽机器人', 'alias': 'Blitzcrank', 'title': '布里茨'},
-  '54': {'champId': '54', 'label': '熔岩巨兽', 'alias': 'Malphite', 'title': '墨菲特'},
-  '55': {'champId': '55', 'label': '不祥之刃', 'alias': 'Katarina', 'title': '卡特琳娜'},
-  '56': {'champId': '56', 'label': '永恒梦魇', 'alias': 'Nocturne', 'title': '魔腾'},
-  '57': {'champId': '57', 'label': '扭曲树精', 'alias': 'Maokai', 'title': '茂凯'},
-  '58': {'champId': '58', 'label': '荒漠屠夫', 'alias': 'Renekton', 'title': '雷克顿'},
-  '59': {'champId': '59', 'label': '德玛西亚皇子', 'alias': 'JarvanIV', 'title': '嘉文四世'},
-  '60': {'champId': '60', 'label': '蜘蛛女皇', 'alias': 'Elise', 'title': '伊莉丝'},
-  '61': {'champId': '61', 'label': '发条魔灵', 'alias': 'Orianna', 'title': '奥莉安娜'},
-  '62': {'champId': '62', 'label': '齐天大圣', 'alias': 'MonkeyKing', 'title': '孙悟空'},
-  '63': {'champId': '63', 'label': '复仇焰魂', 'alias': 'Brand', 'title': '布兰德'},
-  '64': {'champId': '64', 'label': '盲僧', 'alias': 'LeeSin', 'title': '李青'},
-  '67': {'champId': '67', 'label': '暗夜猎手', 'alias': 'Vayne', 'title': '薇恩'},
-  '68': {'champId': '68', 'label': '机械公敌', 'alias': 'Rumble', 'title': '兰博'},
-  '69': {'champId': '69', 'label': '魔蛇之拥', 'alias': 'Cassiopeia', 'title': '卡西奥佩娅'},
-  '72': {'champId': '72', 'label': '水晶先锋', 'alias': 'Skarner', 'title': '斯卡纳'},
-  '74': {'champId': '74', 'label': '大发明家', 'alias': 'Heimerdinger', 'title': '黑默丁格'},
-  '75': {'champId': '75', 'label': '沙漠死神', 'alias': 'Nasus', 'title': '内瑟斯'},
-  '76': {'champId': '76', 'label': '狂野女猎手', 'alias': 'Nidalee', 'title': '奈德丽'},
-  '77': {'champId': '77', 'label': '兽灵行者', 'alias': 'Udyr', 'title': '乌迪尔'},
-  '78': {'champId': '78', 'label': '圣锤之毅', 'alias': 'Poppy', 'title': '波比'},
-  '79': {'champId': '79', 'label': '酒桶', 'alias': 'Gragas', 'title': '古拉加斯'},
-  '80': {'champId': '80', 'label': '不屈之枪', 'alias': 'Pantheon', 'title': '潘森'},
-  '81': {'champId': '81', 'label': '探险家', 'alias': 'Ezreal', 'title': '伊泽瑞尔'},
-  '82': {'champId': '82', 'label': '铁铠冥魂', 'alias': 'Mordekaiser', 'title': '莫德凯撒'},
-  '83': {'champId': '83', 'label': '牧魂人', 'alias': 'Yorick', 'title': '约里克'},
-  '84': {'champId': '84', 'label': '离群之刺', 'alias': 'Akali', 'title': '阿卡丽'},
-  '85': {'champId': '85', 'label': '狂暴之心', 'alias': 'Kennen', 'title': '凯南'},
-  '86': {'champId': '86', 'label': '德玛西亚之力', 'alias': 'Garen', 'title': '盖伦'},
-  '89': {'champId': '89', 'label': '曙光女神', 'alias': 'Leona', 'title': '蕾欧娜'},
-  '90': {'champId': '90', 'label': '虚空先知', 'alias': 'Malzahar', 'title': '玛尔扎哈'},
-  '91': {'champId': '91', 'label': '刀锋之影', 'alias': 'Talon', 'title': '泰隆'},
-  '92': {'champId': '92', 'label': '放逐之刃', 'alias': 'Riven', 'title': '锐雯'},
-  '96': {'champId': '96', 'label': '深渊巨口', 'alias': 'KogMaw', 'title': '克格莫'},
-  '98': {'champId': '98', 'label': '暮光之眼', 'alias': 'Shen', 'title': '慎'},
-  '99': {'champId': '99', 'label': '光辉女郎', 'alias': 'Lux', 'title': '拉克丝'},
-  '101': {'champId': '101', 'label': '远古巫灵', 'alias': 'Xerath', 'title': '泽拉斯'},
-  '102': {'champId': '102', 'label': '龙血武姬', 'alias': 'Shyvana', 'title': '希瓦娜'},
-  '103': {'champId': '103', 'label': '九尾妖狐', 'alias': 'Ahri', 'title': '阿狸'},
-  '104': {'champId': '104', 'label': '法外狂徒', 'alias': 'Graves', 'title': '格雷福斯'},
-  '105': {'champId': '105', 'label': '潮汐海灵', 'alias': 'Fizz', 'title': '菲兹'},
-  '106': {'champId': '106', 'label': '不灭狂雷', 'alias': 'Volibear', 'title': '沃利贝尔'},
-  '107': {'champId': '107', 'label': '傲之追猎者', 'alias': 'Rengar', 'title': '雷恩加尔'},
-  '110': {'champId': '110', 'label': '惩戒之箭', 'alias': 'Varus', 'title': '韦鲁斯'},
-  '111': {'champId': '111', 'label': '深海泰坦', 'alias': 'Nautilus', 'title': '诺提勒斯'},
-  '112': {'champId': '112', 'label': '机械先驱', 'alias': 'Viktor', 'title': '维克托'},
-  '113': {'champId': '113', 'label': '北地之怒', 'alias': 'Sejuani', 'title': '瑟庄妮'},
-  '114': {'champId': '114', 'label': '无双剑姬', 'alias': 'Fiora', 'title': '菲奥娜'},
-  '115': {'champId': '115', 'label': '爆破鬼才', 'alias': 'Ziggs', 'title': '吉格斯'},
-  '117': {'champId': '117', 'label': '仙灵女巫', 'alias': 'Lulu', 'title': '璐璐'},
-  '119': {'champId': '119', 'label': '荣耀行刑官', 'alias': 'Draven', 'title': '德莱文'},
-  '120': {'champId': '120', 'label': '战争之影', 'alias': 'Hecarim', 'title': '赫卡里姆'},
-  '121': {'champId': '121', 'label': '虚空掠夺者', 'alias': 'Khazix', 'title': '卡兹克'},
-  '122': {'champId': '122', 'label': '诺克萨斯之手', 'alias': 'Darius', 'title': '德莱厄斯'},
-  '126': {'champId': '126', 'label': '未来守护者', 'alias': 'Jayce', 'title': '杰斯'},
-  '127': {'champId': '127', 'label': '冰霜女巫', 'alias': 'Lissandra', 'title': '丽桑卓'},
-  '131': {'champId': '131', 'label': '皎月女神', 'alias': 'Diana', 'title': '黛安娜'},
-  '133': {'champId': '133', 'label': '德玛西亚之翼', 'alias': 'Quinn', 'title': '奎因'},
-  '134': {'champId': '134', 'label': '暗黑元首', 'alias': 'Syndra', 'title': '辛德拉'},
-  '136': {'champId': '136', 'label': '铸星龙王', 'alias': 'AurelionSol', 'title': '奥瑞利安索尔'},
-  '141': {'champId': '141', 'label': '影流之镰', 'alias': 'Kayn', 'title': '凯隐'},
-  '142': {'champId': '142', 'label': '暮光星灵', 'alias': 'Zoe', 'title': '佐伊'},
-  '143': {'champId': '143', 'label': '荆棘之兴', 'alias': 'Zyra', 'title': '婕拉'},
-  '145': {'champId': '145', 'label': '虚空之女', 'alias': 'Kaisa', 'title': '卡莎'},
-  '147': {'champId': '147', 'label': '星籁歌姬', 'alias': 'Seraphine', 'title': '萨勒芬妮'},
-  '150': {'champId': '150', 'label': '迷失之牙', 'alias': 'Gnar', 'title': '纳尔'},
-  '154': {'champId': '154', 'label': '生化魔人', 'alias': 'Zac', 'title': '扎克'},
-  '157': {'champId': '157', 'label': '疾风剑豪', 'alias': 'Yasuo', 'title': '亚索'},
-  '161': {'champId': '161', 'label': '虚空之眼', 'alias': 'Velkoz', 'title': '维克兹'},
-  '163': {'champId': '163', 'label': '岩雀', 'alias': 'Taliyah', 'title': '塔莉垭'},
-  '164': {'champId': '164', 'label': '青钢影', 'alias': 'Camille', 'title': '卡蜜尔'},
-  '166': {'champId': '166', 'label': '影哨', 'alias': 'Akshan', 'title': '阿克尚'},
-  '200': {'champId': '200', 'label': '虚空女皇', 'alias': 'Belveth', 'title': '卑尔维斯'},
-  '201': {'champId': '201', 'label': '弗雷尔卓德之心', 'alias': 'Braum', 'title': '布隆'},
-  '202': {'champId': '202', 'label': '戏命师', 'alias': 'Jhin', 'title': '烬'},
-  '203': {'champId': '203', 'label': '永猎双子', 'alias': 'Kindred', 'title': '千珏'},
-  '221': {'champId': '221', 'label': '祖安花火', 'alias': 'Zeri', 'title': '泽丽'},
-  '222': {'champId': '222', 'label': '暴走萝莉', 'alias': 'Jinx', 'title': '金克丝'},
-  '223': {'champId': '223', 'label': '河流之王', 'alias': 'TahmKench', 'title': '塔姆'},
-  '234': {'champId': '234', 'label': '破败之王', 'alias': 'Viego', 'title': '佛耶戈'},
-  '235': {'champId': '235', 'label': '涤魂圣枪', 'alias': 'Senna', 'title': '赛娜'},
-  '236': {'champId': '236', 'label': '圣枪游侠', 'alias': 'Lucian', 'title': '卢锡安'},
-  '238': {'champId': '238', 'label': '影流之主', 'alias': 'Zed', 'title': '劫'},
-  '240': {'champId': '240', 'label': '暴怒骑士', 'alias': 'Kled', 'title': '克烈'},
-  '245': {'champId': '245', 'label': '时间刺客', 'alias': 'Ekko', 'title': '艾克'},
-  '246': {'champId': '246', 'label': '元素女皇', 'alias': 'Qiyana', 'title': '奇亚娜'},
-  '254': {'champId': '254', 'label': '皮城执法官', 'alias': 'Vi', 'title': '蔚'},
-  '266': {'champId': '266', 'label': '暗裔剑魔', 'alias': 'Aatrox', 'title': '亚托克斯'},
-  '267': {'champId': '267', 'label': '唤潮鲛姬', 'alias': 'Nami', 'title': '娜美'},
-  '268': {'champId': '268', 'label': '沙漠皇帝', 'alias': 'Azir', 'title': '阿兹尔'},
-  '350': {'champId': '350', 'label': '魔法猫咪', 'alias': 'Yuumi', 'title': '悠米'},
-  '360': {'champId': '360', 'label': '沙漠玫瑰', 'alias': 'Samira', 'title': '莎弥拉'},
-  '412': {'champId': '412', 'label': '魂锁典狱长', 'alias': 'Thresh', 'title': '锤石'},
-  '420': {'champId': '420', 'label': '海兽祭司', 'alias': 'Illaoi', 'title': '俄洛伊'},
-  '421': {'champId': '421', 'label': '虚空遁地兽', 'alias': 'RekSai', 'title': '雷克塞'},
-  '427': {'champId': '427', 'label': '翠神', 'alias': 'Ivern', 'title': '艾翁'},
-  '429': {'champId': '429', 'label': '复仇之矛', 'alias': 'Kalista', 'title': '卡莉丝塔'},
-  '432': {'champId': '432', 'label': '星界游神', 'alias': 'Bard', 'title': '巴德'},
-  '497': {'champId': '497', 'label': '幻翎', 'alias': 'Rakan', 'title': '洛'},
-  '498': {'champId': '498', 'label': '逆羽', 'alias': 'Xayah', 'title': '霞'},
-  '516': {'champId': '516', 'label': '山隐之焰', 'alias': 'Ornn', 'title': '奥恩'},
-  '517': {'champId': '517', 'label': '解脱者', 'alias': 'Sylas', 'title': '塞拉斯'},
-  '518': {'champId': '518', 'label': '万花通灵', 'alias': 'Neeko', 'title': '妮蔻'},
-  '523': {'champId': '523', 'label': '残月之肃', 'alias': 'Aphelios', 'title': '厄斐琉斯'},
-  '526': {'champId': '526', 'label': '镕铁少女', 'alias': 'Rell', 'title': '芮尔'},
-  '555': {'champId': '555', 'label': '血港鬼影', 'alias': 'Pyke', 'title': '派克'},
-  '711': {'champId': '711', 'label': '愁云使者', 'alias': 'Vex', 'title': '薇古丝'},
-  '777': {'champId': '777', 'label': '封魔剑魂', 'alias': 'Yone', 'title': '永恩'},
-  '875': {'champId': '875', 'label': '腕豪', 'alias': 'Sett', 'title': '瑟提'},
-  '876': {'champId': '876', 'label': '含羞蓓蕾', 'alias': 'Lillia', 'title': '莉莉娅'},
-  '887': {'champId': '887', 'label': '灵罗娃娃', 'alias': 'Gwen', 'title': '格温'},
-  '888': {'champId': '888', 'label': '炼金男爵', 'alias': 'Renata', 'title': '烈娜塔 · 戈拉斯克'},
-  '895': {'champId': '895', 'label': '不羁之悦', 'alias': 'Nilah', 'title': '尼菈'},
-  '897': {'champId': '897', 'label': '纳祖芒荣耀', 'alias': 'KSante', 'title': '奎桑提'},
-  '902': {'champId': '902', 'label': '明烛', 'alias': 'Milio', 'title': '米利欧'},
-  '950': {'champId': '950', 'label': '百裂冥犬', 'alias': 'Naafiri', 'title': '纳亚菲利'},
-  '233': {'champId': '233', 'label': '狂厄蔷薇', 'alias': 'Briar', 'title': '贝蕾亚'},
-  '910': {'champId': '910', 'label': '异画师', 'alias': 'Hwei', 'title': '彗'}
+export const champDict:{ [key: string]: { label: string, alias: string, title: string,roles:string[] } }  = {
+  "1": {
+    "label": "黑暗之女",
+    "alias": "Annie",
+    "title": "安妮",
+    "roles": [
+      "mage"
+    ]
+  },
+  "2": {
+    "label": "狂战士",
+    "alias": "Olaf",
+    "title": "奥拉夫",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "3": {
+    "label": "正义巨像",
+    "alias": "Galio",
+    "title": "加里奥",
+    "roles": [
+      "tank",
+      "mage"
+    ]
+  },
+  "4": {
+    "label": "卡牌大师",
+    "alias": "TwistedFate",
+    "title": "崔斯特",
+    "roles": [
+      "mage"
+    ]
+  },
+  "5": {
+    "label": "德邦总管",
+    "alias": "XinZhao",
+    "title": "赵信",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "6": {
+    "label": "无畏战车",
+    "alias": "Urgot",
+    "title": "厄加特",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "7": {
+    "label": "诡术妖姬",
+    "alias": "Leblanc",
+    "title": "乐芙兰",
+    "roles": [
+      "assassin",
+      "mage"
+    ]
+  },
+  "8": {
+    "label": "猩红收割者",
+    "alias": "Vladimir",
+    "title": "弗拉基米尔",
+    "roles": [
+      "mage"
+    ]
+  },
+  "9": {
+    "label": "远古恐惧",
+    "alias": "Fiddlesticks",
+    "title": "费德提克",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "10": {
+    "label": "正义天使",
+    "alias": "Kayle",
+    "title": "凯尔",
+    "roles": [
+      "fighter",
+      "support"
+    ]
+  },
+  "11": {
+    "label": "无极剑圣",
+    "alias": "MasterYi",
+    "title": "易",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "12": {
+    "label": "牛头酋长",
+    "alias": "Alistar",
+    "title": "阿利斯塔",
+    "roles": [
+      "tank",
+      "support"
+    ]
+  },
+  "13": {
+    "label": "符文法师",
+    "alias": "Ryze",
+    "title": "瑞兹",
+    "roles": [
+      "mage",
+      "fighter"
+    ]
+  },
+  "14": {
+    "label": "亡灵战神",
+    "alias": "Sion",
+    "title": "赛恩",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "15": {
+    "label": "战争女神",
+    "alias": "Sivir",
+    "title": "希维尔",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "16": {
+    "label": "众星之子",
+    "alias": "Soraka",
+    "title": "索拉卡",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "17": {
+    "label": "迅捷斥候",
+    "alias": "Teemo",
+    "title": "提莫",
+    "roles": [
+      "marksman",
+      "assassin"
+    ]
+  },
+  "18": {
+    "label": "麦林炮手",
+    "alias": "Tristana",
+    "title": "崔丝塔娜",
+    "roles": [
+      "marksman",
+      "assassin"
+    ]
+  },
+  "19": {
+    "label": "祖安怒兽",
+    "alias": "Warwick",
+    "title": "沃里克",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "20": {
+    "label": "雪原双子",
+    "alias": "Nunu",
+    "title": "努努和威朗普",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "21": {
+    "label": "赏金猎人",
+    "alias": "MissFortune",
+    "title": "厄运小姐",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "22": {
+    "label": "寒冰射手",
+    "alias": "Ashe",
+    "title": "艾希",
+    "roles": [
+      "marksman",
+      "support"
+    ]
+  },
+  "23": {
+    "label": "蛮族之王",
+    "alias": "Tryndamere",
+    "title": "泰达米尔",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "24": {
+    "label": "武器大师",
+    "alias": "Jax",
+    "title": "贾克斯",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "25": {
+    "label": "堕落天使",
+    "alias": "Morgana",
+    "title": "莫甘娜",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "26": {
+    "label": "时光守护者",
+    "alias": "Zilean",
+    "title": "基兰",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "27": {
+    "label": "炼金术士",
+    "alias": "Singed",
+    "title": "辛吉德",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "28": {
+    "label": "痛苦之拥",
+    "alias": "Evelynn",
+    "title": "伊芙琳",
+    "roles": [
+      "assassin",
+      "mage"
+    ]
+  },
+  "29": {
+    "label": "瘟疫之源",
+    "alias": "Twitch",
+    "title": "图奇",
+    "roles": [
+      "marksman",
+      "assassin"
+    ]
+  },
+  "30": {
+    "label": "死亡颂唱者",
+    "alias": "Karthus",
+    "title": "卡尔萨斯",
+    "roles": [
+      "mage"
+    ]
+  },
+  "31": {
+    "label": "虚空恐惧",
+    "alias": "Chogath",
+    "title": "科加斯",
+    "roles": [
+      "tank",
+      "mage"
+    ]
+  },
+  "32": {
+    "label": "殇之木乃伊",
+    "alias": "Amumu",
+    "title": "阿木木",
+    "roles": [
+      "tank",
+      "mage"
+    ]
+  },
+  "33": {
+    "label": "披甲龙龟",
+    "alias": "Rammus",
+    "title": "拉莫斯",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "34": {
+    "label": "冰晶凤凰",
+    "alias": "Anivia",
+    "title": "艾尼维亚",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "35": {
+    "label": "恶魔小丑",
+    "alias": "Shaco",
+    "title": "萨科",
+    "roles": [
+      "assassin"
+    ]
+  },
+  "36": {
+    "label": "祖安狂人",
+    "alias": "DrMundo",
+    "title": "蒙多医生",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "37": {
+    "label": "琴瑟仙女",
+    "alias": "Sona",
+    "title": "娑娜",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "38": {
+    "label": "虚空行者",
+    "alias": "Kassadin",
+    "title": "卡萨丁",
+    "roles": [
+      "assassin",
+      "mage"
+    ]
+  },
+  "39": {
+    "label": "刀锋舞者",
+    "alias": "Irelia",
+    "title": "艾瑞莉娅",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "40": {
+    "label": "风暴之怒",
+    "alias": "Janna",
+    "title": "迦娜",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "41": {
+    "label": "海洋之灾",
+    "alias": "Gangplank",
+    "title": "普朗克",
+    "roles": [
+      "fighter"
+    ]
+  },
+  "42": {
+    "label": "英勇投弹手",
+    "alias": "Corki",
+    "title": "库奇",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "43": {
+    "label": "天启者",
+    "alias": "Karma",
+    "title": "卡尔玛",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "44": {
+    "label": "瓦洛兰之盾",
+    "alias": "Taric",
+    "title": "塔里克",
+    "roles": [
+      "support",
+      "fighter"
+    ]
+  },
+  "45": {
+    "label": "邪恶小法师",
+    "alias": "Veigar",
+    "title": "维迦",
+    "roles": [
+      "mage"
+    ]
+  },
+  "48": {
+    "label": "巨魔之王",
+    "alias": "Trundle",
+    "title": "特朗德尔",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "50": {
+    "label": "诺克萨斯统领",
+    "alias": "Swain",
+    "title": "斯维因",
+    "roles": [
+      "mage",
+      "fighter"
+    ]
+  },
+  "51": {
+    "label": "皮城女警",
+    "alias": "Caitlyn",
+    "title": "凯特琳",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "53": {
+    "label": "蒸汽机器人",
+    "alias": "Blitzcrank",
+    "title": "布里茨",
+    "roles": [
+      "tank",
+      "fighter",
+      "support"
+    ]
+  },
+  "54": {
+    "label": "熔岩巨兽",
+    "alias": "Malphite",
+    "title": "墨菲特",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "55": {
+    "label": "不祥之刃",
+    "alias": "Katarina",
+    "title": "卡特琳娜",
+    "roles": [
+      "assassin",
+      "mage"
+    ]
+  },
+  "56": {
+    "label": "永恒梦魇",
+    "alias": "Nocturne",
+    "title": "魔腾",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "57": {
+    "label": "扭曲树精",
+    "alias": "Maokai",
+    "title": "茂凯",
+    "roles": [
+      "tank",
+      "mage"
+    ]
+  },
+  "58": {
+    "label": "荒漠屠夫",
+    "alias": "Renekton",
+    "title": "雷克顿",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "59": {
+    "label": "德玛西亚皇子",
+    "alias": "JarvanIV",
+    "title": "嘉文四世",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "60": {
+    "label": "蜘蛛女皇",
+    "alias": "Elise",
+    "title": "伊莉丝",
+    "roles": [
+      "mage",
+      "fighter"
+    ]
+  },
+  "61": {
+    "label": "发条魔灵",
+    "alias": "Orianna",
+    "title": "奥莉安娜",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "62": {
+    "label": "齐天大圣",
+    "alias": "MonkeyKing",
+    "title": "孙悟空",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "63": {
+    "label": "复仇焰魂",
+    "alias": "Brand",
+    "title": "布兰德",
+    "roles": [
+      "mage"
+    ]
+  },
+  "64": {
+    "label": "盲僧",
+    "alias": "LeeSin",
+    "title": "李青",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "67": {
+    "label": "暗夜猎手",
+    "alias": "Vayne",
+    "title": "薇恩",
+    "roles": [
+      "marksman",
+      "assassin"
+    ]
+  },
+  "68": {
+    "label": "机械公敌",
+    "alias": "Rumble",
+    "title": "兰博",
+    "roles": [
+      "fighter",
+      "mage"
+    ]
+  },
+  "69": {
+    "label": "魔蛇之拥",
+    "alias": "Cassiopeia",
+    "title": "卡西奥佩娅",
+    "roles": [
+      "mage"
+    ]
+  },
+  "72": {
+    "label": "水晶先锋",
+    "alias": "Skarner",
+    "title": "斯卡纳",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "74": {
+    "label": "大发明家",
+    "alias": "Heimerdinger",
+    "title": "黑默丁格",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "75": {
+    "label": "沙漠死神",
+    "alias": "Nasus",
+    "title": "内瑟斯",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "76": {
+    "label": "狂野女猎手",
+    "alias": "Nidalee",
+    "title": "奈德丽",
+    "roles": [
+      "assassin",
+      "mage"
+    ]
+  },
+  "77": {
+    "label": "兽灵行者",
+    "alias": "Udyr",
+    "title": "乌迪尔",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "78": {
+    "label": "圣锤之毅",
+    "alias": "Poppy",
+    "title": "波比",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "79": {
+    "label": "酒桶",
+    "alias": "Gragas",
+    "title": "古拉加斯",
+    "roles": [
+      "fighter",
+      "mage"
+    ]
+  },
+  "80": {
+    "label": "不屈之枪",
+    "alias": "Pantheon",
+    "title": "潘森",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "81": {
+    "label": "探险家",
+    "alias": "Ezreal",
+    "title": "伊泽瑞尔",
+    "roles": [
+      "marksman",
+      "mage"
+    ]
+  },
+  "82": {
+    "label": "铁铠冥魂",
+    "alias": "Mordekaiser",
+    "title": "莫德凯撒",
+    "roles": [
+      "fighter"
+    ]
+  },
+  "83": {
+    "label": "牧魂人",
+    "alias": "Yorick",
+    "title": "约里克",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "84": {
+    "label": "离群之刺",
+    "alias": "Akali",
+    "title": "阿卡丽",
+    "roles": [
+      "assassin"
+    ]
+  },
+  "85": {
+    "label": "狂暴之心",
+    "alias": "Kennen",
+    "title": "凯南",
+    "roles": [
+      "mage",
+      "marksman"
+    ]
+  },
+  "86": {
+    "label": "德玛西亚之力",
+    "alias": "Garen",
+    "title": "盖伦",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "89": {
+    "label": "曙光女神",
+    "alias": "Leona",
+    "title": "蕾欧娜",
+    "roles": [
+      "tank",
+      "support"
+    ]
+  },
+  "90": {
+    "label": "虚空先知",
+    "alias": "Malzahar",
+    "title": "玛尔扎哈",
+    "roles": [
+      "mage",
+      "assassin"
+    ]
+  },
+  "91": {
+    "label": "刀锋之影",
+    "alias": "Talon",
+    "title": "泰隆",
+    "roles": [
+      "assassin"
+    ]
+  },
+  "92": {
+    "label": "放逐之刃",
+    "alias": "Riven",
+    "title": "锐雯",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "96": {
+    "label": "深渊巨口",
+    "alias": "KogMaw",
+    "title": "克格莫",
+    "roles": [
+      "marksman",
+      "mage"
+    ]
+  },
+  "98": {
+    "label": "暮光之眼",
+    "alias": "Shen",
+    "title": "慎",
+    "roles": [
+      "tank"
+    ]
+  },
+  "99": {
+    "label": "光辉女郎",
+    "alias": "Lux",
+    "title": "拉克丝",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "101": {
+    "label": "远古巫灵",
+    "alias": "Xerath",
+    "title": "泽拉斯",
+    "roles": [
+      "mage"
+    ]
+  },
+  "102": {
+    "label": "龙血武姬",
+    "alias": "Shyvana",
+    "title": "希瓦娜",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "103": {
+    "label": "九尾妖狐",
+    "alias": "Ahri",
+    "title": "阿狸",
+    "roles": [
+      "mage",
+      "assassin"
+    ]
+  },
+  "104": {
+    "label": "法外狂徒",
+    "alias": "Graves",
+    "title": "格雷福斯",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "105": {
+    "label": "潮汐海灵",
+    "alias": "Fizz",
+    "title": "菲兹",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "106": {
+    "label": "不灭狂雷",
+    "alias": "Volibear",
+    "title": "沃利贝尔",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "107": {
+    "label": "傲之追猎者",
+    "alias": "Rengar",
+    "title": "雷恩加尔",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "110": {
+    "label": "惩戒之箭",
+    "alias": "Varus",
+    "title": "韦鲁斯",
+    "roles": [
+      "marksman",
+      "mage"
+    ]
+  },
+  "111": {
+    "label": "深海泰坦",
+    "alias": "Nautilus",
+    "title": "诺提勒斯",
+    "roles": [
+      "tank",
+      "support"
+    ]
+  },
+  "112": {
+    "label": "机械先驱",
+    "alias": "Viktor",
+    "title": "维克托",
+    "roles": [
+      "mage"
+    ]
+  },
+  "113": {
+    "label": "北地之怒",
+    "alias": "Sejuani",
+    "title": "瑟庄妮",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "114": {
+    "label": "无双剑姬",
+    "alias": "Fiora",
+    "title": "菲奥娜",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "115": {
+    "label": "爆破鬼才",
+    "alias": "Ziggs",
+    "title": "吉格斯",
+    "roles": [
+      "mage"
+    ]
+  },
+  "117": {
+    "label": "仙灵女巫",
+    "alias": "Lulu",
+    "title": "璐璐",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "119": {
+    "label": "荣耀行刑官",
+    "alias": "Draven",
+    "title": "德莱文",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "120": {
+    "label": "战争之影",
+    "alias": "Hecarim",
+    "title": "赫卡里姆",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "121": {
+    "label": "虚空掠夺者",
+    "alias": "Khazix",
+    "title": "卡兹克",
+    "roles": [
+      "assassin"
+    ]
+  },
+  "122": {
+    "label": "诺克萨斯之手",
+    "alias": "Darius",
+    "title": "德莱厄斯",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "126": {
+    "label": "未来守护者",
+    "alias": "Jayce",
+    "title": "杰斯",
+    "roles": [
+      "fighter",
+      "marksman"
+    ]
+  },
+  "127": {
+    "label": "冰霜女巫",
+    "alias": "Lissandra",
+    "title": "丽桑卓",
+    "roles": [
+      "mage"
+    ]
+  },
+  "131": {
+    "label": "皎月女神",
+    "alias": "Diana",
+    "title": "黛安娜",
+    "roles": [
+      "fighter",
+      "mage"
+    ]
+  },
+  "133": {
+    "label": "德玛西亚之翼",
+    "alias": "Quinn",
+    "title": "奎因",
+    "roles": [
+      "marksman",
+      "assassin"
+    ]
+  },
+  "134": {
+    "label": "暗黑元首",
+    "alias": "Syndra",
+    "title": "辛德拉",
+    "roles": [
+      "mage"
+    ]
+  },
+  "136": {
+    "label": "铸星龙王",
+    "alias": "AurelionSol",
+    "title": "奥瑞利安索尔",
+    "roles": [
+      "mage"
+    ]
+  },
+  "141": {
+    "label": "影流之镰",
+    "alias": "Kayn",
+    "title": "凯隐",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "142": {
+    "label": "暮光星灵",
+    "alias": "Zoe",
+    "title": "佐伊",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "143": {
+    "label": "荆棘之兴",
+    "alias": "Zyra",
+    "title": "婕拉",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "145": {
+    "label": "虚空之女",
+    "alias": "Kaisa",
+    "title": "卡莎",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "147": {
+    "label": "星籁歌姬",
+    "alias": "Seraphine",
+    "title": "萨勒芬妮",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "150": {
+    "label": "迷失之牙",
+    "alias": "Gnar",
+    "title": "纳尔",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "154": {
+    "label": "生化魔人",
+    "alias": "Zac",
+    "title": "扎克",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "157": {
+    "label": "疾风剑豪",
+    "alias": "Yasuo",
+    "title": "亚索",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "161": {
+    "label": "虚空之眼",
+    "alias": "Velkoz",
+    "title": "维克兹",
+    "roles": [
+      "mage"
+    ]
+  },
+  "163": {
+    "label": "岩雀",
+    "alias": "Taliyah",
+    "title": "塔莉垭",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "164": {
+    "label": "青钢影",
+    "alias": "Camille",
+    "title": "卡蜜尔",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "166": {
+    "label": "影哨",
+    "alias": "Akshan",
+    "title": "阿克尚",
+    "roles": [
+      "marksman",
+      "assassin"
+    ]
+  },
+  "200": {
+    "label": "虚空女皇",
+    "alias": "Belveth",
+    "title": "卑尔维斯",
+    "roles": [
+      "fighter"
+    ]
+  },
+  "201": {
+    "label": "弗雷尔卓德之心",
+    "alias": "Braum",
+    "title": "布隆",
+    "roles": [
+      "support",
+      "tank"
+    ]
+  },
+  "202": {
+    "label": "戏命师",
+    "alias": "Jhin",
+    "title": "烬",
+    "roles": [
+      "marksman",
+      "mage"
+    ]
+  },
+  "203": {
+    "label": "永猎双子",
+    "alias": "Kindred",
+    "title": "千珏",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "221": {
+    "label": "祖安花火",
+    "alias": "Zeri",
+    "title": "泽丽",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "222": {
+    "label": "暴走萝莉",
+    "alias": "Jinx",
+    "title": "金克丝",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "223": {
+    "label": "河流之王",
+    "alias": "TahmKench",
+    "title": "塔姆",
+    "roles": [
+      "support",
+      "tank"
+    ]
+  },
+  "233": {
+    "label": "狂厄蔷薇",
+    "alias": "Briar",
+    "title": "贝蕾亚",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "234": {
+    "label": "破败之王",
+    "alias": "Viego",
+    "title": "佛耶戈",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "235": {
+    "label": "涤魂圣枪",
+    "alias": "Senna",
+    "title": "赛娜",
+    "roles": [
+      "marksman",
+      "support"
+    ]
+  },
+  "236": {
+    "label": "圣枪游侠",
+    "alias": "Lucian",
+    "title": "卢锡安",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "238": {
+    "label": "影流之主",
+    "alias": "Zed",
+    "title": "劫",
+    "roles": [
+      "assassin"
+    ]
+  },
+  "240": {
+    "label": "暴怒骑士",
+    "alias": "Kled",
+    "title": "克烈",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "245": {
+    "label": "时间刺客",
+    "alias": "Ekko",
+    "title": "艾克",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "246": {
+    "label": "元素女皇",
+    "alias": "Qiyana",
+    "title": "奇亚娜",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "254": {
+    "label": "皮城执法官",
+    "alias": "Vi",
+    "title": "蔚",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "266": {
+    "label": "暗裔剑魔",
+    "alias": "Aatrox",
+    "title": "亚托克斯",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "267": {
+    "label": "唤潮鲛姬",
+    "alias": "Nami",
+    "title": "娜美",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "268": {
+    "label": "沙漠皇帝",
+    "alias": "Azir",
+    "title": "阿兹尔",
+    "roles": [
+      "mage",
+      "marksman"
+    ]
+  },
+  "350": {
+    "label": "魔法猫咪",
+    "alias": "Yuumi",
+    "title": "悠米",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "360": {
+    "label": "沙漠玫瑰",
+    "alias": "Samira",
+    "title": "莎弥拉",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "412": {
+    "label": "魂锁典狱长",
+    "alias": "Thresh",
+    "title": "锤石",
+    "roles": [
+      "support",
+      "fighter"
+    ]
+  },
+  "420": {
+    "label": "海兽祭司",
+    "alias": "Illaoi",
+    "title": "俄洛伊",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "421": {
+    "label": "虚空遁地兽",
+    "alias": "RekSai",
+    "title": "雷克塞",
+    "roles": [
+      "fighter"
+    ]
+  },
+  "427": {
+    "label": "翠神",
+    "alias": "Ivern",
+    "title": "艾翁",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "429": {
+    "label": "复仇之矛",
+    "alias": "Kalista",
+    "title": "卡莉丝塔",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "432": {
+    "label": "星界游神",
+    "alias": "Bard",
+    "title": "巴德",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "497": {
+    "label": "幻翎",
+    "alias": "Rakan",
+    "title": "洛",
+    "roles": [
+      "support"
+    ]
+  },
+  "498": {
+    "label": "逆羽",
+    "alias": "Xayah",
+    "title": "霞",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "516": {
+    "label": "山隐之焰",
+    "alias": "Ornn",
+    "title": "奥恩",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "517": {
+    "label": "解脱者",
+    "alias": "Sylas",
+    "title": "塞拉斯",
+    "roles": [
+      "mage",
+      "assassin"
+    ]
+  },
+  "518": {
+    "label": "万花通灵",
+    "alias": "Neeko",
+    "title": "妮蔻",
+    "roles": [
+      "mage",
+      "support"
+    ]
+  },
+  "523": {
+    "label": "残月之肃",
+    "alias": "Aphelios",
+    "title": "厄斐琉斯",
+    "roles": [
+      "marksman"
+    ]
+  },
+  "526": {
+    "label": "镕铁少女",
+    "alias": "Rell",
+    "title": "芮尔",
+    "roles": [
+      "tank",
+      "support"
+    ]
+  },
+  "555": {
+    "label": "血港鬼影",
+    "alias": "Pyke",
+    "title": "派克",
+    "roles": [
+      "support",
+      "assassin"
+    ]
+  },
+  "711": {
+    "label": "愁云使者",
+    "alias": "Vex",
+    "title": "薇古丝",
+    "roles": [
+      "mage"
+    ]
+  },
+  "777": {
+    "label": "封魔剑魂",
+    "alias": "Yone",
+    "title": "永恩",
+    "roles": [
+      "assassin",
+      "fighter"
+    ]
+  },
+  "875": {
+    "label": "腕豪",
+    "alias": "Sett",
+    "title": "瑟提",
+    "roles": [
+      "fighter",
+      "tank"
+    ]
+  },
+  "876": {
+    "label": "含羞蓓蕾",
+    "alias": "Lillia",
+    "title": "莉莉娅",
+    "roles": [
+      "fighter",
+      "mage"
+    ]
+  },
+  "887": {
+    "label": "灵罗娃娃",
+    "alias": "Gwen",
+    "title": "格温",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "888": {
+    "label": "炼金男爵",
+    "alias": "Renata",
+    "title": "烈娜塔 · 戈拉斯克",
+    "roles": [
+      "support",
+      "mage"
+    ]
+  },
+  "895": {
+    "label": "不羁之悦",
+    "alias": "Nilah",
+    "title": "尼菈",
+    "roles": [
+      "fighter",
+      "assassin"
+    ]
+  },
+  "897": {
+    "label": "纳祖芒荣耀",
+    "alias": "KSante",
+    "title": "奎桑提",
+    "roles": [
+      "tank",
+      "fighter"
+    ]
+  },
+  "902": {
+    "label": "明烛",
+    "alias": "Milio",
+    "title": "米利欧",
+    "roles": [
+      "support"
+    ]
+  },
+  "910": {
+    "label": "异画师",
+    "alias": "Hwei",
+    "title": "彗",
+    "roles": [
+      "mage"
+    ]
+  },
+  "950": {
+    "label": "百裂冥犬",
+    "alias": "Naafiri",
+    "title": "纳亚菲利",
+    "roles": [
+      "assassin"
+    ]
+  }
 }
+
 export const optionsChampion: {label: string, key: string,disabled:boolean, children: {label: string, key: string}[]}[] =
   [{
     'label': '上单',

@@ -21,16 +21,33 @@ export interface SummonerInfoList {
   summonerId: string,
   puuid: string,
   profileIconId:number,
-  match:{
-    rank:string,
-    recentMatchList:SimpleMatchTypes[]
-  }
+  rank:string,
 }
 export interface SummonerDetailTypes {
   name:string,
-  summonerId:string,
   puuid:string
   rank:string,
   profileIconId:number,
-  matchList:SimpleMatchTypes[]
+  matchList:SimpleMatchTypes[],
+  recentData:RencentDataAnalysisTypes|null,
+}
+export interface CurrentSumInfoTypes {
+  name:string,
+  puuid:string
+  rank:string,
+  profileIconId:number,
+  index:number
+}
+export interface RoleCountMapTypes {
+  assassin: number;
+  fighter: number;
+  mage: number;
+  marksman: number;
+  support: number;
+  tank: number;
+}
+export interface RencentDataAnalysisTypes {
+  top3Champions: {champId: number; percentage: string; }[],
+  totalChampions:number,
+  roleCountMap:RoleCountMapTypes
 }

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import {NIcon, NSpace, NButton, NPopover,NPopconfirm,NDropdown} from 'naive-ui'
+import {NIcon, NSpace, NButton, NPopover, NPopconfirm, NDropdown, NDrawer} from 'naive-ui'
 import {CircleMinus, Settings, CircleX} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
 import {DashboardProps} from "./types";
+import Setting from "@/main/pages/assist/common/setting.vue";
+import ChampDetail from "@/main/pages/assist/views/rank/champDetail.vue";
 
 onMounted(() => {
   if (isSubscribe==='t'){
@@ -14,11 +16,11 @@ onMounted(() => {
   }
 })
 
-const {openSettingDrawer} = defineProps<DashboardProps>()
 
 const isSubscribe = localStorage.getItem('isSubscribe')
 const subInfo = ref('订阅服务')
 const isShowSub = ref(false)
+const isShowDrawer = ref(false)
 const subscribes = [
   {
     label: '订阅须知',
@@ -52,6 +54,8 @@ const handleSub = (key:number) => {
     cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
   }
 }
+
+
 </script>
 
 <template>
@@ -82,7 +86,7 @@ const handleSub = (key:number) => {
       </n-popover>
       <n-popover :show-arrow="false">
         <template #trigger>
-          <n-button text circle @click="openSettingDrawer">
+          <n-button text circle @click="isShowDrawer=true">
             <n-icon size="20">
               <settings/>
             </n-icon>
@@ -102,4 +106,14 @@ const handleSub = (key:number) => {
       </n-popconfirm>
     </n-space>
   </header>
+
+  <n-drawer
+    class="rounded-t-xl"
+    v-model:show="isShowDrawer"
+    :placement="'bottom'"
+    :auto-focus="true"
+    height="425"
+  >
+    <setting/>
+  </n-drawer>
 </template>

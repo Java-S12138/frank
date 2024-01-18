@@ -1,7 +1,7 @@
 import {isRevGames, queryMatchHistory} from "@/lcu/aboutMatch";
 import {Game, SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {champDict} from "@/resources/champList";
-import {getItemImgUrl, getspellImgUrl, querySummonerPosition} from "@/lcu/utils";
+import {querySummonerPosition} from "@/lcu/utils";
 
 export class QueryMatch {
   constructor(queueId: number) {
@@ -34,7 +34,8 @@ export class QueryMatch {
 
   public getSimpleMatch = (match: Game): SimpleMatchTypes => {
     return {
-      champImgUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(match.participants[0].championId)].alias}.png`,
+      champId:match.participants[0].championId,
+      champImgUrl: `${champDict[String(match.participants[0].championId)].alias}.png`,
       // 是否取得胜利
       isWin: match.participants[0].stats.win === true ? true : false,
       // 击杀数目
@@ -48,17 +49,15 @@ export class QueryMatch {
       // 游戏模式
       gameModel:this.queryGameType(match.queueId),
       // 召唤师技能1
-      spell1Id : getspellImgUrl(match.participants[0].spell1Id),
+      spell1Id : match.participants[0].spell1Id,
       // 召唤师技能2
-      spell2Id : getspellImgUrl(match.participants[0].spell2Id),
+      spell2Id : match.participants[0].spell2Id,
       // 物品
-      item0 :  getItemImgUrl(match.participants[0].stats.item0),
-      item1 :  getItemImgUrl(match.participants[0].stats.item1),
-      item2 :  getItemImgUrl(match.participants[0].stats.item2),
-      item3 :  getItemImgUrl(match.participants[0].stats.item3),
-      item4 :  getItemImgUrl(match.participants[0].stats.item4),
-      item5 :  getItemImgUrl(match.participants[0].stats.item5),
-      item6 :  getItemImgUrl(match.participants[0].stats.item6),
+      itemList:
+        [match.participants[0].stats.item0,match.participants[0].stats.item1,
+        match.participants[0].stats.item2,match.participants[0].stats.item3,
+        match.participants[0].stats.item4,match.participants[0].stats.item5,
+        match.participants[0].stats.item6],
       // 召唤师位置
       lane : querySummonerPosition(match.participants[0].timeline.lane),
       // 等级
@@ -101,11 +100,14 @@ export class QueryMatch {
     }
   }
   // return result
-  public getResultInfo = async (puuid: string) => {
+  public getResultInfo = async (puuid: string,index:number) => {
     const matchHis20 = await this.dealMatchHistory(puuid, 0, 19)
 
     if (this.currentMode === 420 || this.currentMode === 440) {
-      this.querySpecialMatch(puuid, matchHis20)
+      // 如果是单双|组排， 延迟异步获取缓存数据
+      setTimeout(() => {
+        this.querySpecialMatch(puuid, matchHis20)
+      },1500+500*index)
       return matchHis20
     }
     return matchHis20

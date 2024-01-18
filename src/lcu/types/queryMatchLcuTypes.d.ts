@@ -219,6 +219,7 @@ export interface MatchList {
 }
 
 export interface SimpleMatchTypes {
+  champId:number,
   champImgUrl: string;
   level: number;
   isWin: boolean;
@@ -227,15 +228,9 @@ export interface SimpleMatchTypes {
   assists: number;
   matchTime: string;
   gameModel: string;
-  spell1Id: string;
-  spell2Id: string;
-  item0: string;
-  item1: string;
-  item2: string;
-  item3: string;
-  item4: string;
-  item5: string;
-  item6: string;
+  spell1Id: number;
+  spell2Id: number;
+  itemList:number[];
   lane: string;
   queueId:number;
 }

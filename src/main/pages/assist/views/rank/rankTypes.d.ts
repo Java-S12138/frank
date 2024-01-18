@@ -8,3 +8,11 @@ export interface ChampInfo {
   appearance: string;
   champId: number;
 }
+
+export interface ChampDetailDrawer {
+  champId: number;
+  lane: string;
+  tier: number;
+  is101: boolean;
+  selectedList: string[];
+}

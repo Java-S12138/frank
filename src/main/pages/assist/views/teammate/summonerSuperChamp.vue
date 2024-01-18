@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NSpace,NScrollbar,NAvatar, NTag,NLayout, NLayoutSider} from 'naive-ui'
+import {NSpace,NScrollbar,NAvatar, NTag,NLayout, NLayoutSider,NResult} from 'naive-ui'
 import {onMounted, ref} from "vue";
 import {queryChampList} from "./utils";
 
@@ -39,4 +39,9 @@ onMounted(() => {
       </n-space>
     </div>
   </n-scrollbar>
+  <n-result v-else style="margin-top: 80px"
+            status="418" title="数据获取失败" description="生活总归带点荒谬">
+    <template #footer>
+    </template>
+  </n-result>
 </template>

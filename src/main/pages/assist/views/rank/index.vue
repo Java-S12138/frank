@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   NCard, NAvatar, NAutoComplete, NSpace, NSelect,
-  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton,SelectOption
+  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, SelectOption, NDrawer
 } from 'naive-ui'
 import './assistCommon.css'
 import {computed, onMounted, Ref, ref, h, VNodeChild, provide} from "vue";
@@ -12,13 +12,12 @@ import {
   krOptions,
   queryCNServe,
   queryKRServe,
-  getRestraintData, getPostion, getLacalDateStr
+  getPostion, getLacalDateStr
 } from "./utils";
 import {ConfigRank} from "@/background/utils/configTypes";
 import {ChampInfo} from "./rankTypes";
 import {aliasToId, champDict, keywordsList} from "@/resources/champList";
-import {useCommonStore} from "@/main/store/useCommon";
-import {useRankStore} from "@/main/store/useRank";
+import ChampDetail from "@/main/pages/assist/views/rank/champDetail.vue";
 
 onMounted(() => {
     queryChampRankData()
@@ -26,14 +25,18 @@ onMounted(() => {
 
 const configRank:ConfigRank = JSON.parse((localStorage.getItem('configRank')) as string)
 
-const commonStore = useCommonStore()
-const rankStore = useRankStore()
+const isShowDrawer = ref(false)
 const tier = ref(configRank.tier)
 const lane = ref(configRank.lane)
 const is101 = ref(configRank.is101)
 const isCheck = ref(1)
 const inputValue = ref('')
 const champSliceList:Ref<ChampInfo[]> = ref([])
+const currentChampDrawer:Ref<{champId:number,selectedList:string[]}> = ref({
+  champId: 0,
+  selectedList: [] as string[]
+})
+
 const message = useMessage()
 
 const handleTierSelect = (key: number) => {
@@ -169,17 +172,27 @@ const searchChampData = (alias:string) => {
 
   const resultChamp:ChampInfo|undefined = champSliceList.value.filter(item => item.champId === aliasToId[alias])[0]
   if (resultChamp){
-    openChampDrawer(resultChamp.champId,resultChamp.imgUrl,resultChamp.tLevel)
+    initDesDrawer(true,resultChamp.champId,resultChamp.imgUrl,resultChamp.tLevel)
   }else {
     message.warning('当前英雄在此位置不存在')
   }
 }
-// 打开英雄详细数据抽屉窗口
-const openChampDrawer = async (champId:number,imgUrl:string,level:string) => {
-  commonStore.showDrawer(444)
-  commonStore.changeContent('restraintList')
-  const selectedList:string[] = [imgUrl, champDict[champId].label +'•' + champDict[champId].title, level,String(champId)]
-  rankStore.initStore(champId,lane.value,tier.value,is101.value,selectedList)
+
+// 初始化或者清空抽屉数据 打开英雄详细数据抽屉窗口
+const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:string) => {
+  if (isInit){
+    isShowDrawer.value = true
+    // @ts-ignore
+    const selectedList:string[] = [imgUrl, champDict[champId].label +'•' + champDict[champId].title, level,String(champId)]
+    // @ts-ignore
+    currentChampDrawer.value ={
+      champId: champId,selectedList: selectedList,
+    }
+  }else {
+    currentChampDrawer.value = {
+      champId: 0, selectedList: []
+    }
+  }
 }
 
 </script>
@@ -211,7 +224,6 @@ const openChampDrawer = async (champId:number,imgUrl:string,level:string) => {
       </n-button>
     </n-space>
   </n-card>
-
   <n-card class="shadow " size="small" style="margin-top: 18px;" content-style="padding:0 12px 10px 12px;">
     <n-list>
       <template #header>
@@ -221,7 +233,7 @@ const openChampDrawer = async (champId:number,imgUrl:string,level:string) => {
               :clear-after-select="true"
               v-model:value="inputValue"
               @select="searchChampData"
-              :options="autoOptions"
+              :options="<{lable:string,value:string}[]>autoOptions"
               placeholder="请输入你想查询的英雄"
               :render-label="renderLabel"
               style="width: 161px;"
@@ -239,7 +251,7 @@ const openChampDrawer = async (champId:number,imgUrl:string,level:string) => {
           <div class="flex gap-x-3" >
             <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer">
               <n-avatar
-                @click="openChampDrawer(chapm.champId,chapm.imgUrl,chapm.tLevel)"
+                @click="initDesDrawer(true,chapm.champId,chapm.imgUrl,chapm.tLevel)"
                 :bordered="false"
                 :size="40"
                 lazy
@@ -267,5 +279,19 @@ const openChampDrawer = async (champId:number,imgUrl:string,level:string) => {
       </n-scrollbar>
     </n-list>
   </n-card>
+
+  <n-drawer
+    class="rounded-t-xl" v-model:show="isShowDrawer"
+    placement="bottom" :auto-focus="true" height="444"
+    @after-leave="initDesDrawer(false)"
+  >
+    <champ-detail
+      :champ-id="currentChampDrawer.champId"
+      :is101 = "is101"
+      :lane = "lane"
+      :tier = "tier"
+      :selected-list = "currentChampDrawer.selectedList"
+    />
+  </n-drawer>
 </template>
 

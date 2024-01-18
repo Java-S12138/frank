@@ -1,17 +1,27 @@
 <script setup lang="ts">
 import {NSpace,NScrollbar,NAvatar, NTag, NSkeleton,NLayout, NLayoutSider, NLayoutContent,} from 'naive-ui'
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
+import SummonerMatchLoad from "@/main/pages/assist/views/teammate/summonerMatchLoad.vue";
+import {getItemImgUrl, getspellImgUrl} from "@/lcu/utils";
+import {ref} from "vue";
 
 const {matchList} = defineProps<{
   matchList:SimpleMatchTypes[]
 }>()
+
+const isLoad = ref(true)
+setTimeout(() => {
+  if (matchList.length!==0){
+    isLoad.value = false
+  }
+},300)
+
 </script>
 
 <template>
-  <n-scrollbar v-if="matchList !== null" style="max-height: 378px;padding-right: 18px">
-    <div v-if="matchList?.length === 0">
-      <n-skeleton text :repeat="2" />
-      <n-skeleton text style="width: 60%" />
+  <n-scrollbar style="max-height: 378px;padding-right: 18px">
+    <div v-if="isLoad">
+      <summoner-match-load/>
     </div>
     <div v-else>
       <n-space vertical :size="[0,15]" style="margin-top: 3px">
@@ -20,25 +30,24 @@ const {matchList} = defineProps<{
             <div>
               <n-avatar
                 :size="50"
-                :src="match.champImgUrl"
+                :src="'https://game.gtimg.cn/images/lol/act/img/champion/'+match.champImgUrl"
                 style="display: block"
               />
               <div class="absolute bottom-0 right-0 flex gap-1">
-                <img class="h-4 rounded-sm"  :src="match.spell1Id">
-                <img class="h-4 rounded-sm" :src="match.spell2Id">
+                <img class="h-4 rounded-sm"  :src="getspellImgUrl(match.spell1Id)">
+                <img class="h-4 rounded-sm" :src="getspellImgUrl(match.spell2Id)">
               </div>
             </div>
           </n-layout-sider>
           <n-layout>
             <n-layout-content>
               <div class="flex justify-between">
-                <img class="imgItem" :src="match.item0">
-                <img class="imgItem" :src="match.item1">
-                <img class="imgItem" :src="match.item2">
-                <img class="imgItem" :src="match.item3">
-                <img class="imgItem" :src="match.item4">
-                <img class="imgItem" :src="match.item5">
-                <img class="imgItem" :src="match.item6">
+                <img
+                  class="imgItem"
+                  v-for="item in match.itemList"
+                  :src='getItemImgUrl(item)'
+                >
+
               </div>
             </n-layout-content >
             <n-layout-content style="margin-top: 7px;">

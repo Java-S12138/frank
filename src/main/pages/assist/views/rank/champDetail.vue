@@ -2,17 +2,18 @@
 import {invokeLcu} from "@/lcu";
 import {ref, Ref, onMounted} from "vue";
 import {NAvatar, NList, NScrollbar,NSkeleton,NListItem, NSpace, NTag, useMessage, NDrawerContent} from "naive-ui";
-import {useRankStore} from "@/main/store/useRank";
-import {getRestraintData} from "@/main/pages/assist/views/rank/utils";
+import {getRestraintData} from "./utils";
+import {ChampDetailDrawer} from "./rankTypes";
+
+const {champId,lane,tier,is101,selectedList} = defineProps<ChampDetailDrawer>()
 
 const message = useMessage()
-const rankStore = useRankStore()
 const isRestraint = ref(true)
 const restraintList:Ref<[string,string,number,number,number][]> = ref([])
 let preselectActionID:number|null = null
 
 onMounted(async () => {
-  const res = await getRestraintData(rankStore.champId,rankStore.lane,rankStore.tier,rankStore.is101)
+  const res = await getRestraintData(champId,lane,tier,is101)
   if (res!==null){
     restraintList.value = res
   }else {
@@ -88,13 +89,13 @@ const changeRes = () => {
               round
               :bordered="false"
               :size="48"
-              @click="preselectChamp(Number(rankStore.selectedList[3]))"
-              :src=rankStore.selectedList[0]
+              @click="preselectChamp(Number(selectedList[3]))"
+              :src=selectedList[0]
               fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
             />
           <div class="flex-grow">
             <n-space vertical :size=[0,2]>
-              <text>{{ rankStore.selectedList[1] }}</text>
+              <text>{{ selectedList[1] }}</text>
               <n-space justify="space-between">
                 <text style="color: #d03050;cursor: pointer;font-size: 13px" @click=changeRes v-if="isRestraint">劣势对线</text>
                 <text style="color: #18a058;cursor: pointer;font-size: 13px" @click=changeRes v-else>优势对线</text>
@@ -103,7 +104,7 @@ const changeRes = () => {
             </n-space>
           </div>
           <div class="absolute top-3" style="right: 22px"
-               :class="'imgT'+rankStore.selectedList[2]"></div>
+               :class="'imgT'+selectedList[2]"></div>
         </div>
       </template>
       <n-list-item v-if="restraintList.length===0"
