@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import {NSpace,NScrollbar,NAvatar, NTag,NLayout, NLayoutSider,NResult} from 'naive-ui'
 import {onMounted, ref} from "vue";
-import {queryChampList} from "./utils";
+import {queryMasteryChampList} from "./utils";
 
-const {puuid} = defineProps<{puuid:string}>()
+const {puuid,existChampList} = defineProps<{puuid:string,existChampList:string[][]|undefined}>()
 const champList:any = ref([])
 
 onMounted(() => {
-  queryChampList(puuid).then((value) => {
-    if (value ===null){
-      champList.value = null
-    }else {
-      champList.value = value
-    }
-  })
+  if (existChampList!==undefined){
+    champList.value = existChampList
+  }else {
+    queryMasteryChampList(puuid).then((value) => {
+      if (value ===null){
+        champList.value = null
+      }else {
+        champList.value = value
+      }
+    })
+  }
 })
 </script>
 

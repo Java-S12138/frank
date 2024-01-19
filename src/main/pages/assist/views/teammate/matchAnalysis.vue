@@ -4,7 +4,7 @@ import {Crown,Planet,Bulb} from "@vicons/tabler"
 import {RencentDataAnalysisTypes} from "./teammateTypes";
 import {champDict} from "@/resources/champList";
 
-const {analysisData} = defineProps<{analysisData:RencentDataAnalysisTypes|null}>()
+const {analysisData} = defineProps<{analysisData:RencentDataAnalysisTypes}>()
 
 const colorGreen = {
   color:'#18A058',
@@ -60,7 +60,7 @@ const getPercent = (num:number,total:number) => {
 </script>
 
 <template>
-  <div class="pl-0.5" v-if="analysisData" >
+  <div class="pl-0.5">
     <n-steps  size="small" vertical>
       <n-step
         style="margin: 4px 0"
@@ -126,10 +126,5 @@ const getPercent = (num:number,total:number) => {
       </n-step>
     </n-steps>
   </div>
-  <n-result v-else style="margin-top: 80px"
-            status="418" title="数据获取失败" description="生活总归带点荒谬">
-    <template #footer>
-    </template>
-  </n-result>
 </template>
 

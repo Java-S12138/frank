@@ -1,6 +1,12 @@
 import {invokeLcu} from "@/lcu";
 import {lcuSummonerInfo} from "@/lcu/types/SummonerTypes";
-import {MyTeamObject, RencentDataAnalysisTypes, RoleCountMapTypes, SummonerInfoList} from "./teammateTypes";
+import {
+  ChampionMasteryTypes,
+  MyTeamObject,
+  RencentDataAnalysisTypes,
+  RoleCountMapTypes,
+  SummonerInfoList
+} from "./teammateTypes";
 import {test} from "./test";
 import {dealDivsion, englishToChinese} from "@/lcu/utils";
 import {champDict} from "@/resources/champList";
@@ -13,8 +19,8 @@ const querySummonerInfo = async (summonerId: number | string): Promise<lcuSummon
 
 // 获取选择英雄时 获取所以友方召唤师ID /lol-champ-select/v1/session 的值
 export const queryAllSummonerId = async () => {
-  // const mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
-  const mactchSession = test
+  const mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
+  // const mactchSession = test
   const myTeam: MyTeamObject[] = mactchSession?.myTeam
   let summonerIdList: number[] = []
   if (myTeam) {
@@ -63,13 +69,13 @@ export const queryFriendInfo = async (): Promise<SummonerInfoList[]> => {
   return summonerInfoList
 }
 
-export const queryChampList = async (summonerPuuid: string) => {
+export const queryMasteryChampList = async (summonerPuuid: string) => {
   if (summonerPuuid === '') {
     return null
   }
   try {
-    const summonerSuperChampData: any = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
-    return summonerSuperChampData.slice(0, 20).reduce((res: any, item: any) => {
+    const summonerSuperChampData: ChampionMasteryTypes[] = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
+    return summonerSuperChampData.slice(0, 20).reduce((res: string[][], item: ChampionMasteryTypes) => {
       return res.concat([[
         `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
         `${champDict[String(item.championId)].label}•${champDict[String(item.championId)].title}`,
@@ -81,8 +87,8 @@ export const queryChampList = async (summonerPuuid: string) => {
   }
 }
 
-export const findTopChamp = (match: SimpleMatchTypes[]): RencentDataAnalysisTypes | null => {
-  if (match.length === 0) {
+export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAnalysisTypes | null => {
+  if (match===undefined) {
     return null
   }
 

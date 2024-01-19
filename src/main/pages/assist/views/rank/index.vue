@@ -18,9 +18,10 @@ import {ConfigRank} from "@/background/utils/configTypes";
 import {ChampInfo} from "./rankTypes";
 import {aliasToId, champDict, keywordsList} from "@/resources/champList";
 import ChampDetail from "@/main/pages/assist/views/rank/champDetail.vue";
+import ChampListLoad from "@/main/pages/assist/views/rank/champListLoad.vue";
 
 onMounted(() => {
-    queryChampRankData()
+  queryChampRankData()
 })
 
 const configRank:ConfigRank = JSON.parse((localStorage.getItem('configRank')) as string)
@@ -247,7 +248,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
           </div>
       </template>
       <n-scrollbar style="max-height: 431.5px;padding-right: 13px">
-        <n-list-item v-for="chapm in champSliceList">
+        <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
           <div class="flex gap-x-3" >
             <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer">
               <n-avatar
@@ -276,6 +277,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
             <div class="absolute right-0 top-3" :class="'imgT'+chapm.tLevel"></div>
           </div>
         </n-list-item>
+        <champ-list-load v-else/>
       </n-scrollbar>
     </n-list>
   </n-card>

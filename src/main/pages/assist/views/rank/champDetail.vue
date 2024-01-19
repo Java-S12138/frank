@@ -79,7 +79,7 @@ const changeRes = () => {
 </script>
 
 <template>
-  <n-drawer-content body-content-style="padding:0 22px">
+  <n-drawer-content body-content-style="padding:0 21px">
     <n-list>
       <template #header>
         <div class="flex h-12 gap-x-3">
@@ -103,7 +103,7 @@ const changeRes = () => {
               </n-space>
             </n-space>
           </div>
-          <div class="absolute top-3" style="right: 22px"
+          <div class="absolute top-3" style="right: 20px"
                :class="'imgT'+selectedList[2]"></div>
         </div>
       </template>
@@ -117,7 +117,7 @@ const changeRes = () => {
           </n-space>
         </n-space>
       </n-list-item>
-      <n-scrollbar style="max-height: 350px;padding-right: 18px" v-else>
+      <n-scrollbar style="max-height: 350px;padding-right: 17px" v-else>
         <n-list-item v-for="champRes in restraintList">
           <div class="flex gap-x-3">
             <n-avatar

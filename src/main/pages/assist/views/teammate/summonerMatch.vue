@@ -1,34 +1,37 @@
 <script setup lang="ts">
-import {NSpace,NScrollbar,NAvatar, NTag, NSkeleton,NLayout, NLayoutSider, NLayoutContent,} from 'naive-ui'
+import {NSpace, NScrollbar, NAvatar, NTag, NSkeleton, NLayout, NLayoutSider, NLayoutContent, NResult,} from 'naive-ui'
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import SummonerMatchLoad from "@/main/pages/assist/views/teammate/summonerMatchLoad.vue";
 import {getItemImgUrl, getspellImgUrl} from "@/lcu/utils";
 import {ref} from "vue";
 
 const {matchList} = defineProps<{
-  matchList:SimpleMatchTypes[]
+  matchList:SimpleMatchTypes[]|undefined
 }>()
 
-const isLoad = ref(true)
+const isLoad = ref(0)
 setTimeout(() => {
-  if (matchList.length!==0){
-    isLoad.value = false
+  if (matchList!==undefined){
+    isLoad.value = 1 // 数据正确
+  }else {
+    isLoad.value = 2 // 数据错误
   }
-},300)
+},500)
 
 </script>
 
 <template>
   <n-scrollbar style="max-height: 378px;padding-right: 18px">
-    <div v-if="isLoad">
+    <div v-if="isLoad===0">
       <summoner-match-load/>
     </div>
-    <div v-else>
+    <div v-else-if="isLoad===1">
       <n-space vertical :size="[0,15]" style="margin-top: 3px">
         <n-layout v-for="match in matchList" style="height: 50px" has-sider>
           <n-layout-sider width="50"  style="margin-right: 8px;">
             <div>
               <n-avatar
+                lazy
                 :size="50"
                 :src="'https://game.gtimg.cn/images/lol/act/img/champion/'+match.champImgUrl"
                 style="display: block"
@@ -42,12 +45,12 @@ setTimeout(() => {
           <n-layout>
             <n-layout-content>
               <div class="flex justify-between">
-                <img
+                <n-avatar
+                  lazy
                   class="imgItem"
                   v-for="item in match.itemList"
                   :src='getItemImgUrl(item)'
-                >
-
+                />
               </div>
             </n-layout-content >
             <n-layout-content style="margin-top: 7px;">
@@ -68,5 +71,11 @@ setTimeout(() => {
         </n-layout>
       </n-space>
     </div>
+    <n-result v-else style="margin-top: 65px"
+              status="418" title="数据获取失败" description="或许与英雄联盟服务器有关">
+      <template #footer>
+        页面显示数据已替换为召唤师绝活英雄
+      </template>
+    </n-result>
   </n-scrollbar>
 </template>

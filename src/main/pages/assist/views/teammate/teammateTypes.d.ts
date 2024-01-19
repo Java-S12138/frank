@@ -1,5 +1,3 @@
-import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
-
 export interface MyTeamObject {
   assignedPosition: string;
   cellId: number;
@@ -16,28 +14,23 @@ export interface MyTeamObject {
   team: number;
   wardSkinId: number;
 }
+
 export interface SummonerInfoList {
   name: string,
   summonerId: string,
   puuid: string,
-  profileIconId:number,
-  rank:string,
+  profileIconId: number,
+  rank: string,
 }
-export interface SummonerDetailTypes {
-  name:string,
-  puuid:string
-  rank:string,
-  profileIconId:number,
-  matchList:SimpleMatchTypes[],
-  recentData:RencentDataAnalysisTypes|null,
-}
+
 export interface CurrentSumInfoTypes {
-  name:string,
-  puuid:string
-  rank:string,
-  profileIconId:number,
-  index:number
+  name: string,
+  puuid: string
+  rank: string,
+  profileIconId: number,
+  index: number
 }
+
 export interface RoleCountMapTypes {
   assassin: number;
   fighter: number;
@@ -46,8 +39,25 @@ export interface RoleCountMapTypes {
   support: number;
   tank: number;
 }
+
 export interface RencentDataAnalysisTypes {
-  top3Champions: {champId: number; percentage: string; }[],
-  totalChampions:number,
-  roleCountMap:RoleCountMapTypes
+  top3Champions: { champId: number; percentage: string; }[],
+  totalChampions: number,
+  roleCountMap: RoleCountMapTypes
+}
+
+export interface ChampionMasteryTypes {
+  championId: number;
+  championLevel: number;
+  championPoints: number;
+  championPointsSinceLastLevel: number;
+  championPointsUntilNextLevel: number;
+  chestGranted: boolean;
+  formattedChampionPoints: string;
+  formattedMasteryGoal: string;
+  highestGrade: string;
+  lastPlayTime: number;
+  playerId: number;
+  puuid: string;
+  tokensEarned: number;
 }

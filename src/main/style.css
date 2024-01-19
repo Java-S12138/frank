@@ -101,5 +101,10 @@ body {
     width: 25px;
     height: 25px;
     border-radius: 3px;
+    display: block;
 }
 
+.runeDivDash {
+    border-radius: 8px;
+    border: 1px dashed #dfdfdf;
+}

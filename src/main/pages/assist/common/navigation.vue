@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { NSpace, NIcon } from "naive-ui";
 import { SmartHome, Ghost, List, Notebook, Stack2 } from '@vicons/tabler';
-import { ref } from "vue";
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
-const curPos = ref(0)
+const {curPos,navigateToPage} = defineProps<{
+  curPos:number,
+  navigateToPage:(page:string,index:number) => void}>()
 const icons = [
   { icon: SmartHome, index: 0,route:'home' },
   { icon: List, index: 1,route:'rank' },
@@ -15,10 +14,6 @@ const icons = [
 ]
 const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
 
-const navigateToPage = (page:string,index:number) => {
-  curPos.value = index
-  router.push({name:page})
-}
 </script>
 
 <template>

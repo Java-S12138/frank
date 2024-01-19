@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {queryFriendInfo} from "./utils";
+import {queryFriendInfo, queryMasteryChampList} from "./utils";
 import {onMounted} from "vue";
 import {NSpace,NDivider,NTag,NCard} from 'naive-ui'
 import {QueryMatch} from "./queryMatch";
@@ -10,13 +10,25 @@ const teammateStore = useTeammateStore()
 
 onMounted(async () => {
   const useMatch = new QueryMatch(0)
-  const infoList = await queryFriendInfo()
 
-  teammateStore.summonerInfo = infoList
+  let showMateryChamp = false
 
-  for (const [index,summoner] of infoList.entries()) {
+  for (const [index,summoner] of teammateStore.summonerInfo.entries()) {
     const matchList = await useMatch.getResultInfo(summoner.puuid,index)
-    teammateStore.recentMatchList.push(matchList)
+
+    if (matchList.length === 0 || showMateryChamp){
+      showMateryChamp = true
+      const masteryList = await queryMasteryChampList(summoner.puuid)
+      if (masteryList !== null){
+        teammateStore.masteryChampList.push(masteryList)
+      }
+    }else {
+      teammateStore.recentMatchList.push(matchList)
+    }
+  }
+  // 查询最近战绩出错
+  if (showMateryChamp){
+    teammateStore.isLcuErr = true
   }
 })
 

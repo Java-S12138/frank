@@ -65,13 +65,23 @@ const getImgUrl = (profileIconId:number) => {
           </n-space>
         </div>
       </div>
-      <load-match v-if="teammateStore.recentMatchList[index] === undefined"/>
+      <div v-if="!teammateStore.isLcuErr">
+        <load-match v-if="teammateStore.recentMatchList[index] === undefined"/>
+        <n-space
+          v-else style="margin-top: 10px;height: 32px;" justify="space-between">
+          <n-avatar
+            v-for="img in teammateStore.recentMatchList[index].slice(0, 6)"
+            :size="32"
+            :src="'https://game.gtimg.cn/images/lol/act/img/champion/'+img.champImgUrl"
+          />
+        </n-space>
+      </div>
       <n-space
         v-else style="margin-top: 10px;height: 32px;" justify="space-between">
         <n-avatar
-          v-for="img in teammateStore.recentMatchList[index].slice(0, 6)"
+          v-for="img in teammateStore.masteryChampList[index].slice(0, 6)"
           :size="32"
-          :src="'https://game.gtimg.cn/images/lol/act/img/champion/'+img.champImgUrl"
+          :src="img[0]"
         />
       </n-space>
     </n-list-item>

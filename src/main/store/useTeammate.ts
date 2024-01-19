@@ -6,7 +6,9 @@ export const useTeammateStore = defineStore('useTeammate', {
   state: () => {
     return {
       summonerInfo: [] as SummonerInfoList[],
-      recentMatchList: [] as SimpleMatchTypes[][]
+      recentMatchList: [] as SimpleMatchTypes[][],
+      masteryChampList:[] as string[][][],
+      isLcuErr:false
     }
   },
   actions: {
