@@ -72,7 +72,7 @@ setTimeout(() => {
       </n-space>
     </div>
     <n-result v-else style="margin-top: 65px"
-              status="418" title="数据获取失败" description="或许与英雄联盟服务器有关">
+              status="418" title="数据获取失败" description="或许 这与英雄联盟服务器有关">
       <template #footer>
         页面显示数据已替换为召唤师绝活英雄
       </template>

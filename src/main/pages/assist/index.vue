@@ -17,6 +17,7 @@ router.push({name:'home'})
 cube.windows.message.on('received',(id,content) => {
   switch (id) {
     case 'None':
+      teammateStore.clearStore()
       return changeState(id,'home',0)
     case 'ChampSelect':
       getFriInfo()

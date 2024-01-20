@@ -15,6 +15,8 @@ export const useTeammateStore = defineStore('useTeammate', {
     clearStore(){
       this.summonerInfo = []
       this.recentMatchList = []
+      this.masteryChampList = []
+      this.isLcuErr = false
     },
   }
 })
