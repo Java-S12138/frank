@@ -9,7 +9,6 @@ export const themeOverrides: GlobalThemeOverrides = {
     bodyPadding:'0.5rem 0.5rem'
   },
   Button:{
-    textColorGhostHover:'#4098fc',
     borderRadiusSmall:'0.25rem',
     borderRadiusMedium:'0.25rem',
     borderRadiusLarge:'0.25rem',
@@ -23,5 +22,11 @@ export const themeOverrides: GlobalThemeOverrides = {
   },
   Tag:{
     borderRadius:'0.25rem'
+  },
+  Dialog:{
+    iconSize:'25px',
+    titleFontSize:'16px',
+    borderRadius:'0.25rem',
+    padding:'12px',
   }
 }

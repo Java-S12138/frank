@@ -51,9 +51,3 @@ export interface OnlineRunes {
   runes: Rune[];
   skillsImg: string[];
 }
-
-export interface RuneEventType {
-  data: number;
-  eventType: string;
-  uri: string;
-}

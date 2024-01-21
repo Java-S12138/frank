@@ -2,6 +2,7 @@ import {defineStore} from 'pinia'
 import {champDict} from "@/resources/champList";
 import {isStoreageHas} from "@/lcu/utils";
 import {ItemBuild, Rune} from "@/main/pages/assist/views/rune/runeTypes";
+import {QueryRune} from "@/main/pages/assist/views/rune/queryRune";
 
 export const useRuneStore = defineStore('useRuneStore', {
   state: () => {
@@ -10,12 +11,10 @@ export const useRuneStore = defineStore('useRuneStore', {
       currentChampImgUrl: '',
       currentChampAlias: '',
       currentChampTitle: '',
+      isAutoRune: '',
       runeDataList: [] as Rune[],
       blockDataList: [] as {position:string,buildItems:ItemBuild,ps:string} [],
       skillsList: [] as string[][],
-      restraintActive: false,
-      isAutoRune: '',
-      isAppleAutoRune:false
     }
   },
   actions: {
@@ -27,21 +26,24 @@ export const useRuneStore = defineStore('useRuneStore', {
       this.isAutoRune = isStoreageHas('autoRune',this.currentChampAlias) == true ?
         'auto' : ''
     },
-    getSkillsImgUrl(skillsImg: any, skills: any) {
-      this.skillsList = []
-      for (let i = 0; i < skillsImg.length; i++) {
-        const skillImgUrl = `https://game.gtimg.cn/images/lol/act/img/spell/${skillsImg[i]}`
-        this.skillsList.push([skillImgUrl, skills[i]])
+    async initStore(champId: number){
+      this.mapChampInfo(champId)
+      const queryRune = new QueryRune(0)
+      const runesData = await queryRune.getRunesData(this.currentChampAlias)
+
+      if (runesData !== null){
+        this.skillsList = runesData.skillsList
+        this.runeDataList = runesData.runeDataList
+        this.blockDataList = runesData.blockDataList
+        return false
+      }else {
+        return true
       }
     },
-    resetStore() {
-      this.currentChamp = 0
+    clearStore() {
       this.runeDataList = []
       this.blockDataList = []
       this.skillsList = []
-      this.isAutoRune = ''
-      this.restraintActive = false
-      this.isAppleAutoRune = false
     }
   }
 })

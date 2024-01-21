@@ -9,9 +9,7 @@ export class GameFlow {
 
   // 给主窗口发生信息
   public sendMesToMain = async (id: string,content:string) => {
-    if (this.mainWin === null){
-      this.mainWin = await cube.windows.getWindowByName('main')
-    }
+    this.mainWin = this.mainWin || await cube.windows.getWindowByName('main')
     cube.windows.message.send(this.mainWin.id, id, content)
   }
 

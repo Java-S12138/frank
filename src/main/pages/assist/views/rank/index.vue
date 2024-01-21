@@ -19,6 +19,7 @@ import {ChampInfo} from "./rankTypes";
 import {aliasToId, champDict, keywordsList} from "@/resources/champList";
 import ChampDetail from "@/main/pages/assist/views/rank/champDetail.vue";
 import ChampListLoad from "@/main/pages/assist/views/rank/champListLoad.vue";
+import SearchChamp from "@/main/pages/assist/common/searchChamp.vue";
 
 onMounted(() => {
   queryChampRankData()
@@ -132,37 +133,6 @@ const handleRankSelect = () => {
   configRank.is101 = is101.value
   localStorage.setItem('configRank',JSON.stringify(configRank))
 }
-// 渲染提示框
-const renderLabel = (option: SelectOption): VNodeChild => [
-  h('div', { style: 'display: flex; align-items: center;' }, [
-    h(NAvatar, {
-      style: 'margin-right: 8px;',
-      size: 24,
-      round: false,
-      src: `https://game.gtimg.cn/images/lol/act/img/champion/${option.value}.png`
-    }),
-    option.label as string
-  ])
-]
-// 生成输入框渲染提示选项
-const autoOptions = computed(() => {
-  if (inputValue.value==='' || inputValue.value===null){
-    return
-  }
-  const keyword = inputValue.value.toLowerCase()
-  const renderList = keywordsList.filter(item => item.keywords.toLowerCase().includes(keyword))
-
-  if (renderList.length > 5 || renderList.length===0){
-    return
-  }
-
-  return renderList.map((champ) => {
-    return {
-      value: champ.alias,
-      label: champ.name
-    }
-  })
-})
 
 //搜索英雄数据
 const searchChampData = (alias:string) => {
@@ -216,7 +186,8 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
         :key="index"
         :bordered="false"
         :ghost="true"
-        :type="isCheck === button.value ? 'info' : 'default'"
+        :color="isCheck === button.value ? '#4098fc':'#9AA4AF' "
+        type="info"
         size="small"
         class="px-0"
         @click="button.action"
@@ -229,17 +200,13 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
     <n-list>
       <template #header>
           <div class="h-7 flex gap-x-5">
-            <n-auto-complete
-              size="small"
-              :clear-after-select="true"
-              v-model:value="inputValue"
-              @select="searchChampData"
-              :options="<{lable:string,value:string}[]>autoOptions"
-              placeholder="请输入你想查询的英雄"
-              :render-label="renderLabel"
-              style="width: 161px;"
-            >
-            </n-auto-complete>
+            <search-champ
+              width="width: 161px;"
+              :is-use="false"
+              :is-icon="true"
+              :select-func="searchChampData"
+              input-val=""
+              placeholder="请输入你想查询的英雄"/>
             <n-button size="small" secondary type="info" @click="searchChampData(inputValue)">搜索</n-button>
             <n-dropdown trigger="hover" placement="left-start"
                         :options="positionOptions" @select="handlePosSelect">

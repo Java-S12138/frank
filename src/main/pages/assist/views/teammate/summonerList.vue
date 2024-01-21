@@ -7,7 +7,6 @@ import SummonerDetail from "./summonerDetail.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 
 const teammateStore = useTeammateStore()
-
 const drawerActive = ref(false)
 const currentSumInfo:Ref<CurrentSumInfoTypes> = ref({
   name:'',
@@ -68,7 +67,7 @@ const getImgUrl = (profileIconId:number) => {
       <div v-if="!teammateStore.isLcuErr">
         <load-match v-if="teammateStore.recentMatchList[index] === undefined"/>
         <n-space
-          v-else style="margin-top: 10px;height: 32px;" justify="space-between">
+          v-else style="margin-top: 10px;height: 32px;" :size="[17.2,0]">
           <n-avatar
             v-for="img in teammateStore.recentMatchList[index].slice(0, 6)"
             :size="32"
@@ -77,7 +76,7 @@ const getImgUrl = (profileIconId:number) => {
         </n-space>
       </div>
       <n-space
-        v-else style="margin-top: 10px;height: 32px;" justify="space-between">
+        v-else style="margin-top: 10px;height: 32px;" :size="[17.2,0]">
         <n-avatar
           v-for="img in teammateStore.masteryChampList[index].slice(0, 6)"
           :size="32"

@@ -7,7 +7,6 @@ import {
   RoleCountMapTypes,
   SummonerInfoList
 } from "./teammateTypes";
-import {test} from "./test";
 import {dealDivsion, englishToChinese} from "@/lcu/utils";
 import {champDict} from "@/resources/champList";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
@@ -18,9 +17,11 @@ const querySummonerInfo = async (summonerId: number | string): Promise<lcuSummon
 }
 
 // 获取选择英雄时 获取所以友方召唤师ID /lol-champ-select/v1/session 的值
-export const queryAllSummonerId = async () => {
-  const mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
-  // const mactchSession = test
+export const queryAllSummonerId = async (mactchSession?:any) => {
+  if (mactchSession === undefined || mactchSession?.myTeam === undefined){
+    mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
+  }
+
   const myTeam: MyTeamObject[] = mactchSession?.myTeam
   let summonerIdList: number[] = []
   if (myTeam) {
@@ -47,10 +48,10 @@ const querySummonerRank = async (puuid: string) => {
 
 
 // 获取我方召唤师ID和昵称
-export const queryFriendInfo = async (): Promise<SummonerInfoList[]> => {
+export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoList[]> => {
   console.log('获取我方召唤师ID和昵称')
   const summonerInfoList: SummonerInfoList[] = []
-  const allSummonerId = await queryAllSummonerId()
+  const allSummonerId = await queryAllSummonerId(mactchSession)
   if (allSummonerId === null) {
     return []
   }

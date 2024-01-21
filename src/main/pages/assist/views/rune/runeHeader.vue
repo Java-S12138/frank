@@ -1,5 +1,12 @@
+<script setup lang="ts">
+import {NCard, NAvatar, NSpace, NBadge} from 'naive-ui';
+import {useRuneStore} from "@/main/store/useRune";
+const storeRune = useRuneStore()
+
+</script>
+
 <template>
-  <n-card class="shadow my-4" size="small">
+  <n-card v-if="storeRune.currentChamp!==0" class="shadow my-4" size="small">
     <n-space justify="space-between" align="center">
       <n-badge style="font-family: DingTalk"
                :value="storeRune.isAutoRune" color="#ff6666">
@@ -10,7 +17,6 @@
           :src="storeRune.currentChampImgUrl"
           fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
           style="display: block"
-          @click="storeRune.restraintActive = true"
         />
       </n-badge>
       <div class="skillDiv"
@@ -28,13 +34,6 @@
     </n-space>
   </n-card>
 </template>
-
-<script setup lang="ts">
-import {NCard, NAvatar, NSpace, NBadge} from 'naive-ui';
-import {useRuneStore} from "@/main/store/useRune";
-const storeRune = useRuneStore()
-
-</script>
 
 <style scoped>
 .skillDiv {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NIcon, NSpace, NButton, NPopover, NPopconfirm, NDropdown, NDrawer} from 'naive-ui'
+import {NIcon, NSpace, NButton, NPopover, NPopconfirm, NDropdown, NDrawer, NDrawerContent} from 'naive-ui'
 import {CircleMinus, Settings, CircleX} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
 import {DashboardProps} from "./types";
@@ -111,7 +111,7 @@ const handleSub = (key:number) => {
     class="rounded-t-xl"
     v-model:show="isShowDrawer"
     :placement="'bottom'"
-    :auto-focus="true"
+    :auto-focus="false"
     height="425"
   >
     <setting/>

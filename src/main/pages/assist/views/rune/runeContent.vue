@@ -13,11 +13,9 @@ const message = useMessage()
 const {runeList} = defineProps<{runeList:Rune[]}>()
 
 onMounted(() => {
-  if (!storeRune.isAppleAutoRune){
-    storeRune.isAppleAutoRune = true
+  if (!storeRune.isAutoRune!==''){
     autoWriteRune()
   }
-
 })
 const emits = defineEmits(['autoRuneActive'])
 

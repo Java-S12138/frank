@@ -1,5 +1,4 @@
 import {ConfigRank, ConfigSettingTypes} from "./configTypes";
-// cube.windows.openDevTools(cube.windows.current.id())
 
 const configSetting: ConfigSettingTypes = {
   'autoPickChampion': {
@@ -10,6 +9,7 @@ const configSetting: ConfigSettingTypes = {
     championId: "101",
     isAuto: false
   },
+  'autoIsOne':true,
   'autoAccept': 50,
   'theme': 'light',
 }

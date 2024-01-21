@@ -5,7 +5,6 @@ import {invokeLcu} from "@/lcu";
 
 const {champ,champName} = defineProps<{champ:string,champName:string}>()
 
-
 const message = useMessage()
 const emits = defineEmits(['completeSetup'])
 const clientRune = ref(true)

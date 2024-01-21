@@ -65,7 +65,7 @@ export class QueryMatch {
       queueId:match.queueId
     }
   }
-  // 处理战绩数据
+  // process record data
   public dealMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<SimpleMatchTypes[]> => {
     const matchList = await queryMatchHistory(puuid, begIndex, endIndex)
 

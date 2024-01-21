@@ -14,7 +14,9 @@ const rune101List:Ref<Rune[]> = ref([])
 
 
 onMounted(async () => {
-  rune101List.value = await get101Runes(storeRune.currentChamp)
+  if (storeRune.currentChamp !== 0){
+    rune101List.value = await get101Runes(storeRune.currentChamp)
+  }
 })
 
 const openDrawer = () => {
@@ -32,7 +34,7 @@ const setupAutoRune = (type:string) => {
 </script>
 
 <template>
-  <n-card class="shadow" size="small"
+  <n-card v-if="storeRune.currentChamp!==0" class="shadow" size="small"
           content-style="padding-top:2px;" style="height: 517px;">
     <n-tabs class="mt-2.5" type="segment" animated justify-content="space-between">
       <n-tab-pane name="tab1" tab="推荐符文">
