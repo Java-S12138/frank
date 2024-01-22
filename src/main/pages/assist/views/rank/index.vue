@@ -186,7 +186,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
         :key="index"
         :bordered="false"
         :ghost="true"
-        :color="isCheck === button.value ? '#4098fc':'#9AA4AF' "
+        :color="isCheck === button.value ? '#4098fc':'#9CA3AF' "
         type="info"
         size="small"
         class="px-0"
@@ -202,10 +202,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
           <div class="h-7 flex gap-x-5">
             <search-champ
               width="width: 161px;"
-              :is-use="false"
-              :is-icon="true"
               :select-func="searchChampData"
-              input-val=""
               placeholder="请输入你想查询的英雄"/>
             <n-button size="small" secondary type="info" @click="searchChampData(inputValue)">搜索</n-button>
             <n-dropdown trigger="hover" placement="left-start"

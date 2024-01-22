@@ -108,3 +108,10 @@ body {
     border-radius: 8px;
     border: 1px dashed #dfdfdf;
 }
+.text-ss {
+    font-size: 13px;
+    line-height: 17px;
+}
+.n-carousel__dots {
+    bottom: 0px !important;
+}

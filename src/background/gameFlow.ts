@@ -1,6 +1,7 @@
 import {champSelectSession} from "../lcu/autoBP";
 import WindowInfo = cube.windows.WindowInfo;
 import {invokeLcu} from "../lcu";
+import {ConfigSettingTypes} from "@/background/utils/configTypes";
 
 export class GameFlow {
   public mainWin:WindowInfo|null = null
@@ -111,7 +112,7 @@ export class GameFlow {
   }
   // 自动(禁用)选择英雄
   public autoPickBanChamp = () => {
-    const config = JSON.parse(<string>(localStorage.getItem('config')))
+    const config:ConfigSettingTypes = JSON.parse(<string>(localStorage.getItem('configSetting')))
     if (config.autoPickChampion.isAuto || config.autoBanChampion.isAuto) {
       const idSetInterval = setInterval(async () => {
         champSelectSession(idSetInterval,config)
@@ -123,7 +124,7 @@ export class GameFlow {
     if (localStorage.getItem('isSubscribe') === 'f'){
       return
     }
-    const isAutoAccept = (JSON.parse(<string>(localStorage.getItem('config')))).autoAccept
+    const isAutoAccept = (JSON.parse(<string>(localStorage.getItem('configSetting')))).autoAccept
     if (isAutoAccept < 50) {
       return
     }

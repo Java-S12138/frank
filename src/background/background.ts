@@ -1,4 +1,4 @@
-// import '../main/utils/subscribe.ts'
+import './utils/subscribe.ts'
 import './utils/config'
 import './utils/tray'
 import {GameFlow} from "./gameFlow";
@@ -21,7 +21,7 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
     switch (info.value) {
       case 'ChampSelect':
         gameFlow.sendMesToMain('ChampSelect', '')
-        // gameFlow.autoPickBanChamp()
+        gameFlow.autoPickBanChamp()
         return
       case 'GameStart':
         // gameFlow.showOrHideAssist(false, 'GameStart', null)
@@ -30,7 +30,7 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         // gameFlow.isShowBlack()
         return
       case 'ReadyCheck':
-        // gameFlow.autoAcceptGame()
+        gameFlow.autoAcceptGame()
         return
       case 'None':
         gameFlow.sendMesToMain('None', '')

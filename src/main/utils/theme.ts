@@ -28,5 +28,14 @@ export const themeOverrides: GlobalThemeOverrides = {
     titleFontSize:'16px',
     borderRadius:'0.25rem',
     padding:'12px',
+  },
+  Carousel:{
+    dotColor:"#d1d5db",
+    dotColorActive:'#10b981',
+    dotColorFocus:'#d1d5db'
+  },
+  Tabs:{
+    tabTextColorLine:'#9ca3af',
+    tabFontSizeSmall:'13px'
   }
 }

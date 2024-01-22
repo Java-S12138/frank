@@ -112,7 +112,7 @@ const handleSub = (key:number) => {
     v-model:show="isShowDrawer"
     :placement="'bottom'"
     :auto-focus="false"
-    height="425"
+    height="432"
   >
     <setting/>
   </n-drawer>

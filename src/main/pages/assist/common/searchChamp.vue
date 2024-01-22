@@ -3,14 +3,13 @@ import {computed, h, ref, VNodeChild} from "vue";
 import {keywordsList} from "@/resources/champList";
 import {NAutoComplete, NAvatar, SelectOption} from "naive-ui";
 
-const {selectFunc,placeholder,width,isUse,isIcon,inputVal} = defineProps<{
-  selectFunc:(alias:string) => void,placeholder:string,width:string,
-  isUse:boolean,isIcon:boolean,inputVal:string
+const {selectFunc,placeholder,width} = defineProps<{
+  selectFunc:(alias:string) => void,placeholder:string,width:string
 }>()
 
-const inputValue = ref(inputVal)
+const inputValue = ref('')
 // 渲染提示框
-const renderLabelIcon = (option: SelectOption): VNodeChild => [
+const renderLabel = (option: SelectOption): VNodeChild => [
   h('div', { style: 'display: flex; align-items: center;' }, [
     h(NAvatar, {
       style: 'margin-right: 8px;',
@@ -18,11 +17,6 @@ const renderLabelIcon = (option: SelectOption): VNodeChild => [
       round: false,
       src: `https://game.gtimg.cn/images/lol/act/img/champion/${option.value}.png`
     }),
-    option.label as string
-  ])
-]
-const renderLabel = (option: SelectOption): VNodeChild => [
-  h('div', { style: 'display: flex; align-items: center;' }, [
     option.label as string
   ])
 ]
@@ -50,13 +44,12 @@ const autoOptions = computed(() => {
 <template>
   <n-auto-complete
     size="small"
-    :disabled="isUse"
     :clear-after-select="true"
     v-model:value="inputValue"
     @select="selectFunc"
     :options="<{lable:string,value:string}[]>autoOptions"
     :placeholder="placeholder"
-    :render-label="isIcon?renderLabelIcon:renderLabel"
+    :render-label="renderLabel"
     :style="width"
   />
 </template>

@@ -4,6 +4,7 @@ export interface ConfigSettingTypes {
   autoIsOne:boolean;
   autoAccept: number;
   theme: string;
+  isGameInWindow:boolean;
 }
 
 export interface ConfigRank {

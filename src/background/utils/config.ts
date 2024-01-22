@@ -12,6 +12,7 @@ const configSetting: ConfigSettingTypes = {
   'autoIsOne':true,
   'autoAccept': 50,
   'theme': 'light',
+  'isGameInWindow':true,
 }
 
 

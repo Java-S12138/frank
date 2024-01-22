@@ -23,9 +23,6 @@ cube.windows.message.on('received',(id,content) => {
       teammateStore.clearStore()
       runeStore.clearStore()
       return changeState(id,'home',0)
-    case 'ChampSelect':
-      return
-      // return changeState(id,'rank',1)
     case 'CSSession':
       return hanleCSSession(id,content)
     case 'Champion':
@@ -44,7 +41,6 @@ const hanleChampion = (id:string,content:any) => {
       changeState(id,'rune',3)
     }
   })
-
 }
 // 处理CSSession状态
 const hanleCSSession = (id:string,content:any) => {
