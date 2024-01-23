@@ -17,7 +17,7 @@ const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
 </script>
 
 <template>
-  <div class="navDiv bg-white dark:bg-zinc-900 boxShadow">
+  <div class="navDiv bg-white dark:bg-zinc-900 shadow">
     <n-space justify="space-between" class="mt-2 mx-2">
       <n-icon
         class="transition cursor-pointer"

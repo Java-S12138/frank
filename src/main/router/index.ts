@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 //@ts-ignore
-const pageComps = import.meta.glob('../pages/assist/views/**/index.vue')
+const pageComps = import.meta.glob('../views/**/index.vue')
 const routes:any[] = Object.entries(pageComps).map(component=>{
   const regex =/\/(\w+)\/\w+\.vue/
   const match = component[0].match(regex)

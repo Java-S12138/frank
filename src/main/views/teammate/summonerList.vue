@@ -2,7 +2,7 @@
 import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag} from "naive-ui";
 import LoadMatch from "./loadMatch.vue";
 import {CurrentSumInfoTypes,} from "./teammateTypes";
-import {Ref, ref} from "vue";
+import {Ref, ref, onDeactivated} from "vue";
 import SummonerDetail from "./summonerDetail.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 
@@ -42,6 +42,10 @@ const clearInfo = () => {
 const getImgUrl = (profileIconId:number) => {
   return `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${profileIconId}.png`
 }
+
+onDeactivated(() => {
+  drawerActive.value = false
+})
 </script>
 
 <template>

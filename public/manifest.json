@@ -21,6 +21,11 @@
     "launcher_hotkeys": {},
     "start_window": "background",
     "windows": {
+      "background": {
+        "file": "src/background/index.html",
+        "is_background_page": true,
+        "open_dev_tools": false
+      },
       "main": {
         "file": "src/main/index.html",
         "frame": false,
@@ -30,10 +35,13 @@
         "desktop_only": true,
         "keep_window_location": true
       },
-      "background": {
-        "file": "src/background/index.html",
-        "is_background_page": true,
-        "open_dev_tools": false
+      "queryMatch": {
+        "file": "src/queryMatch/index.html",
+        "frame": false,
+        "width": 1166,
+        "height": 650,
+        "desktop_only": true,
+        "resizable": false
       }
     }
   },

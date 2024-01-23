@@ -1,7 +1,6 @@
 import {invokeLcu} from "@/lcu";
 import {lcuSummonerInfo} from "@/lcu/types/SummonerTypes";
 import {
-  ChampionMasteryTypes,
   MyTeamObject,
   RencentDataAnalysisTypes,
   RoleCountMapTypes,
@@ -68,24 +67,6 @@ export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoL
     })
   }
   return summonerInfoList
-}
-
-export const queryMasteryChampList = async (summonerPuuid: string) => {
-  if (summonerPuuid === '') {
-    return null
-  }
-  try {
-    const summonerSuperChampData: ChampionMasteryTypes[] = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
-    return summonerSuperChampData.slice(0, 20).reduce((res: string[][], item: ChampionMasteryTypes) => {
-      return res.concat([[
-        `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
-        `${champDict[String(item.championId)].label}•${champDict[String(item.championId)].title}`,
-        `英雄等级 ${item.championLevel} / 熟练度 ${item.championPoints}`
-      ]])
-    }, [])
-  } catch (e) {
-    return null
-  }
 }
 
 export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAnalysisTypes | null => {

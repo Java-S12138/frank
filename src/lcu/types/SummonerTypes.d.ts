@@ -13,7 +13,7 @@ export interface lcuSummonerInfo {
   unnamed: boolean;
   xpSinceLastLevel: number;
   xpUntilNextLevel: number;
-  httpStatus?:number
+  success?:boolean
   tagLine:string
 }
 
@@ -44,8 +44,21 @@ interface Statstone {
 
 export interface SummonerData {
   summonerInfo:summonerInfo|null;
-  rankList: [string,string,string]|null;
-  honorData: string[]|null;
+  rankList: string[]|null;
   champLevel: any[][]|null;
-  statstones: Statstone[]|null;
+}
+export interface ChampionMasteryTypes {
+  championId: number;
+  championLevel: number;
+  championPoints: number;
+  championPointsSinceLastLevel: number;
+  championPointsUntilNextLevel: number;
+  chestGranted: boolean;
+  formattedChampionPoints: string;
+  formattedMasteryGoal: string;
+  highestGrade: string;
+  lastPlayTime: number;
+  playerId: number;
+  puuid: string;
+  tokensEarned: number;
 }

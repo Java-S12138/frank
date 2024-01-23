@@ -2,11 +2,11 @@
 import {ref} from "vue";
 import {useMessage} from "naive-ui"
 import {useRouter} from "vue-router";
-import Dashboard from "./common/dashboard.vue"
-import Navigation from "./common/navigation.vue";
+import Dashboard from "@/main/common/dashboard.vue"
+import Navigation from "@/main/common/navigation.vue";
 import {useRuneStore} from "@/main/store/useRune";
 import {useTeammateStore} from "@/main/store/useTeammate";
-import {queryFriendInfo} from "@/main/pages/assist/views/teammate/utils";
+import {queryFriendInfo} from "@/main/views/teammate/utils";
 
 const router = useRouter()
 const curPos = ref(0)
@@ -22,7 +22,7 @@ cube.windows.message.on('received',(id,content) => {
     case 'None':
       teammateStore.clearStore()
       runeStore.clearStore()
-      return changeState(id,'home',0)
+      return changeState(id,'rank',1)
     case 'CSSession':
       return hanleCSSession(id,content)
     case 'Champion':
@@ -57,7 +57,7 @@ const changeState = (id:string,page:string,index:number) => {
 // 改变底部页面图标
 const navigateToPage = (page:string,index:number) => {
   if ((index === 2 && curFlow.value === 'None') || (index === 3 && curFlow.value !== 'Champion')) {
-    message.warning('当前状态无法查看此页面', {duration:1000})
+    message.warning('当前状态无法查看此页面', {duration:2000})
     return
   }
   curPos.value = index
@@ -74,6 +74,6 @@ const navigateToPage = (page:string,index:number) => {
         <component :is="Component" />
       </keep-alive>
     </router-view>
-    <navigation :cur-pos="curPos" :navigate-to-page="navigateToPage"/>
+    <navigation  :cur-pos="curPos" :navigate-to-page="navigateToPage"/>
   </div>
 </template>

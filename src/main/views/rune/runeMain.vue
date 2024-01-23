@@ -3,7 +3,7 @@ import {NTabs, NTabPane,NCard,NDrawer} from "naive-ui"
 import RuneContent from "./runeContent.vue";
 import BlockContent from "./blockContent.vue";
 import RuneAuto from "./runeAuto.vue";
-import {onMounted, Ref, ref} from "vue";
+import {onDeactivated, onMounted, Ref, ref} from "vue";
 import {Rune} from "./runeTypes";
 import {useRuneStore} from "@/main/store/useRune";
 import {get101Runes} from "./get101Runes";
@@ -24,13 +24,17 @@ const openDrawer = () => {
 }
 
 const setupAutoRune = (type:string) => {
-  if (type==='auto'){
+  if (type ==='auto'){
     autoRuneActive.value = false
     storeRune.isAutoRune = 'auto'
   }else {
     storeRune.isAutoRune = ''
   }
 }
+onDeactivated(() => {
+  autoRuneActive.value = false
+})
+
 </script>
 
 <template>

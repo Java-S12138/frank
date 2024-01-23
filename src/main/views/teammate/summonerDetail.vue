@@ -2,10 +2,10 @@
 import {NDrawerContent,NSpace,NAvatar,NTag,NTabs,NTabPane} from 'naive-ui'
 import {CurrentSumInfoTypes, RencentDataAnalysisTypes} from "./teammateTypes";
 import SummonerMatch from "./summonerMatch.vue";
-import SummonerMasteryChamp from "./summonerMasteryChamp.vue";
+import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
 import MatchAnalysis from "./matchAnalysis.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
-import {findTopChamp} from "@/main/pages/assist/views/teammate/utils";
+import {findTopChamp} from "@/main/views/teammate/utils";
 
 const teammateStore = useTeammateStore()
 const {name,puuid,rank,profileIconId,index} = defineProps<CurrentSumInfoTypes>()
@@ -41,7 +41,9 @@ const getImgUrl = (profileIconId: number) => {
         <match-analysis :analysis-data="analysisData"/>
       </n-tab-pane>
       <n-tab-pane name="绝活英雄" tab="绝活英雄" display-directive="show">
-        <summoner-mastery-champ :puuid="puuid" :exist-champ-list="existChampList"/>
+        <summoner-mastery-champ
+          :max-h="378" :p-right="14"
+          :puuid="puuid" :exist-champ-list="existChampList"/>
       </n-tab-pane>
     </n-tabs>
   </n-drawer-content>

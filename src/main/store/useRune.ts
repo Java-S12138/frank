@@ -1,8 +1,8 @@
 import {defineStore} from 'pinia'
 import {champDict} from "@/resources/champList";
 import {isStoreageHas} from "@/lcu/utils";
-import {ItemBuild, Rune} from "@/main/pages/assist/views/rune/runeTypes";
-import {QueryRune} from "@/main/pages/assist/views/rune/queryRune";
+import {ItemBuild, Rune} from "@/main/views/rune/runeTypes";
+import {QueryRune} from "@/main/views/rune/queryRune";
 
 export const useRuneStore = defineStore('useRuneStore', {
   state: () => {

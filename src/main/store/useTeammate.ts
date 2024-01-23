@@ -1,8 +1,8 @@
 import {defineStore} from "pinia";
-import {SummonerInfoList} from "@/main/pages/assist/views/teammate/teammateTypes";
+import {SummonerInfoList} from "@/main/views/teammate/teammateTypes";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
-import {QueryMatch} from "@/main/pages/assist/views/teammate/queryMatch";
-import {queryMasteryChampList} from "@/main/pages/assist/views/teammate/utils";
+import {QueryMatch} from "@/main/views/teammate/queryMatch";
+import {queryMasteryChampList} from "@/lcu/aboutSummoner";
 
 export const useTeammateStore = defineStore('useTeammate', {
   state: () => {
@@ -25,10 +25,7 @@ export const useTeammateStore = defineStore('useTeammate', {
 
         if (matchList.length === 0 || showMateryChamp) {
           showMateryChamp = true
-          const masteryList = await queryMasteryChampList(summoner.puuid)
-          if (masteryList !== null) {
-            this.masteryChampList.push(masteryList)
-          }
+          this.masteryChampList.push(await queryMasteryChampList(summoner.puuid))
         } else {
           this.recentMatchList.push(matchList)
         }

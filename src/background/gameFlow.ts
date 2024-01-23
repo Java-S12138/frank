@@ -51,64 +51,10 @@ export class GameFlow {
     }).catch(() => {})
   }
 
-  // 选择英雄阶段结束后执行的操作
-  public initGameInWindow = async () => {
-    //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
-    cube.games.on('launched', () => {
-      //游戏启动关闭桌面窗口和战绩历史窗口，打开游戏内窗口
-      this.coloseWin('main')
-      this.coloseWin('matchHistory')
-      invokeLcu('get','/lol-lobby/v1/parties/gamemode').then((res:any) => {
-        const queueId = res?.queueId
-        const config = JSON.parse(<string>(localStorage.getItem('config')))
-        const isGameInWindow = config.isGameInWindow
-
-        // 当前模式不是云顶之亦才打开战绩历史窗口
-        if (queueId !== 1090 && queueId !== 1100 && queueId !== 1160 && queueId !== 1130 && queueId !== 1170){
-          cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
-            this.recentMatchWin = v
-            if (!isGameInWindow ){
-              cube.windows.hide(<number>this.recentMatchWin?.id).then(() => {
-                (<WindowInfo>this.recentMatchWin).show=false
-              })
-            }
-          })
-        }else {
-          this.isTFT = true
-        }
-      })
-    })
-
-    //游戏结束创建桌面窗口
-    cube.games.on('stopped', () => {
-      cube.windows.obtainDeclaredWindow('main', { gamein: false,show:false})
-      this.recentMatchWin = null
-    })
-
-    // 游戏内监听按键, 显示或隐藏游戏内窗口
-    cube.settings.hotkeys.game.on('pressed',async (hotKeyName:string) => {
-      if (hotKeyName==='show_matchHistory') {
-        if (<boolean>this.recentMatchWin?.show){
-          cube.windows.hide(<number>this.recentMatchWin?.id).then(() => {
-            (<WindowInfo>this.recentMatchWin).show=false
-          })
-        }else {
-          cube.windows.show(<number>this.recentMatchWin?.id).then(() => {
-            (<WindowInfo>this.recentMatchWin).show=true
-          })
-        }
-      }
-    })
-
-    // 检测到进入英雄联盟大厅后, 获取首页数据
-    const closeOn =  cube.games.launchers.on('launched', () => {
-      closeOn()
-      setTimeout(() => {
-        cube.windows.getWindowByName('main').then((win) => {
-          cube.windows.message.send(win.id,'initHome','')
-        })
-      },3000)
-    })
+  // 发送给主窗口游戏启动事件
+  public sendStartEvent = async () => {
+    this.mainWin = this.mainWin || await cube.windows.getWindowByName('main')
+    cube.windows.message.send(this.mainWin.id,'initHome','')
   }
   // 自动(禁用)选择英雄
   public autoPickBanChamp = () => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {NMessageProvider, NConfigProvider, zhCN, darkTheme,NDialogProvider} from 'naive-ui'
-import {themeOverrides} from "./utils/theme";
-import Frank from "./index.vue"
+import {NMessageProvider, NConfigProvider, zhCN, darkTheme,NDialogProvider,NGrid,NGi} from 'naive-ui'
+import {themeOverrides} from "../main/utils/theme";
+import QueryMatch from "./queryMatch.vue"
 
 const theme = localStorage.getItem('theme')  || 'light'
 
@@ -18,7 +18,7 @@ if (theme === 'dark') {
   >
     <n-dialog-provider>
       <n-message-provider :placement="'bottom'">
-        <Frank/>
+        <QueryMatch/>
       </n-message-provider>
     </n-dialog-provider>
   </n-config-provider>

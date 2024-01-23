@@ -13,7 +13,7 @@ const restraintList:Ref<[string,string,number,number,number][]> = ref([])
 let preselectActionID:number|null = null
 
 onMounted(async () => {
-  const res = await getRestraintData(champId,lane,tier,is101)
+  const res = await getRestraintData(champId,lane,tier,is101,localStorage.getItem('version') as string)
   if (res!==null){
     restraintList.value = res
   }else {

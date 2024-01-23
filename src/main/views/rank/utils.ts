@@ -1,6 +1,6 @@
 import {request} from "@/main/utils/request";
 import {champDict} from "@/resources/champList";
-import {ChampInfo} from "@/main/pages/assist/views/rank/rankTypes";
+import {ChampInfo} from "@/main/views/rank/rankTypes";
 import {ConfigRank} from "@/background/utils/configTypes";
 
 export const rankOptions =  [
@@ -187,11 +187,11 @@ export const queryCNServe = async (configRank:ConfigRank,tier:number, lane:strin
 }
 
 // 查询韩服数据
-export const queryKRServe = async (configRank:ConfigRank,tier:number,lane:string) => {
+export const queryKRServe = async (configRank:ConfigRank,tier:number,lane:string,version:string) => {
   configRank.tier = tier
   localStorage.setItem('config',JSON.stringify(configRank))
   try {
-    const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=88&tier=${tier}&lane=${lane}`
+    const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=${version}&tier=${tier}&lane=${lane}`
     const res = await request({
       url:url,
       method:"GET"
@@ -217,14 +217,14 @@ export const queryKRServe = async (configRank:ConfigRank,tier:number,lane:string
 }
 
 // 获取英雄反制数据
-export const getRestraintData = async (champId:number, lane:string,tier:number,is101:boolean) => {
+export const getRestraintData = async (champId:number, lane:string,tier:number,is101:boolean,version:string) => {
   let tierRes = 2
 
   const position = getPostion(lane)
   if (!is101){
     tierRes = tier
   }
-  const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=88&tier=${tierRes}&lane=${position}`
+  const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=${version}&tier=${tierRes}&lane=${position}`
   const result = await request({
     'url': url,
     method: 'GET'

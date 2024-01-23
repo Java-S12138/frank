@@ -1,0 +1,169 @@
+<script setup lang="ts">
+import {
+  NCard, NAvatar, NProgress, NSpace, NTag, NDivider,NList, NListItem,NButton,NEllipsis
+} from 'naive-ui'
+import {getCurrentSummonerAllInfo} from "@/main/utils/getHomeData";
+import {onActivated, onMounted, reactive} from "vue";
+import {SummonerData} from "@/lcu/types/SummonerTypes";
+import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
+import StartGame from "./startGame.vue";
+
+const summonerData:SummonerData = reactive({
+  summonerInfo: null,
+  rankList: null,
+  champLevel: null,
+})
+
+onMounted( () => {
+  init().then(async (value) =>  {
+    if (!value){
+      const lolCient = (await cube.games.launchers.getRunningLaunchers())
+        .find(((i:any) => i.classId===10902))
+
+      if (lolCient === undefined){
+        onClientLaunch()
+      }else {
+        let timer = 0
+        const maxAttempts = 3
+        const launchInterval = setInterval(async () => {
+          timer++
+          const isInit = await init()
+          if (isInit || timer === maxAttempts) {
+            clearInterval(launchInterval)
+          }
+        }, 1500)
+      }
+    }
+  })
+})
+
+onActivated(() => {
+  if (summonerData.summonerInfo!==null){
+    init()
+  }
+})
+
+const init = async () => {
+  const summonerAllInfo = await getCurrentSummonerAllInfo()
+  if (summonerAllInfo === null){
+    return false
+  }
+
+  summonerData.summonerInfo = summonerAllInfo.summonerInfo
+  summonerData.rankList = summonerAllInfo.rankList as string[]
+  summonerData.champLevel = summonerAllInfo.champLevel as string[][]
+  return true
+}
+
+const onClientLaunch = () => {
+  const closeMessageOn = cube.windows.message.on('received', async (id) => {
+    if (id === 'initHome') {
+      let timer = 0
+      const interval = setInterval(async () => {
+        timer += 1
+        if (summonerData.summonerInfo === null){
+          init()
+        }else {
+          clearInterval(interval)
+          closeMessageOn()
+        }
+        if (timer===8){
+          clearInterval(interval)
+          closeMessageOn()
+        }
+      },3000)
+    }
+  })
+}
+
+const openWin = () => {
+  cube.windows.obtainDeclaredWindow('queryMatch')
+}
+
+</script>
+
+<template>
+  <div v-if="summonerData.summonerInfo">
+    <n-card size="small" class="mt-4 shadow" content-style="padding-bottom: 0;">
+      <!--    头像 昵称 等级-->
+      <div class="h-14 flex gap-x-2">
+        <n-avatar class="avatarEffect" round :bordered="false" :size="56"
+                  :src="summonerData.summonerInfo.imgUrl"
+                  fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+        />
+        <n-space class="flex-grow" :size="[0,0]"
+                 justify="space-between" vertical>
+          <div class="flex justify-between">
+            <!--昵称-->
+            <n-tag type="success" :bordered="false" round>
+              <n-ellipsis style="max-width: 100px">
+                {{summonerData.summonerInfo.name}}
+              </n-ellipsis>
+            </n-tag>
+            <n-button @click="openWin" type="success" size="small" round>
+              查询战绩
+            </n-button>
+          </div>
+          <div class="flex justify-between gap-x-3">
+            <n-tag type="warning" size="small" round :bordered="false">
+              {{ summonerData.summonerInfo.lv }}
+            </n-tag>
+            <div class="flex-grow "
+                 style="background-color: rgba(240, 160, 32, 0.15);
+               padding: 0 7px; color: #f0a020; font-size: 12px;
+               border-radius: 12px">
+              <div class="flex justify-between items-center">
+                <n-progress
+                  type="line"
+                  :show-indicator="false"
+                  :percentage="summonerData.summonerInfo.xp"
+                  status="warning"
+                  processing
+                  style="width:100px;margin-top: 1.2px;"
+                  :height="10"
+                />
+                <div style="padding-top: 2px;">{{ summonerData.summonerInfo.xp }} %</div>
+              </div>
+            </div>
+
+          </div>
+        </n-space>
+      </div>
+      <!--    头像 昵称 等级-->
+
+    <n-divider dashed style="margin: 14px 0 0 0"/>
+
+      <!--段位 荣誉等级-->
+      <n-list>
+        <n-list-item>
+          <n-space justify="space-between">
+            <n-tag class="w-32 justify-center" type="success" :bordered="false" :round="false">
+              单双 {{ summonerData.rankList[0] }}
+            </n-tag>
+            <n-tag class="w-32 justify-center" type="success" :bordered="false" :round="false">
+              灵活 {{ summonerData.rankList[1] }}
+            </n-tag>
+          </n-space>
+        </n-list-item>
+        <n-list-item>
+          <n-space justify="space-between">
+            <n-tag class="w-32 justify-center" type="warning" :bordered="false" :round="false">
+              云顶 {{ summonerData.rankList[2] }}
+            </n-tag>
+            <n-tag class="w-32 justify-center" type="warning" :bordered="false" :round="false">
+              {{ summonerData.rankList[3] }}
+            </n-tag>
+          </n-space>
+        </n-list-item>
+      </n-list>
+      <!--段位 荣誉等级-->
+    </n-card>
+    <n-card size="small" class="mt-4 shadow" style="height: 404px;">
+      <summoner-mastery-champ v-if="summonerData.champLevel"
+                              :max-h="378" :puuid="''" :exist-champ-list="summonerData.champLevel"/>
+    </n-card>
+  </div>
+  <div v-else>
+    <start-game/>
+  </div>
+</template>

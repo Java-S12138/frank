@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NAutoComplete, NSpace, NSelect,
-  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, SelectOption, NDrawer
+  NCard, NAvatar, NSpace, NSelect,
+  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer
 } from 'naive-ui'
 import './assistCommon.css'
-import {computed, onMounted, Ref, ref, h, VNodeChild, provide} from "vue";
+import {onMounted, Ref, ref} from "vue";
 import {
   rankOptions,
   cnOptions,
@@ -16,10 +16,10 @@ import {
 } from "./utils";
 import {ConfigRank} from "@/background/utils/configTypes";
 import {ChampInfo} from "./rankTypes";
-import {aliasToId, champDict, keywordsList} from "@/resources/champList";
-import ChampDetail from "@/main/pages/assist/views/rank/champDetail.vue";
-import ChampListLoad from "@/main/pages/assist/views/rank/champListLoad.vue";
-import SearchChamp from "@/main/pages/assist/common/searchChamp.vue";
+import {aliasToId, champDict} from "@/resources/champList";
+import ChampDetail from "@/main/views/rank/champDetail.vue";
+import ChampListLoad from "@/main/views/rank/champListLoad.vue";
+import SearchChamp from "@/main/common/searchChamp.vue";
 
 onMounted(() => {
   queryChampRankData()
@@ -50,26 +50,27 @@ const handleTierSelect = (key: number) => {
 const handlePosSelect = (pos:string) => {
   isCheck.value = 1
   configRank.lane = pos
-  localStorage.setItem('config',JSON.stringify(configRank))
+  localStorage.setItem('configRank',JSON.stringify(configRank))
   lane.value = pos
-  queryChampRankData()
-  switch (pos) {
-    case pos = 'top':
-      message.success('上单数据更新成功')
-      break;
-    case pos = 'jungle':
-      message.success('打野数据更新成功')
-      break;
-    case pos = 'mid':
-      message.success('中单数据更新成功')
-      break;
-    case pos = 'bottom':
-      message.success('下路数据更新成功')
-      break;
-    case pos = 'support':
-      message.success('辅助数据更新成功')
-      break;
-  }
+   queryChampRankData().then((value) => {
+     switch (pos) {
+         case pos = 'top':
+           message.success('上单数据更新成功')
+           break;
+         case pos = 'jungle':
+           message.success('打野数据更新成功')
+           break;
+         case pos = 'mid':
+           message.success('中单数据更新成功')
+           break;
+         case pos = 'bottom':
+           message.success('下路数据更新成功')
+           break;
+         case pos = 'support':
+           message.success('辅助数据更新成功')
+           break;
+       }
+   })
 }
 
 // 根据不同的参数进行 快速排序
@@ -99,10 +100,10 @@ const getBanRankData = () => {
 }
 // ghostButtons列表
 const ghostButtons = [
-  { label: '综合', value: 1, action: getComprehensiveRankData, size: 'small' },
-  { label: '胜率', value: 2, action: getWinRankData, size: 'small' },
-  { label: '登场', value: 3, action: getAppearanceRankData, size: 'small' },
-  { label: '禁用', value: 4, action: getBanRankData, size: 'small' },
+  { label: '综合', value: 1, action: getComprehensiveRankData},
+  { label: '胜率', value: 2, action: getWinRankData},
+  { label: '登场', value: 3, action: getAppearanceRankData},
+  { label: '禁用', value: 4, action: getBanRankData},
 ]
 
 // 获取不同服务器的数据
@@ -114,7 +115,7 @@ const queryChampRankData = async () => {
     }
   }else {
     const laneKr = getPostion(lane.value)
-    const champInfo = await queryKRServe(configRank,tier.value,laneKr)
+    const champInfo = await queryKRServe(configRank,tier.value,laneKr,localStorage.getItem('version') as string)
     if (champInfo){
       champSliceList.value = champInfo
     }else {
@@ -128,7 +129,13 @@ const handleRankSelect = () => {
   isCheck.value = 1
   is101.value = !is101.value
   tier.value = is101.value ? 200 : 2
-  queryChampRankData()
+  queryChampRankData().then(() => {
+    if (is101.value){
+      message.success('国服数据获取成功')
+    }else {
+      message.success('韩服数据获取成功')
+    }
+  })
   configRank.tier = tier.value
   configRank.is101 = is101.value
   localStorage.setItem('configRank',JSON.stringify(configRank))
@@ -180,16 +187,14 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
                 @update:value="handleTierSelect"/>
     </n-space>
 
-    <n-space class="my-1" justify="space-between">
+    <n-space class="mt-2 mb-2.5" justify="space-between">
       <n-button
         v-for="(button, index) in ghostButtons"
         :key="index"
         :bordered="false"
-        :ghost="true"
-        :color="isCheck === button.value ? '#4098fc':'#9CA3AF' "
-        type="info"
+        :type="isCheck === button.value ? 'info':'tertiary' "
         size="small"
-        class="px-0"
+        secondary
         @click="button.action"
       >
         {{ button.label }}
@@ -245,7 +250,6 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
       </n-scrollbar>
     </n-list>
   </n-card>
-
   <n-drawer
     class="rounded-t-xl" v-model:show="isShowDrawer"
     placement="bottom" :auto-focus="true" height="444"

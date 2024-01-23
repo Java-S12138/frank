@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {NSpace, NScrollbar, NAvatar, NTag, NSkeleton, NLayout, NLayoutSider, NLayoutContent, NResult,} from 'naive-ui'
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
-import SummonerMatchLoad from "@/main/pages/assist/views/teammate/summonerMatchLoad.vue";
+import SummonerMatchLoad from "@/main/views/teammate/summonerMatchLoad.vue";
 import {getItemImgUrl, getspellImgUrl} from "@/lcu/utils";
 import {ref} from "vue";
 

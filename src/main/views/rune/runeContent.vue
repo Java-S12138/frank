@@ -5,7 +5,7 @@ import {
 import {applyRunePage, applyBlockPage} from "@/lcu/aboutRune";
 import {onMounted} from "vue";
 import {useRuneStore} from "@/main/store/useRune";
-import {Rune} from "@/main/pages/assist/views/rune/runeTypes";
+import {Rune} from "@/main/views/rune/runeTypes";
 import {mapNameFromUrl} from "@/resources/champList";
 
 const storeRune = useRuneStore()

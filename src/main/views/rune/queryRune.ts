@@ -1,6 +1,6 @@
 import {request} from "@/main/utils/request";
 import {mapNameFromUrl} from "@/resources/champList";
-import {Block, OnlineRunes} from "@/main/pages/assist/views/rune/runeTypes";
+import {Block, OnlineRunes} from "@/main/views/rune/runeTypes";
 
 export class QueryRune {
 

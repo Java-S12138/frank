@@ -1,12 +1,15 @@
 import {invokeLcu} from "./index"
-import {lcuSummonerInfo, summonerInfo} from "./types/SummonerTypes";
+import {lcuSummonerInfo, summonerInfo,ChampionMasteryTypes} from "./types/SummonerTypes";
 import {dealDivsion, englishToChinese} from "./utils";
 import {champDict} from "@/resources/champList";
 
 // 查询本地召唤师信息
-export const queryCurrentSummonerInfo = async ():Promise<summonerInfo> => {
+export const queryCurrentSummonerInfo = async ():Promise<summonerInfo | null> => {
   const summonerInfo:lcuSummonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
   const imgUrl:string = `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summonerInfo.profileIconId}.png`
+  if (summonerInfo?.success ===false){
+    return null
+  }
   return {
     name:summonerInfo.displayName,
     imgUrl:imgUrl,
@@ -19,8 +22,8 @@ export const queryCurrentSummonerInfo = async ():Promise<summonerInfo> => {
 }
 
 // 查询召唤师排位分数
-export const queryCurrentRankPoint = async ():Promise<[string,string,string]> => {
-  const rankPoint = (await invokeLcu("get", '/lol-ranked/v1/current-ranked-stats')).queues
+export const queryCurrentRankPoint = async ():Promise<string[]> => {
+  const rankPoint = (await invokeLcu("get", '/lol-ranked/v1/current-ranked-stats'))?.queues
   if (rankPoint === undefined) {
     return ['Error','Error','Error']
   }
@@ -35,64 +38,32 @@ export const queryCurrentRankPoint = async ():Promise<[string,string,string]> =>
   return [RANKED_SOLO,RANKED_FLEX_SR,RANKED_TFT]
 }
 
-// 查询召唤师英雄熟练度
-export const queryChampionExp = async (puuid:string) => {
-  return await invokeLcu('get',`/lol-collections/v1/inventories/${puuid}/champion-mastery`)
-}
 
 // 查看本地召唤师荣誉等级
-export const querySummonerHonorLevel = async ():Promise<[string,string]> => {
+export const querySummonerHonorLevel = async ():Promise<string> => {
   const summonerHonor = await invokeLcu('get','/lol-honor-v2/v1/profile')
-  return ['荣誉等级 '+summonerHonor.honorLevel,' 里程 '+summonerHonor.checkpoint]
+  if (summonerHonor?.honorLevel===undefined){
+    return 'Error'
+  }
+  return '荣誉等级'+summonerHonor?.honorLevel + ' 里程'+summonerHonor?.checkpoint
 }
 
-// 获取永痕星碑数据
-export const queryStatstones = async (puuid:string) => {
-  try {
-    const statstones:Array<Object> = await invokeLcu('get',`/lol-statstones/v1/profile-summary/${puuid}`)
-    const statstonesList = statstones.reduce((res:any,item:any) => {
-      return res.concat({
-        championId:`${champDict[String(item.championId)].label}`,
-        name:item.name,
-        imgUrl:(item.imageUrl).split('LCU/')[1],
-        value:item.value
-      })
-    },[])
-    return statstonesList
-  }catch (e) {
+
+// 查询召唤师绝活英雄数据
+export const queryMasteryChampList = async (summonerPuuid: string) => {
+  if (summonerPuuid === '') {
     return []
   }
-}
-
-// 处理英雄永恒星碑数据
-export const dealChampStatstones = (statstones:any) => {
-  const simpleStatstonesList = statstones.reduce((res:any,item:any) => {
-    return res.concat({
-      name:item.name,
-      value:item.formattedValue,
-      imgUrl:(item.imageUrl).split('LCU/')[1],
-      milestoneLevel: item.formattedMilestoneLevel
-    })
-  },[])
-  return simpleStatstonesList
-}
-
-// 查看指定英雄的永恒星碑
-export const queryCurrentChampStatstones = async (champId:any) => {
   try {
-    const champSta:Array<Object> = await invokeLcu("get", `/lol-statstones/v2/player-statstones-self/${champId}`)
-    const champStatstonesList = champSta.reduce((res:any,item:any) => {
-      return res.concat({
-        name: item.name,
-        simpleStatstonesList:dealChampStatstones(item.statstones)
-      })
-    },[])
-
-    if (champStatstonesList[0].simpleStatstonesList[0].value ==='' &&champStatstonesList[1].simpleStatstonesList[1].value ==='' ){
-      return `${champDict[champId].label} 暂无永恒星碑`
-    }
-    return champStatstonesList
-  }catch (e) {
-    return null
+    const summonerSuperChampData: ChampionMasteryTypes[] = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
+    return summonerSuperChampData.slice(0, 20).reduce((res: string[][], item: ChampionMasteryTypes) => {
+      return res.concat([[
+        `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
+        `${champDict[String(item.championId)].label}•${champDict[String(item.championId)].title}`,
+        `英雄等级 ${item.championLevel} / 熟练度 ${item.championPoints}`
+      ]])
+    }, [])
+  } catch (e) {
+    return []
   }
 }

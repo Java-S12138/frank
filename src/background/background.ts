@@ -3,23 +3,34 @@ import './utils/config'
 import './utils/tray'
 import {GameFlow} from "./gameFlow";
 
-// cube.windows.openDevTools(cube.windows.current.id())
+cube.windows.openDevTools(cube.windows.current.id())
 
+// 启动主窗口
 cube.extensions.on('launch-triggered', (s) => {
   if (!s.gamein){
     cube.windows.obtainDeclaredWindow('main')
   }
 })
 
+let isStart:boolean|null = true
+// 检测是否存在LOL
+cube.games.launchers.getRunningLaunchers().then((value) => {
+  const isLoL = value.find(((i:any) => i.classId===10902))
+  if (isLoL !== undefined){
+    isStart = null
+  }
+})
+
+
 let isCSSestion = true
 const gameFlow = new GameFlow()
-// gameFlow.initGameInWindow()
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
 
   if (info.category === 'game_flow') {
     switch (info.value) {
       case 'ChampSelect':
+        if (isStart){isStart=null}
         gameFlow.sendMesToMain('ChampSelect', '')
         gameFlow.autoPickBanChamp()
         return
@@ -33,7 +44,12 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         gameFlow.autoAcceptGame()
         return
       case 'None':
-        gameFlow.sendMesToMain('None', '')
+        if (isStart){
+          gameFlow.sendStartEvent()
+          isStart = null
+        }else {
+          gameFlow.sendMesToMain('None', '')
+        }
         return
     }
   }
