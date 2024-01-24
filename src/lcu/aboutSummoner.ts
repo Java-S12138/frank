@@ -4,26 +4,36 @@ import {dealDivsion, englishToChinese} from "./utils";
 import {champDict} from "@/resources/champList";
 
 // 查询本地召唤师信息
-export const queryCurrentSummonerInfo = async ():Promise<summonerInfo | null> => {
-  const summonerInfo:lcuSummonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
-  const imgUrl:string = `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summonerInfo.profileIconId}.png`
-  if (summonerInfo?.success ===false){
-    return null
+export const querySummonerInfo = async (summonerId?:number,summonerName?:string):Promise<summonerInfo | null> => {
+  let summonerInfo:lcuSummonerInfo
+  if (summonerId!==undefined){
+    summonerInfo = await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
+  }else if (summonerName!==undefined){
+    summonerInfo =  await invokeLcu('get',`/lol-summoner/v1/summoners`,[summonerName])
+  }else {
+    summonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
   }
+
   return {
+    puuid:summonerInfo.puuid,
+    tagLine:summonerInfo.tagLine,
     name:summonerInfo.displayName,
-    imgUrl:imgUrl,
+    currentId: summonerInfo.summonerId,
     lv:"Lv "+summonerInfo.summonerLevel,
     xp:parseInt(String((summonerInfo.xpSinceLastLevel / summonerInfo.xpUntilNextLevel ) * 100)),
-    puuid:summonerInfo.puuid,
-    currentId: summonerInfo.summonerId,
-    tagLine:summonerInfo.tagLine
+    imgUrl:`https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summonerInfo.profileIconId}.png`
   }
 }
 
 // 查询召唤师排位分数
-export const queryCurrentRankPoint = async ():Promise<string[]> => {
-  const rankPoint = (await invokeLcu("get", '/lol-ranked/v1/current-ranked-stats'))?.queues
+export const queryCurrentRankPoint = async (puuid?:string):Promise<string[]> => {
+  let rankPoint
+  if (puuid===undefined){
+    rankPoint = (await invokeLcu("get", '/lol-ranked/v1/current-ranked-stats'))?.queues
+  }else {
+    rankPoint = (await invokeLcu("get",`/lol-ranked/v1/ranked-stats/${puuid}`))?.queues
+  }
+
   if (rankPoint === undefined) {
     return ['Error','Error','Error']
   }

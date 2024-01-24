@@ -22,11 +22,16 @@ export const dealDivsion = (divsion:string) => {
 // 根据游戏模式ID判断 游戏模式
 export const queryGameType = (queueId:number) => {
   switch (queueId) {
-    case 420 : return '排位赛 单排/双排';
-    case 430 : return '匹配模式';
-    case 440 : return '排位赛 灵活排位';
-    case 450 : return '极地大乱斗';
-    case 1700 : return '斗魂竞技场';
+    case 420 :
+      return '单双排位';
+    case 430 :
+      return '匹配模式';
+    case 440 :
+      return '灵活排位';
+    case 450 :
+      return '极地乱斗';
+    case 1700 :
+      return '斗魂竞技';
   }
   return '其它模式'
 }
@@ -61,6 +66,11 @@ export const getspellImgUrl = (spellId:number) => {
   return 'https://game.gtimg.cn/images/lol/act/img/spell/SummonerMana.png'
 }
 
+// 获取icon元素
+export const getIconEle = (key:string) => {
+  return new URL(`/src/assets/matchImage/${key}.png`, import.meta.url).href
+}
+
 // 通过物品id获取图片地址
 export const getItemImgUrl = (item:number) => {
   if (item == 0 ){
@@ -71,11 +81,12 @@ export const getItemImgUrl = (item:number) => {
   }
 }
 // 判断玩家位置
-export const querySummonerPosition = (lane:string) => {
+export const querySummonerPosition = (lane:string):string => {
   switch (lane) {
     case 'MIDDLE' : return '中单';
     case 'JUNGLE' : return '打野';
     case 'BOTTOM' : return '下路';
+    case 'UTILITY' : return '下路';
     case 'TOP' : return '上单';
     case 'NONE': return '未知'
     default:return '未知'

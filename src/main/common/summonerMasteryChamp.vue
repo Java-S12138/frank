@@ -3,7 +3,7 @@ import {NSpace,NScrollbar,NAvatar, NTag,NLayout, NLayoutSider,NResult} from 'nai
 import {onMounted, ref} from "vue";
 import {queryMasteryChampList} from "@/lcu/aboutSummoner";
 
-const {puuid,existChampList,maxH,pRight} = defineProps<
+const {puuid,existChampList,maxH} = defineProps<
   {puuid:string,existChampList:string[][]|undefined, maxH:number }
 >()
 const champList:any = ref([])

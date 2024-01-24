@@ -38,8 +38,8 @@
       "queryMatch": {
         "file": "src/queryMatch/index.html",
         "frame": false,
-        "width": 1166,
-        "height": 650,
+        "width": 1174,
+        "height": 668,
         "desktop_only": true,
         "resizable": false
       }

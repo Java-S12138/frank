@@ -19,10 +19,11 @@ body {
     font-family: DingTalk;
     -webkit-user-select: none;
 }
+
 .main {
-    height: calc(100vh - 1rem);
-    width: calc(100vw - 1rem);
-    padding: 0.5rem;
+    height: calc(100vh - 1.5rem);
+    width: calc(100vw - 1.5rem);
+    padding: 12px;
     position: relative;
 }
 
@@ -66,9 +67,14 @@ body {
     line-height: 17px;
 }
 
+.text-ss5 {
+    font-size: 15px;
+    line-height: 20px;
+}
+
 .dragDiv {
     width: calc(100vw - 1rem);
-    height: 12px;
+    height: 18px;
     position: absolute;
     top: 0px;
 }

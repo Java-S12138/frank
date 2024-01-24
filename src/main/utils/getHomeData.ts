@@ -4,14 +4,14 @@ import {champDict} from "@/resources/champList";
 import {
   queryMasteryChampList,
   queryCurrentRankPoint,
-  queryCurrentSummonerInfo,
+  querySummonerInfo,
   querySummonerHonorLevel
 } from "@/lcu/aboutSummoner";
 
 
 // 返回首页最终需要的数据
 export const getCurrentSummonerAllInfo = async () => {
-  const summonerInfo = await queryCurrentSummonerInfo()
+  const summonerInfo = await querySummonerInfo()
 
   if (summonerInfo===null) {
     return null

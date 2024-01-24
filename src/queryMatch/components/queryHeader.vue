@@ -10,7 +10,9 @@ const openWeb = () => {
     <div class="flex gap-x-2 items-center">
       <img src="@/assets/icon/app-icon.png" class="h-10" draggable="false">
       <img src="@/assets/icon/Frank.png" draggable="false">
-      <n-button @click="openWeb" size="small" secondary type="tertiary">
+      <n-button
+        @click="openWeb" size="small" style="margin-left: 29px;"
+        secondary type="tertiary">
         lolfrank.cn
       </n-button>
     </div>

@@ -1,3 +1,32 @@
+export interface MatchItem {
+  isLeft: boolean
+  detailInfo: SummonerDetailInfo[],
+  showTypeKey: 'totalDamageDealtToChampions' | 'totalDamageTaken' | 'goldEarned' | 'visionScore' | 'totalMinionsKilled',
+  showTypeIndex: number,
+  querySumDetail: Function
+}
+
+export interface MaxValueList {
+  tddtc: number,
+  tdt: number,
+  ge: number,
+  vs: number,
+  tmk: number
+}
+
+export interface SumDetail {
+  name: string;
+  champImgUrl: string;
+  champLevel: number;
+  kda: string;
+  spell1Id: string;
+  spell2Id: string;
+  runesList: number[];
+  listItemData: any[][];
+  rankData: string[];
+  summonerId: number;
+}
+
 interface Player {
   accountId: number;
   currentAccountId: number;
@@ -9,12 +38,12 @@ interface Player {
   summonerName: string;
 }
 
-interface ParticipantIdentity {
+export interface ParticipantIdentity {
   participantId: number;
   player: Player;
 }
 
-interface Stat {
+export interface Stat {
   assists: number;
   causedEarlySurrender: boolean;
   champLevel: number;
@@ -128,9 +157,11 @@ interface CreepsPerMinDelta {
   "10-20": number;
 }
 
-interface CsDiffPerMinDelta {}
+interface CsDiffPerMinDelta {
+}
 
-interface DamageTakenDiffPerMinDelta {}
+interface DamageTakenDiffPerMinDelta {
+}
 
 interface DamageTakenPerMinDelta {
   "0-10": number;
@@ -142,11 +173,12 @@ interface GoldPerMinDelta {
   "10-20": number;
 }
 
-interface XpDiffPerMinDelta {}
+interface XpDiffPerMinDelta {
+}
 
 interface XpPerMinDelta {
- "0-10": number;
- "10-20": number;
+  "0-10": number;
+  "10-20": number;
 }
 
 interface Timeline {
@@ -162,7 +194,7 @@ interface Timeline {
   xpPerMinDeltas: XpPerMinDelta;
 }
 
-interface Participant {
+export interface Participant {
   championId: number;
   highestAchievedSeasonTier: string;
   participantId: number;
@@ -173,7 +205,30 @@ interface Participant {
   timeline: Timeline;
 }
 
-interface Game {
+interface Ban {
+  championId: number;
+  pickTurn: number;
+}
+
+interface Team {
+  bans: Ban[];
+  baronKills: number;
+  dominionVictoryScore: number;
+  dragonKills: number;
+  firstBaron: boolean;
+  firstBlood: boolean;
+  firstDargon: boolean;
+  firstInhibitor: boolean;
+  firstTower: boolean;
+  inhibitorKills: number;
+  riftHeraldKills: number;
+  teamId: number;
+  towerKills: number;
+  vilemawKills: number;
+  win: string;
+}
+
+export interface GameDetailedInfo {
   gameCreation: number;
   gameCreationDate: string;
   gameDuration: number;
@@ -187,62 +242,84 @@ interface Game {
   platformId: string;
   queueId: number;
   seasonId: number;
-  teams: any[];
+  teams: Team[];
 }
 
-interface Game {
-  gameBeginDate: string;
-  gameCount: number;
-  gameEndDate: string;
-  gameIndexBegin: number;
-  gameIndexEnd: number;
-  games: Game[];
-}
-
-export interface LcuMatchList {
-  accountId: number;
-  games: Game;
-  platformId: string;
-  httpStatus?:number;
-}
-export interface MatchList {
+export interface SummonerDetailInfo {
+  name: string;
   gameId: number;
+  accountId: number;
+  isCurSum: boolean,
+  teamType: number;
+  champLevel: number;
   champImgUrl: string;
-  champ: string;
-  isWin: boolean;
-  kills: number;
-  deaths: number;
-  assists: number;
-  matchTime: string;
-  gameModel: string;
-  queueId:number;
-}
-
-export interface SimpleMatchTypes {
-  champId:number,
-  champImgUrl: string;
-  level: number;
-  isWin: boolean;
-  kills: number;
-  deaths: number;
-  assists: number;
-  matchTime: string;
-  gameModel: string;
   spell1Id: number;
   spell2Id: number;
-  itemList:number[];
-  lane: string;
-  queueId:number;
-}
-export interface SimpleMatchDetailsTypes {
-  gameId:number,
-  champImgUrl: string;
-  isWin: boolean;
+  items: number[];
   kills: number;
   deaths: number;
   assists: number;
-  matchTime: string;
-  startTime: string;
-  gameModel: string;
-  queueId:number;
+  physicalDamageDealtToChampions: number;
+  magicDamageDealtToChampions: number;
+  trueDamageDealtToChampions: number;
+  totalDamageDealtToChampions: number;
+  totalDamageTaken: number;
+  neutralMinionsKilled: number;
+  totalMinionsKill: number;
+  goldEarned: number;
+  goldSpent: number;
+  visionScore: number;
+  wardsPlaced: number;
+  runesList: number[];
+  totalMinionsKilled: number;
+  iconList: string[],
+  score: number,
+  isWin: boolean,
+  isMvp: boolean,
+  showDataDict: ShowDataTypes
+}
+
+export interface ParticipantsInfo {
+  teamOne: SummonerDetailInfo[],
+  teamTwo: SummonerDetailInfo[],
+  headerInfo: string[],
+  queueId:number
+}
+
+export interface MatchHistoryTypes {
+  sumId: number
+  puuid: string,
+  begIndex: string,
+  endIndex: string,
+  openSumDetailDrawer: Function,
+  matchMode: string
+}
+
+export interface MaxMatchData {
+  kills: number;
+  assists: number;
+  turretKills: number;
+  totalDamageDealtToChampions: number;
+  totalMinionsKilled: number;
+  goldEarned: number;
+  totalDamageTaken: number;
+  visionScore: number;
+}
+export interface PropertiesToCompareTypes {
+  kills: number;
+  assists: number;
+  turretKills: number;
+  totalDamageDealtToChampions: number;
+  totalMinionsKilled: number;
+  goldEarned: number;
+  totalDamageTaken: number;
+  visionScore: number;
+}
+
+export interface ShowDataTypes {
+  totalDamageDealtToChampions: number,
+  totalDamageTaken: number,
+  goldEarned: number,
+  visionScore: number,
+  totalMinionsKilled: number
 }
