@@ -18,9 +18,10 @@ export interface SumDetail {
   name: string;
   champImgUrl: string;
   champLevel: number;
+  platformId: number;
   kda: string;
-  spell1Id: string;
-  spell2Id: string;
+  spell1Id: number;
+  spell2Id: number;
   runesList: number[];
   listItemData: any[][];
   rankData: string[];
@@ -36,11 +37,19 @@ interface Player {
   profileIcon: number;
   summonerId: number;
   summonerName: string;
+  puuid:string;
 }
 
 export interface ParticipantIdentity {
   participantId: number;
   player: Player;
+}
+
+export interface SumPlatInfo {
+  platformId: string;
+  puuid: string;
+  name: string;
+  summonerId: number;
 }
 
 export interface Stat {
@@ -247,8 +256,9 @@ export interface GameDetailedInfo {
 
 export interface SummonerDetailInfo {
   name: string;
-  gameId: number;
   accountId: number;
+  puuid:string;
+  platformId:string;
   isCurSum: boolean,
   teamType: number;
   champLevel: number;
@@ -283,7 +293,8 @@ export interface ParticipantsInfo {
   teamOne: SummonerDetailInfo[],
   teamTwo: SummonerDetailInfo[],
   headerInfo: string[],
-  queueId:number
+  queueId:number,
+  gameId:number
 }
 
 export interface MatchHistoryTypes {

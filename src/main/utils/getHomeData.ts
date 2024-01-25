@@ -3,7 +3,7 @@ import {champDict} from "@/resources/champList";
 
 import {
   queryMasteryChampList,
-  queryCurrentRankPoint,
+  queryRankPoint,
   querySummonerInfo,
   querySummonerHonorLevel
 } from "@/lcu/aboutSummoner";
@@ -18,7 +18,7 @@ export const getCurrentSummonerAllInfo = async () => {
   }
 
   const [rankList, champLevel, honorData] = await Promise.all([
-    queryCurrentRankPoint(),
+    queryRankPoint(),
     queryMasteryChampList(summonerInfo.puuid),
     querySummonerHonorLevel(),
   ])

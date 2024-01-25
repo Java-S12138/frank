@@ -3,7 +3,7 @@ import {
   SummonerDetailInfo,
   ParticipantsInfo,
   Participant,
-  MaxMatchData, Stat, ShowDataTypes, ParticipantIdentity, PropertiesToCompareTypes
+  MaxMatchData, Stat, ShowDataTypes, ParticipantIdentity, PropertiesToCompareTypes, SumPlatInfo
 } from "./MatchDetail"
 import {queryGameType} from "@/lcu/utils"
 import {champDict} from "@/resources/champList";
@@ -31,7 +31,7 @@ export default class MatchDetails {
     if (response.queueId === 1700){
       return this.getFighterParticipantsDetails(response,response.participants, response.participantIdentities,gameId,sumId,response.queueId)
     }
-    return this.getParticipantsDetails(response,response.participants, response.participantIdentities,gameId,sumId,response.queueId)
+    return this.getParticipantsDetails(response,response.participants, response.participantIdentities,sumId,response.queueId,gameId)
   }
 
   private init() {
@@ -49,22 +49,22 @@ export default class MatchDetails {
   }
 
   // 获取召唤师participants下面的详细数据
-  private getParticipantsDetails = (res:GameDetailedInfo,participants:Participant[], participantIdentities: ParticipantIdentity[],gameId:number,sumId:number,queId:number):null|ParticipantsInfo => {
+  private getParticipantsDetails = (res:GameDetailedInfo,participants:Participant[], participantIdentities: ParticipantIdentity[],sumId:number,queId:number,gameId:number):null|ParticipantsInfo => {
     if (participants?.length !== 10){
       return null
     }
 
-    const titleList = this.getDetailsTitle(res.gameCreation,res.gameDuration,res.queueId)
+    const titleList = this.getDetailsTitle(res.gameCreation,res.gameDuration,queId)
     const maxMatchData = this.getMaxField(participants)
-    const participantsInfo:ParticipantsInfo = {teamOne:[],teamTwo:[],headerInfo:[],queueId:queId}
+    const participantsInfo:ParticipantsInfo = {teamOne:[],teamTwo:[],headerInfo:[],queueId:queId,gameId:gameId}
     const nameList = this.getparticipantIdAndName(participantIdentities)
 
     for (let i = 0; i < 5; i++) {
       this.team100Kills += participants[i].stats.kills;this.team200Kills += participants[i + 5].stats.kills
       this.team100GoldEarned += participants[i].stats.goldEarned;this.team200GoldEarned += participants[i+5].stats.goldEarned
 
-      participantsInfo.teamOne.push(this.analyticalData(participants[i],nameList[i],gameId,maxMatchData,sumId))
-      participantsInfo.teamTwo.push(this.analyticalData(participants[i+5],nameList[i+5],gameId,maxMatchData,sumId))
+      participantsInfo.teamOne.push(this.analyticalData(participants[i],nameList[i],maxMatchData,sumId))
+      participantsInfo.teamTwo.push(this.analyticalData(participants[i+5],nameList[i+5],maxMatchData,sumId))
     }
     participantsInfo.teamOne[this.queryMvpIndex(participantsInfo.teamOne).index].isMvp = true
     participantsInfo.teamTwo[this.queryMvpIndex(participantsInfo.teamTwo).index].isMvp = true
@@ -74,7 +74,7 @@ export default class MatchDetails {
     return participantsInfo
   }
   // 解析对局数据
-  private analyticalData  = (participant:Participant,nameList: {name: string, summonerId: number},gameId:number,maxMatchData:MaxMatchData,sumId:number):SummonerDetailInfo => {
+  private analyticalData  = (participant:Participant,nameList: SumPlatInfo,maxMatchData:MaxMatchData,sumId:number):SummonerDetailInfo => {
     const iconList = this.getIconList(participant.stats,maxMatchData)
     const checkAndPushIcon = (stats:Stat, condition:(stats:Stat) => boolean, iconName:string) =>  {
       if (condition(stats)) {
@@ -98,8 +98,9 @@ export default class MatchDetails {
 
     return{
       name: nameList.name,
-      gameId:gameId,
       accountId:nameList.summonerId,
+      puuid:nameList.puuid,
+      platformId:nameList.platformId,
       isCurSum:nameList.summonerId===sumId?true:false,
       teamType: participant.teamId,
       champLevel:participant.stats.champLevel,
@@ -146,9 +147,11 @@ export default class MatchDetails {
   }
   // 获取召唤师participantId 和 name
   private getparticipantIdAndName = (participantIdentities:ParticipantIdentity[]) => {
-    let dataList = []
+    let dataList:SumPlatInfo[] = []
     for (const participantIdentity of participantIdentities) {
       dataList.push({
+        platformId:participantIdentity.player.platformId,
+        puuid:participantIdentity.player.puuid,
         name: participantIdentity.player.summonerName,
         summonerId:participantIdentity.player.summonerId})
     }
@@ -281,15 +284,15 @@ export default class MatchDetails {
       const result = []
       const maxMatchData = this.getMaxField(participants)
       for (let i = 0; i < nameList.length; i++) {
-        result.push(this.analyticalData(participants[i],nameList[i],gameId,maxMatchData,sumId))
+        result.push(this.analyticalData(participants[i],nameList[i],maxMatchData,sumId))
       }
       result.sort((a, b) => b.goldEarned - a.goldEarned)
 
       return {
-        headerInfo:titleList,teamOne:result,teamTwo:[],queueId:queId
+        headerInfo:titleList,teamOne:result,teamTwo:[],queueId:queId,gameId:gameId
       }
     }catch (e) {
-      return {headerInfo: <string[]>[],teamOne: [],teamTwo:[],queueId:queId}
+      return {headerInfo: <string[]>[],teamOne: [],teamTwo:[],queueId:queId,gameId:gameId}
     }
   }
 }

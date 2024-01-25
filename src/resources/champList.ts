@@ -1449,6 +1449,14 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
     "roles": [
       "assassin"
     ]
+  },
+  "901": {
+    "label": "炽炎雏龙",
+    "alias": "Smolder",
+    "title": "斯莫德",
+    "roles": [
+      "marksman"
+    ]
   }
 }
 export const optionsChampion = [
@@ -1956,6 +1964,10 @@ export const optionsChampion = [
     'value': '950',
     'label': '百裂冥犬'
   },
+  {
+    'value': '901',
+    'label': '炽炎雏龙'
+  }
 ]
 export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } = {
   'Annie': {'label': '黑暗之女', 'name': '安妮'},
@@ -2124,6 +2136,7 @@ export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } =
   'Naafiri': {'label': '百裂冥犬', 'name': '纳亚菲利'},
   'Briar': {'label': '狂厄蔷薇', 'name': '贝蕾亚'},
   'Hwei': {'label': '异画师', 'name': '彗'},
+  'Smolder': {'label': '炽炎雏龙', 'name': '斯莫德'},
 }
 export const aliasToId:{ [key: string]: number } = {
   "Annie": 1,
@@ -2292,6 +2305,7 @@ export const aliasToId:{ [key: string]: number } = {
   "Naafiri": 950,
   "Briar": 233,
   "Hwei": 910,
+  "Smolder": 901,
 }
 export const keywordsList = [
   {
@@ -3123,5 +3137,10 @@ export const keywordsList = [
     "alias": "Naafiri",
     "name": "百裂冥犬",
     "keywords": "百裂冥犬,纳亚菲利,bailiemingquan,nayafeili"
+  },
+  {
+    "alias": "Smolder",
+    "name": "炽炎雏龙",
+    "keywords": "炽炎雏龙,斯莫德,chiyanchulong,simode,cycl,smd"
   }
 ]

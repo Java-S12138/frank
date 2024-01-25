@@ -66,11 +66,6 @@ export const getspellImgUrl = (spellId:number) => {
   return 'https://game.gtimg.cn/images/lol/act/img/spell/SummonerMana.png'
 }
 
-// 获取icon元素
-export const getIconEle = (key:string) => {
-  return new URL(`/src/assets/matchImage/${key}.png`, import.meta.url).href
-}
-
 // 通过物品id获取图片地址
 export const getItemImgUrl = (item:number) => {
   if (item == 0 ){

@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import {NIcon, NSpace, NButton, NPopover, NPopconfirm, NDropdown, NDrawer, NDrawerContent} from 'naive-ui'
+import {NIcon, NSpace, NButton, NPopconfirm, NDropdown, NDrawer} from 'naive-ui'
 import {CircleMinus, Settings, CircleX} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
-import {DashboardProps} from "./types";
 import Setting from "@/main/common/setting.vue";
-import ChampDetail from "@/main/views/rank/champDetail.vue";
 
 onMounted(() => {
   if (isSubscribe==='t'){
@@ -76,26 +74,16 @@ const handleSub = (key:number) => {
     </n-dropdown>
 
     <n-space class="pt-3" :size=[6,0]>
-      <n-popover placement="left" :show-arrow="false">
-        <template #trigger>
-          <n-button style="margin-right: 2px;" @click="handleMin" text>
-            <n-icon size="20">
-              <circle-minus/>
-            </n-icon>
-          </n-button>
-        </template>
-        隐身
-      </n-popover>
-      <n-popover placement="left" :show-arrow="false">
-        <template #trigger>
-          <n-button text circle @click="isShowDrawer=true">
-            <n-icon size="20">
-              <settings/>
-            </n-icon>
-          </n-button>
-        </template>
-        设置
-      </n-popover>
+      <n-button style="margin-right: 2px;" @click="handleMin" text>
+        <n-icon size="20">
+          <circle-minus/>
+        </n-icon>
+      </n-button>
+      <n-button text circle @click="isShowDrawer=true">
+        <n-icon size="20">
+          <settings/>
+        </n-icon>
+      </n-button>
       <n-popconfirm
         @positive-click="handleClose" :show-icon="false">
         <template #trigger>

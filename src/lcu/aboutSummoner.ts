@@ -26,7 +26,7 @@ export const querySummonerInfo = async (summonerId?:number,summonerName?:string)
 }
 
 // 查询召唤师排位分数
-export const queryCurrentRankPoint = async (puuid?:string):Promise<string[]> => {
+export const queryRankPoint = async (puuid?:string):Promise<string[]> => {
   let rankPoint
   if (puuid===undefined){
     rankPoint = (await invokeLcu("get", '/lol-ranked/v1/current-ranked-stats'))?.queues

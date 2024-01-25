@@ -6,7 +6,7 @@ export const themeOverrides: GlobalThemeOverrides = {
     paddingSmall:'0.75rem'
   },
   Drawer:{
-    bodyPadding:'0.5rem 0.5rem'
+    bodyPadding:'0.5rem'
   },
   Button:{
     borderRadiusSmall:'0.25rem',

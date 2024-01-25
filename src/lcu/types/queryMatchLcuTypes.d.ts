@@ -241,6 +241,7 @@ export interface SimpleMatchDetailsTypes {
   kills: number;
   deaths: number;
   assists: number;
+  kda: number;
   matchTime: string;
   startTime: string;
   gameModel: string;

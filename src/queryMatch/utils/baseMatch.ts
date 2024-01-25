@@ -1,4 +1,4 @@
-import {queryCurrentRankPoint, querySummonerInfo} from "@/lcu/aboutSummoner"
+import {queryRankPoint, querySummonerInfo} from "@/lcu/aboutSummoner"
 import {Game, SimpleMatchDetailsTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {isRevGames, queryMatchHistory} from "@/lcu/aboutMatch";
 import {champDict} from "@/resources/champList";
@@ -8,7 +8,7 @@ export default class BaseMatch {
   public gerSummonerInfo = async (summonerId?: number, summonerName?: string) => {
     const summonerInfo = await querySummonerInfo(summonerId, summonerName)
     if (summonerInfo !== null) {
-      const rankList = await queryCurrentRankPoint(summonerInfo.puuid)
+      const rankList = await queryRankPoint(summonerInfo.puuid)
       return {summonerInfo,rankList}
     }
     return null
@@ -32,17 +32,24 @@ export default class BaseMatch {
 
   public getSimpleMatch = (match: Game): SimpleMatchDetailsTypes => {
     const times = this.timestampToDate(match.gameCreation)
+    const kills = match.participants[0].stats.kills
+    const deaths = match.participants[0].stats.deaths
+    const assists = match.participants[0].stats.assists
+    const kda = deaths===0? kills+assists : Math.round((kills+assists)/deaths*3)
+
     return {
       gameId:match.gameId,
       champImgUrl: `${champDict[String(match.participants[0].championId)].alias}.png`,
       // 是否取得胜利
       isWin: match.participants[0].stats.win === true ? true : false,
       // 击杀数目
-      kills: match.participants[0].stats.kills,
+      kills: kills,
       // 死亡数目
-      deaths: match.participants[0].stats.deaths,
+      deaths: deaths,
       // 助攻数目
-      assists: match.participants[0].stats.assists,
+      assists: assists,
+      //kda
+      kda: kda,
       // 游戏时间
       matchTime: times[1],
       // 开始时间 22:00
