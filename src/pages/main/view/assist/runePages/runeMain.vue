@@ -55,7 +55,3 @@ const setupAutoRune = (type:string) => {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

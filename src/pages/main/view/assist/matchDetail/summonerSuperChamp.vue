@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import {NSpace,NScrollbar,NAvatar, NTag, NSkeleton,NLayout, NLayoutSider, NLayoutContent,} from 'naive-ui'
+import {NSpace,NScrollbar,NAvatar, NTag,NLayout, NLayoutSider, NLayoutContent,} from 'naive-ui'
 import {onMounted, PropType, ref} from "vue";
 import DrawerError from "./drawerError.vue";
 import {queryChampList} from "../../../lcu/assistMatchDetailLcu";
