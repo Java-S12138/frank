@@ -14,7 +14,7 @@ onMounted(() => {
     champList.value = existChampList
   }else {
     queryMasteryChampList(puuid).then((value) => {
-      if (value.length === 0){
+      if (value === null){
         champList.value = null
       }else {
         champList.value = value
@@ -25,7 +25,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <n-scrollbar v-if="champList.length ===0 " :style="stylySco">
+  <n-scrollbar v-if="champList.length === 0 " :style="stylySco">
     <n-space vertical :size="[0,15]" style="margin-top: 3px">
       <div class="flex" v-for="i in 6">
         <n-skeleton height="50px" width="50px" :sharp="false" style="margin-right: 8px;"/>

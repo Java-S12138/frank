@@ -27,6 +27,7 @@ interface IRerollPoint {
 
 export interface summonerInfo {
   name:string,
+  privacy:string,
   imgUrl:string,
   lv:string|number,
   xp:number,

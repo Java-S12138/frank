@@ -80,7 +80,6 @@ const rankRender = [
     <n-card size="small" class="mt-3 shadow" content-style="padding-top:10px">
       <summoner-mastery-champ
         :max-h="313"
-        :key="sumInfo.info.puuid"
         :puuid="sumInfo.info.puuid"
         :exist-champ-list="undefined"/>
     </n-card>

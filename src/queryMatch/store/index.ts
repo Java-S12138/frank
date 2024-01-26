@@ -13,7 +13,7 @@ const useMatchStore = defineStore('useMatchStore', {
     return {
       summonerId: -1,
       localSumId: -1,
-      matchList: [] as SimpleMatchDetailsTypes[],
+      matchList: [] as SimpleMatchDetailsTypes[]|null,
       participantsInfo: null as null|ParticipantsInfo,
       sumInfo: null as { info: summonerInfo, rank: string[] } | null
     }
@@ -36,11 +36,16 @@ const useMatchStore = defineStore('useMatchStore', {
         return false
       }
       const matchItems =
-        await baseMatch.dealMatchHistory(this.sumInfo.info.puuid, (page-1)*8, page*8)
+        await baseMatch.dealMatchHistory(this.sumInfo.info.puuid, (page-1)*9, page*9-1)
       // 获取战绩详细数据
-      if (matchItems.length === 0) {
+      if (matchItems === null) {
+        this.matchList = null
+        return false
+      }else if (matchItems.length === 0) {
+        this.matchList = []
         return false
       }
+
       this.getMatchDetail(matchItems[0].gameId)
       this.matchList = matchItems
       return true

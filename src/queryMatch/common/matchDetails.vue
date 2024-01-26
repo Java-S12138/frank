@@ -6,7 +6,8 @@ import {getItemImgUrl, getspellImgUrl} from "@/lcu/utils";
 const {summonerList,curSumId,isOne} = defineProps<{
   summonerList:SummonerDetailInfo[],
   curSumId:number,
-  isOne:boolean
+  isOne:boolean,
+  showMode:string
 }>()
 
 const emits = defineEmits(['openDrawer'])
@@ -101,7 +102,7 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
       <div class='progressDivP'>
         <n-tag style="height: 26px;width: 50px;justify-content: center"
                size="small" :bordered="false" class="text-gray-400">
-          {{ summoner.totalDamageDealtToChampions }}
+          {{ summoner[showMode] }}
         </n-tag>
         <div class="flex-grow flex flex-col h-full justify-between">
           <div class='matchIconImgDiv'>
@@ -116,9 +117,9 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
               </template>
               <span>{{ icon[0] }}</span>
             </n-popover>
-
           </div>
-          <p :style="'width:'+summoner.showDataDict.totalDamageDealtToChampions"
+          <p :style="'width:'+summoner.showDataDict[showMode]"
+             :key="showMode"
              :class="isOne?'scale-in-hor-left champAvatarColorRed progressP':'scale-in-hor-left champAvatarColorBlue progressP'"
           />
         </div>

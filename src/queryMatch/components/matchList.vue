@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {NAvatar,NSpace, NTag,NList,NListItem,NIcon} from "naive-ui";
 import {ThumbUp,ThumbDown} from "@vicons/tabler"
 import useMatchStore from "@/queryMatch/store";
 
 const curMatch = ref(0)
 const matchStore = useMatchStore()
+
+watch(() => matchStore.matchList,() => {
+  curMatch.value = 0
+  console.log(123)
+})
 
 const renderMatch = (index:number,gameId:number) => {
   curMatch.value = index

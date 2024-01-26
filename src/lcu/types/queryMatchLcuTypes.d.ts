@@ -173,7 +173,7 @@ interface Participant {
   timeline: Timeline;
 }
 
-interface Game {
+interface Games {
   gameCreation: number;
   gameCreationDate: string;
   gameDuration: number;
@@ -196,14 +196,13 @@ interface Game {
   gameEndDate: string;
   gameIndexBegin: number;
   gameIndexEnd: number;
-  games: Game[];
+  games: Games[];
 }
 
 export interface LcuMatchList {
   accountId: number;
   games: Game;
   platformId: string;
-  httpStatus?:number;
 }
 export interface MatchList {
   gameId: number;

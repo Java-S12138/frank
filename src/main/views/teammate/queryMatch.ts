@@ -1,5 +1,5 @@
-import {isRevGames, queryMatchHistory} from "@/lcu/aboutMatch";
-import {Game, SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
+import {queryMatchHistory} from "@/lcu/aboutMatch";
+import {Games, SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {champDict} from "@/resources/champList";
 import {querySummonerPosition} from "@/lcu/utils";
 
@@ -32,7 +32,7 @@ export class QueryMatch {
     return '其它'
   }
 
-  public getSimpleMatch = (match: Game): SimpleMatchTypes => {
+  public getSimpleMatch = (match: Games): SimpleMatchTypes => {
     return {
       champId:match.participants[0].championId,
       champImgUrl: `${champDict[String(match.participants[0].championId)].alias}.png`,
@@ -72,14 +72,10 @@ export class QueryMatch {
     if (matchList === null) {
       return []
     }
-    if (matchList?.games?.games?.length === 0 || matchList?.games?.games === undefined) {
-      return []
-    }
 
-    return isRevGames(matchList.games.games)
-      .map((matchListElement) => {
+    return matchList.map((matchListElement) => {
         return this.getSimpleMatch(matchListElement)
-      })
+    })
   }
   // query the record of a specific mode
   public querySpecialMatch = async (puuid: string, matchHis20: SimpleMatchTypes[]) => {

@@ -17,6 +17,12 @@ const {teamOne,teamTwo,headerInfo,summonerId} = defineProps<{
 
 const isMatchDra = ref(false)
 const curMatchDraData:Ref<null|SumDetail> = ref(null)
+const titleArr = [['totalDamageDealtToChampions','输出伤害'],['totalDamageTaken','承受伤害'],['goldEarned','商店存款'],['visionScore','视野得分'],['totalMinionsKilled','击杀小兵']]
+const rotatedIndex = ref(0)
+
+const changeShowMode = () => {
+  rotatedIndex.value = (rotatedIndex.value += 1) % titleArr.length
+}
 
 const openMatchDra = async (isOne,index) => {
   const summonerInfo:SummonerDetailInfo = isOne ? teamOne[index] : teamTwo[index]
@@ -60,17 +66,19 @@ const searchSummoner = () => {
 </script>
 
 <template>
-  <match-con-header :title-list="headerInfo"/>
+  <match-con-header :title="titleArr[rotatedIndex][1]" :title-list="headerInfo" :change-show="changeShowMode"/>
   <div class="flex justify-between">
     <match-details
       @open-drawer="openMatchDra"
       :summoner-list="teamOne"
       :cur-sum-id="summonerId"
+      :show-mode="titleArr[rotatedIndex][0]"
       :is-one="true"/>
     <match-details
       @open-drawer="openMatchDra"
       :summoner-list="teamTwo"
       :cur-sum-id="summonerId"
+      :show-mode="titleArr[rotatedIndex][0]"
       :is-one="false"/>
   </div>
   <n-drawer v-model:show="isMatchDra"

@@ -104,7 +104,7 @@ const getImgUrl = (rune: number) => {
       </n-list>
     <n-button type="success" :bordered="false" @click="searchSummoner"
               style="margin-top: 8px;width: 100%;">
-      查看详细战绩
+      查询详细战绩
     </n-button>
   </n-drawer-content>
 </template>

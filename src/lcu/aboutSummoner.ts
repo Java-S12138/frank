@@ -18,6 +18,7 @@ export const querySummonerInfo = async (summonerId?:number,summonerName?:string)
   }
 
   return {
+    privacy:summonerInfo.privacy,
     puuid:summonerInfo.puuid,
     tagLine:summonerInfo.tagLine,
     name:summonerInfo.displayName,
@@ -77,6 +78,6 @@ export const queryMasteryChampList = async (summonerPuuid: string) => {
       ]])
     }, [])
   } catch (e) {
-    return []
+    return null
   }
 }

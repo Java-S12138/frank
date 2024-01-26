@@ -53,6 +53,11 @@ const searchSum = async () => {
     clearVal()
     return
   }
+  if (sumInfo.privacy !== 'PUBLIC'){
+    message.error('当前召唤师战绩为隐藏状态')
+    clearVal()
+    return
+  }
   matchStore.init(sumInfo.currentId)
   clearVal()
 }
@@ -82,7 +87,6 @@ const backSelf  = () => {
   clearVal()
 }
 const pageChange = (page:number) => {
-  console.log(page)
   matchStore.getMatchList(page)
 }
 </script>
@@ -104,7 +108,7 @@ const pageChange = (page:number) => {
         @click="backSelf"
         size="small" style="margin-left: 30px;width: 90.41px"
         secondary type="info">
-        查看自己
+        Back Self
       </n-button>
     </div>
     <div class="flex-grow flex items-center gap-x-3">

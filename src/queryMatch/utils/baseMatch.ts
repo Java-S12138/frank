@@ -1,6 +1,6 @@
 import {queryRankPoint, querySummonerInfo} from "@/lcu/aboutSummoner"
-import {Game, SimpleMatchDetailsTypes} from "@/lcu/types/queryMatchLcuTypes";
-import {isRevGames, queryMatchHistory} from "@/lcu/aboutMatch";
+import {Games, SimpleMatchDetailsTypes} from "@/lcu/types/queryMatchLcuTypes";
+import {queryMatchHistory} from "@/lcu/aboutMatch";
 import {champDict} from "@/resources/champList";
 
 export default class BaseMatch {
@@ -14,23 +14,19 @@ export default class BaseMatch {
     return null
   }
 
-  public dealMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<SimpleMatchDetailsTypes[]> => {
+  public dealMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<SimpleMatchDetailsTypes[]|null> => {
     const matchList = await queryMatchHistory(puuid, begIndex, endIndex)
 
     if (matchList === null) {
-      return []
-    }
-    if (matchList?.games?.games?.length === 0 || matchList?.games?.games === undefined) {
-      return []
+      return null
     }
 
-    return isRevGames(matchList.games.games)
-      .map((matchListElement) => {
+    return matchList.map((matchListElement) => {
         return this.getSimpleMatch(matchListElement)
       })
   }
 
-  public getSimpleMatch = (match: Game): SimpleMatchDetailsTypes => {
+  public getSimpleMatch = (match: Games): SimpleMatchDetailsTypes => {
     const times = this.timestampToDate(match.gameCreation)
     const kills = match.participants[0].stats.kills
     const deaths = match.participants[0].stats.deaths
