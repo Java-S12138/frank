@@ -73,8 +73,8 @@ const handleSub = (key:number) => {
       </n-button>
     </n-dropdown>
 
-    <n-space class="pt-3" :size=[6,0]>
-      <n-button style="margin-right: 2px;" @click="handleMin" text>
+    <n-space class="pt-3" :size=[8,0]>
+      <n-button @click="handleMin" text>
         <n-icon size="20">
           <circle-minus/>
         </n-icon>
@@ -87,7 +87,7 @@ const handleSub = (key:number) => {
       <n-popconfirm
         @positive-click="handleClose" :show-icon="false">
         <template #trigger>
-          <n-button text circle class="ml-0.5">
+          <n-button text circle>
             <n-icon size="20">
               <circle-x/>
             </n-icon>

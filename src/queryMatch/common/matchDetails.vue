@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NAvatar,NSpace, NTag,NPopover} from "naive-ui"
+import {NAvatar,NSpace, NTag,NPopover,NEllipsis} from "naive-ui"
 import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 import {getItemImgUrl, getspellImgUrl} from "@/lcu/utils";
 
@@ -85,7 +85,9 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
             <text size="tiny" class="nameDiv"
                   :class="curSumId===summoner.accountId?'nameDiv currentSumColor slideSum':'nameDiv text-gray-400'"
                   :bordered="false">
-              {{ summoner.name }}
+              <n-ellipsis style="max-width: 170px">
+                {{ summoner.name }}
+              </n-ellipsis>
             </text>
             <!--        kda-->
             <n-tag class="kdaDiv" size="tiny" :bordered="false">

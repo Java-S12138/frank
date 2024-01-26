@@ -13,6 +13,9 @@ export const querySummonerInfo = async (summonerId?:number,summonerName?:string)
   }else {
     summonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
   }
+  if (summonerInfo?.summonerId===undefined){
+    return null
+  }
 
   return {
     puuid:summonerInfo.puuid,

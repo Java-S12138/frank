@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NSpace,NScrollbar,NAvatar, NTag,NLayout, NLayoutSider,NResult} from 'naive-ui'
+import {NSpace,NScrollbar,NAvatar, NTag,NLayout, NLayoutSider,NResult,NSkeleton} from 'naive-ui'
 import {onMounted, ref} from "vue";
 import {queryMasteryChampList} from "@/lcu/aboutSummoner";
 
@@ -10,7 +10,7 @@ const champList:any = ref([])
 const stylySco = `max-height:${maxH}px;padding-right: 13px`
 
 onMounted(() => {
-  if (existChampList!==undefined){
+  if (existChampList !== undefined){
     champList.value = existChampList
   }else {
     queryMasteryChampList(puuid).then((value) => {
@@ -25,7 +25,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <n-scrollbar v-if="champList !== null" :style="stylySco">
+  <n-scrollbar v-if="champList.length ===0 " :style="stylySco">
+    <n-space vertical :size="[0,15]" style="margin-top: 3px">
+      <div class="flex" v-for="i in 6">
+        <n-skeleton height="50px" width="50px" :sharp="false" style="margin-right: 8px;"/>
+        <div class="flex-grow flex flex-col justify-between">
+          <n-skeleton height="22px" width="100%" :sharp="false" />
+          <n-skeleton height="22px" width="100%" :sharp="false" />
+        </div>
+      </div>
+    </n-space>
+  </n-scrollbar>
+  <n-scrollbar v-else-if="champList.length !== 0" :style="stylySco">
     <div>
       <n-space vertical :size="[0,15]" style="margin-top: 3px">
         <n-layout v-for="champ in champList"

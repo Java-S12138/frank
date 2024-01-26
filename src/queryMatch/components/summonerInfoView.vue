@@ -78,7 +78,11 @@ const rankRender = [
       <!--    排位数据-->
     </n-card>
     <n-card size="small" class="mt-3 shadow" content-style="padding-top:10px">
-      <summoner-mastery-champ :max-h="313" puuid="c9b0fd7a-59cd-54c6-bf7e-6b5241ebee84" :exist-champ-list="undefined"/>
+      <summoner-mastery-champ
+        :max-h="313"
+        :key="sumInfo.info.puuid"
+        :puuid="sumInfo.info.puuid"
+        :exist-champ-list="undefined"/>
     </n-card>
   </div>
 </template>

@@ -56,7 +56,6 @@ const renderMatch = (index:number,gameId:number) => {
              <text class="text-xs text-gray-400">{{ match.startTime }}</text>
            </div>
            <text class="text-xs text-gray-400">{{ match.gameModel }}</text>
-
          </div>
         </n-space>
       </n-space>

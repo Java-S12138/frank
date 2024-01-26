@@ -24,22 +24,26 @@ const useMatchStore = defineStore('useMatchStore', {
       if (sumResult === null) {
         return
       }
-      if (summonerId===undefined){
+      if (summonerId === undefined){
         this.localSumId = sumResult.summonerInfo.currentId
       }
-
-      this.sumInfo = {info: sumResult.summonerInfo, rank: sumResult.rankList}
-      const sumId = sumResult.summonerInfo.currentId
-      const matchItems = await baseMatch.dealMatchHistory(sumResult.summonerInfo.puuid, 0, 8)
-
+      this.sumInfo = { info: sumResult.summonerInfo, rank: sumResult.rankList }
+      this.summonerId = sumResult.summonerInfo.currentId
+      await this.getMatchList()
+    },
+    async getMatchList(page=1){
+      if (this.sumInfo === null){
+        return false
+      }
+      const matchItems =
+        await baseMatch.dealMatchHistory(this.sumInfo.info.puuid, (page-1)*8, page*8)
       // 获取战绩详细数据
       if (matchItems.length === 0) {
-        return
+        return false
       }
-
-      this.summonerId = sumId
-      this.matchList = matchItems
       this.getMatchDetail(matchItems[0].gameId)
+      this.matchList = matchItems
+      return true
     },
     async getMatchDetail(gameId: number) {
       this.participantsInfo = await matchDetials.queryGameDetail(gameId, this.summonerId)
