@@ -41,8 +41,11 @@ matchStore.init()
               size="large"
               status="404"
               title="召唤师数据为空"
-              description="生活总归带点荒谬"
+              description="此页数不存在数据，请返回前一页"
             >
+              <template #footer>
+                生活总归带点荒谬
+              </template>
             </n-result>
           </div>
         </n-card>

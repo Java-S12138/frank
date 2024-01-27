@@ -74,12 +74,12 @@ const handleSub = (key:number) => {
     </n-dropdown>
 
     <n-space class="pt-3" :size=[8,0]>
-      <n-button @click="handleMin" text>
+      <n-button :focusable="false" @click="handleMin" text>
         <n-icon size="20">
           <circle-minus/>
         </n-icon>
       </n-button>
-      <n-button text circle @click="isShowDrawer=true">
+      <n-button :focusable="false" text circle @click="isShowDrawer=true">
         <n-icon size="20">
           <settings/>
         </n-icon>

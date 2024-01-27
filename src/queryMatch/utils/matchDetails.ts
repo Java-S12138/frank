@@ -8,6 +8,7 @@ import {
 import {queryGameType} from "@/lcu/utils"
 import {champDict} from "@/resources/champList";
 import {invokeLcu} from "@/lcu";
+import {TencentRsoPlatformId} from "@/resources/areaList";
 
 export default class MatchDetails {
   private team100Kills = 0
@@ -100,7 +101,6 @@ export default class MatchDetails {
       name: nameList.name,
       accountId:nameList.summonerId,
       puuid:nameList.puuid,
-      platformId:nameList.platformId,
       isCurSum:nameList.summonerId===sumId?true:false,
       teamType: participant.teamId,
       champLevel:participant.stats.champLevel,
@@ -142,15 +142,14 @@ export default class MatchDetails {
       score: this.analyseSingleMatch(participant.stats),
       isWin:participant.stats.win,
       isMvp:false,
-      showDataDict:showDataDict
+      showDataDict:showDataDict,
     }
   }
   // 获取召唤师participantId 和 name
   private getparticipantIdAndName = (participantIdentities:ParticipantIdentity[]) => {
-    let dataList:SumPlatInfo[] = []
+    const dataList:SumPlatInfo[] = []
     for (const participantIdentity of participantIdentities) {
       dataList.push({
-        platformId:participantIdentity.player.platformId,
         puuid:participantIdentity.player.puuid,
         name: participantIdentity.player.summonerName,
         summonerId:participantIdentity.player.summonerId})
@@ -165,7 +164,10 @@ export default class MatchDetails {
     const minutes = date.getMinutes().toString().padStart(2, '0')
     return [
       `${hours} : ${minutes}`,
-      (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-' + date.getDate()
+      (date.getMonth() + 1 < 10 ?
+        '0' + (date.getMonth() + 1) :
+        date.getMonth() + 1)
+      + '-' + (date.getDate() <10 ? '0'+date.getDate() : date.getDate())
     ]
   }
 

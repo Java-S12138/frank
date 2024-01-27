@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {NMessageProvider, NConfigProvider, zhCN, darkTheme} from 'naive-ui'
+import {NConfigProvider, zhCN, darkTheme} from 'naive-ui'
 import {themeOverrides} from "../main/utils/theme";
-import QueryMatch from "./queryMatch.vue"
+import RecentMatch from "./recentMatch.vue";
 
-const theme = localStorage.getItem('theme')  || 'light'
+const theme = localStorage.getItem('theme') || 'light'
 
 if (theme === 'dark') {
   document.documentElement.classList.add('dark')
@@ -16,9 +16,7 @@ if (theme === 'dark') {
     :theme-overrides="themeOverrides"
     :theme="theme === 'dark' ? darkTheme :null"
   >
-    <n-message-provider :placement="'bottom'">
-      <QueryMatch/>
-    </n-message-provider>
+    <recent-match/>
   </n-config-provider>
 </template>
 

@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import {NDrawerContent, NAvatar, NSpace, NTag, NList, NListItem, NButton} from "naive-ui"
 import {SumDetail} from "@/queryMatch/utils/MatchDetail";
-import {getspellImgUrl} from "@/lcu/utils";
+import {getspellImgUrl,gerNoneImg} from "@/lcu/utils";
 
 const {personalDetails,searchSummoner} = defineProps<{
   personalDetails: SumDetail,searchSummoner:() => void }>()
 
 const getImgUrl = (rune: number) => {
+  if (rune===0){
+   return  gerNoneImg()
+  }
   return new URL(`/src/assets/runes/${rune}.png`, import.meta.url).href
 }
 

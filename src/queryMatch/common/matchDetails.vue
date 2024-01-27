@@ -2,10 +2,11 @@
 import {NAvatar,NSpace, NTag,NPopover,NEllipsis} from "naive-ui"
 import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 import {getItemImgUrl, getspellImgUrl} from "@/lcu/utils";
+import MatchSumDetails from "@/queryMatch/common/matchSumDetails.vue";
 
-const {summonerList,curSumId,isOne} = defineProps<{
+const {summonerList,summonerId,isOne} = defineProps<{
   summonerList:SummonerDetailInfo[],
-  curSumId:number,
+  summonerId:number,
   isOne:boolean,
   showMode:string
 }>()
@@ -58,46 +59,10 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
   <div class="flex flex-col gap-y-5" style="margin-top: 17px;">
     <!--    每一个英雄数据-->
     <n-space
-      v-for="(summoner,index) in summonerList"
-      style="width: 290px;" vertical>
-      <div class="flex gap-x-3">
-        <!--      头像-->
-        <div class="relative" @click="showSumDetails(isOne,index)">
-          <n-avatar
-            :bordered="false"
-            :size="50"
-            :src="'https://game.gtimg.cn/images/lol/act/img/champion/'+summoner.champImgUrl"
-            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-            style="display: block;"
-          />
-          <div :class="isOne?'champAvatarColorRed champLevel':'champAvatarColorBlue champLevel'">
-            {{ summoner.champLevel }}
-          </div>
-        </div>
-
-        <div class='grow flex flex-col justify-between'>
-          <!--        装备-->
-          <div class='flex justify-between'>
-            <img class="itemClass" v-for="url in summoner.items" :src="getItemImgUrl(url)">
-          </div>
-
-          <div class="flex justify-between">
-            <!--          召唤师昵称-->
-            <text size="tiny" class="nameDiv"
-                  :class="curSumId===summoner.accountId?'nameDiv currentSumColor slideSum':'nameDiv text-gray-400'"
-                  :bordered="false">
-              <n-ellipsis style="max-width: 170px">
-                {{ summoner.name }}
-              </n-ellipsis>
-            </text>
-            <!--        kda-->
-            <n-tag class="kdaDiv" size="tiny" :bordered="false">
-              {{ summoner.kills }}-{{ summoner.deaths }}-{{ summoner.assists }}
-            </n-tag>
-          </div>
-        </div>
-
-      </div>
+      v-for="(summoner,index) in summonerList" vertical>
+      <match-sum-details
+        @click="showSumDetails(isOne,index)"
+        :summoner="summoner" :summoner-id="summonerId" :is-one="isOne"/>
       <!--        数据显示-->
       <div class='progressDivP'>
         <n-tag style="height: 26px;width: 50px;justify-content: center"
@@ -125,18 +90,10 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
         </div>
       </div>
     </n-space>
-
   </div>
 </template>
 
 <style scoped>
-.currentSumColor {
-  color: #f0a020;
-}
-.nameDiv {
-  font-size: 13px;
-  line-height: 16px;
-}
 .matchIconImg {
   height: 12px;
   padding-bottom: 1px;
@@ -165,42 +122,10 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
   position: relative;
 }
 
-.champAvatarColorRed {
-  background-color: #ff6666;
-}
-
-.champAvatarColorBlue {
-  background-color: #66B3FF;
-}
-
-.champLevel {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  width: 15px;
-  height: 15px;
-  bottom: 0px;
-  right: 0px;
-  color: #ffffff;
-  border-radius: 2px;
-}
-
-.itemClass {
-  width: 25px;
-  height: 25px;
-  border-radius: 3px;
-}
-
 .itemClassSecond {
   width: 15px;
   height: 15px;
   border-radius: 2.5px;
 }
 
-.kdaDiv {
-  width: 59px;
-  justify-content: center;
-}
 </style>

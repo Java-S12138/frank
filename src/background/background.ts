@@ -9,6 +9,7 @@ cube.windows.openDevTools(cube.windows.current.id())
 cube.extensions.on('launch-triggered', (s) => {
   if (!s.gamein){
     cube.windows.obtainDeclaredWindow('main')
+    cube.windows.obtainDeclaredWindow('recentMatch')
   }
 })
 

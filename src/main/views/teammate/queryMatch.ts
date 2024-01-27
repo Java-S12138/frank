@@ -13,7 +13,10 @@ export class QueryMatch {
 
   public timestampToDate = (timestamp: number) => {
     var date = new Date(timestamp)
-    return (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-' + date.getDate()
+    return (date.getMonth() + 1 < 10 ?
+      '0' + (date.getMonth() + 1) :
+      date.getMonth() + 1)
+    + '-' + (date.getDate() <10 ? '0'+date.getDate() : date.getDate())
   }
 
   public queryGameType = (queueId: number) => {

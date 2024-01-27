@@ -1,5 +1,5 @@
 import {queryRankPoint, querySummonerInfo} from "@/lcu/aboutSummoner"
-import {Games, SimpleMatchDetailsTypes} from "@/lcu/types/queryMatchLcuTypes";
+import {Games, SimpleMatchDetailsTypes, SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {queryMatchHistory} from "@/lcu/aboutMatch";
 import {champDict} from "@/resources/champList";
 
@@ -57,6 +57,18 @@ export default class BaseMatch {
     }
   }
 
+  public querySpecialMatch = async (puuid: string,queueId:number) => {
+    const matchList = await queryMatchHistory(puuid, 0, 99)
+    if (matchList === null){
+      return []
+    }
+    const specialList = matchList
+      .filter(matchList => matchList.queueId === queueId)
+
+    return specialList.map((matchListElement) => {
+      return this.getSimpleMatch(matchListElement)
+    })
+  }
   public timestampToDate = (timestamp: number):[string,string] => {
     const date = new Date(timestamp)
     // 获取时间
@@ -64,7 +76,10 @@ export default class BaseMatch {
     const minutes = date.getMinutes().toString().padStart(2, '0')
     return [
       `${hours} : ${minutes}`,
-      (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-' + date.getDate()
+      (date.getMonth() + 1 < 10 ?
+        '0' + (date.getMonth() + 1) :
+        date.getMonth() + 1)
+      + '-' + (date.getDate() <10 ? '0'+date.getDate() : date.getDate())
     ]
   }
 

@@ -110,3 +110,10 @@ body {
         opacity: 1;
     }
 }
+
+.champAvatarColorBlue {
+    background-color: #66B3FF;
+}
+.champAvatarColorRed {
+    background-color: #ff6666;
+}

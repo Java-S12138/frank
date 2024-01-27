@@ -9,7 +9,6 @@ const matchStore = useMatchStore()
 
 watch(() => matchStore.matchList,() => {
   curMatch.value = 0
-  console.log(123)
 })
 
 const renderMatch = (index:number,gameId:number) => {
@@ -55,8 +54,8 @@ const renderMatch = (index:number,gameId:number) => {
               </div>
             </n-tag>
           </div>
-         <div class="flex justify-between absolute w-full" style="bottom: -2px">
-           <div class="flex justify-between" style="width: 74px;">
+         <div class="flex justify-between absolute w-full" style="bottom: -3px">
+           <div class="flex justify-between" style="width: 73px;">
              <text class="text-xs text-gray-400">{{ match.matchTime }}</text>
              <text class="text-xs text-gray-400">{{ match.startTime }}</text>
            </div>

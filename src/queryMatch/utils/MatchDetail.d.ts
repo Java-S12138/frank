@@ -46,7 +46,6 @@ export interface ParticipantIdentity {
 }
 
 export interface SumPlatInfo {
-  platformId: string;
   puuid: string;
   name: string;
   summonerId: number;
@@ -258,7 +257,6 @@ export interface SummonerDetailInfo {
   name: string;
   accountId: number;
   puuid:string;
-  platformId:string;
   isCurSum: boolean,
   teamType: number;
   champLevel: number;

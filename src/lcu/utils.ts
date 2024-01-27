@@ -69,11 +69,14 @@ export const getspellImgUrl = (spellId:number) => {
 // 通过物品id获取图片地址
 export const getItemImgUrl = (item:number) => {
   if (item == 0 ){
-    // @ts-ignore
-    return new URL("/src/assets/svg/image.png", import.meta.url).href
+    return  gerNoneImg()
   }else {
     return `https://game.gtimg.cn/images/lol/act/img/item/${item}.png`
   }
+}
+export const gerNoneImg = () => {
+  // @ts-ignore
+  return new URL("/src/assets/svg/image.png", import.meta.url).href
 }
 // 判断玩家位置
 export const querySummonerPosition = (lane:string):string => {
