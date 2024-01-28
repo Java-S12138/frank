@@ -99,5 +99,6 @@ export const getPosition = (selectedPosition:string) => {
     case 'MIDDLE': return 3;
     case 'UTILITY': return 5;
     case 'NONE':return 0;
+    default: return 0;
   }
 }

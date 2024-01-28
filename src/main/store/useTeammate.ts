@@ -25,7 +25,8 @@ export const useTeammateStore = defineStore('useTeammate', {
 
         if (matchList.length === 0 || showMateryChamp) {
           showMateryChamp = true
-          this.masteryChampList.push(await queryMasteryChampList(summoner.puuid))
+          const list = await queryMasteryChampList(summoner.puuid)
+          this.masteryChampList.push(list||[])
         } else {
           this.recentMatchList.push(matchList)
         }

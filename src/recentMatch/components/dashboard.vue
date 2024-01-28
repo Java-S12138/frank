@@ -3,16 +3,11 @@ import {NSwitch, NCheckbox, NTag, NIcon, NButton, NButtonGroup, NPopconfirm,NDiv
 import {ThumbUp,ThumbDown,Bulb,CircleMinus,CircleX} from "@vicons/tabler";
 import {reactive, ref} from "vue"
 
+const {winCount} = defineProps<{winCount:{friend:[number,number],enemy:[number,number]}}>()
 const config = reactive(JSON.parse(<string>(localStorage.getItem('configSetting'))))
 const isModalOpen = ref(false)
 const isTips = ref(false)
-
-
-const props = defineProps({
-  isIn:{
-    default:true,
-  }
-})
+const isWinCount = winCount.friend[1]>winCount.enemy[1]
 
 const handleMin = () => {
   //@ts-ignore
@@ -44,21 +39,21 @@ const strings = [
       <img src="@/assets/icon/siteLogo.png" class="mr-4" draggable="false" >
       <div class="flex flex-col gap-y-0.5">
         <text class="text-gray-400 text-xs">友方胜利次数</text>
-        <n-tag :bordered="false" type="success"
+        <n-tag :bordered="false" :type="isWinCount?'success':'error'"
                style="justify-content: center;width: 72px">
           <template #icon>
-            <n-icon :size="15" :component="ThumbUp" />
+            <n-icon :size="15" :component="isWinCount?ThumbUp:ThumbDown" />
           </template>
-          23/50</n-tag>
+          {{ winCount.friend[0] }}/{{ winCount.friend[1] }}</n-tag>
       </div>
       <div class="flex flex-col gap-y-0.5">
         <text class="text-gray-400 text-xs">敌方胜利次数</text>
-        <n-tag :bordered="false" type="error"
+        <n-tag :bordered="false" :type="!isWinCount?'success':'error'"
                style="justify-content: center;width: 72px">
           <template #icon>
-            <n-icon :size="15" :component="ThumbDown" />
+            <n-icon :size="15" :component="!isWinCount?ThumbUp:ThumbDown" />
           </template>
-          14/50</n-tag>
+          {{ winCount.enemy[0] }}/{{ winCount.enemy[1] }}</n-tag>
       </div>
     </div>
 
@@ -95,24 +90,28 @@ const strings = [
 
   <!-- Modal -->
   <div v-if="isModalOpen" @click="closeModalOutside"
-       class="fixed inset-0 bg-neutral-950 bg-opacity-40 flex items-center justify-center">
-    <div class="bg-white px-8 py-4 rounded shadow-md">
+       class="fixed inset-0 bg-neutral-950 bg-opacity-40
+       flex items-center justify-center z-50">
+    <div class="bg-white px-6 py-4 rounded shadow-md">
       <!-- Modal content goes here -->
       <text class="text-xl">Tips</text>
-      <p>1：召唤师右边序号相同的玩家，代表开黑玩家。</p>
-      <p>2：点击下方战绩标签，即可查看此局详细数据。</p>
+      <p class="my-1">1：[ 订阅 ] 游戏模式为单双 / 灵活排位时只显示，排位数据。</p>
+      <p class="my-1">2：[ 订阅 ] 召唤师昵称序号相同的玩家代表，开黑玩家。</p>
+      <p class="my-1">3：[ 订阅 ] 英雄熟练度分析 S : 小代 A : 绝活 B : 熟练。</p>
+      <p class="my-1">4：点击下方战绩标签，即可查看此局详细数据。</p>
 
-      <n-divider style="margin: 0 0" />
+      <n-divider style="margin: 22px 0 20px 0" />
 
-      <p class="flex gap-x-3 text-gray-400">
-        游戏启动时，自动打开此窗口
-        <n-switch :default-value="true"/>
-      </p>
-      <p class="my-0">
-        <n-checkbox  v-model:checked="isTips">
-          <text class="text-gray-400">不再自动弹出</text>
-        </n-checkbox>
-      </p>
+
+      <div class="flex items-center justify-between">
+        <p class="m-0">
+          <n-checkbox  v-model:checked="isTips">
+            <text class="text-gray-400">不再自动弹出</text>
+          </n-checkbox>
+        </p>
+          <text class="text-gray-400 ml-3">游戏启动时，自动打开此窗口</text>
+          <n-switch style="margin-bottom: 3px;" :default-value="true"/>
+      </div>
     </div>
   </div>
 </template>
