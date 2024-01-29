@@ -42,3 +42,9 @@ body {
 .champAvatarColorRed {
     background-color: #ff6666;
 }
+.dragDiv {
+    width: calc(100vw - 1rem);
+    height: 18px;
+    position: absolute;
+    top: -8px;
+}

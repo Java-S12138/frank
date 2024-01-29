@@ -118,7 +118,7 @@ export interface RecentAllSumInfo {
 }
 export interface MatchItemTypes {
   champImg: string;
-  kill: number;
+  kills: number;
   deaths: number;
   assists: number;
   isWin: boolean;

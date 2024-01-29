@@ -34,7 +34,7 @@ const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
               <text>{{ summoner.rankPoint[1] }}</text>
             </div>
           </n-tag>
-          <div v-if="summoner.summonerState!=='Z'"
+          <div v-if="summoner.summonerState !=='Z'"
                class="absolute text-xs bg-red-500 text-neutral-50 rounded-sm box-border"
                style="bottom: 0;left: 39px;width: 16px;height: 16px;text-align: center">
             {{ summoner.summonerState }}
@@ -65,7 +65,7 @@ const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
             />
             <n-tag :type="match.isWin?'success':'error'" :bordered="false"
                    style="width: 80px;height: 30px;justify-content: center;">
-              {{ match.kill }}-{{match.deaths}}-{{match.assists}}
+              {{ match.kills }}-{{match.deaths}}-{{match.assists}}
             </n-tag>
           </div>
         </div>

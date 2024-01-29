@@ -32,6 +32,13 @@ body {
     0 3px 6px 0 rgba(255, 255, 255, 0.03),
     0 5px 12px 4px rgba(255, 255, 255, 0.02);
 }
+.dragDiv {
+    width: 100vw;
+    height: 18px;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+}
 
 .navDiv {
     position: absolute;

@@ -12,7 +12,6 @@ const storeRune = useRuneStore()
 const autoRuneActive = ref(false)
 const rune101List:Ref<Rune[]> = ref([])
 
-
 onMounted(async () => {
   if (storeRune.currentChamp !== 0){
     rune101List.value = await get101Runes(storeRune.currentChamp)

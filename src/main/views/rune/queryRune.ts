@@ -4,16 +4,16 @@ import {Block, OnlineRunes} from "@/main/views/rune/runeTypes";
 
 export class QueryRune {
 
-  constructor(queueId: number) {
-    this.queueId = queueId
+  constructor(mapId: number) {
+    this.mapId = mapId
   }
 
-  public queueId = 0
+  public mapId = 0
 
   // 获取英雄数据
   public getChampInfo = async (alias:string): Promise<OnlineRunes[]> => {
     const timestamp = new Date().getTime()
-    if (this.queueId = 450) {
+    if (this.mapId === 12) {
       return (await request({
         url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${alias}.json?date${timestamp}`,
         method: 'GET',
@@ -44,7 +44,7 @@ export class QueryRune {
       for (const champ of champInfo) {
         // 符文
         for (const rune of champ.runes) {
-          if (this.queueId = 450) {
+          if (this.mapId === 12) {
             rune.position = 'aram'
           }
           runeDataList.push(rune)
@@ -64,7 +64,7 @@ export class QueryRune {
   // 获取出装数据
   public getBlocksData = (champ: OnlineRunes) => {
     try {
-      if (this.queueId === 450) {
+      if (this.mapId === 12) {
         champ.position = 'aram'
       }
       const position = this.getPosition(champ.position)

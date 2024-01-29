@@ -28,10 +28,16 @@ const closeModalOutside = (event) => {
     isModalOpen.value = false
   }
 }
+const dragMove = () => {
+  // @ts-ignore
+  cube.windows.current.dragMove()
+}
+
 </script>
 
 <template>
-  <header class="flex w-full h-10">
+  <header class="flex w-full h-10 relative">
+    <div @mousedown="dragMove()" class="dragDiv"></div>
     <div class="flex w-1/2 gap-x-4 ">
       <img src="@/assets/icon/siteLogo.png" class="mr-4" draggable="false">
       <div class="flex flex-col gap-y-0.5">

@@ -10,10 +10,12 @@ import MatchContent from "@/queryMatch/common/matchContent.vue";
 import MatchDetails from "@/queryMatch/utils/matchDetails";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import {NResult} from "naive-ui";
+import NullPage from "@/recentMatch/components/nullPage.vue";
 
 const querySummoner = new QuerySummoner()
 const queryMatch = new QueryMatch()
 
+const isLcuErr = ref(false)
 const friendList: Ref<RecentSumInfo[]> = ref([])
 const enemyList: Ref<RecentSumInfo[]> = ref([])
 const queueId: Ref<number> = ref(0)
@@ -38,23 +40,23 @@ cube.windows.getWindowByName('main').then((mainWin: any) => {
 
 const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
   querySummoner.fromLcuQuery().then(async (allSumInfo: RecentAllSumInfo | null) => {
-    if (allSumInfo !== null) {
-      queueId.value = allSumInfo.queueId
-      // 是否从缓存数据中获取队友的战绩数据
-      Object.keys(simpleMatchList).length > 0
-        ? getSumInfoFromCache(allSumInfo.friendList, simpleMatchList)
-        : await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
-
-      await getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
-      // 判读敌我双方谁的赢场最多
-      isFriCount.value = winCount.value.friend[0] >= winCount.value.enemy[0]
+    if (allSumInfo === null) {
+      isLcuErr.value = true
+      return
     }
+    queueId.value = allSumInfo.queueId
+    // 是否从缓存数据中获取队友的战绩数据
+    Object.keys(simpleMatchList).length > 0
+      ? getSumInfoFromCache(allSumInfo.friendList, simpleMatchList)
+      : await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
+
+    await getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
+    // 判断敌我双方谁的赢场最多
+    isFriCount.value = winCount.value.friend[0] >= winCount.value.enemy[0]
   })
 }
 
 const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, isFri: boolean) => {
-  const tempMatch: RecentSumInfo[] = []
-  const tempCount = [0, 0]
   for (const summoner of sumInfos) {
     // 根据已获取的召唤师puuid获取每一个召唤师的战绩数据
     const resultList = await queryMatch.queryMatchHistory(summoner.puuid, queueId, summoner.summonerState)
@@ -64,19 +66,16 @@ const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, is
       summoner.summonerState = 'S'
     }
 
-    tempCount[0] += resultList[1]
-    tempCount[1] += resultList[0].length
-    tempMatch.push(summoner)
-  }
-  // 判断是否为友方或敌方，分别写入不同的数据
-  if (isFri) {
-    winCount.value.friend = tempCount
-    friendList.value = tempMatch
-  } else {
-    winCount.value.enemy = tempCount
-    enemyList.value = tempMatch
+    // 判断是否为友方或敌方，分别写入不同的数据
+    const targetList = isFri ? friendList.value : enemyList.value
+    const countList = isFri ? winCount.value.friend : winCount.value.enemy
+
+    countList[0] += resultList[1]
+    countList[1] += resultList[0].length
+    targetList.push(summoner)
   }
 }
+
 
 const getSumInfoFromCache = (sumInfos: RecentSumInfo[], simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
 
@@ -86,7 +85,7 @@ const getSumInfoFromCache = (sumInfos: RecentSumInfo[], simpleMatchList: { [key:
       winMatchCount = match.isWin ? winMatchCount + 1 : winMatchCount
       return {
         champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${match.champImgUrl}`,
-        kill: match.kills,
+        kills: match.kills,
         deaths: match.deaths,
         assists: match.assists,
         isWin: match.isWin,
@@ -94,7 +93,10 @@ const getSumInfoFromCache = (sumInfos: RecentSumInfo[], simpleMatchList: { [key:
         queueId: match.queueId,
       }
     })
-
+    // 判断是否为小代
+    if (queryMatch.isExcelPlayer(sumInfo.summonerState, matchListElement)) {
+      sumInfo.summonerState = 'S'
+    }
     sumInfo.matchList = matchListElement
     friendList.value.push(sumInfo)
     winCount.value.friend[0] += winMatchCount
@@ -102,7 +104,7 @@ const getSumInfoFromCache = (sumInfos: RecentSumInfo[], simpleMatchList: { [key:
   }
 }
 
-const openDetailDrawer = async (gameId: number, summonerId: number,isFri:boolean) => {
+const openDetailDrawer = async (gameId: number, summonerId: number, isFri: boolean) => {
   isDetailModalLeft.value = isFri
   const matchInfo = await matchDetials.queryGameDetail(gameId, summonerId)
   if (matchInfo !== null) {
@@ -121,7 +123,10 @@ const closeModalOutside = (event) => {
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard :win-count="winCount" :is-fri-count="isFriCount"/>
-    <div class="flex justify-between">
+
+    <null-page v-if="isLcuErr"/>
+
+    <div v-else class="flex justify-between">
       <recent-match-list @show-detail="openDetailDrawer"
                          :sum-list="friendList" :queue-id="queueId" :is-fri="true"/>
       <recent-match-list @show-detail="openDetailDrawer"

@@ -32,6 +32,8 @@ export const queryGameType = (queueId:number) => {
       return '极地乱斗';
     case 1700 :
       return '斗魂竞技';
+    case 1900 :
+      return '无限火力';
   }
   return '其它模式'
 }

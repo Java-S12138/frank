@@ -7,6 +7,7 @@ import Navigation from "@/main/common/navigation.vue";
 import {useRuneStore} from "@/main/store/useRune";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import {queryFriendInfo} from "@/main/views/teammate/utils";
+import {invokeLcu} from "@/lcu";
 
 const router = useRouter()
 const curPos = ref(0)
@@ -32,9 +33,7 @@ cube.windows.message.on('received',(id,content) => {
   }
 })
 cube.windows.message.on('invoked',(id, content, reply) => {
-  console.log('getMatchList')
   if (id==='getMatchList'){
-    console.log(teammateStore.cacheMatchList)
     return reply(JSON.parse(JSON.stringify(teammateStore.cacheMatchList)))
   }
 })
@@ -53,14 +52,17 @@ const hanleChampion = (id:string,content:any) => {
   })
 }
 // 处理CSSession状态
-const hanleCSSession = (id:string,content:any) => {
+const hanleCSSession = async (id:string,content:any) => {
+  const res:any =  await invokeLcu('get','/lol-gameflow/v1/session')
+  if (res?.map !== undefined){
+    localStorage.setItem('mapId',String(res.map.id))
+  }
   queryFriendInfo(content).then((SummonerInfoList) => {
     teammateStore.initStore(SummonerInfoList,440)
     changeState(id,'teammate',2)
   })
 }
-
-const test = async () => {
+/*const test = async () => {
   const t ={
     "actions": [
       [
@@ -491,7 +493,7 @@ const test = async () => {
   await hanleCSSession('CSSession',t)
   cube.windows.obtainDeclaredWindow('recentMatch')
 }
-// test()
+test()*/
 // 改变页面
 const changeState = (id:string,page:string,index:number) => {
   curFlow.value = id

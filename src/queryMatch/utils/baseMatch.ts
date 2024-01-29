@@ -1,6 +1,7 @@
 import {queryRankPoint, querySummonerInfo} from "@/lcu/aboutSummoner"
-import {Games, SimpleMatchDetailsTypes, SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
+import {Games, SimpleMatchDetailsTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {queryMatchHistory} from "@/lcu/aboutMatch";
+import {queryGameType} from "@/lcu/utils"
 import {champDict} from "@/resources/champList";
 
 export default class BaseMatch {
@@ -51,7 +52,7 @@ export default class BaseMatch {
       // 开始时间 22:00
       startTime:times[0],
       // 游戏模式
-      gameModel:this.queryGameType(match.queueId),
+      gameModel:queryGameType(match.queueId),
       //游戏对局ID
       queueId:match.queueId
     }
@@ -81,22 +82,6 @@ export default class BaseMatch {
         date.getMonth() + 1)
       + '-' + (date.getDate() <10 ? '0'+date.getDate() : date.getDate())
     ]
-  }
-
-  public queryGameType = (queueId: number) => {
-    switch (queueId) {
-      case 420 :
-        return '单双排位';
-      case 430 :
-        return '匹配模式';
-      case 440 :
-        return '灵活排位';
-      case 450 :
-        return '极地乱斗';
-      case 1700 :
-        return '斗魂竞技';
-    }
-    return '其它模式'
   }
 }
 

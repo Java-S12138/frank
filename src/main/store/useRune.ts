@@ -28,7 +28,8 @@ export const useRuneStore = defineStore('useRuneStore', {
     },
     async initStore(champId: number){
       this.mapChampInfo(champId)
-      const queryRune = new QueryRune(0)
+      const mapId = Number(localStorage.getItem('mapId'))
+      const queryRune = new QueryRune(mapId)
       const runesData = await queryRune.getRunesData(this.currentChampAlias)
 
       if (runesData !== null){

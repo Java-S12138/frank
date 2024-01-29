@@ -1,10 +1,8 @@
 import {englishToChinese, getPosition} from "@/lcu/utils";
 import {aliasToId, champDict} from "@/resources/champList";
 import {invokeLcu} from "@/lcu";
-import {sessionInf} from "./sessionTest"
 import {PlayerChampionSelection, RecentSumInfo, SessionTypes, TeamData,SuperChampTypes} from "@/recentMatch/utils/queryTypes";
-
-
+import {sessionInf} from "@/recentMatch/utils/sessionTest";
 
 class QuerySummoner {
   public matchSession: null|SessionTypes = null
@@ -99,7 +97,7 @@ class QuerySummoner {
       return []
     })
   }
-  // 获取召唤师英雄绝活数据 Z:正常 A:绝活 B:熟练 D:小代 Y:未知 (需要进行下一步判断)
+  // 获取召唤师英雄绝活数据 Z:正常 A:绝活 B:熟练 S:小代 Y:未知 (需要进行下一步判断)
   public querySummonerSuperChampData = async (puuid:string,champAlias:string) => {
     if (localStorage.getItem('isSubscribe') ==='f'){
       return 'Z'
@@ -113,6 +111,9 @@ class QuerySummoner {
           return 'A'
         }else if (champId === superList[i].championId && superList[i].championLevel > 5){
           return 'B'
+        }
+        if (superList[i].championLevel <=5){
+          return 'Z'
         }
       }
       return 'Y'

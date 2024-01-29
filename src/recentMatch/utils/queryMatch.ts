@@ -25,7 +25,7 @@ class QueryMatch {
     this.winCount = games.participants[0].stats.win === true ? this.winCount + 1 : this.winCount
     return <MatchItemTypes>{
       champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(games.participants[0].championId)].alias}.png`,
-      kill: games.participants[0].stats.kills,
+      kills: games.participants[0].stats.kills,
       deaths: games.participants[0].stats.deaths,
       assists: games.participants[0].stats.assists,
       isWin: games.participants[0].stats.win,
@@ -36,23 +36,17 @@ class QueryMatch {
 
   public isExcelPlayer = (summonerState: string,matchList:MatchItemTypes[]) => {
     // 判断是否为小代
-    if (summonerState === "Y") {
-      let excellentCount = 0
-      let cycleCount = 0
-      for (let match of matchList) {
-        cycleCount += 1
-        if (cycleCount > 5) {
-          break
-        }
-        if (match.kill >= 12) {
-          excellentCount += 1
-        }
-      }
-      if (excellentCount >= 3) {
-        summonerState = 'S'
+    if (summonerState !== "Y"){
+      return false
+    }
+    let excellentCount = 0
+
+    for (let match of matchList.slice(0,5)) {
+      if ((match.kills+match.assists)/match.deaths*3 >= 12) {
+        excellentCount += 1
       }
     }
-    return summonerState ==='S'
+    return excellentCount >= 3
   }
 
   public findMatch = async (puuid: string): Promise<MatchItemTypes[]> => {

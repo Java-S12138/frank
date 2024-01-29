@@ -59,9 +59,9 @@ const handleSub = (key:number) => {
 </script>
 
 <template>
-  <header
-    class="flex justify-between items-center h-8">
-    <div class="flex items-center" @mousedown="dragMove()">
+  <header class="flex justify-between items-center h-8 relative">
+    <div @mousedown="dragMove()" class="dragDiv"></div>
+    <div class="flex items-center">
       <img src="../../assets/icon/app-icon.png" class="h-8" draggable="false">
       <img src="../../assets/icon/Frank.png" draggable="false" class="pt-1 pl-2 h-6">
     </div>
