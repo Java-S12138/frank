@@ -11,7 +11,7 @@ const searchSum = (summonerId: number) => {
 </script>
 
 <template>
-  <div class="flex">
+  <div class="flex h-full box-content">
     <match-list/>
     <div class="flex-grow p-3 ml-7"
          :key="matchStore.participantsInfo.gameId"
@@ -22,6 +22,7 @@ const searchSum = (summonerId: number) => {
         :team-two="matchStore.participantsInfo.teamTwo"
         :queue-id="matchStore.participantsInfo.queueId"
         :summoner-id="matchStore.summonerId"
+        :is-game-in="false"
         @change-sum="searchSum"
       />
     </div>
@@ -33,8 +34,6 @@ const searchSum = (summonerId: number) => {
         title="获取当前战绩数据异常"
         description="请在左侧切换其它战绩, 尝试再次获取数据..."
       >
-        <template #footer>
-        </template>
       </n-result>
     </div>
   </div>

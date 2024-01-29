@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import {NCard, NAvatar, NTag, NEllipsis} from "naive-ui"
+import {NCard, NAvatar, NTag, NEllipsis,NResult} from "naive-ui"
 import {RecentSumInfo} from "@/recentMatch/utils/queryTypes";
 
-const {sumList,queueId} = defineProps<{ sumList: RecentSumInfo[], queueId:number}>()
-
-
+const {sumList,queueId,isFri} = defineProps<{ sumList: RecentSumInfo[], queueId:number,isFri:boolean}>()
+const emits = defineEmits(['showDetail'])
+const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
+  emits('showDetail',gameId,summonerId,isFri)
+}
 </script>
 
 <template>
-  <n-card size="small" class="mt-4 shadow" style="width: 615px;" content-style="padding:8px">
-    <div class="flex gap-x-2">
+  <n-card size="small" class="mt-4 shadow" style="width: 615px;height: 499px;" content-style="padding:8px">
+    <div class="flex gap-x-2" v-if="sumList.length!==0">
       <div
         v-for="summoner in sumList"
         class="flex flex-col gap-y-2" style="width: 113px;">
@@ -53,7 +55,9 @@ const {sumList,queueId} = defineProps<{ sumList: RecentSumInfo[], queueId:number
 
         <!--      战绩-->
         <div class="flex flex-col gap-y-2">
-          <div v-for="match in summoner.matchList" class="flex w-full gap-x-2">
+          <div v-for="match in summoner.matchList"
+               @click="showDetail(match.gameId,summoner.summonerId,isFri)"
+               class="flex w-full gap-x-2">
             <n-avatar
               :size="30"
               :src="match.champImg"
@@ -66,6 +70,10 @@ const {sumList,queueId} = defineProps<{ sumList: RecentSumInfo[], queueId:number
           </div>
         </div>
       </div>
+    </div>
+    <div class="flex h-full  justify-center items-center" v-else>
+      <n-result status="418" title="数据加载中" description="一切尽在不言中">
+      </n-result>
     </div>
   </n-card>
 </template>

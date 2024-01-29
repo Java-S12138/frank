@@ -232,6 +232,7 @@ export interface SimpleMatchTypes {
   itemList:number[];
   lane: string;
   queueId:number;
+  gameId:number;
 }
 export interface SimpleMatchDetailsTypes {
   gameId:number,

@@ -56,7 +56,7 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-y-5" style="margin-top: 17px;">
+  <div class="flex flex-col justify-between" style="margin-top: 17px;">
     <!--    每一个英雄数据-->
     <n-space
       v-for="(summoner,index) in summonerList" vertical>
@@ -111,13 +111,13 @@ const getIconImg = (iconList:string[],isMvp:boolean,isWin:boolean) => {
 }
 
 .progressDivP {
-  width: 288px;
+  width: 290px;
   height: 26px;
   border-radius: 2px;
   background-color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   align-items: flex-end;
   position: relative;
 }

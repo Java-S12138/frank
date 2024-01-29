@@ -8,7 +8,6 @@ import {
 import {queryGameType} from "@/lcu/utils"
 import {champDict} from "@/resources/champList";
 import {invokeLcu} from "@/lcu";
-import {TencentRsoPlatformId} from "@/resources/areaList";
 
 export default class MatchDetails {
   private team100Kills = 0

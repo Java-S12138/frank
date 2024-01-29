@@ -88,4 +88,29 @@ export class GameFlow {
       })
     }, setTime)
   }
+
+  // 选择英雄阶段结束后执行的操作
+  public initGameInWindow = async () => {
+    //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
+    cube.games.on('launched', () => {
+      cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true,show_center:true}).then((v) => {
+        this.recentMatchWin = v
+      })
+    })
+
+    // 游戏内监听按键, 显示或隐藏游戏内窗口
+    cube.settings.hotkeys.game.on('pressed',async (hotKeyName:string) => {
+      if (hotKeyName==='show_matchHistory') {
+        if (<boolean>this.recentMatchWin?.show){
+          cube.windows.hide(<number>this.recentMatchWin?.id).then(() => {
+            (<WindowInfo>this.recentMatchWin).show=false
+          })
+        }else {
+          cube.windows.show(<number>this.recentMatchWin?.id).then(() => {
+            (<WindowInfo>this.recentMatchWin).show=true
+          })
+        }
+      }
+    })
+  }
 }

@@ -3,13 +3,13 @@ import './utils/config'
 import './utils/tray'
 import {GameFlow} from "./gameFlow";
 
-cube.windows.openDevTools(cube.windows.current.id())
+// cube.windows.openDevTools(cube.windows.current.id())
 
 // 启动主窗口
 cube.extensions.on('launch-triggered', (s) => {
   if (!s.gamein){
     cube.windows.obtainDeclaredWindow('main')
-    cube.windows.obtainDeclaredWindow('recentMatch')
+    // cube.windows.obtainDeclaredWindow('recentMatch')
   }
 })
 
@@ -25,6 +25,7 @@ cube.games.launchers.getRunningLaunchers().then((value) => {
 
 let isCSSestion = true
 const gameFlow = new GameFlow()
+gameFlow.initGameInWindow()
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
 

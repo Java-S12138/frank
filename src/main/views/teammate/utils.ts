@@ -20,7 +20,7 @@ export const queryAllSummonerId = async (mactchSession?:any) => {
   if (mactchSession === undefined || mactchSession?.myTeam === undefined){
     mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
   }
-
+  console.log(mactchSession)
   const myTeam: MyTeamObject[] = mactchSession?.myTeam
   let summonerIdList: number[] = []
   if (myTeam) {

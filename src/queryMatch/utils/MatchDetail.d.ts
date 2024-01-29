@@ -18,7 +18,6 @@ export interface SumDetail {
   name: string;
   champImgUrl: string;
   champLevel: number;
-  platformId: number;
   kda: string;
   spell1Id: number;
   spell2Id: number;
