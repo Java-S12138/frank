@@ -25,22 +25,31 @@ export class QueryMatch {
         return '极地';
       case 1700 :
         return '斗魂';
+      case 1900 :
+        return '无限';
     }
     return '其它'
   }
 
   public getSimpleMatch = (match: Games): SimpleMatchTypes => {
+    const kills = match.participants[0].stats.kills
+    const deaths = match.participants[0].stats.deaths
+    const assists = match.participants[0].stats.assists
+    const kda = deaths ===0? kills+assists : Math.round((kills+assists)/deaths*3)
+
     return {
       champId: match.participants[0].championId,
       champImgUrl: `${champDict[String(match.participants[0].championId)].alias}.png`,
       // 是否取得胜利
       isWin: match.participants[0].stats.win === true ? true : false,
       // 击杀数目
-      kills: match.participants[0].stats.kills,
+      kills: kills,
       // 死亡数目
-      deaths: match.participants[0].stats.deaths,
+      deaths: deaths,
       // 助攻数目
-      assists: match.participants[0].stats.assists,
+      assists: assists,
+      // KDA
+      kda:kda,
       // 游戏时间
       matchTime: this.timestampToDate(match.gameCreation),
       // 游戏模式

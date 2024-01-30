@@ -3,7 +3,7 @@ import {NResult,NAlert,NCard} from "naive-ui";
 </script>
 
 <template>
-  <n-card size="small" class="mt-4 shadow h-full"  style="height: 499px;">
+  <n-card size="small" class="mt-2 shadow h-full"  style="height: 499px;">
     <n-result
       status="418"
       title="数据正在加载中..."

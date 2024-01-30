@@ -6,9 +6,10 @@ import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
 import MatchAnalysis from "./matchAnalysis.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import {findTopChamp} from "@/main/views/teammate/utils";
+import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
 
 const teammateStore = useTeammateStore()
-const {name,puuid,rank,profileIconId,index} = defineProps<CurrentSumInfoTypes>()
+const {name,puuid,rank,profileIconId,index,kda} = defineProps<CurrentSumInfoTypes>()
 const analysisData:RencentDataAnalysisTypes|null = findTopChamp(teammateStore.recentMatchList[index])
 const existChampList = teammateStore.masteryChampList[index]
 
@@ -21,13 +22,13 @@ const getImgUrl = (profileIconId: number) => {
   <n-drawer-content body-content-style="padding:12px 21px 0px">
     <div class="flex gap-x-3" style="height: 50px;">
       <n-avatar
-        :size="50"
         round
+        :size="50"
         :src="getImgUrl(profileIconId)"
+        fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
       />
       <n-space class="flex-grow" vertical :size="[0,6]">
-        <n-tag class="w-full justify-center text-sm" round size="small"
-               :bordered="false" type="success">{{ name }}</n-tag>
+        <summoner-kda-name :name="name" :kda="kda"/>
         <n-tag class="w-full justify-center text-sm" round size="small"
                :bordered="false" type="info">{{rank}}</n-tag>
       </n-space>

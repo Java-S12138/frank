@@ -24,11 +24,12 @@ export interface SummonerInfoList {
 }
 
 export interface CurrentSumInfoTypes {
+  kda:number,
   name: string,
   puuid: string
   rank: string,
   profileIconId: number,
-  index: number
+  index: number,
 }
 
 export interface RoleCountMapTypes {
@@ -41,7 +42,7 @@ export interface RoleCountMapTypes {
 }
 
 export interface RencentDataAnalysisTypes {
-  top3Champions: { champId: number; percentage: string; }[],
+  top3Champions: { champId: number; count: number; }[],
   totalChampions: number,
   roleCountMap: RoleCountMapTypes
 }

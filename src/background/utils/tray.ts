@@ -24,7 +24,7 @@ cube.os.tray.setMenu(
           showWin('assist')
           break
         case 'matchDetail':
-          cube.windows.obtainDeclaredWindow('recentMatch',{height:556}).then(value => {
+          cube.windows.obtainDeclaredWindow('recentMatch').then(value => {
             if (value!==undefined){
               cube.windows.show(value.id)
             }

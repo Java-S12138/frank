@@ -42,12 +42,14 @@ const currentChampDrawer:Ref<{champId:number,selectedList:string[]}> = ref({
 const message = useMessage()
 
 const handleTierSelect = (key: number) => {
+  champSliceList.value = []
   tier.value = key
   configRank.tier = key
   localStorage.setItem('configRank', JSON.stringify(configRank))
   queryChampRankData()
 }
 const handlePosSelect = (pos:string) => {
+  champSliceList.value = []
   isCheck.value = 1
   configRank.lane = pos
   localStorage.setItem('configRank',JSON.stringify(configRank))
@@ -102,8 +104,8 @@ const getBanRankData = () => {
 const ghostButtons = [
   { label: '综合', value: 1, action: getComprehensiveRankData},
   { label: '胜率', value: 2, action: getWinRankData},
-  { label: '登场', value: 3, action: getAppearanceRankData},
   { label: '禁用', value: 4, action: getBanRankData},
+  { label: '登场', value: 3, action: getAppearanceRankData},
 ]
 
 // 获取不同服务器的数据
@@ -129,6 +131,7 @@ const handleRankSelect = () => {
   isCheck.value = 1
   is101.value = !is101.value
   tier.value = is101.value ? 200 : 2
+  champSliceList.value = []
   queryChampRankData().then(() => {
     if (is101.value){
       message.success('国服数据获取成功')
@@ -205,11 +208,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
     <n-list>
       <template #header>
           <div class="h-7 flex gap-x-5">
-            <search-champ
-              width="width: 161px;"
-              :select-func="searchChampData"
-              placeholder="请输入你想查询的英雄"/>
-            <n-button size="small" secondary type="info" @click="searchChampData(inputValue)">搜索</n-button>
+            <search-champ :select-func="searchChampData"/>
             <n-dropdown trigger="hover" placement="left-start"
                         :options="positionOptions" @select="handlePosSelect">
             <div class="absolute right-2" style="top: 8px" :class="lane"></div>
@@ -230,18 +229,21 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
               />
             </div>
             <div class="flex-grow">
-              <n-space vertical :size=[0,2]>
-                <text>{{ chapm.name }}</text>
-                <n-space justify="space-between">
-                  <div style="width: 65px;">
-                    <text class="text-gray-400 text-xs">胜率 {{ chapm.win }}</text>
-                  </div>
-                  <div style="width: 65px;">
-                    <text class="text-gray-400 text-xs">禁用 {{ chapm.ban }}</text>
-                  </div>
-                  <text class="text-gray-400 text-xs">登场 {{ chapm.appearance }}</text>
-                </n-space>
-              </n-space>
+              <div style="height: 48px"
+                   class="flex flex-col gap-y-2.5">
+                <text class="text-sm">{{ chapm.name }}</text>
+                <div class="flex justify-between items-end relative">
+                  <text
+                    :class="isCheck===2?'text-blue-400':''"
+                    class="text-gray-400 text-xs" >胜率 {{ chapm.win }}</text>
+                  <text
+                    :class="isCheck===4?'text-blue-400':''"
+                    class="text-gray-400 text-xs absolute left-20">禁用 {{ chapm.ban }}</text>
+                  <text
+                    :class="isCheck===3?'text-blue-400':''"
+                    class="text-gray-400 text-xs">登场 {{ chapm.appearance }}</text>
+                </div>
+              </div>
             </div>
             <div class="absolute right-0 top-3" :class="'imgT'+chapm.tLevel"></div>
           </div>

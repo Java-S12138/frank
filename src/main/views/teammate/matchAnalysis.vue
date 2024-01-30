@@ -3,8 +3,12 @@ import {NAvatar, NSpace, NTag, NSteps, NStep, NIcon, NProgress, NResult} from "n
 import {Crown,Planet,Bulb} from "@vicons/tabler"
 import {RencentDataAnalysisTypes} from "./teammateTypes";
 import {champDict} from "@/resources/champList";
+import {posRate} from "@/resources/otherList";
 
 const {analysisData} = defineProps<{analysisData:RencentDataAnalysisTypes}>()
+// 找出最近使用最多英雄角色
+const roles = analysisData.roleCountMap
+const usedRole = Object.keys(roles).reduce((a, b) => roles[a] > roles[b] ? a : b)
 
 const colorGreen = {
   color:'#18A058',
@@ -15,38 +19,6 @@ const colorBlue = {
   bgColor:'rgba(32,128,240,0.2)'
 }
 
-const posRate = [
-  {
-    imgUrl:new URL("@/assets/svg/fighter.svg", import.meta.url).href,
-    name:'战士',
-    key:'fighter'
-  },
-  {
-    imgUrl:new URL("@/assets/svg/tank.svg", import.meta.url).href,
-    name:'坦克',
-    key:'tank'
-  },
-  {
-    imgUrl:new URL("@/assets/svg/mage.svg", import.meta.url).href,
-    name:'法师',
-    key:'mage'
-  },
-  {
-    imgUrl:new URL("@/assets/svg/assassin.svg", import.meta.url).href,
-    name:'刺客',
-    key:'assassin'
-  },
-  {
-    imgUrl:new URL("@/assets/svg/marksman.svg", import.meta.url).href,
-    name:'射手',
-    key:'marksman'
-  },
-  {
-    imgUrl:new URL("@/assets/svg/support.svg", import.meta.url).href,
-    name:'辅助',
-    key:'support'
-  },
-]
 
 const getImg = (champId:number) => {
   return `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[champId].alias}.png`
@@ -77,9 +49,9 @@ const getPercent = (num:number,total:number) => {
               :size="55"
               :src="getImg(champ.champId)"
             />
-            <n-tag :bordered="false" size="small"
-                   style="width: 55px;font-size: 14px;
-                   justify-content: center">{{ champ.percentage }}
+            <n-tag :bordered="false" size="small" class="text-sm"
+                   style="width: 55px;justify-content: center">
+              {{ champ.count }}/{{analysisData.totalChampions}}
             </n-tag>
           </n-space>
         </n-space>
@@ -99,8 +71,8 @@ const getPercent = (num:number,total:number) => {
               type="circle"
               :stroke-width="10"
               :percentage="getPercent(analysisData.roleCountMap[pos.key],analysisData.totalChampions)"
-              :color="index<3 ? colorGreen.color:colorBlue.color"
-              :rail-color="index<3 ? colorGreen.bgColor:colorBlue.bgColor"
+              :color="usedRole!==pos.key ? colorGreen.color:colorBlue.color"
+              :rail-color="usedRole!==pos.key ? colorGreen.bgColor:colorBlue.bgColor"
             />
             <n-tag :bordered="false" round
                    style="width: 55px;padding: 0 12px">

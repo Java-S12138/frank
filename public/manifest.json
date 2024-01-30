@@ -32,8 +32,7 @@
         "width": 320,
         "height": 720,
         "resizable": false,
-        "desktop_only": true,
-        "keep_window_location": true
+        "desktop_only": true
       },
       "queryMatch": {
         "file": "src/queryMatch/index.html",
@@ -47,10 +46,18 @@
         "file": "src/recentMatch/index.html",
         "frame": false,
         "width": 1254,
-        "height": 572,
+        "height": 562,
         "resizable": false,
         "in_game_only": false,
         "title_bar_height": 20
+      },
+      "matchAnalysis": {
+        "file": "src/matchAnalysis/index.html",
+        "frame": false,
+        "width": 1024,
+        "height": 576,
+        "resizable": false,
+        "desktop_only": true
       }
     }
   },

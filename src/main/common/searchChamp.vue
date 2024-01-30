@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {computed, h, ref, VNodeChild} from "vue";
 import {keywordsList} from "@/resources/champList";
-import {NAutoComplete, NAvatar, SelectOption} from "naive-ui";
+import {NAutoComplete, NAvatar, NButton, SelectOption} from "naive-ui";
 
-const {selectFunc,placeholder,width} = defineProps<{
-  selectFunc:(alias:string) => void,placeholder:string,width:string
+const {selectFunc} = defineProps<{
+  selectFunc:(alias:string) => void
 }>()
 
 const inputValue = ref('')
@@ -39,6 +39,16 @@ const autoOptions = computed(() => {
     }
   })
 })
+
+const handleButton = () => {
+  if (autoOptions.value?.length){
+    // @ts-ignore
+    selectFunc(autoOptions.value[0].value)
+  }else {
+    selectFunc(inputValue.value)
+  }
+  inputValue.value = ''
+}
 </script>
 
 <template>
@@ -47,9 +57,11 @@ const autoOptions = computed(() => {
     :clear-after-select="true"
     v-model:value="inputValue"
     @select="selectFunc"
+    spellcheck="false"
     :options="<{lable:string,value:string}[]>autoOptions"
-    :placeholder="placeholder"
     :render-label="renderLabel"
-    :style="width"
+    placeholder="请输入你想查询的英雄"
+    style="width: 162px;"
   />
+  <n-button size="small" secondary type="info" @click="handleButton()">搜索</n-button>
 </template>

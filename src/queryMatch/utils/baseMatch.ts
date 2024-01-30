@@ -73,7 +73,7 @@ export default class BaseMatch {
   public timestampToDate = (timestamp: number):[string,string] => {
     const date = new Date(timestamp)
     // 获取时间
-    const hours = date.getHours().toString().padStart(2, '0')
+    const hours = date.getHours().toString().padStart(1, '0')
     const minutes = date.getMinutes().toString().padStart(2, '0')
     return [
       `${hours} : ${minutes}`,

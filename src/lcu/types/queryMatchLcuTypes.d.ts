@@ -225,6 +225,7 @@ export interface SimpleMatchTypes {
   kills: number;
   deaths: number;
   assists: number;
+  kda: number;
   matchTime: string;
   gameModel: string;
   spell1Id: number;

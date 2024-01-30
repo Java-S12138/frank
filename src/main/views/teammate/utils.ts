@@ -69,7 +69,7 @@ export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoL
 }
 
 export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAnalysisTypes | null => {
-  if (match===undefined) {
+  if (match === undefined) {
     return null
   }
 
@@ -114,12 +114,10 @@ export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAn
   // 计算百分比并添加到结果中
   const top3Champions = sortedChampIdCount.slice(0, 3).map((entry) => {
     const [champId, count] = entry
-    const percentage = `${((count / totalChampions) * 100).toFixed(0)}%`
     return {
       champId,
-      percentage
+      count
     }
   })
-
   return {top3Champions, totalChampions, roleCountMap}
 }

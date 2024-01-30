@@ -15,55 +15,66 @@ const curFlow = ref('None')
 const message = useMessage()
 const teammateStore = useTeammateStore()
 const runeStore = useRuneStore()
-const queueId = ref(420)
 
-router.push({name:'home'})
+router.push({name: 'home'})
 
-cube.windows.message.on('received',(id,content) => {
+cube.windows.message.on('received', (id, content) => {
   console.log(id)
   switch (id) {
     case 'None':
+      return changeState(id, 'rank', 1)
+    case 'CSSession':
+      return hanleCSSession(id, content)
+    case 'Champion':
+      return hanleChampion(id, content)
+    case 'GameStart':
       teammateStore.clearStore()
       runeStore.clearStore()
-      return changeState(id,'rank',1)
-    case 'CSSession':
-      return hanleCSSession(id,content)
-    case 'Champion':
-      return hanleChampion(id,content)
+      return changeState(id, 'rank', 1)
   }
 })
-cube.windows.message.on('invoked',(id, content, reply) => {
-  if (id==='getMatchList'){
+cube.windows.message.on('invoked', (id, content, reply) => {
+  if (id === 'getMatchList') {
     return reply(JSON.parse(JSON.stringify(teammateStore.cacheMatchList)))
+  } else if (id === 'getTeammate') {
+    const summonerInfo = JSON.parse(JSON.stringify(teammateStore.summonerInfo))
+    const cacheMatchList = JSON.parse(JSON.stringify(teammateStore.cacheMatchList))
+    const summonerKad = JSON.parse(JSON.stringify(teammateStore.summonerKad))
+    return reply({summonerInfo,cacheMatchList,summonerKad})
   }
 })
 
 // 处理Champion状态
-const hanleChampion = (id:string,content:any) => {
-  if (content===0){
+const hanleChampion = (id: string, content: any) => {
+  if (content === 0) {
     return
   }
   runeStore.initStore(content).then((res) => {
-    if (res){
+    if (res) {
       message.error('当前英雄暂无符文数据')
-    }else {
-      changeState(id,'rune',3)
+    } else {
+      changeState(id, 'rune', 3)
     }
   })
 }
 // 处理CSSession状态
-const hanleCSSession = async (id:string,content:any) => {
-  const res:any =  await invokeLcu('get','/lol-gameflow/v1/session')
-  if (res?.map !== undefined){
-    localStorage.setItem('mapId',String(res.map.id))
+const hanleCSSession = async (id: string, content: any) => {
+  const res: any = await invokeLcu('get', '/lol-gameflow/v1/session')
+  let queueId = 0
+  // 获取对局ID和地图ID
+  if (res?.gameData !== undefined) {
+    queueId = res.gameData.queue.id
+    localStorage.setItem('gameInfo',
+      String(JSON.stringify({queueId: res.gameData.queue.id, mapId: res.gameData.queue.mapId})))
   }
+
   queryFriendInfo(content).then((SummonerInfoList) => {
-    teammateStore.initStore(SummonerInfoList,440)
-    changeState(id,'teammate',2)
+    teammateStore.initStore(SummonerInfoList, queueId)
+    changeState(id, 'teammate', 2)
   })
 }
 /*const test = async () => {
-  const t ={
+  const t = {
     "actions": [
       [
         {
@@ -490,23 +501,23 @@ const hanleCSSession = async (id:string,content:any) => {
     },
     "trades": []
   }
-  await hanleCSSession('CSSession',t)
-  cube.windows.obtainDeclaredWindow('recentMatch')
+  await hanleCSSession('CSSession', t)
+  // cube.windows.obtainDeclaredWindow('recentMatch')
 }
 test()*/
 // 改变页面
-const changeState = (id:string,page:string,index:number) => {
+const changeState = (id: string, page: string, index: number) => {
   curFlow.value = id
-  navigateToPage(page,index)
+  navigateToPage(page, index)
 }
 // 改变底部页面图标
-const navigateToPage = (page:string,index:number) => {
+const navigateToPage = (page: string, index: number) => {
   if ((index === 2 && curFlow.value === 'None') || (index === 3 && curFlow.value !== 'Champion')) {
-    message.warning('当前状态无法查看此页面', {duration:2000})
+    message.warning('当前状态无法查看此页面', {duration: 2000})
     return
   }
   curPos.value = index
-  router.push({name:page})
+  router.push({name: page})
 }
 
 </script>
@@ -516,9 +527,9 @@ const navigateToPage = (page:string,index:number) => {
     <dashboard/>
     <router-view v-slot="{ Component }">
       <keep-alive>
-        <component :is="Component" />
+        <component :is="Component"/>
       </keep-alive>
     </router-view>
-    <navigation  :cur-pos="curPos" :navigate-to-page="navigateToPage"/>
+    <navigation :cur-pos="curPos" :navigate-to-page="navigateToPage"/>
   </div>
 </template>

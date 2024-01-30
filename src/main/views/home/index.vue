@@ -131,7 +131,7 @@ const openWin = () => {
       </div>
       <!--    头像 昵称 等级-->
 
-    <n-divider dashed style="margin: 14px 0 0 0"/>
+    <n-divider dashed style="margin: 14px 0 2px 0"/>
 
       <!--段位 荣誉等级-->
       <n-list>
@@ -158,7 +158,9 @@ const openWin = () => {
       </n-list>
       <!--段位 荣誉等级-->
     </n-card>
-    <n-card size="small" class="mt-4 shadow" style="height: 404px;">
+    <n-card size="small"
+            content-style="padding-top:10px"
+            class="mt-4 shadow" style="height: 402px;">
       <summoner-mastery-champ v-if="summonerData.champLevel"
                               :max-h="378" :puuid="''" :exist-champ-list="summonerData.champLevel"/>
     </n-card>

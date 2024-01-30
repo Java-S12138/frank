@@ -37,7 +37,7 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         gameFlow.autoPickBanChamp()
         return
       case 'GameStart':
-        // gameFlow.showOrHideAssist(false, 'GameStart', null)
+        gameFlow.showOrHideAssist(false, 'GameStart', null)
         return
       case 'PreEndOfGame':
         // gameFlow.isShowBlack()

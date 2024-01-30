@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag} from "naive-ui";
 import LoadMatch from "./loadMatch.vue";
-import {CurrentSumInfoTypes,} from "./teammateTypes";
+import {CurrentSumInfoTypes, SummonerInfoList,} from "./teammateTypes";
 import {Ref, ref, onDeactivated} from "vue";
 import SummonerDetail from "./summonerDetail.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
+import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
 
 const teammateStore = useTeammateStore()
 const drawerActive = ref(false)
-const currentSumInfo:Ref<CurrentSumInfoTypes> = ref({
-  name:'',
-  puuid:'',
-  rank:'',
-  index:0,
-  profileIconId:0
+const currentSumInfo: Ref<CurrentSumInfoTypes> = ref({
+  kda:0,
+  name: '',
+  puuid: '',
+  rank: '',
+  index: 0,
+  profileIconId: 0
 })
 
-const getCurrentSum = (name:string,puuid:string,rank:string,profileIconId:number,index:number) => {
+const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number) => {
   // todo isSubscribe
   // if (isSubscribe ==='f'){
   //   message.warning('查看更多信息 需要订阅服务')
@@ -24,22 +26,29 @@ const getCurrentSum = (name:string,puuid:string,rank:string,profileIconId:number
   // }
   drawerActive.value = true
   currentSumInfo.value = {
-    name,puuid,rank,profileIconId,index
+    kda:kda,
+    name:summoner.name,
+    puuid:summoner.puuid,
+    rank:summoner.rank,
+    index:index,
+    profileIconId:summoner.profileIconId,
+
   } as CurrentSumInfoTypes
 }
 
 
 const clearInfo = () => {
-  currentSumInfo.value ={
-    name:'',
-    puuid:'',
-    rank:'',
-    index:0,
-    profileIconId:0
+  currentSumInfo.value = {
+    kda:0,
+    name: '',
+    puuid: '',
+    rank: '',
+    index: 0,
+    profileIconId: 0
   }
 }
 
-const getImgUrl = (profileIconId:number) => {
+const getImgUrl = (profileIconId: number) => {
   return `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${profileIconId}.png`
 }
 
@@ -58,14 +67,19 @@ onDeactivated(() => {
           class="cursor-pointer"
           :src="getImgUrl(summoner.profileIconId)"
           fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-          @click="getCurrentSum(summoner.name,summoner.puuid,summoner.rank,summoner.profileIconId,index)"
+          @click="getCurrentSum(summoner,index,teammateStore.summonerKad[index])"
         />
         <div class="flex-grow">
-          <n-space vertical :size="[0,6]">
-            <n-tag round size="small" class="w-full justify-center text-sm" :bordered="false" type="success">{{ summoner.name }}</n-tag>
+          <div
+            class="flex flex-col justify-between"
+            style="height: 50px;"
+          >
+            <!--            根据KDA计算数据-->
+            <summoner-kda-name :name="summoner.name" :kda="teammateStore.summonerKad[index]"/>
             <n-tag round size="small" class="w-full justify-center text-sm" :bordered="false" type="info">
-              {{ summoner.rank }}</n-tag>
-          </n-space>
+              {{ summoner.rank }}
+            </n-tag>
+          </div>
         </div>
       </div>
       <div v-if="!teammateStore.isLcuErr">
@@ -100,6 +114,7 @@ onDeactivated(() => {
       :rank="currentSumInfo.rank"
       :puuid="currentSumInfo.puuid"
       :index="currentSumInfo.index"
+      :kda="currentSumInfo.kda"
     />
   </n-drawer>
 </template>

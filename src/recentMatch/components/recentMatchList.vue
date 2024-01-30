@@ -10,7 +10,7 @@ const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
 </script>
 
 <template>
-  <n-card size="small" class="mt-4 shadow" style="width: 615px;height: 499px;" content-style="padding:8px">
+  <n-card size="small" class="shadow" style="width: 615px;height: 499px;margin-top: 6px;" content-style="padding:8px">
     <div class="flex gap-x-2" v-if="sumList.length!==0">
       <div
         v-for="summoner in sumList"

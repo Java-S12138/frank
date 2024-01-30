@@ -16,9 +16,8 @@ export class GameFlow {
 
   // 显示或者隐藏主窗口
   public showOrHideAssist = async (isShow: boolean, message: string,content:any) => {
-    if (this.mainWin === null){
-      this.mainWin = await cube.windows.getWindowByName('main')
-    }
+    this.mainWin = this.mainWin || await cube.windows.getWindowByName('main')
+
     if (content === null){
       if (isShow) {
         cube.windows.show(this.mainWin.id)
