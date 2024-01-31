@@ -179,91 +179,93 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
 </script>
 
 <template>
-  <n-card size="small" class="mt-4 shadow" content-style="padding-bottom: 0;">
-    <n-space justify="space-between">
-      <n-dropdown :show-arrow="true" trigger="hover" :options="rankOptions" @select="handleRankSelect">
-        <n-button secondary type="info">{{ is101?'国服排位英雄数据':'韩服排位英雄数据' }}</n-button>
-      </n-dropdown>
-      <n-select v-model:value="tier"
-                :show-checkmark="false"
-                :options="is101 ? cnOptions : krOptions"
-                @update:value="handleTierSelect"/>
-    </n-space>
+  <div>
+    <n-card size="small" class="mt-4 shadow" content-style="padding-bottom: 0;">
+      <n-space justify="space-between">
+        <n-dropdown :show-arrow="true" trigger="hover" :options="rankOptions" @select="handleRankSelect">
+          <n-button secondary type="info">{{ is101?'国服排位英雄数据':'韩服排位英雄数据' }}</n-button>
+        </n-dropdown>
+        <n-select v-model:value="tier"
+                  :show-checkmark="false"
+                  :options="is101 ? cnOptions : krOptions"
+                  @update:value="handleTierSelect"/>
+      </n-space>
 
-    <n-space class="mt-2 mb-2.5" justify="space-between">
-      <n-button
-        v-for="(button, index) in ghostButtons"
-        :key="index"
-        :bordered="false"
-        :type="isCheck === button.value ? 'info':'tertiary' "
-        size="small"
-        secondary
-        @click="button.action"
-      >
-        {{ button.label }}
-      </n-button>
-    </n-space>
-  </n-card>
-  <n-card class="shadow " size="small" style="margin-top: 18px;" content-style="padding:0 12px 10px 12px;">
-    <n-list>
-      <template #header>
+      <n-space class="mt-2 mb-2.5" justify="space-between">
+        <n-button
+          v-for="(button, index) in ghostButtons"
+          :key="index"
+          :bordered="false"
+          :type="isCheck === button.value ? 'info':'tertiary' "
+          size="small"
+          secondary
+          @click="button.action"
+        >
+          {{ button.label }}
+        </n-button>
+      </n-space>
+    </n-card>
+    <n-card class="shadow " size="small" style="margin-top: 18px;" content-style="padding:0 12px 10px 12px;">
+      <n-list>
+        <template #header>
           <div class="h-7 flex gap-x-5">
             <search-champ :select-func="searchChampData"/>
             <n-dropdown trigger="hover" placement="left-start"
                         :options="positionOptions" @select="handlePosSelect">
-            <div class="absolute right-2" style="top: 8px" :class="lane"></div>
+              <div class="absolute right-2" style="top: 8px" :class="lane"></div>
             </n-dropdown>
           </div>
-      </template>
-      <n-scrollbar style="max-height: 431.5px;padding-right: 13px">
-        <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
-          <div class="flex gap-x-3" >
-            <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer">
-              <n-avatar
-                @click="initDesDrawer(true,chapm.champId,chapm.imgUrl,chapm.tLevel)"
-                :bordered="false"
-                :size="40"
-                lazy
-                :src=chapm.imgUrl
-                fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-              />
-            </div>
-            <div class="flex-grow">
-              <div style="height: 48px"
-                   class="flex flex-col gap-y-2.5">
-                <text class="text-sm">{{ chapm.name }}</text>
-                <div class="flex justify-between items-end relative">
-                  <text
-                    :class="isCheck===2?'text-blue-400':''"
-                    class="text-gray-400 text-xs" >胜率 {{ chapm.win }}</text>
-                  <text
-                    :class="isCheck===4?'text-blue-400':''"
-                    class="text-gray-400 text-xs absolute left-20">禁用 {{ chapm.ban }}</text>
-                  <text
-                    :class="isCheck===3?'text-blue-400':''"
-                    class="text-gray-400 text-xs">登场 {{ chapm.appearance }}</text>
+        </template>
+        <n-scrollbar style="max-height: 431.5px;padding-right: 13px">
+          <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
+            <div class="flex gap-x-3" >
+              <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer">
+                <n-avatar
+                  @click="initDesDrawer(true,chapm.champId,chapm.imgUrl,chapm.tLevel)"
+                  :bordered="false"
+                  :size="40"
+                  lazy
+                  :src=chapm.imgUrl
+                  fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+                />
+              </div>
+              <div class="flex-grow">
+                <div style="height: 48px"
+                     class="flex flex-col gap-y-2.5">
+                  <text class="text-sm">{{ chapm.name }}</text>
+                  <div class="flex justify-between items-end relative">
+                    <text
+                      :class="isCheck===2?'text-blue-400':''"
+                      class="text-gray-400 text-xs" >胜率 {{ chapm.win }}</text>
+                    <text
+                      :class="isCheck===4?'text-blue-400':''"
+                      class="text-gray-400 text-xs absolute left-20">禁用 {{ chapm.ban }}</text>
+                    <text
+                      :class="isCheck===3?'text-blue-400':''"
+                      class="text-gray-400 text-xs">登场 {{ chapm.appearance }}</text>
+                  </div>
                 </div>
               </div>
+              <div class="absolute right-0 top-3" :class="'imgT'+chapm.tLevel"></div>
             </div>
-            <div class="absolute right-0 top-3" :class="'imgT'+chapm.tLevel"></div>
-          </div>
-        </n-list-item>
-        <champ-list-load v-else/>
-      </n-scrollbar>
-    </n-list>
-  </n-card>
-  <n-drawer
-    class="rounded-t-xl" v-model:show="isShowDrawer"
-    placement="bottom" :auto-focus="true" height="444"
-    @after-leave="initDesDrawer(false)"
-  >
-    <champ-detail
-      :champ-id="currentChampDrawer.champId"
-      :is101 = "is101"
-      :lane = "lane"
-      :tier = "tier"
-      :selected-list = "currentChampDrawer.selectedList"
-    />
-  </n-drawer>
+          </n-list-item>
+          <champ-list-load v-else/>
+        </n-scrollbar>
+      </n-list>
+    </n-card>
+    <n-drawer
+      class="rounded-t-xl" v-model:show="isShowDrawer"
+      placement="bottom" :auto-focus="true" height="444"
+      @after-leave="initDesDrawer(false)"
+    >
+      <champ-detail
+        :champ-id="currentChampDrawer.champId"
+        :is101 = "is101"
+        :lane = "lane"
+        :tier = "tier"
+        :selected-list = "currentChampDrawer.selectedList"
+      />
+    </n-drawer>
+  </div>
 </template>
 

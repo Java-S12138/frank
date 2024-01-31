@@ -5,6 +5,7 @@ export interface ConfigSettingTypes {
   autoAccept: number;
   theme: string;
   isGameInWindow:boolean;
+  autoWriteBlock:boolean;
 }
 
 export interface ConfigRank {

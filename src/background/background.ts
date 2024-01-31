@@ -7,17 +7,17 @@ import {GameFlow} from "./gameFlow";
 
 // 启动主窗口
 cube.extensions.on('launch-triggered', (s) => {
-  if (!s.gamein){
+  if (!s.gamein) {
     cube.windows.obtainDeclaredWindow('main')
     // cube.windows.obtainDeclaredWindow('recentMatch')
   }
 })
 
-let isStart:boolean|null = true
+let isStart: boolean | null = true
 // 检测是否存在LOL
 cube.games.launchers.getRunningLaunchers().then((value) => {
-  const isLoL = value.find(((i:any) => i.classId===10902))
-  if (isLoL !== undefined){
+  const isLoL = value.find(((i: any) => i.classId === 10902))
+  if (isLoL !== undefined) {
     isStart = null
   }
 })
@@ -32,21 +32,26 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
   if (info.category === 'game_flow') {
     switch (info.value) {
       case 'ChampSelect':
-        if (isStart){isStart=null}
-        gameFlow.sendMesToMain('ChampSelect', '')
+        if (isStart) {
+          isStart = null
+        }
+        gameFlow.sendMesToMain('ChampSelect')
         gameFlow.autoPickBanChamp()
         return
       case 'GameStart':
-        gameFlow.showOrHideAssist(false, 'GameStart', null)
+        gameFlow.showHideMainWin(false, 'GameStart')
         return
       case 'PreEndOfGame':
         // gameFlow.isShowBlack()
+        gameFlow.showHideMainWin(true, 'PreEndOfGame')
         return
       case 'ReadyCheck':
         gameFlow.autoAcceptGame()
         return
+      case 'Lobby':
+        return  gameFlow.sendMesToMain('Lobby', '')
       case 'None':
-        if (isStart){
+        if (isStart) {
           gameFlow.sendStartEvent()
           isStart = null
         }else {
@@ -60,14 +65,13 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
     const obj: { data: any; eventType: string; uri: string } = JSON.parse(info.value)
     switch (obj.uri) {
       case '/lol-champ-select/v1/current-champion':
-        gameFlow.sendMesToMain('Champion',obj.data)
+        gameFlow.sendMesToMain('Champion', obj.data)
         return
       case '/lol-champ-select/v1/session':
-        if (isCSSestion && obj.data.actions.length !== 0){
+        if (isCSSestion && obj.data.actions.length !== 0) {
           isCSSestion = false
-          gameFlow.sendMesToMain('CSSession',obj.data)
-        }
-        else if (obj.data.actions.length === 0) {
+          gameFlow.sendMesToMain('CSSession', obj.data)
+        } else if (obj.data.actions.length === 0) {
           isCSSestion = true
         }
         return

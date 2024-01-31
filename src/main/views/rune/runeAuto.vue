@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NTag, NPopconfirm, NCard, NButton, NSpace,NAlert,useMessage} from "naive-ui"
+import {NTag, NPopconfirm, NCard, NButton, NSpace,useMessage} from "naive-ui"
 import {onMounted, Ref, ref} from "vue"
 import {invokeLcu} from "@/lcu";
 

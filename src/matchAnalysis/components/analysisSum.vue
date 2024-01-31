@@ -89,6 +89,7 @@ const hanleTag = (showId: number) => {
         </n-tag>
         <n-tag
           class="justify-center flex-grow h-8"
+          style="width: 74px;"
           :bordered="false" :type="match.isWin?'success':'error'"
         >
           {{ match.kills }}-{{ match.deaths }}-{{ match.assists }}

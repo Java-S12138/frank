@@ -42,14 +42,13 @@ const renderMatch = (index:number,gameId:number) => {
 
             <n-tag size="small"
                    :type="index === curMatch?'warning':'default'"
-                   style="width: 46px;justify-content: center"
-                   :class="index === curMatch?'':' text-gray-400'"
-                   :bordered="false">
-              <div class="flex justify-center gap-x-1">
-                <NIcon size="15">
+                   :class="index === curMatch?'':' text-gray-400'" :bordered="false"
+                   style="width: 46px;justify-content: center;cursor: default !important;">
+              <div class="flex items-center gap-x-1">
+                <N-icon size="14">
                   <ThumbUp v-if="match.kda>=9"/>
                   <ThumbDown v-else/>
-                </NIcon>
+                </N-icon>
                 {{match.kda}}
               </div>
             </n-tag>

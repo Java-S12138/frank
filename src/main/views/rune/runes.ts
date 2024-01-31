@@ -1,3 +1,5 @@
+import {applyBlockPage, applyRunePage} from "@/lcu/aboutRune";
+
 const Precision = {
   8000: [
     8005,
@@ -55,3 +57,26 @@ const RuneMap = {
 }
 
 export const flatRunes = Object.entries(RuneMap)
+
+export const handleRunesWrite = (runeData:any,isAutoWriteBlock:boolean,blockList:any) => {
+  // 1:自动符文配置成功 2:自动符文&装备 配置成功 3:自动符文配置失败
+  return applyRunePage(runeData).then(async(isApplySuccess) => {
+    if (!isApplySuccess) {
+      return 3
+    }
+
+    if (isAutoWriteBlock) {
+      const block = blockList.find((i:any) => i.ps === runeData.position)
+
+      if (!block) {
+        return 1
+      }
+
+      const success = await applyBlockPage(block.buildItems)
+
+      return success ? 2 : 1
+    } else {
+      return 1
+    }
+  })
+}

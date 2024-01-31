@@ -11,7 +11,6 @@ export const useRuneStore = defineStore('useRuneStore', {
       currentChampImgUrl: '',
       currentChampAlias: '',
       currentChampTitle: '',
-      isAutoRune: '',
       runeDataList: [] as Rune[],
       blockDataList: [] as {position:string,buildItems:ItemBuild,ps:string} [],
       skillsList: [] as string[][],
@@ -23,8 +22,6 @@ export const useRuneStore = defineStore('useRuneStore', {
       this.currentChampImgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[champId].alias}.png`
       this.currentChampAlias = champDict[champId].alias
       this.currentChampTitle = champDict[champId].title
-      this.isAutoRune = isStoreageHas('autoRune',this.currentChampAlias) == true ?
-        'auto' : ''
     },
     async initStore(champId: number){
       this.mapChampInfo(champId)

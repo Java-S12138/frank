@@ -9,26 +9,16 @@ export class GameFlow {
   public isTFT:boolean = false
 
   // 给主窗口发生信息
-  public sendMesToMain = async (id: string,content:string) => {
+  public sendMesToMain = async (messageId: string,content='') => {
     this.mainWin = this.mainWin || await cube.windows.getWindowByName('main')
-    cube.windows.message.send(this.mainWin.id, id, content)
+    cube.windows.message.send(this.mainWin.id, messageId, content)
   }
 
   // 显示或者隐藏主窗口
-  public showOrHideAssist = async (isShow: boolean, message: string,content:any) => {
+  public showHideMainWin = async (isShow: boolean, messageId: string) => {
     this.mainWin = this.mainWin || await cube.windows.getWindowByName('main')
-
-    if (content === null){
-      if (isShow) {
-        cube.windows.show(this.mainWin.id)
-      } else {
-        cube.windows.hide(this.mainWin.id)
-      }
-      cube.windows.message.send(this.mainWin.id, message, '')
-    }else {
-      cube.windows.message.send(this.mainWin.id, message, content)
-    }
-
+    isShow ? cube.windows.show(this.mainWin.id):cube.windows.hide(this.mainWin.id)
+    this.sendMesToMain(messageId)
   }
   // 游戏结束后,根据用户设置判断是否弹出拉黑召唤师的抽屉
   public isShowBlack = async () => {

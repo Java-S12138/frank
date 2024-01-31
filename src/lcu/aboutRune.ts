@@ -14,7 +14,7 @@ interface T {
 }
 
 // 应用符文页面
-export const applyRunePage = async (data: T) => {
+export const applyRunePage = async (data: any) => {
   try {
     // 获取符文页信息
     const currentRuneList: Array<LcuRuneInfo> = await invokeLcu('get', '/lol-perks/v1/pages')

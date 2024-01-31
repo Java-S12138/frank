@@ -13,8 +13,8 @@ const configSetting: ConfigSettingTypes = {
   'autoAccept': 50,
   'theme': 'light',
   'isGameInWindow':true,
+  'autoWriteBlock':true,
 }
-
 
 
 const configRank: ConfigRank = {

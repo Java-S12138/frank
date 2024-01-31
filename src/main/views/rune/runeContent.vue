@@ -7,47 +7,31 @@ import {onMounted} from "vue";
 import {useRuneStore} from "@/main/store/useRune";
 import {Rune} from "@/main/views/rune/runeTypes";
 import {mapNameFromUrl} from "@/resources/champList";
+import {handleRunesWrite} from "@/main/views/rune/runes";
 
 const storeRune = useRuneStore()
 const message = useMessage()
 const {runeList} = defineProps<{runeList:Rune[]}>()
 
-onMounted(() => {
-  if (!storeRune.isAutoRune!==''){
-    autoWriteRune()
-  }
-})
-const emits = defineEmits(['autoRuneActive'])
-
 // 应用符文&装备
 const applyRune = async (data: any) => {
   if (localStorage.getItem('isSubscribe') === 'f') {
-    message.warning('一键符文 需要订阅 请手动配置', {duration: 5000})
+    message.warning('一键符文，需要订阅 请手动配置', {duration: 5000})
     return
   }
+
   const tempData = JSON.parse(JSON.stringify(data))
   tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"
-  const isAutoWriteBlock = JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock
-  applyRunePage(tempData).then((isApplySuccess) => {
-    if (isApplySuccess) {
-      if (isAutoWriteBlock) {
-        const block = storeRune.blockDataList.find((i) => i.ps === data.position)
-        if (block === undefined) {
-          message.success('符文配置成功！')
-          return
-        }
-        applyBlockPage(JSON.parse(JSON.stringify(block.buildItems))).then((v) => {
-          if (v) {
-            message.success('符文&装备 配置成功')
-          } else {
-            message.success('符文配置成功！')
-          }
-        })
-      } else {
-        message.success('符文配置成功！')
-      }
-    } else {
-      message.error('符文配置失败！')
+  const isAutoWriteBlock = JSON.parse(<string>(localStorage.getItem('configSetting'))).autoWriteBlock
+  const blockList = JSON.parse(JSON.stringify(storeRune.blockDataList))
+
+  handleRunesWrite(tempData,isAutoWriteBlock,blockList).then((writeRes) => {
+    if (writeRes===1){
+      message.success('符文数据配置成功')
+    }else if (writeRes===2){
+      message.success('符文&装备 配置成功')
+    }else {
+      message.error('符文数据配置失败')
     }
   })
 }
@@ -74,27 +58,7 @@ const getPosition = (pos: string) => {
       return '中单';
   }
 }
-const openDrawer = () => {
-  emits('autoRuneActive')
-}
-// 自动配置符文
-const autoWriteRune = () => {
-  if (localStorage.getItem('isSubscribe') === 'f'){
-    return
-  }
-  const localRuneStr = localStorage.getItem('autoRune')
-  if (localRuneStr === null || localRuneStr === '{}'){
-    return
-  }
-  const runeData = JSON.parse(localRuneStr)[storeRune.currentChampAlias]
-  if (runeData !== undefined){
-    applyRunePage(runeData).then((isApplySuccess) => {
-      if (isApplySuccess){
-        message.success('自动配置符文成功')
-      }
-    })
-  }
-}
+
 </script>
 
 <template>
@@ -133,12 +97,6 @@ const autoWriteRune = () => {
             </n-space>
           </div>
         </div>
-      </n-space>
-    </div>
-    <div class="runeDivDash py-2" style="margin-top: 29px;">
-      <n-space justify="center" align="center">
-        <text @click="openDrawer" class="cursor-pointer runeTipColor">
-          {{storeRune.isAutoRune===''?'新增':'修改'}} {{ storeRune.currentChampTitle }} 自动符文</text>
       </n-space>
     </div>
   </n-scrollbar>

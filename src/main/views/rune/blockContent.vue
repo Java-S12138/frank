@@ -7,12 +7,12 @@ import {applyBlockPage} from "@/lcu/aboutRune";
 import {useRuneStore} from "@/main/store/useRune";
 
 const storeRune = useRuneStore()
-const active = ref(JSON.parse(<string>(localStorage.getItem('config'))).autoWriteBlock)
+const active = ref(JSON.parse(<string>(localStorage.getItem('configSetting'))).autoWriteBlock)
 const message = useMessage()
 const changeSetting = () => {
-  const config = JSON.parse(<string>(localStorage.getItem('config')))
+  const config = JSON.parse(<string>(localStorage.getItem('configSetting')))
   config['autoWriteBlock'] = active.value
-  localStorage.setItem('config',JSON.stringify(config))
+  localStorage.setItem('configSetting',JSON.stringify(config))
 }
 
 const applyBlock = (block:any) => {

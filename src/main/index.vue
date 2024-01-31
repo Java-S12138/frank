@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import {invokeLcu} from "@/lcu";
 import {useMessage} from "naive-ui"
 import {useRouter} from "vue-router";
+import {useRuneStore} from "@/main/store/useRune";
 import Dashboard from "@/main/common/dashboard.vue"
 import Navigation from "@/main/common/navigation.vue";
-import {useRuneStore} from "@/main/store/useRune";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import {queryFriendInfo} from "@/main/views/teammate/utils";
-import {invokeLcu} from "@/lcu";
 
 const router = useRouter()
 const curPos = ref(0)
@@ -18,19 +18,20 @@ const runeStore = useRuneStore()
 
 router.push({name: 'home'})
 
-cube.windows.message.on('received', (id, content) => {
-  console.log(id)
-  switch (id) {
+cube.windows.message.on('received', (messageId, content) => {
+  switch (messageId) {
     case 'None':
-      return changeState(id, 'rank', 1)
+      return handleNone(messageId)
+    case 'Lobby':
+      return handleLobby(messageId)
     case 'CSSession':
-      return hanleCSSession(id, content)
+      return handleCSSession(messageId, content)
     case 'Champion':
-      return hanleChampion(id, content)
+      return handleChampion(messageId, content)
     case 'GameStart':
-      teammateStore.clearStore()
-      runeStore.clearStore()
-      return changeState(id, 'rank', 1)
+      return handleGameStart(messageId)
+    case 'PreEndOfGame':
+      return handlePreEndOfGame(messageId)
   }
 })
 cube.windows.message.on('invoked', (id, content, reply) => {
@@ -44,21 +45,26 @@ cube.windows.message.on('invoked', (id, content, reply) => {
   }
 })
 
-// 处理Champion状态
-const hanleChampion = (id: string, content: any) => {
-  if (content === 0) {
+// 处理None状态
+const handleNone = (id: string) => {
+  if (id===curFlow.value){
     return
   }
-  runeStore.initStore(content).then((res) => {
-    if (res) {
-      message.error('当前英雄暂无符文数据')
-    } else {
-      changeState(id, 'rune', 3)
-    }
-  })
+  runeStore.clearStore()
+  teammateStore.clearStore()
+  changeState(id, 'home', 0)
+}
+// 处理Lobby状态
+const handleLobby = (id: string) => {
+  if (id === curFlow.value){
+    return
+  }
+  runeStore.clearStore()
+  teammateStore.clearStore()
+  changeState(id, 'rank', 1)
 }
 // 处理CSSession状态
-const hanleCSSession = async (id: string, content: any) => {
+const handleCSSession = async (id: string, content: any) => {
   const res: any = await invokeLcu('get', '/lol-gameflow/v1/session')
   let queueId = 0
   // 获取对局ID和地图ID
@@ -73,6 +79,54 @@ const hanleCSSession = async (id: string, content: any) => {
     changeState(id, 'teammate', 2)
   })
 }
+// 处理Champion状态
+const handleChampion = (id: string, content: any) => {
+  if (content === 0) {
+    return
+  }
+  runeStore.initStore(content).then((res) => {
+    if (res) {
+      message.error('当前英雄暂无符文数据')
+    } else {
+      changeState(id, 'rune', 3)
+    }
+  })
+}
+// 处理GameStart状态
+const handleGameStart = (id: string) => {
+  runeStore.clearStore()
+  changeState(id, 'rank', 1)
+}
+// 处理PreEndOfGame状态
+const handlePreEndOfGame = (id: string) => {
+  teammateStore.clearStore()
+  changeState(id, 'record', 4)
+}
+
+// 改变页面
+const changeState = (id: string, page: string, index: number) => {
+  curFlow.value = id
+  navigateToPage(page, index)
+}
+// 改变底部页面图标
+const navigateToPage = (page: string, index: number) => {
+
+  if ((index === 2 && curFlow.value === 'None') || (index === 3 && curFlow.value !== 'Champion')) {
+    message.warning('当前状态无法查看此页面', {duration: 2000})
+    return
+  }
+  curPos.value = index
+  router.push({name: page})
+}
+
+/*
+const testRune = () => {
+  handleChampion('Champion',112)
+}
+
+testRune()
+*/
+
 /*const test = async () => {
   const t = {
     "actions": [
@@ -501,24 +555,10 @@ const hanleCSSession = async (id: string, content: any) => {
     },
     "trades": []
   }
-  await hanleCSSession('CSSession', t)
-  // cube.windows.obtainDeclaredWindow('recentMatch')
+  await handleCSSession('CSSession', t)
+  cube.windows.obtainDeclaredWindow('recentMatch')
 }
 test()*/
-// 改变页面
-const changeState = (id: string, page: string, index: number) => {
-  curFlow.value = id
-  navigateToPage(page, index)
-}
-// 改变底部页面图标
-const navigateToPage = (page: string, index: number) => {
-  if ((index === 2 && curFlow.value === 'None') || (index === 3 && curFlow.value !== 'Champion')) {
-    message.warning('当前状态无法查看此页面', {duration: 2000})
-    return
-  }
-  curPos.value = index
-  router.push({name: page})
-}
 
 </script>
 

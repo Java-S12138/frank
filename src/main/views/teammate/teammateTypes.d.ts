@@ -24,7 +24,7 @@ export interface SummonerInfoList {
 }
 
 export interface CurrentSumInfoTypes {
-  kda:number,
+  kda:number|undefined,
   name: string,
   puuid: string
   rank: string,

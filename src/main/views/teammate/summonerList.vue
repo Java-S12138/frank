@@ -18,7 +18,7 @@ const currentSumInfo: Ref<CurrentSumInfoTypes> = ref({
   profileIconId: 0
 })
 
-const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number) => {
+const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number|undefined) => {
   // todo isSubscribe
   // if (isSubscribe ==='f'){
   //   message.warning('查看更多信息 需要订阅服务')

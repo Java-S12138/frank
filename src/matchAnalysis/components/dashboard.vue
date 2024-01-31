@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NButtonGroup, NButton, NIcon, NSpace, useMessage} from "naive-ui";
+import {NButton, NIcon, NSpace, useMessage} from "naive-ui";
 import {CircleMinus, CircleX, Settings} from "@vicons/tabler";
 
 const {showType,changeShowType} = defineProps<{showType:boolean,changeShowType:() => void}>()
@@ -30,17 +30,16 @@ const dragMove = () => {
   <header class="flex relative">
     <div @mousedown="dragMove()" class="dragDiv"></div>
     <div class="flex gap-x-3.5 items-center">
-      <img src="@/assets/icon/siteLogo.png" class="h-10" draggable="false">
-      <n-button-group>
-        <n-button @click="changeShowType" :focusable="false"
-                  :type="showType?'success':'tertiary'">
-          最近战绩
-        </n-button>
-        <n-button @click="changeShowType"  :focusable="false"
-                  :type="!showType?'success':'tertiary'">
-          数据分析
-        </n-button>
-      </n-button-group>
+      <img @click="openWeb"
+           src="@/assets/icon/siteLogo.png" class="h-10 cursor-pointer" draggable="false">
+      <n-button @click="changeShowType" :focusable="false"
+                :type="showType?'success':'tertiary'">
+        最近战绩
+      </n-button>
+      <n-button @click="changeShowType"  :focusable="false"
+                :type="!showType?'success':'tertiary'">
+        数据分析
+      </n-button>
     </div>
     <div class="flex-grow flex items-center justify-end">
       <n-space style="margin-left: 21px;" class="pt-2" :size=[8,0]>

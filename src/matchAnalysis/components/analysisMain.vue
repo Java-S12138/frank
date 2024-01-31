@@ -10,44 +10,14 @@ import MatchContent from "@/queryMatch/common/matchContent.vue";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import MatchDetails from "@/queryMatch/utils/matchDetails";
 
-const {showType} = defineProps<{showType:boolean}>()
-
-cube.windows.getWindowByName('main').then((mainWin: any) => {
-  cube.windows.message
-    .invoke(<number>mainWin.id, 'getTeammate', '')
-    .then((res: {
-      summonerInfo:SummonerInfoList[],
-      cacheMatchList:SimpleMatchTypes[],
-      summonerKad:number[]
-    }) => {
-      init(res.summonerInfo,res.cacheMatchList,res.summonerKad)
-    })
-})
+const {showType,summonerList} = defineProps<{showType:boolean,summonerList:SummonerAnaInfo[]}>()
 
 const matchDetials = new MatchDetails()
-const summonerList:Ref<SummonerAnaInfo[]> = ref([])
 // 当前游戏模式ID
 const queueId:number = (JSON.parse(localStorage.getItem('gameInfo') as string)).queueId
 const isDetailDrawer = ref(false)
 const currentId = ref(0)
 const participantsInfo: Ref<ParticipantsInfo | null> = ref(null)
-
-const init = (summonerInfoList:SummonerInfoList[],cacheMatchList:SimpleMatchTypes[],summonerKadn:number[]) => {
-  const resSummoner:SummonerAnaInfo[] = summonerInfoList.map((summoner,index) => {
-    const rankList = summoner.rank.split(' • ')
-    const isThumbUp = summonerKadn[index] >= 9
-    return <SummonerAnaInfo>{
-      name: summoner.name,
-      summonerId: summoner.summonerId,
-      isThumbUp: isThumbUp,
-      imgUrl: `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summoner.profileIconId}.png`,
-      rankList: rankList,
-      matchList: cacheMatchList[summoner.summonerId],
-      matchAnalysis:findTopChamp(cacheMatchList[summoner.summonerId])
-    }
-  })
-  summonerList.value = resSummoner
-}
 
 const openDetailDrawer = async (gameId: number, summonerId: number) => {
   const matchInfo = await matchDetials.queryGameDetail(gameId, summonerId)
@@ -82,7 +52,7 @@ const openDetailDrawer = async (gameId: number, summonerId: number) => {
     class="rounded-l-xl"
     v-model:show="isDetailDrawer"
     @after-leave="() => participantsInfo = null"
-    :width="620" placement="right">
+    :width="630" placement="right">
     <n-drawer-content>
       <match-content
         v-if="participantsInfo !== null"
