@@ -18,7 +18,7 @@ const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
 
 <template>
   <div class="navDiv bg-white dark:bg-zinc-900 shadow">
-    <n-space justify="space-between" class="mt-2 mx-2">
+    <div class="flex w-full justify-between mx-2">
       <n-icon
         class="transition cursor-pointer"
         v-for="item in icons"
@@ -29,6 +29,6 @@ const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
       >
         <component :is="item.icon"/>
       </n-icon>
-    </n-space>
+    </div>
   </div>
 </template>

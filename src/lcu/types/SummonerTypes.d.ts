@@ -1,6 +1,7 @@
 export interface lcuSummonerInfo {
   accountId: number;
   displayName: string;
+  gameName: string;
   internalName: string;
   nameChangeFlag: boolean;
   percentCompleteForNextLevel: number;

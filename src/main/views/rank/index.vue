@@ -14,7 +14,7 @@ import {
   queryKRServe,
   getPostion, getLacalDateStr
 } from "./utils";
-import {ConfigRank} from "@/background/utils/configTypes";
+import {ConfigRank} from "@/background/utils/backgroundTypes";
 import {ChampInfo} from "./rankTypes";
 import {aliasToId, champDict} from "@/resources/champList";
 import ChampDetail from "@/main/views/rank/champDetail.vue";
@@ -179,10 +179,11 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
 </script>
 
 <template>
-  <div>
-    <n-card size="small" class="mt-4 shadow" content-style="padding-bottom: 0;">
+  <div class="mainContent">
+    <n-card size="small" class="shadow" content-style="padding-bottom: 0;">
       <n-space justify="space-between">
-        <n-dropdown :show-arrow="true" trigger="hover" :options="rankOptions" @select="handleRankSelect">
+        <n-dropdown :show-arrow="false" trigger="hover"
+                    :options="rankOptions" @select="handleRankSelect">
           <n-button secondary type="info">{{ is101?'国服排位英雄数据':'韩服排位英雄数据' }}</n-button>
         </n-dropdown>
         <n-select v-model:value="tier"

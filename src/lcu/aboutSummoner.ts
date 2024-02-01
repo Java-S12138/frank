@@ -4,7 +4,7 @@ import {dealDivsion, englishToChinese} from "./utils";
 import {champDict} from "@/resources/champList";
 
 // 查询本地召唤师信息
-export const querySummonerInfo = async (summonerId?:number,summonerName?:string):Promise<summonerInfo | null> => {
+export const querySummonerInfo = async (summonerId?:number|string,summonerName?:string):Promise<summonerInfo | null> => {
   let summonerInfo:lcuSummonerInfo
   if (summonerId!==undefined){
     summonerInfo = await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
@@ -21,7 +21,7 @@ export const querySummonerInfo = async (summonerId?:number,summonerName?:string)
     privacy:summonerInfo.privacy,
     puuid:summonerInfo.puuid,
     tagLine:summonerInfo.tagLine,
-    name:summonerInfo.displayName,
+    name:summonerInfo.displayName||summonerInfo.gameName,
     currentId: summonerInfo.summonerId,
     lv:"Lv "+summonerInfo.summonerLevel,
     xp:parseInt(String((summonerInfo.xpSinceLastLevel / summonerInfo.xpUntilNextLevel ) * 100)),

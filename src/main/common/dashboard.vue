@@ -59,21 +59,19 @@ const handleSub = (key:number) => {
 </script>
 
 <template>
-  <header class="flex justify-between items-center h-8 relative">
+  <header class="flex justify-between items-center h-8 mb-2 relative">
     <div @mousedown="dragMove()" class="dragDiv"></div>
     <div class="flex items-center">
       <img src="../../assets/icon/app-icon.png" class="h-8" draggable="false">
       <img src="../../assets/icon/Frank.png" draggable="false" class="pt-1 pl-2 h-6">
     </div>
-
     <n-dropdown v-if="isShowSub" trigger="hover"
                 :options="subscribes" @select="handleSub">
       <n-button type="warning" size="small">
           {{subInfo}}
       </n-button>
     </n-dropdown>
-
-    <n-space class="pt-3" :size=[8,0]>
+    <div class="flex mt-0.5 gap-x-2">
       <n-button :focusable="false" @click="handleMin" text>
         <n-icon size="20">
           <circle-minus/>
@@ -95,7 +93,7 @@ const handleSub = (key:number) => {
         </template>
         是否退出 Frank?
       </n-popconfirm>
-    </n-space>
+    </div>
   </header>
 
   <n-drawer

@@ -1,5 +1,5 @@
 import {invokeLcu} from "./index";
-import {ConfigSettingTypes} from "@/background/utils/configTypes";
+import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 
 //选择或者禁用英雄共用函数
 const champSelectPatchAction = async (actionID:any, champId:any, type:string,idSetInterval:number) => {

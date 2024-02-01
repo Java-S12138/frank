@@ -1,7 +1,7 @@
 import {champSelectSession} from "../lcu/autoBP";
 import WindowInfo = cube.windows.WindowInfo;
 import {invokeLcu} from "../lcu";
-import {ConfigSettingTypes} from "@/background/utils/configTypes";
+import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 
 export class GameFlow {
   public mainWin:WindowInfo|null = null

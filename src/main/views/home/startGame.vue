@@ -48,7 +48,7 @@ const tableData = [
 </script>
 
 <template>
-  <n-card class="shadow mt-4" size="small">
+  <n-card class="shadow" size="small">
     <div  class="spinnerDiv">
       <div class="spinner"></div>
     </div>

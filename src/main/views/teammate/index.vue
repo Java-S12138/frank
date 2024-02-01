@@ -9,10 +9,6 @@ const isDisabled = ref(true)
 const message = useMessage()
 
 const openWin = () => {
-  if (isDisabled.value){
-    message.warning('数据加载中...')
-    return
-  }
   if (teammateStore.isCacheSuccess){
     cube.windows.obtainDeclaredWindow('matchAnalysis')
   }else {
@@ -56,10 +52,11 @@ fetchDataWithTimeout(teammateStore, isDisabled)
       <n-space justify="space-between" style="width: 100%;">
         <n-button @click="openWin" size="small"
                   class="px-2" type="success"
+                  :disabled="isDisabled"
                   :bordered="false" round>
           对局分析
         </n-button>
-        <n-tag type="default" round
+        <n-tag type="success" round
                :disabled="true" :bordered="false">点击头像查看更多信息
         </n-tag>
       </n-space>

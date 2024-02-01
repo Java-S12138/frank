@@ -21,10 +21,18 @@ body {
 }
 
 .main {
-    height: calc(100vh - 1rem);
-    weight: calc(100vw - 1rem);
-    padding: 0.5rem;
+    height: 100vh;
+    weight: 100vw;
+    box-sizing: border-box;
+    padding: .5rem .5rem 3.5rem .5rem;
     position: relative;
+}
+.mainContent {
+    height: 616px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 }
 
 :is(:where(.dark) .dark\:boxShadow) {
@@ -41,13 +49,15 @@ body {
 }
 
 .navDiv {
+    display: flex;
+    align-items: center;
     position: absolute;
     bottom: 0px;
     left: 0px;
     width: 100vw;
+    height: 48px;
     border-top-left-radius: .75rem;
     border-top-right-radius: .75rem;
-    padding: .2rem 0;
 }
 
 .avatarEffect {

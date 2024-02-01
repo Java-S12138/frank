@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Ref, ref} from "vue";
-import {ConfigSettingTypes} from "@/background/utils/configTypes";
+import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 import {optionsChampion, keywordsList} from "@/resources/champList";
 import {NDrawerContent, NSpace, NTag, NSelect, NSwitch, NSlider, NRadio, useDialog,} from 'naive-ui'
 

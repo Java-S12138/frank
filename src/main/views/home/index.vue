@@ -83,8 +83,8 @@ const openWin = () => {
 </script>
 
 <template>
-  <div v-if="summonerData.summonerInfo">
-    <n-card size="small" class="mt-4 shadow" content-style="padding-bottom: 0;">
+  <div class="mainContent" v-if="summonerData.summonerInfo">
+    <n-card size="small" class="shadow" content-style="padding-bottom: 0;">
       <!--    头像 昵称 等级-->
       <div class="h-14 flex gap-x-2">
         <n-avatar class="avatarEffect" round :bordered="false" :size="56"
@@ -158,14 +158,13 @@ const openWin = () => {
       </n-list>
       <!--段位 荣誉等级-->
     </n-card>
-    <n-card size="small"
-            content-style="padding-top:10px"
-            class="mt-4 shadow" style="height: 402px;">
+    <n-card size="small" content-style="padding-top:10px"
+            class="shadow" style="height: 402px;">
       <summoner-mastery-champ v-if="summonerData.champLevel"
                               :max-h="378" :puuid="''" :exist-champ-list="summonerData.champLevel"/>
     </n-card>
   </div>
-  <div v-else>
+  <div class="mainContent" v-else>
     <start-game/>
   </div>
 </template>

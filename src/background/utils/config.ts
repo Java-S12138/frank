@@ -1,4 +1,4 @@
-import {ConfigRank, ConfigSettingTypes} from "./configTypes";
+import {ConfigRank, ConfigSettingTypes} from "./backgroundTypes";
 
 const configSetting: ConfigSettingTypes = {
   'autoPickChampion': {

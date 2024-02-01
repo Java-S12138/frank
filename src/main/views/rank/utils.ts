@@ -1,7 +1,7 @@
 import {request} from "@/main/utils/request";
 import {champDict} from "@/resources/champList";
 import {ChampInfo} from "@/main/views/rank/rankTypes";
-import {ConfigRank} from "@/background/utils/configTypes";
+import {ConfigRank} from "@/background/utils/backgroundTypes";
 
 export const rankOptions =  [
   {

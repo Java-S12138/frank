@@ -2,15 +2,13 @@ import './utils/subscribe.ts'
 import './utils/config'
 import './utils/tray'
 import {GameFlow} from "./gameFlow";
+import {GameInfo, sumInfoTypes} from "@/background/utils/backgroundTypes";
 
 // cube.windows.openDevTools(cube.windows.current.id())
 
 // 启动主窗口
 cube.extensions.on('launch-triggered', (s) => {
-  if (!s.gamein) {
     cube.windows.obtainDeclaredWindow('main')
-    // cube.windows.obtainDeclaredWindow('recentMatch')
-  }
 })
 
 let isStart: boolean | null = true
@@ -19,6 +17,18 @@ cube.games.launchers.getRunningLaunchers().then((value) => {
   const isLoL = value.find(((i: any) => i.classId === 10902))
   if (isLoL !== undefined) {
     isStart = null
+    cube.games.launchers.events.getInfo(isLoL.classId).then((info:GameInfo) => {
+      if (info.summoner_info === undefined){
+        return
+      }
+      console.log(info)
+      // 设置召唤师信息
+      const sumInfo:sumInfoTypes = {
+        summonerId:info.summoner_info.summoner_id,
+        platformId:info.summoner_info.platform_id
+      }
+      localStorage.setItem('sumInfo',JSON.stringify(sumInfo))
+    })
   }
 })
 
@@ -28,7 +38,6 @@ const gameFlow = new GameFlow()
 gameFlow.initGameInWindow()
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
-
   if (info.category === 'game_flow') {
     switch (info.value) {
       case 'ChampSelect':
@@ -49,12 +58,12 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         gameFlow.autoAcceptGame()
         return
       case 'Lobby':
-        return  gameFlow.sendMesToMain('Lobby', '')
+        return gameFlow.sendMesToMain('Lobby', '')
       case 'None':
         if (isStart) {
           gameFlow.sendStartEvent()
           isStart = null
-        }else {
+        } else {
           gameFlow.sendMesToMain('None', '')
         }
         return
