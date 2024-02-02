@@ -19,7 +19,7 @@ export interface SummonerInfoList {
   name: string,
   summonerId: string,
   puuid: string,
-  profileIconId: number,
+  imgUrl: string,
   rank: string,
 }
 
@@ -28,7 +28,7 @@ export interface CurrentSumInfoTypes {
   name: string,
   puuid: string
   rank: string,
-  profileIconId: number,
+  imgUrl: string,
   index: number,
 }
 

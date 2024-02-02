@@ -34,7 +34,7 @@ const init = (summonerInfoList:SummonerInfoList[],cacheMatchList:SimpleMatchType
       name: summoner.name,
       summonerId: summoner.summonerId,
       isThumbUp: isThumbUp,
-      imgUrl: `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summoner.profileIconId}.png`,
+      imgUrl: summoner.imgUrl,
       rankList: rankList,
       matchList: cacheMatchList[summoner.summonerId],
       matchAnalysis:findTopChamp(cacheMatchList[summoner.summonerId])

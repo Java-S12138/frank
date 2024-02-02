@@ -24,6 +24,11 @@ export const useRuneStore = defineStore('useRuneStore', {
       this.currentChampTitle = champDict[champId].title
     },
     async initStore(champId: number){
+      // 如果英雄相同，说明已然存在数据
+      if (champId === this.currentChamp){
+        return false
+      }
+
       this.mapChampInfo(champId)
       const mapId:number = (JSON.parse(localStorage.getItem('gameInfo') as string)).mapId
       const queryRune = new QueryRune(mapId)
@@ -39,6 +44,7 @@ export const useRuneStore = defineStore('useRuneStore', {
       }
     },
     clearStore() {
+      this.currentChamp = 0
       this.runeDataList = []
       this.blockDataList = []
       this.skillsList = []

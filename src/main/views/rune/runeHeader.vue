@@ -60,7 +60,7 @@ onDeactivated(() => {
 </script>
 
 <template>
-  <n-card class="shadow my-4" size="small">
+  <n-card class="shadow" size="small">
     <div class="flex justify-between items-center">
       <div class="flex gap-x-2 items-center">
         <n-badge style="font-family: DingTalk"

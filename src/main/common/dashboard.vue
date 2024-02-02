@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NIcon, NSpace, NButton, NPopconfirm, NDropdown, NDrawer} from 'naive-ui'
+import {NIcon, NButton, NPopconfirm, NDropdown, NDrawer} from 'naive-ui'
 import {CircleMinus, Settings, CircleX} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
 import Setting from "@/main/common/setting.vue";

@@ -1,12 +1,12 @@
-import {findHaterByHaterId, findPlayerByPlayerId} from "@/main/utils/request";
-import {ExsitDataTypes, HateIdListType, Hater} from "./blackListTypes";
+import {findHaterByHaterId, findPlayerByPlayerId, updatePlayerRecord} from "@/main/utils/request";
+import {ExsitDataTypes, HateIdListType, Hater, UserInfos} from "./blackListTypes";
 import {sumInfoTypes} from "@/background/utils/backgroundTypes";
 
 class BlackList {
   public sumInfo:sumInfoTypes = JSON.parse(localStorage.getItem('sumInfo') as string)
 
   // 从本地查询黑名单列表
-  public queryBlacklist = async (cubeUserId:string):Promise<string[]|null> => {
+  public queryBlacklist = async (cubeUserId:string):Promise<[string[],UserInfos]|null> => {
     const res = await findPlayerByPlayerId({
       url:`/player/findPlayerByPlayerId?playerId=${cubeUserId}`,
       method:'GET'
@@ -14,6 +14,7 @@ class BlackList {
     if (res === null){
       return null
     }
+
     // 查询当前大区是否存在数据
     const haterIdList:HateIdListType = JSON.parse(res.haterIdList)
     const haterList = haterIdList[this.sumInfo.platformId]
@@ -26,7 +27,7 @@ class BlackList {
       if (existData === undefined){
         return null
       }
-      return existData.sumIdList
+      return [existData.sumIdList,res]
     }
   }
   // 通过summonerId获取黑名单数据
@@ -40,6 +41,21 @@ class BlackList {
       return null
     }
     return res
+  }
+  // 更新user过期的数据
+  public updateUserInfo = async (userInfos:UserInfos,newSumId:string[]) => {
+    const haterIdListObj = JSON.parse(userInfos.haterIdList)
+    haterIdListObj[this.sumInfo.platformId][this.sumInfo.summonerId].sumIdList = newSumId
+    return await updatePlayerRecord({
+      url: '/player/updatePlayer',
+      method: 'PUT',
+      data: {
+        ID: userInfos.ID,
+        CreatedAt: userInfos.CreatedAt,
+        playerId: userInfos.playerId,
+        haterIdList: JSON.stringify(haterIdListObj)
+      }
+    })
   }
 }
 

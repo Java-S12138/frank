@@ -217,7 +217,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
             </n-dropdown>
           </div>
         </template>
-        <n-scrollbar style="max-height: 431.5px;padding-right: 13px">
+        <n-scrollbar style="max-height: 432px;padding-right: 13px">
           <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
             <div class="flex gap-x-3" >
               <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer">

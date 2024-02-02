@@ -53,6 +53,7 @@ export default class MatchDetails {
     if (participants?.length !== 10){
       return null
     }
+    const isTeamOne = res.participantIdentities.slice(0,5).find(value => value.player.summonerId===sumId) ? true :false
 
     const titleList = this.getDetailsTitle(res.gameCreation,res.gameDuration,queId)
     const maxMatchData = this.getMaxField(participants)
@@ -60,8 +61,10 @@ export default class MatchDetails {
     const nameList = this.getparticipantIdAndName(participantIdentities)
 
     for (let i = 0; i < 5; i++) {
-      this.team100Kills += participants[i].stats.kills;this.team200Kills += participants[i + 5].stats.kills
-      this.team100GoldEarned += participants[i].stats.goldEarned;this.team200GoldEarned += participants[i+5].stats.goldEarned
+      this.team100Kills += isTeamOne?participants[i].stats.kills:participants[i+5].stats.kills
+      this.team200Kills += isTeamOne?participants[i+5].stats.kills:participants[i].stats.kills
+      this.team100GoldEarned += isTeamOne?participants[i].stats.goldEarned:participants[i+5].stats.goldEarned
+      this.team200GoldEarned += isTeamOne?participants[i+5].stats.goldEarned:participants[i].stats.goldEarned
 
       participantsInfo.teamOne.push(this.analyticalData(participants[i],nameList[i],maxMatchData,sumId))
       participantsInfo.teamTwo.push(this.analyticalData(participants[i+5],nameList[i+5],maxMatchData,sumId))
@@ -71,6 +74,12 @@ export default class MatchDetails {
 
     titleList.push(String(this.team100Kills),String(this.team200Kills),String(this.goldToStr(this.team100GoldEarned)),String(this.goldToStr(this.team200GoldEarned)))
     participantsInfo.headerInfo = titleList
+
+    if (!isTeamOne){
+      const temp = participantsInfo.teamOne
+      participantsInfo.teamOne = participantsInfo.teamTwo;
+      participantsInfo.teamTwo = temp
+    }
     return participantsInfo
   }
   // 解析对局数据
@@ -236,20 +245,21 @@ export default class MatchDetails {
     return iconList
   }
   // 通过分析数据得出单场得分情况
-  private analyseSingleMatch = (match: Stat):number => {
-    let score = 10
+  private analyseSingleMatch = (match: Stat):string => {
+    const kda =(match.kills+match.assists)/match.deaths*3
+    let score = 0
     if (match['firstBloodKill']) {
-      score += 5
+      score += 2
     } // 一血 加5分
     if (match['firstBloodAssist']) {
-      score += 2
+      score += 1
     }// 一血助攻 加2分
     score += match['doubleKills'] * 1 // 一次双杀加1分
     score += match['tripleKills'] * 2 // 一次三杀加2分
     score += match['quadraKills'] * 3 // 一次四杀加3分
     score += match['pentaKills'] * 4 // 一次五杀加4分
-    score += (match['kills']*3 - match['deaths']*2+match['assists'])
-    return score
+    score += kda
+    return score.toFixed(1)
   }
   // 获取需要显示数据的百分比
   private getShowDataPercent = (maxDict:MaxMatchData,curDict:ShowDataTypes) => {
@@ -270,8 +280,8 @@ export default class MatchDetails {
   // 找出评分最大的对象的数组下表
   private queryMvpIndex = (array:SummonerDetailInfo[]) => {
     return array.reduce((max, obj, index) => {
-      if (obj.score > max.value) {
-        return {value: obj.score, index}
+      if (Number(obj.score) > max.value) {
+        return {value:Number(obj.score), index}
       } else {
         return max
       }

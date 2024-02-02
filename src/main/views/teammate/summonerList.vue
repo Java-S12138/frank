@@ -15,7 +15,7 @@ const currentSumInfo: Ref<CurrentSumInfoTypes> = ref({
   puuid: '',
   rank: '',
   index: 0,
-  profileIconId: 0
+  imgUrl: ''
 })
 
 const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number|undefined) => {
@@ -31,7 +31,7 @@ const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number|undefi
     puuid:summoner.puuid,
     rank:summoner.rank,
     index:index,
-    profileIconId:summoner.profileIconId,
+    imgUrl:summoner.imgUrl,
 
   } as CurrentSumInfoTypes
 }
@@ -44,13 +44,10 @@ const clearInfo = () => {
     puuid: '',
     rank: '',
     index: 0,
-    profileIconId: 0
+    imgUrl: ''
   }
 }
 
-const getImgUrl = (profileIconId: number) => {
-  return `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${profileIconId}.png`
-}
 
 onDeactivated(() => {
   drawerActive.value = false
@@ -60,12 +57,12 @@ onDeactivated(() => {
 <template>
   <n-list>
     <n-list-item
-      v-for="(summoner,index) in teammateStore.summonerInfo" style="padding: 8px 0 10px 0">
+      v-for="(summoner,index) in teammateStore.summonerInfo" style="padding: 10px 0">
       <div class="flex gap-x-3" style="height: 50px;">
         <n-avatar
           :size="50" round
           class="cursor-pointer"
-          :src="getImgUrl(summoner.profileIconId)"
+          :src="summoner.imgUrl"
           fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
           @click="getCurrentSum(summoner,index,teammateStore.summonerKad[index])"
         />
@@ -109,7 +106,7 @@ onDeactivated(() => {
     height="512" placement="bottom"
     @after-leave="clearInfo">
     <summoner-detail
-      :profile-icon-id="currentSumInfo.profileIconId"
+      :img-url="currentSumInfo.imgUrl"
       :name="currentSumInfo.name"
       :rank="currentSumInfo.rank"
       :puuid="currentSumInfo.puuid"

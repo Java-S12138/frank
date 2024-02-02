@@ -45,3 +45,13 @@ export interface HaterItem {
   isShow: boolean;
 }
 
+export interface HaterStructTypes {
+  sumId: string;
+  area: string;
+  nickName: string;
+  signCount: number;
+  isShow: boolean;
+}
+export interface BlacklistListTypes {
+  list:HaterItem[]
+}

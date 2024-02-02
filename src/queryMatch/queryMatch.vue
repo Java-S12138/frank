@@ -5,6 +5,7 @@ import MatchMain from "./components/matchMain.vue";
 import useMatchStore from "@/queryMatch/store";
 import {NCard, NResult} from "naive-ui";
 import MatchErr from "@/queryMatch/components/matchErr.vue";
+import {onBeforeMount} from "vue";
 
 const dragMove = () => {
   // @ts-ignore
@@ -12,7 +13,19 @@ const dragMove = () => {
 }
 
 const matchStore = useMatchStore()
-matchStore.init()
+
+onBeforeMount(() => {
+  // 判断是否从其它窗口启动的此窗口
+  const isQueryRecord = localStorage.getItem('queSumMatch')
+
+  if (isQueryRecord === null){
+    matchStore.init()
+  }else {
+    const locSumId = JSON.parse((localStorage.getItem('sumInfo') as string)).summonerId
+    matchStore.init(Number(isQueryRecord),locSumId)
+    localStorage.removeItem('queSumMatch')
+  }
+})
 </script>
 
 <template>

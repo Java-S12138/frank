@@ -20,13 +20,15 @@ const useMatchStore = defineStore('useMatchStore', {
     }
   },
   actions: {
-    async init(summonerId?: number) {
+    async init(summonerId?: number,locSumId?:number) {
       const sumResult = await baseMatch.gerSummonerInfo(summonerId)
       if (sumResult === null) {
         return
       }
-      if (summonerId === undefined) {
+      if (summonerId === undefined && locSumId === undefined) {
         this.localSumId = sumResult.summonerInfo.currentId
+      }else {
+        this.localSumId = locSumId as number
       }
       this.sumInfo = {info: sumResult.summonerInfo, rank: sumResult.rankList}
       this.summonerId = sumResult.summonerInfo.currentId

@@ -2,7 +2,7 @@
 import {
   NCard, NAvatar, NProgress, NSpace, NTag, NDivider,NList, NListItem,NButton,NEllipsis
 } from 'naive-ui'
-import {getCurrentSummonerAllInfo} from "@/main/utils/getHomeData";
+import {getCurrentSummonerAllInfo} from "./getHomeData";
 import {onActivated, onMounted, reactive} from "vue";
 import {SummonerData} from "@/lcu/types/SummonerTypes";
 import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";

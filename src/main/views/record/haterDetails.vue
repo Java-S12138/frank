@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import {NDrawerContent, NPopover, NTag, NDivider,
-  NButton, NInput, NSpace, NEllipsis,NPopconfirm,useMessage} from "naive-ui"
+import {
+  NDrawerContent, NPopover, NTag, NDivider,
+  NButton, NInput, NSpace, NEllipsis, NPopconfirm, useMessage
+} from "naive-ui"
 import {HaterItem} from "./blackListTypes";
-import {deleteHaterContent, reviseHaterContent} from "@/main/utils/request";
+import {deleteBlacklist, deleteHater, findBlacklistByHId, reviseHaterContent} from "@/main/utils/request";
 import {throttle} from "./utils";
 
-const {hContent, hInfo,closeDrawer} = defineProps<{
+const {hContent, hInfo, closeDrawer} = defineProps<{
   hContent: HaterItem,
   hInfo: { name: string, sumId: string },
-  closeDrawer:() => void
+  closeDrawer: () => void
 }>()
 
 const message = useMessage()
@@ -18,33 +20,54 @@ const formatDate = (dateStr: string) => {
   return dateStr.split('T')[0]
 }
 // 修改内容
-const reviseContent = throttle(async (oldContnet:HaterItem) => {
-  const newContnet:HaterItem = JSON.parse(JSON.stringify(oldContnet))
+const reviseContent = throttle(async (oldContnet: HaterItem) => {
+  const newContnet: HaterItem = JSON.parse(JSON.stringify(oldContnet))
   const res = await reviseHaterContent({
-    url:'/blacklist/updateBlacklist',
-    data:newContnet,
-    method:'PUT'
+    url: '/blacklist/updateBlacklist',
+    data: newContnet,
+    method: 'PUT'
   })
 
-  if (res){
+  if (res) {
     message.success('修改内容成功')
-  }else {
+  } else {
     message.error('修改内容失败')
   }
 }, 3000)
 // 删除此数据
-const deleteContent = async (oldContnet:HaterItem) => {
-  closeDrawer()
-  const res = await deleteHaterContent({
-    url:'/blacklist/deleteBlacklist',
-    data:JSON.parse(JSON.stringify(oldContnet)),
-    method:'DELETE'
+const deleteContent = async (oldContnet: HaterItem) => {
+  const res = await deleteBlacklist({
+    url: '/blacklist/deleteBlacklist',
+    data: JSON.parse(JSON.stringify(oldContnet)),
+    method: 'DELETE'
   })
-  if (res){
+
+  if (res) {
     message.success('删除内容成功')
-  }else {
+    await isHavaItem(oldContnet.sumId,oldContnet.hId)
+  } else {
     message.error('删除内容失败')
   }
+  closeDrawer()
+}
+// 判断当前召唤师删除的Hater是否还有剩余内容
+const isHavaItem = async (sumId: string, hId: number) => {
+  // 根据Hater的召唤师 查询当前Hater的黑名单数据
+  const res = await findBlacklistByHId({
+    url: `/blacklist/getBlacklistList?sumId=${sumId}&hId=${hId}`,
+    method: 'GET'
+  })
+  if (res === null) {
+    return false
+  }
+  if (res.list.length === 0) {
+    deleteHater({
+      url: '/hater/deleteHater',
+      method: 'DELETE',
+      data: {ID: hId}
+    })
+  }
+  return true
 }
 </script>
 
@@ -55,7 +78,7 @@ const deleteContent = async (oldContnet:HaterItem) => {
         <template #trigger>
           <n-tag size="large" style="cursor: pointer">
             <n-ellipsis :tooltip="false" style="max-width: 170px">
-               {{hInfo.name }}
+              {{ hInfo.name }}
             </n-ellipsis>
           </n-tag>
         </template>
@@ -65,7 +88,6 @@ const deleteContent = async (oldContnet:HaterItem) => {
         {{ formatDate(hContent.UpdatedAt) }}
       </n-tag>
     </div>
-
     <n-divider style="margin: 16px 0;"/>
     <n-input
       v-model:value="hContent.content"

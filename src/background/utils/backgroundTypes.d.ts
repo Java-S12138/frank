@@ -34,6 +34,7 @@ export interface GameInfo {
 }
 
 export interface sumInfoTypes{
+  name:string
   summonerId:number;
   platformId:string;
 }

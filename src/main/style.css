@@ -98,6 +98,12 @@ body {
     border-radius: 8px;
     border: 1px dashed #dfdfdf;
 }
+.matchAnalysisDash {
+    margin-top: 2px;
+    padding: 4px;
+    border-radius: 99px;
+    border: 1px dashed #dfdfdf;
+}
 
 .text-ss {
     font-size: 13px;

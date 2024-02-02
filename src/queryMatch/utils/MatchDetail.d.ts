@@ -280,7 +280,7 @@ export interface SummonerDetailInfo {
   runesList: number[];
   totalMinionsKilled: number;
   iconList: string[],
-  score: number,
+  score: string,
   isWin: boolean,
   isMvp: boolean,
   showDataDict: ShowDataTypes

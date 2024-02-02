@@ -9,13 +9,10 @@ import {findTopChamp} from "@/main/views/teammate/utils";
 import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
 
 const teammateStore = useTeammateStore()
-const {name,puuid,rank,profileIconId,index,kda} = defineProps<CurrentSumInfoTypes>()
+const {name,puuid,rank,imgUrl,index,kda} = defineProps<CurrentSumInfoTypes>()
 const analysisData:RencentDataAnalysisTypes|null = findTopChamp(teammateStore.recentMatchList[index])
 const existChampList = teammateStore.masteryChampList[index]
 
-const getImgUrl = (profileIconId: number) => {
-  return `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${profileIconId}.png`
-}
 </script>
 
 <template>
@@ -24,7 +21,7 @@ const getImgUrl = (profileIconId: number) => {
       <n-avatar
         round
         :size="50"
-        :src="getImgUrl(profileIconId)"
+        :src="imgUrl"
         fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
       />
       <n-space class="flex-grow" vertical :size="[0,6]">

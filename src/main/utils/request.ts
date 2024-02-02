@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Hater, UserInfos} from "@/main/views/record/blackListTypes";
+import {BlacklistListTypes, Hater, UserInfos} from "@/main/views/record/blackListTypes";
 
 export const request = axios.create({
   timeout: 9999
@@ -17,6 +17,7 @@ const blacklistServe = (config: any): Promise<any | null> => {
   }).catch(() => null)
 }
 
+
 export const findPlayerByPlayerId = async (config: any): Promise<null | UserInfos> => {
   const res = await blacklistServe(config)
   if (res === null || res.code !== 0) {
@@ -32,17 +33,38 @@ export const findHaterByHaterId = async (config: any): Promise<null | Hater[]> =
   }
   return res.data
 }
-export const reviseHaterContent = async (config: any): Promise<boolean> => {
+export const findBlacklistByHId = async (config: any): Promise<null | BlacklistListTypes> => {
   const res = await blacklistServe(config)
+  if (res === null || res.code !== 0) {
+    return null
+  }
+  return res.data
+}
+
+const handleRequest = (res:any)  => {
   if (res === null || res.code !== 0) {
     return false
   }
   return true
 }
-export const deleteHaterContent = async (config: any): Promise<boolean> => {
+
+export const reviseHaterContent = async (config: any): Promise<boolean> => {
   const res = await blacklistServe(config)
-  if (res === null || res.code !== 0) {
-    return false
-  }
-  return true
+  return handleRequest(res)
+}
+export const deleteBlacklist = async (config: any): Promise<boolean> => {
+  const res = await blacklistServe(config)
+  return handleRequest(res)
+}
+export const deleteHater = async (config: any): Promise<boolean> => {
+  const res = await blacklistServe(config)
+  return handleRequest(res)
+}
+export const createHaterContent = async (config: any): Promise<boolean> => {
+  const res = await blacklistServe(config)
+  return handleRequest(res)
+}
+export const updatePlayerRecord = async (config: any): Promise<boolean> => {
+  const res = await blacklistServe(config)
+  return handleRequest(res)
 }

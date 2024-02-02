@@ -24,6 +24,7 @@ cube.games.launchers.getRunningLaunchers().then((value) => {
       console.log(info)
       // 设置召唤师信息
       const sumInfo:sumInfoTypes = {
+        name:info.summoner_info.display_name,
         summonerId:info.summoner_info.summoner_id,
         platformId:info.summoner_info.platform_id
       }

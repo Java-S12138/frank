@@ -1,6 +1,3 @@
-// 处理本地召唤师英雄熟练度数据
-import {champDict} from "@/resources/champList";
-
 import {
   queryMasteryChampList,
   queryRankPoint,

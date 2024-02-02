@@ -7,7 +7,7 @@ import {useRuneStore} from "@/main/store/useRune";
 import Dashboard from "@/main/common/dashboard.vue"
 import Navigation from "@/main/common/navigation.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
-import {queryFriendInfo} from "@/main/views/teammate/utils";
+import {queryFriendInfo, writeGameInfo} from "@/main/views/teammate/utils";
 import {champSession} from "@/main/views/testSession";
 
 const router = useRouter()
@@ -26,7 +26,9 @@ cube.windows.message.on('received', (messageId, content) => {
     case 'Lobby':
       return handleLobby(messageId)
     case 'CSSession':
-      return handleCSSession(messageId, content)
+      return handleCSSession(messageId, content,true)
+    case 'ChampSelect':
+      return handleCSSession(messageId, content,false)
     case 'Champion':
       return handleChampion(messageId, content)
     case 'GameStart':
@@ -65,23 +67,18 @@ const handleLobby = (id: string) => {
   changeState(id, 'rank', 1)
 }
 // 处理CSSession状态
-const handleCSSession = async (id: string, content: any) => {
-  const res: any = await invokeLcu('get', '/lol-gameflow/v1/session')
-  let queueId = 0
-  // 获取对局ID和地图ID
-  if (res?.gameData !== undefined) {
-    queueId = res.gameData.queue.id
-    localStorage.setItem('gameInfo',
-      String(JSON.stringify({
-        queueId: res.gameData.queue.id,
-        mapId: res.gameData.queue.mapId})
-      )
-    )
+const handleCSSession = async (id: string, content: any,isChangeState:boolean) => {
+  // 解决极地大乱斗模式问题
+  if (curFlow.value==='CSSession'){
+    return
   }
 
+  const queueId = await writeGameInfo()
   queryFriendInfo(content).then((SummonerInfoList) => {
     teammateStore.initStore(SummonerInfoList, queueId)
-    changeState(id, 'teammate', 2)
+    if (isChangeState){
+      changeState(id, 'teammate', 2)
+    }
   })
 }
 // 处理Champion状态
@@ -126,21 +123,14 @@ const navigateToPage = (page: string, index: number) => {
   router.push({name: page})
 }
 
-/*
 const testRune = () => {
   handleChampion('Champion',112)
 }
-
-testRune()
-*/
-
 const testCSSession = async () => {
-  await handleCSSession('CSSession', champSession)
+  await handleCSSession('CSSession', champSession,true)
   // cube.windows.obtainDeclaredWindow('recentMatch')
 }
 const textEndOfGame = async ()  => {
-  // const gameId = 8720242939
-  // const t = await invokeLcu('get',`/lol-match-history/v1/games/${gameId}`)
   curFlow.value = 'PreEndOfGame'
   curPos.value = 4
   router.push({name: 'record',query:{id:'1'}})

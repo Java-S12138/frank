@@ -4,6 +4,8 @@ import RuneMain from "./runeMain.vue";
 </script>
 
 <template>
-  <rune-header/>
-  <rune-main/>
+  <div class="mainContent">
+    <rune-header/>
+    <rune-main/>
+  </div>
 </template>

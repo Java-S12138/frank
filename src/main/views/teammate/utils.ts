@@ -1,5 +1,5 @@
 import {invokeLcu} from "@/lcu";
-import {lcuSummonerInfo} from "@/lcu/types/SummonerTypes";
+import {lcuSummonerInfo, summonerInfo} from "@/lcu/types/SummonerTypes";
 import {
   MyTeamObject,
   RencentDataAnalysisTypes,
@@ -9,11 +9,7 @@ import {
 import {dealDivsion, englishToChinese} from "@/lcu/utils";
 import {champDict} from "@/resources/champList";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
-
-// 根据召唤师ID查询信息
-const querySummonerInfo = async (summonerId: number | string): Promise<lcuSummonerInfo> => {
-  return await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
-}
+import {querySummonerInfo} from "@/lcu/aboutSummoner";
 
 // 获取选择英雄时 获取所以友方召唤师ID /lol-champ-select/v1/session 的值
 export const queryAllSummonerId = async (mactchSession?:any) => {
@@ -44,7 +40,6 @@ const querySummonerRank = async (puuid: string) => {
   return [RANKED_SOLO, RANKED_FLEX_SR]
 }
 
-
 // 获取我方召唤师ID和昵称
 export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoList[]> => {
   console.log('获取我方召唤师ID和昵称')
@@ -55,13 +50,13 @@ export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoL
   }
 
   for (const summonerId of allSummonerId) {
-    const currentSummonerInfo = await querySummonerInfo(summonerId)
+    const currentSummonerInfo = await querySummonerInfo(summonerId) as summonerInfo
     const rankHandler = await querySummonerRank(currentSummonerInfo.puuid)
     summonerInfoList.push({
-      name: currentSummonerInfo.displayName,
+      name: currentSummonerInfo.name,
       summonerId: `${summonerId}`,
       puuid: currentSummonerInfo.puuid,
-      profileIconId: currentSummonerInfo.profileIconId,
+      imgUrl: currentSummonerInfo.imgUrl,
       rank: `${rankHandler[0]} • ${rankHandler[1]}`,
     })
   }
@@ -120,4 +115,21 @@ export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAn
     }
   })
   return {top3Champions, totalChampions, roleCountMap}
+}
+
+// 写入游戏数据到localstore
+export const writeGameInfo = async () => {
+  const res: any = await invokeLcu('get', '/lol-gameflow/v1/session')
+  let queueId = 0
+  // 获取对局ID和地图ID
+  if (res?.gameData !== undefined) {
+    queueId = res.gameData.queue.id
+    localStorage.setItem('gameInfo',
+      String(JSON.stringify({
+        queueId: res.gameData.queue.id,
+        mapId: res.gameData.queue.mapId})
+      )
+    )
+  }
+  return queueId
 }

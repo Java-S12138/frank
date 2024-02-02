@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NSpace, NDivider, NTag, NCard,useMessage,NButton} from 'naive-ui'
+import {NSpace, NDivider, NTag, NCard, useMessage, NButton} from 'naive-ui'
 import {useTeammateStore} from "@/main/store/useTeammate";
 import SummonerList from "./summonerList.vue";
 import {ref} from "vue";
@@ -9,9 +9,9 @@ const isDisabled = ref(true)
 const message = useMessage()
 
 const openWin = () => {
-  if (teammateStore.isCacheSuccess){
+  if (teammateStore.isCacheSuccess) {
     cube.windows.obtainDeclaredWindow('matchAnalysis')
-  }else {
+  } else {
     message.error('数据异常，功能暂时无法使用')
   }
 
@@ -41,14 +41,14 @@ fetchDataWithTimeout(teammateStore, isDisabled)
 </script>
 
 <template>
-  <n-card size="small" class="mt-4 shadow"
-          style="height: 609px"
-          content-style="padding-top: 4px;">
+  <n-card
+    size="small" class="shadow"
+    style="height: 616px"
+    content-style="padding-top: 2px;">
+
     <summoner-list/>
 
-    <n-divider dashed style="margin-top: 0px;margin-bottom: 12px;"/>
-
-    <div>
+    <div class="matchAnalysisDash">
       <n-space justify="space-between" style="width: 100%;">
         <n-button @click="openWin" size="small"
                   class="px-2" type="success"
