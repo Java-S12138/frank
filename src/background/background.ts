@@ -21,7 +21,6 @@ cube.games.launchers.getRunningLaunchers().then((value) => {
       if (info.summoner_info === undefined){
         return
       }
-      console.log(info)
       // 设置召唤师信息
       const sumInfo:sumInfoTypes = {
         name:info.summoner_info.display_name,
@@ -40,6 +39,7 @@ gameFlow.initGameInWindow()
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
   if (info.category === 'game_flow') {
+    console.log(info.value)
     switch (info.value) {
       case 'ChampSelect':
         if (isStart) {
@@ -51,9 +51,9 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
       case 'GameStart':
         gameFlow.showHideMainWin(false, 'GameStart')
         return
-      case 'PreEndOfGame':
+      case 'EndOfGame':
         // gameFlow.isShowBlack()
-        gameFlow.showHideMainWin(true, 'PreEndOfGame')
+        gameFlow.showHideMainWin(true, 'EndOfGame')
         return
       case 'ReadyCheck':
         gameFlow.autoAcceptGame()
@@ -69,6 +69,15 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         }
         return
     }
+/*  Matchmaking
+    ReadyCheck
+    ChampSelect
+    GameStart
+    InProgress
+    WaitingForStats
+    PreEndOfGame
+    EndOfGame
+    Lobby*/
   }
 
   if (info.category === 'json_api_event' && info.key === 'raw_data') {

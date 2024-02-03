@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import {NSpace, NDivider, NTag, NCard, useMessage, NButton} from 'naive-ui'
+import {NSpace, NTag, NCard, useMessage, NButton} from 'naive-ui'
 import {useTeammateStore} from "@/main/store/useTeammate";
 import SummonerList from "./summonerList.vue";
-import {ref} from "vue";
 
 const teammateStore = useTeammateStore()
-const isDisabled = ref(true)
 const message = useMessage()
 
 const openWin = () => {
@@ -14,29 +12,7 @@ const openWin = () => {
   } else {
     message.error('数据异常，功能暂时无法使用')
   }
-
 }
-
-const fetchDataWithTimeout = async (teammateStore, isDisabled) => {
-  await new Promise(resolve => setTimeout(resolve, 3000))
-
-  if (teammateStore.isCacheSuccess) {
-    isDisabled.value = false
-    return
-  }
-
-  let count = 0
-  const interval = setInterval(() => {
-    if (teammateStore.isCacheSuccess || count === 3) {
-      isDisabled.value = false
-      clearInterval(interval)
-    }
-    count += 1
-  }, 1000)
-}
-
-
-fetchDataWithTimeout(teammateStore, isDisabled)
 
 </script>
 
@@ -52,7 +28,7 @@ fetchDataWithTimeout(teammateStore, isDisabled)
       <n-space justify="space-between" style="width: 100%;">
         <n-button @click="openWin" size="small"
                   class="px-2" type="success"
-                  :disabled="isDisabled"
+                  :disabled="!teammateStore.isCacheSuccess"
                   :bordered="false" round>
           对局分析
         </n-button>
@@ -62,4 +38,5 @@ fetchDataWithTimeout(teammateStore, isDisabled)
       </n-space>
     </div>
   </n-card>
+  
 </template>

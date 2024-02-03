@@ -2,7 +2,6 @@ import {englishToChinese, getPosition} from "@/lcu/utils";
 import {aliasToId, champDict} from "@/resources/champList";
 import {invokeLcu} from "@/lcu";
 import {PlayerChampionSelection, RecentSumInfo, SessionTypes, TeamData,SuperChampTypes} from "@/recentMatch/utils/queryTypes";
-import {sessionInf} from "@/recentMatch/utils/sessionTest";
 
 class QuerySummoner {
   public matchSession: null|SessionTypes = null
@@ -16,7 +15,6 @@ class QuerySummoner {
       // this.matchSession = sessionInf
       this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
       this.queueId = this.matchSession.gameData.queue.id
-      this.writeGameId(this.matchSession.gameData.gameId)
     }catch (e){
       this.matchSession = null
       this.queueId = 0
@@ -121,17 +119,6 @@ class QuerySummoner {
     }else {
       return "Z"
     }
-  }
-  // 写入locaStore GameId
-  public writeGameId = (gameId:number) => {
-    const gameInfoStr = localStorage.getItem('gameInfo')
-    if (gameInfoStr === null){
-      return
-    }
-
-    const gameInfo =  JSON.parse(gameInfoStr)
-    gameInfo['gameId'] = gameId
-    localStorage.setItem('gameInfo',JSON.stringify(gameInfo))
   }
 }
 

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {invokeLcu} from "@/lcu";
 import {useMessage} from "naive-ui"
 import {useRouter} from "vue-router";
 import {useRuneStore} from "@/main/store/useRune";
+import {useRecordStore} from "@/main/store/useRecord";
 import Dashboard from "@/main/common/dashboard.vue"
 import Navigation from "@/main/common/navigation.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import {queryFriendInfo, writeGameInfo} from "@/main/views/teammate/utils";
-import {champSession} from "@/main/views/testSession";
+import {champSession} from "@/test";
 
 const router = useRouter()
 const curPos = ref(0)
@@ -16,8 +17,13 @@ const curFlow = ref('None')
 const message = useMessage()
 const teammateStore = useTeammateStore()
 const runeStore = useRuneStore()
+const recordStore = useRecordStore()
+let isCSSProcess = false
 
-router.push({name: 'home'})
+onMounted(() => {
+  router.push({name: 'home'})
+  recordStore.init()
+})
 
 cube.windows.message.on('received', (messageId, content) => {
   switch (messageId) {
@@ -33,8 +39,8 @@ cube.windows.message.on('received', (messageId, content) => {
       return handleChampion(messageId, content)
     case 'GameStart':
       return handleGameStart(messageId)
-    case 'PreEndOfGame':
-      return handlePreEndOfGame(messageId)
+    case 'EndOfGame':
+      return handleEndOfGame(messageId)
   }
 })
 cube.windows.message.on('invoked', (id, content, reply) => {
@@ -50,11 +56,11 @@ cube.windows.message.on('invoked', (id, content, reply) => {
 
 // 处理None状态
 const handleNone = (id: string) => {
-  if (id===curFlow.value){
+  if (id === curFlow.value){
     return
   }
-  runeStore.clearStore()
-  teammateStore.clearStore()
+  runeStore.$reset()
+  teammateStore.$reset()
   changeState(id, 'home', 0)
 }
 // 处理Lobby状态
@@ -62,23 +68,30 @@ const handleLobby = (id: string) => {
   if (id === curFlow.value){
     return
   }
-  runeStore.clearStore()
-  teammateStore.clearStore()
+  runeStore.$reset()
+  teammateStore.$reset()
   changeState(id, 'rank', 1)
 }
 // 处理CSSession状态
 const handleCSSession = async (id: string, content: any,isChangeState:boolean) => {
   // 解决极地大乱斗模式问题
-  if (curFlow.value==='CSSession'){
-    return
-  }
-
+  if (isCSSProcess){return}
+  isCSSProcess = true
   const queueId = await writeGameInfo()
-  queryFriendInfo(content).then((SummonerInfoList) => {
-    teammateStore.initStore(SummonerInfoList, queueId)
+  queryFriendInfo(content).then(async (summonerInfoList) => {
+    const summonerIdList = summonerInfoList.map(summoner => summoner.summonerId)
+    teammateStore.initStore(summonerInfoList, queueId)
     if (isChangeState){
       changeState(id, 'teammate', 2)
     }
+    // 判断是否存在黑名单数据
+    recordStore.checkFriSum(summonerIdList).then(value => {
+      if (value === null){
+        return
+      }
+      teammateStore.addBlackList(value)
+    })
+
   })
 }
 // 处理Champion状态
@@ -96,15 +109,16 @@ const handleChampion = (id: string, content: any) => {
 }
 // 处理GameStart状态
 const handleGameStart = (id: string) => {
-  runeStore.clearStore()
+  runeStore.$reset()
   changeState(id, 'rank', 1)
 }
 // 处理PreEndOfGame状态
-const handlePreEndOfGame = (id: string) => {
-  teammateStore.clearStore()
+const handleEndOfGame = (id: string) => {
+  teammateStore.$reset()
+  isCSSProcess = false
   curFlow.value = id
   curPos.value = 4
-  router.push({name: 'record'})
+  router.push({name: 'record',query:{id:'1'}})
 }
 
 // 改变页面
@@ -135,7 +149,7 @@ const textEndOfGame = async ()  => {
   curPos.value = 4
   router.push({name: 'record',query:{id:'1'}})
 }
-// textEndOfGame()
+// testCSSession()
 
 </script>
 

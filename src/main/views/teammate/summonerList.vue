@@ -6,17 +6,11 @@ import {Ref, ref, onDeactivated} from "vue";
 import SummonerDetail from "./summonerDetail.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
+import HaterDetails from "@/main/views/record/haterDetails.vue";
 
 const teammateStore = useTeammateStore()
 const drawerActive = ref(false)
-const currentSumInfo: Ref<CurrentSumInfoTypes> = ref({
-  kda:0,
-  name: '',
-  puuid: '',
-  rank: '',
-  index: 0,
-  imgUrl: ''
-})
+const currentSumInfo: Ref<CurrentSumInfoTypes|null> = ref(null)
 
 const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number|undefined) => {
   // todo isSubscribe
@@ -32,20 +26,12 @@ const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number|undefi
     rank:summoner.rank,
     index:index,
     imgUrl:summoner.imgUrl,
-
   } as CurrentSumInfoTypes
 }
 
 
 const clearInfo = () => {
-  currentSumInfo.value = {
-    kda:0,
-    name: '',
-    puuid: '',
-    rank: '',
-    index: 0,
-    imgUrl: ''
-  }
+  currentSumInfo.value = null
 }
 
 
@@ -106,6 +92,7 @@ onDeactivated(() => {
     height="512" placement="bottom"
     @after-leave="clearInfo">
     <summoner-detail
+      v-if="currentSumInfo"
       :img-url="currentSumInfo.imgUrl"
       :name="currentSumInfo.name"
       :rank="currentSumInfo.rank"
@@ -113,5 +100,6 @@ onDeactivated(() => {
       :index="currentSumInfo.index"
       :kda="currentSumInfo.kda"
     />
+<!--    <hater-details h-info="" close-drawer="" h-content=""/>-->
   </n-drawer>
 </template>

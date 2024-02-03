@@ -3,6 +3,7 @@ import {SummonerInfoList} from "@/main/views/teammate/teammateTypes";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {QueryMatch} from "@/main/views/teammate/queryMatch";
 import {queryMasteryChampList} from "@/lcu/aboutSummoner";
+import {Hater} from "@/main/views/record/blackListTypes";
 
 const useMatch = new QueryMatch()
 
@@ -14,6 +15,7 @@ export const useTeammateStore = defineStore('useTeammate', {
       recentMatchList: [] as SimpleMatchTypes[][],
       cacheMatchList: {} as {[key:string]:SimpleMatchTypes[]},
       masteryChampList:[] as string[][][],
+      blackList: null as Hater[]|null,
       isLcuErr:false,
       isCacheSuccess:false,
     }
@@ -25,23 +27,27 @@ export const useTeammateStore = defineStore('useTeammate', {
       await this.cacheMatchRecord(summonerInfo,queueId)
     },
     async getMatchList(summonerInfo:SummonerInfoList[]){
-      let showMateryChamp = false
       for (const summoner of summonerInfo) {
         const matchList = await useMatch.getMatchHis(summoner.puuid)
-
-        if (matchList.length === 0 || showMateryChamp) {
-          showMateryChamp = true
-          const list = await queryMasteryChampList(summoner.puuid)
-          this.masteryChampList.push(list||[])
+        if (matchList.length === 0) {
+          // 查询最近战绩出错
+          this.isLcuErr = true
+          this.summonerKad = []
+          this.recentMatchList = []
+          return this.getMatchListFromChamp(summonerInfo)
         } else {
           const kda = this.calculateAverageKDA(matchList)
           this.summonerKad.push(kda)
           this.recentMatchList.push(matchList)
         }
       }
-      // 查询最近战绩出错
-      if (showMateryChamp) {
-        this.isLcuErr = true
+
+    },
+    // 战绩获取失败，获取英雄数据
+    async getMatchListFromChamp(summonerInfo:SummonerInfoList[]){
+      for (const summoner of summonerInfo) {
+        const list = await queryMasteryChampList(summoner.puuid)
+        this.masteryChampList.push(list||[])
       }
     },
     // 缓存战绩数据
@@ -72,14 +78,9 @@ export const useTeammateStore = defineStore('useTeammate', {
       const averageKDA = sumKDA / firstSixStats.length
       return parseFloat(averageKDA.toFixed(1))
     },
-    clearStore(){
-      this.summonerInfo = []
-      this.summonerKad = []
-      this.recentMatchList = []
-      this.cacheMatchList = {}
-      this.masteryChampList = []
-      this.isLcuErr = false
-      this.isCacheSuccess = false
+    // 获取黑名单数据
+    addBlackList(blacklist:Hater[]){
+      this.blackList = blacklist
     },
   }
 })

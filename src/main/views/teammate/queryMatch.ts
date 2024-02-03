@@ -97,8 +97,7 @@ export class QueryMatch {
       const matchHis40 = await this.dealMatchHistory(puuid, 20, 59)
       return [
         ...specialList,
-        ...matchHis40.filter(matchList => matchList.queueId === queueId)
-          .slice(0, 10 - speListLen)
+        ...matchHis40.filter(matchList => matchList.queueId === queueId).slice(0, 10 - speListLen)
       ]
     }
   }

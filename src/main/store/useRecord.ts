@@ -16,7 +16,7 @@ export const useRecordStore = defineStore('useRecordStore', {
   },
   actions: {
     async init(){
-      if (this.cubeUserId===null){
+      if (this.cubeUserId === null){
         this.cubeUserId = (await cube.profile.getCurrentUser())?.userId
       }
 
@@ -38,6 +38,13 @@ export const useRecordStore = defineStore('useRecordStore', {
       if (validSumId.length !== sumIdList.length){
         blackList.updateUserInfo(JSON.parse(JSON.stringify(this.userInfos)),validSumId)
       }
+    },
+    async checkFriSum(sumIdList:string[]){
+      const existSumDetails = await blackList.querySumDetails(sumIdList)
+      if (existSumDetails === null ||existSumDetails.length===0){
+        return null
+      }
+      return existSumDetails
     }
   }
 })

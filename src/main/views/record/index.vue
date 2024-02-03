@@ -10,6 +10,8 @@ import GameEnd from "@/main/views/record/gameEnd.vue";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import {useRecordStore} from "@/main/store/useRecord";
 import HaterDetails from "@/main/views/record/haterDetails.vue";
+import {invokeLcu} from "@/lcu";
+import {SessionTypes} from "@/recentMatch/utils/queryTypes";
 
 const router = useRouter()
 const recordStore = useRecordStore()
@@ -17,17 +19,12 @@ const showGameEnd = ref(false)
 const participantsInfo: Ref<ParticipantsInfo | null> = ref(null)
 const gameId = ref(0)
 
-onActivated(() => {
-  if (recordStore.haterList?.length === 0) {
-    recordStore.init()
-  }
+onActivated(async () => {
   // 游戏结束，弹出的结算窗口
   if (router.currentRoute.value.query.id === '1') {
-    const gameInfo = JSON.parse(localStorage.getItem('gameInfo') as string)
-    if (gameInfo === null ){
-      return
-    }
-    gameId.value = gameInfo.gameId
+    const session =  await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
+    gameId.value = session.gameData.gameId
+
     const matchDetail = new MatchDetails()
     matchDetail.queryGameDetail(gameId.value, recordStore.localSumInfo.summonerId).then((info) => {
       if (info !== null) {

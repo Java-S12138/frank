@@ -246,7 +246,7 @@ export default class MatchDetails {
   }
   // 通过分析数据得出单场得分情况
   private analyseSingleMatch = (match: Stat):string => {
-    const kda =(match.kills+match.assists)/match.deaths*3
+    const kda = match.deaths===0?(match.kills+match.assists)*2:(match.kills+match.assists)/match.deaths*3
     let score = 0
     if (match['firstBloodKill']) {
       score += 2

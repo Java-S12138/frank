@@ -107,8 +107,8 @@ const isHavaItem = async (sumId: string, hId: number) => {
       </n-button>
       <n-space>
         <n-button
-          size="small" dashed
-          @click="reviseContent(hContent)" type="info">
+          size="small" type="info"
+          @click="reviseContent(hContent)">
           修改
         </n-button>
         <n-popconfirm
@@ -117,7 +117,6 @@ const isHavaItem = async (sumId: string, hId: number) => {
         >
           <template #trigger>
             <n-button
-              dashed
               size="small" type="error">
               删除
             </n-button>
