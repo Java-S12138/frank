@@ -27,8 +27,10 @@ setTimeout(() => {
     </div>
     <div v-else-if="isLoad===1">
       <n-space vertical :size="[0,15]" style="margin-top: 3px">
-        <n-layout v-for="match in matchList" style="height: 50px" has-sider>
-          <n-layout-sider width="50"  style="margin-right: 8px;">
+        <n-layout v-for="match in matchList"
+                  class="dark:bg-[#2C2C32]"
+                  style="height: 50px" has-sider>
+          <n-layout-sider  width="50"  style="margin-right: 8px;">
             <div>
               <n-avatar
                 lazy
@@ -42,8 +44,8 @@ setTimeout(() => {
               </div>
             </div>
           </n-layout-sider>
-          <n-layout>
-            <n-layout-content>
+          <n-layout class="dark:bg-[#2C2C32]">
+            <n-layout-content class="dark:bg-[#2C2C32]">
               <div class="flex justify-between">
                 <n-avatar
                   lazy
@@ -53,7 +55,7 @@ setTimeout(() => {
                 />
               </div>
             </n-layout-content >
-            <n-layout-content style="margin-top: 7px;">
+            <n-layout-content class="dark:bg-[#2C2C32]" style="margin-top: 7px;">
               <div class="flex justify-between">
                 <n-tag style="width: 58px;justify-content: center;height: 18px"
                        :bordered="false" size="tiny"

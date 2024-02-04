@@ -71,8 +71,8 @@ const isHavaItem = async (sumId: string, hId: number) => {
   return true
 }
 
-const searchMatch = (summonerId:string) => {
-  localStorage.setItem('queSumMatch', String(summonerId))
+const searchMatch = (summonerId:string,matchId:string) => {
+  localStorage.setItem('queSumMatch', summonerId+'-'+matchId)
   cube.windows.obtainDeclaredWindow('queryMatch')
 }
 </script>
@@ -82,7 +82,7 @@ const searchMatch = (summonerId:string) => {
     <div class="flex justify-between">
       <n-popover trigger="hover" :show-arrow="false" placement="top-start">
         <template #trigger>
-          <n-tag @click="searchMatch(hContent.sumId)" size="large" style="cursor: pointer">
+          <n-tag @click="searchMatch(hContent.sumId,hContent.matchId)" size="large" style="cursor: pointer">
             <n-ellipsis :tooltip="false" style="max-width: 170px">
               {{ hInfo.name }}
             </n-ellipsis>
@@ -138,7 +138,7 @@ const searchMatch = (summonerId:string) => {
         </n-ellipsis>
       </n-tag>
     </div>
-    <text class="absolute text-xs text-gray-400" style="bottom: 53px;left: 76px" v-if="!isEdit">
+    <text class="absolute text-xs text-gray-400" style="bottom: 53px;left: 76px">
       点击玩家昵称查询此局详细数据
     </text>
   </n-drawer-content>

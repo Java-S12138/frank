@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import BlackList from "./blackList";
 import {NCard, NAlert, NDrawer} from "naive-ui"
-import {Hater} from "./blackListTypes";
 import {onActivated, onDeactivated, Ref, ref} from "vue";
 import BlackSummonerList from "./blackSummonerList.vue";
 import {useRouter} from "vue-router";
@@ -9,7 +7,6 @@ import MatchDetails from "@/queryMatch/utils/matchDetails";
 import GameEnd from "@/main/views/record/gameEnd.vue";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import {useRecordStore} from "@/main/store/useRecord";
-import HaterDetails from "@/main/views/record/haterDetails.vue";
 import {invokeLcu} from "@/lcu";
 import {SessionTypes} from "@/recentMatch/utils/queryTypes";
 
@@ -22,11 +19,11 @@ const gameId = ref(0)
 onActivated(async () => {
   // 游戏结束，弹出的结算窗口
   if (router.currentRoute.value.query.id === '1') {
-    // const session =  await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
-    // gameId.value = session.gameData.gameId
+    const session =  await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
+    gameId.value = session.gameData.gameId
 
     const matchDetail = new MatchDetails()
-    matchDetail.queryGameDetail(8727385104, recordStore.localSumInfo.summonerId).then((info) => {
+    matchDetail.queryGameDetail(gameId.value, recordStore.localSumInfo.summonerId).then((info) => {
       if (info !== null) {
         participantsInfo.value = info
         showGameEnd.value = true

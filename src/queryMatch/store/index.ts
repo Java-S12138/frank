@@ -16,7 +16,8 @@ const useMatchStore = defineStore('useMatchStore', {
       matchList: [] as SimpleMatchDetailsTypes[] | null,
       specialMatchList: [] as SimpleMatchDetailsTypes[],
       participantsInfo: null as null | ParticipantsInfo,
-      sumInfo: null as { info: summonerInfo, rank: string[] } | null
+      sumInfo: null as { info: summonerInfo, rank: string[] } | null,
+      matchLoading:true
     }
   },
   actions: {
@@ -32,7 +33,14 @@ const useMatchStore = defineStore('useMatchStore', {
       }
       this.sumInfo = {info: sumResult.summonerInfo, rank: sumResult.rankList}
       this.summonerId = sumResult.summonerInfo.currentId
-      await this.getMatchList()
+
+      this.getMatchList().then(() => {
+        if (this.matchLoading){
+          setTimeout(() => {
+            this.matchLoading = false
+          },500)
+        }
+      })
     },
     async getMatchList(page = 1) {
       if (this.sumInfo === null) {
@@ -70,6 +78,9 @@ const useMatchStore = defineStore('useMatchStore', {
     },
     async getMatchDetail(gameId: number) {
       this.participantsInfo = await matchDetials.queryGameDetail(gameId, this.summonerId)
+    },
+    async queryMatchDetail(gameId: number) {
+      return await matchDetials.queryGameDetail(gameId, this.summonerId)
     },
     fromSpecialToMatchList(page= 1){
       this.matchList = this.specialMatchList.slice(9*(page-1),9*page)

@@ -220,7 +220,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
         <n-scrollbar style="max-height: 432px;padding-right: 13px">
           <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
             <div class="flex gap-x-3" >
-              <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer">
+              <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer dark:bg-sky-900">
                 <n-avatar
                   @click="initDesDrawer(true,chapm.champId,chapm.imgUrl,chapm.tLevel)"
                   :bordered="false"

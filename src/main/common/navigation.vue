@@ -12,15 +12,15 @@ const icons = [
   { icon: Stack2, index: 3,route:'rune' },
   { icon: Notebook, index: 4,route:'record' },
 ]
-const iconColor = true ? ['#18a058',''] :["#7fe7c4","#ffffff"]
+const iconColor = localStorage.getItem('theme')!=='dark' ? ['#18a058',''] :["#63e2b7","#f1f5f9"]
 
 </script>
 
 <template>
-  <div class="navDiv bg-white dark:bg-zinc-900 shadow">
+  <div class="navDiv bg-white shadow darkBoxBoard dark:bg-zinc-900">
     <div class="flex w-full justify-between mx-2">
       <n-icon
-        class="transition cursor-pointer"
+        class="transition cursor-pointer dark:text-slate-100"
         v-for="item in icons"
         :key="item.index"
         size="26"

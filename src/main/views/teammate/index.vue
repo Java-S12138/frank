@@ -20,7 +20,7 @@ const openWin = () => {
 
     <summoner-list/>
 
-    <div class="matchAnalysisDash">
+    <div class="matchAnalysisDash dark:border-gray-700">
       <n-space justify="space-between" style="width: 100%;">
         <n-button @click="openWin" size="small"
                   class="px-2" type="success"

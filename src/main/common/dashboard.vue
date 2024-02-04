@@ -3,8 +3,11 @@ import {NIcon, NButton, NPopconfirm, NDropdown, NDrawer} from 'naive-ui'
 import {CircleMinus, Settings, CircleX} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
 import Setting from "@/main/common/setting.vue";
+import {Notice} from "@/main/utils/notice";
 
 onMounted(() => {
+  // const notice = new Notice()
+  // notice.init()
   if (isSubscribe==='t'){
     const remainSub = localStorage.getItem('remainSub')
     if (remainSub !== '' && remainSub !==null){
@@ -13,7 +16,6 @@ onMounted(() => {
     }
   }
 })
-
 
 const isSubscribe = localStorage.getItem('isSubscribe')
 const subInfo = ref('订阅服务')

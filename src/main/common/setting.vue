@@ -22,6 +22,7 @@ const handleThemeChange = () => {
     maskClosable:true,
     closable:false,
     autoFocus:false,
+    style:'margin:8px;max-width:334px',
     onPositiveClick: () => {
       if (theme !== 'dark') {
         localStorage.setItem('theme','dark')
@@ -43,12 +44,12 @@ const commoneChnageSecond = (option:string,second:string) => {
 }
 // 设置是否选项共用函数
 const commoneChnage = (option:string) => {
-  if (config[option] !== true) {
-    config[option] = false
-    localStorage.setItem('config',JSON.stringify(config))
+  if (config.value[option] !== true) {
+    config.value[option] = false
+    localStorage.setItem('configSetting',JSON.stringify(config.value))
   } else {
-    config[option] = true
-    localStorage.setItem('config',JSON.stringify(config))
+    config.value[option] = true
+    localStorage.setItem('configSetting',JSON.stringify(config.value))
   }
 }
 // 设置是否自动选择英雄

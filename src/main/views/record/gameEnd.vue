@@ -38,7 +38,7 @@ const handleAddBlackList = (
   valueRef.value = 'add'
 }
 
-const backSelectState = (isTeamOne:number) => {
+const backSelectState = (isTeamOne:boolean) => {
   if (isTeamOne){
     valueRef.value = 'friend'
   }

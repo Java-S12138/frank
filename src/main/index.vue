@@ -13,17 +13,17 @@ import {champSession} from "@/test";
 
 const router = useRouter()
 const curPos = ref(0)
-const curFlow = ref('None')
 const message = useMessage()
 const teammateStore = useTeammateStore()
 const runeStore = useRuneStore()
 const recordStore = useRecordStore()
 let isCSSProcess = false
+let curFlow = 'None'
 
 onMounted(() => {
   router.push({name: 'home'})
   recordStore.init()
-  testCSSession()
+  // testCSSession()
 })
 
 cube.windows.message.on('received', (messageId, content) => {
@@ -56,7 +56,7 @@ cube.windows.message.on('invoked', (id, content, reply) => {
 
 // 处理None状态
 const handleNone = (id: string) => {
-  if (id === curFlow.value){
+  if (id === curFlow){
     return
   }
   runeStore.$reset()
@@ -65,7 +65,7 @@ const handleNone = (id: string) => {
 }
 // 处理Lobby状态
 const handleLobby = (id: string) => {
-  if (id === curFlow.value){
+  if (id === curFlow){
     return
   }
   runeStore.$reset()
@@ -111,27 +111,36 @@ const handleGameStart = (id: string) => {
 const handleEndOfGame = (id: string) => {
   teammateStore.$reset()
   isCSSProcess = false
-  curFlow.value = id
+  curFlow = id
   curPos.value = 4
   router.push({name: 'record',query:{id:'1'}})
 }
 
 // 改变页面
 const changeState = (id: string, page: string, index: number) => {
-  curFlow.value = id
+  curFlow = id
   navigateToPage(page, index)
 }
 // 改变底部页面图标
 const navigateToPage = (page: string, index: number) => {
-
-  if ((index === 2 && curFlow.value === 'None') || (index === 3 && curFlow.value !== 'Champion')) {
+  if (!preventAccess(index)){
     message.warning('当前状态无法查看此页面', {duration: 2000})
     return
   }
   curPos.value = index
   router.push({name: page})
 }
-
+// 防止访问
+const preventAccess = (index: number) => {
+  switch (index) {
+    case 2:
+      return curFlow === 'CSSession' || curFlow === 'ChampSelect' || curFlow === 'Champion'
+    case 3:
+      return curFlow === 'Champion'
+    default:
+      return true
+  }
+}
 const testRune = () => {
   handleChampion('Champion',112)
 }
@@ -140,7 +149,7 @@ const testCSSession = async () => {
   // cube.windows.obtainDeclaredWindow('recentMatch')
 }
 const testEndOfGame = async ()  => {
-  curFlow.value = 'EndOfGame'
+  curFlow = 'EndOfGame'
   curPos.value = 4
   router.push({name: 'record',query:{id:'1'}})
 }

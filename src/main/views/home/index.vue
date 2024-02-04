@@ -95,12 +95,16 @@ const openWin = () => {
                  justify="space-between" vertical>
           <div class="flex justify-between">
             <!--昵称-->
-            <n-tag type="success" :bordered="false" round>
-              <n-ellipsis style="max-width: 100px">
+            <n-tag type="success"
+                   style="width: 130px;justify-content: center"
+                   :bordered="false" round>
+              <n-ellipsis style="max-width: 110px" :tooltip="false">
                 {{summonerData.summonerInfo.name}}
               </n-ellipsis>
             </n-tag>
-            <n-button @click="openWin" type="success" size="small" round>
+            <n-button class="px-2"  :bordered="false"
+                      @click="openWin"
+                      type="success" size="small" round>
               查询战绩
             </n-button>
           </div>

@@ -11,7 +11,7 @@ const searchSum = (summonerId: number) => {
 </script>
 
 <template>
-  <div class="flex h-full box-content">
+  <div class="flex h-full box-border">
     <match-list/>
     <div class="flex-grow p-3 ml-7"
          :key="matchStore.participantsInfo.gameId"
@@ -27,7 +27,7 @@ const searchSum = (summonerId: number) => {
       />
     </div>
     <div class="w-full flex justify-center items-center"
-         style="height: 594px;" v-else>
+         style="height: 594px;" v-else-if="!matchStore.matchLoading&&matchStore.participantsInfo===null">
       <n-result
         size="large"
         status="418"
