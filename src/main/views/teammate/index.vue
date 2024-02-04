@@ -7,11 +7,7 @@ const teammateStore = useTeammateStore()
 const message = useMessage()
 
 const openWin = () => {
-  if (teammateStore.isCacheSuccess) {
-    cube.windows.obtainDeclaredWindow('matchAnalysis')
-  } else {
-    message.error('数据异常，功能暂时无法使用')
-  }
+  cube.windows.obtainDeclaredWindow('matchAnalysis')
 }
 
 </script>
@@ -38,5 +34,4 @@ const openWin = () => {
       </n-space>
     </div>
   </n-card>
-  
 </template>

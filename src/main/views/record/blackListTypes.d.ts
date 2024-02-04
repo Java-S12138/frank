@@ -52,6 +52,12 @@ export interface HaterStructTypes {
   signCount: number;
   isShow: boolean;
 }
+
 export interface BlacklistListTypes {
-  list:HaterItem[]
+  list: HaterItem[]
+}
+
+export interface BlackItemsTypes {
+  hInfo: { name: string, sumId: string },
+  hContent: HaterItem,
 }

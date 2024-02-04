@@ -72,6 +72,7 @@ const formatDate = (dateStr: string) => {
       :close-drawer="closeDetailsDrawer"
       :h-content="curHaterDetails"
       :h-info="curHaterInfo"
+      :is-edit="true"
     />
   </n-drawer>
 </template>

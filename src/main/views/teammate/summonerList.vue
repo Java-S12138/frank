@@ -1,18 +1,26 @@
 <script setup lang="ts">
-import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag} from "naive-ui";
 import LoadMatch from "./loadMatch.vue";
-import {CurrentSumInfoTypes, SummonerInfoList,} from "./teammateTypes";
-import {Ref, ref, onDeactivated} from "vue";
+import {Ref, ref, onDeactivated, watch} from "vue";
 import SummonerDetail from "./summonerDetail.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
-import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
 import HaterDetails from "@/main/views/record/haterDetails.vue";
+import {CurrentSumInfoTypes, SummonerInfoList,} from "./teammateTypes";
+import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
+import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag} from "naive-ui";
+import {BlackItemsTypes} from "@/main/views/record/blackListTypes";
 
 const teammateStore = useTeammateStore()
 const drawerActive = ref(false)
-const currentSumInfo: Ref<CurrentSumInfoTypes|null> = ref(null)
+const drawerBlackActive = ref(false)
+const currentSumInfo: Ref<CurrentSumInfoTypes | null> = ref(null)
+const currentHaterInfo: Ref<BlackItemsTypes | null> = ref(null)
 
-const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number|undefined) => {
+watch(teammateStore.blackItems, () => {
+  currentHaterInfo.value = teammateStore.blackItems[0]
+  drawerBlackActive.value = true
+})
+
+const getCurrentSum = (summoner: SummonerInfoList, index: number) => {
   // todo isSubscribe
   // if (isSubscribe ==='f'){
   //   message.warning('查看更多信息 需要订阅服务')
@@ -20,23 +28,31 @@ const getCurrentSum = (summoner:SummonerInfoList,index: number,kda:number|undefi
   // }
   drawerActive.value = true
   currentSumInfo.value = {
-    kda:kda,
-    name:summoner.name,
-    puuid:summoner.puuid,
-    rank:summoner.rank,
-    index:index,
-    imgUrl:summoner.imgUrl,
+    kda: summoner?.kda,
+    hater: summoner?.hater,
+    name: summoner.name,
+    puuid: summoner.puuid,
+    rank: summoner.rank,
+    index: index,
+    imgUrl: summoner.imgUrl,
   } as CurrentSumInfoTypes
 }
-
 
 const clearInfo = () => {
   currentSumInfo.value = null
 }
+const clearBlackInfo = () => {
+  currentHaterInfo.value = null
+}
 
+const openBlackList = (haterIndex: number) => {
+  currentHaterInfo.value = teammateStore.blackItems[haterIndex]
+  drawerBlackActive.value = true
+}
 
 onDeactivated(() => {
   drawerActive.value = false
+  drawerBlackActive.value = false
 })
 </script>
 
@@ -50,7 +66,7 @@ onDeactivated(() => {
           class="cursor-pointer"
           :src="summoner.imgUrl"
           fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-          @click="getCurrentSum(summoner,index,teammateStore.summonerKad[index])"
+          @click="getCurrentSum(summoner,index)"
         />
         <div class="flex-grow">
           <div
@@ -58,7 +74,12 @@ onDeactivated(() => {
             style="height: 50px;"
           >
             <!--            根据KDA计算数据-->
-            <summoner-kda-name :name="summoner.name" :kda="teammateStore.summonerKad[index]"/>
+            <summoner-kda-name
+              :open-drawer="openBlackList"
+              :name="summoner.name"
+              :hater="summoner?.hater"
+              :hater-index="summoner?.haterIndex"
+              :kda="summoner.kda"/>
             <n-tag round size="small" class="w-full justify-center text-sm" :bordered="false" type="info">
               {{ summoner.rank }}
             </n-tag>
@@ -89,17 +110,24 @@ onDeactivated(() => {
 
   <n-drawer
     class="rounded-t-xl" v-model:show="drawerActive"
-    height="512" placement="bottom"
+    height="518" placement="bottom"
     @after-leave="clearInfo">
     <summoner-detail
       v-if="currentSumInfo"
-      :img-url="currentSumInfo.imgUrl"
-      :name="currentSumInfo.name"
-      :rank="currentSumInfo.rank"
-      :puuid="currentSumInfo.puuid"
+      :sum-info="currentSumInfo"
       :index="currentSumInfo.index"
-      :kda="currentSumInfo.kda"
     />
-<!--    <hater-details h-info="" close-drawer="" h-content=""/>-->
   </n-drawer>
+
+  <n-drawer
+    v-model:show="drawerBlackActive" class="rounded-t-xl" :auto-focus="false"
+    @after-leave="clearBlackInfo" height="264" placement="bottom">
+    <hater-details
+      v-if="currentHaterInfo"
+      :h-content="currentHaterInfo.hContent"
+      :h-info="currentHaterInfo.hInfo"
+      :is-edit="false"
+    />
+  </n-drawer>
+
 </template>

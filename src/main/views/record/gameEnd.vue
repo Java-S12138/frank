@@ -19,7 +19,7 @@ const message = useMessage()
 const tabsInstRef = ref<TabsInst | null>(null)
 const valueRef = ref('friend')
 
-const hInfo:Ref<{name:string,sumId:string,teamType:number}|null> = ref(null)
+const hInfo:Ref<{name:string,sumId:string,isTeamOne:boolean}|null> = ref(null)
 const isHaterState = ref(true)
 
 const handleBeforeLeave = (tabName: string) => {
@@ -31,15 +31,15 @@ const handleBeforeLeave = (tabName: string) => {
 }
 const handleAddBlackList = (
   isHater: boolean,
-  requiredInfo:{name:string,sumId:string,teamType:number}) =>
+  requiredInfo:{name:string,sumId:string,isTeamOne:boolean}) =>
 {
   hInfo.value = requiredInfo
   isHaterState.value = isHater
   valueRef.value = 'add'
 }
 
-const backSelectState = (teamType:number) => {
-  if (teamType===100){
+const backSelectState = (isTeamOne:number) => {
+  if (isTeamOne){
     valueRef.value = 'friend'
   }
   valueRef.value = 'enemy'
@@ -61,10 +61,17 @@ const backSelectState = (teamType:number) => {
       @before-leave="handleBeforeLeave"
     >
       <n-tab-pane name="friend" tab="友方召唤师">
-        <summoner-end :sum-list="teamOne" :addBlackList="handleAddBlackList"/>
+        <summoner-end
+          :is-team-one="true"
+          :sum-list="teamOne"
+          :addBlackList="handleAddBlackList"
+        />
       </n-tab-pane>
       <n-tab-pane name="enemy" tab="敌方召唤师">
-        <summoner-end :sum-list="teamTwo" :addBlackList="handleAddBlackList"/>
+        <summoner-end
+          :is-team-one="false"
+          :sum-list="teamTwo"
+          :addBlackList="handleAddBlackList"/>
       </n-tab-pane>
       <n-tab-pane name="add" tab="新增">
         <add-black-list

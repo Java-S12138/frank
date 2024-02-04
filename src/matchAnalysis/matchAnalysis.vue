@@ -20,16 +20,15 @@ cube.windows.getWindowByName('main').then((mainWin: any) => {
     .then((res: {
       summonerInfo:SummonerInfoList[],
       cacheMatchList:SimpleMatchTypes[],
-      summonerKad:number[]
     }) => {
-      init(res.summonerInfo,res.cacheMatchList,res.summonerKad)
+      init(res.summonerInfo,res.cacheMatchList)
     })
 })
 
-const init = (summonerInfoList:SummonerInfoList[],cacheMatchList:SimpleMatchTypes[],summonerKadn:number[]) => {
+const init = (summonerInfoList:SummonerInfoList[],cacheMatchList:SimpleMatchTypes[]) => {
   const resSummoner:SummonerAnaInfo[] = summonerInfoList.map((summoner,index) => {
     const rankList = summoner.rank.split(' • ')
-    const isThumbUp = summonerKadn[index] >= 9
+    const isThumbUp = summoner.kda >= 9
     return <SummonerAnaInfo>{
       name: summoner.name,
       summonerId: summoner.summonerId,

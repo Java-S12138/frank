@@ -23,6 +23,7 @@ let isCSSProcess = false
 onMounted(() => {
   router.push({name: 'home'})
   recordStore.init()
+  testCSSession()
 })
 
 cube.windows.message.on('received', (messageId, content) => {
@@ -49,8 +50,7 @@ cube.windows.message.on('invoked', (id, content, reply) => {
   } else if (id === 'getTeammate') {
     const summonerInfo = JSON.parse(JSON.stringify(teammateStore.summonerInfo))
     const cacheMatchList = JSON.parse(JSON.stringify(teammateStore.cacheMatchList))
-    const summonerKad = JSON.parse(JSON.stringify(teammateStore.summonerKad))
-    return reply({summonerInfo,cacheMatchList,summonerKad})
+    return reply({summonerInfo,cacheMatchList})
   }
 })
 
@@ -80,18 +80,13 @@ const handleCSSession = async (id: string, content: any,isChangeState:boolean) =
   const queueId = await writeGameInfo()
   queryFriendInfo(content).then(async (summonerInfoList) => {
     const summonerIdList = summonerInfoList.map(summoner => summoner.summonerId)
-    teammateStore.initStore(summonerInfoList, queueId)
-    if (isChangeState){
-      changeState(id, 'teammate', 2)
-    }
     // 判断是否存在黑名单数据
     recordStore.checkFriSum(summonerIdList).then(value => {
-      if (value === null){
-        return
+      teammateStore.initStore(summonerInfoList, queueId,value)
+      if (isChangeState){
+        changeState(id, 'teammate', 2)
       }
-      teammateStore.addBlackList(value)
     })
-
   })
 }
 // 处理Champion状态
@@ -112,7 +107,7 @@ const handleGameStart = (id: string) => {
   runeStore.$reset()
   changeState(id, 'rank', 1)
 }
-// 处理PreEndOfGame状态
+// 处理EndOfGame状态
 const handleEndOfGame = (id: string) => {
   teammateStore.$reset()
   isCSSProcess = false
@@ -144,12 +139,12 @@ const testCSSession = async () => {
   await handleCSSession('CSSession', champSession,true)
   // cube.windows.obtainDeclaredWindow('recentMatch')
 }
-const textEndOfGame = async ()  => {
-  curFlow.value = 'PreEndOfGame'
+const testEndOfGame = async ()  => {
+  curFlow.value = 'EndOfGame'
   curPos.value = 4
   router.push({name: 'record',query:{id:'1'}})
 }
-// testCSSession()
+
 
 </script>
 

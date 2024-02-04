@@ -10,7 +10,8 @@ import {throttle} from "./utils";
 const {hContent, hInfo, closeDrawer} = defineProps<{
   hContent: HaterItem,
   hInfo: { name: string, sumId: string },
-  closeDrawer: () => void
+  isEdit:boolean,
+  closeDrawer?: () => void
 }>()
 
 const message = useMessage()
@@ -69,6 +70,11 @@ const isHavaItem = async (sumId: string, hId: number) => {
   }
   return true
 }
+
+const searchMatch = (summonerId:string) => {
+  localStorage.setItem('queSumMatch', String(summonerId))
+  cube.windows.obtainDeclaredWindow('queryMatch')
+}
 </script>
 
 <template>
@@ -76,7 +82,7 @@ const isHavaItem = async (sumId: string, hId: number) => {
     <div class="flex justify-between">
       <n-popover trigger="hover" :show-arrow="false" placement="top-start">
         <template #trigger>
-          <n-tag size="large" style="cursor: pointer">
+          <n-tag @click="searchMatch(hContent.sumId)" size="large" style="cursor: pointer">
             <n-ellipsis :tooltip="false" style="max-width: 170px">
               {{ hInfo.name }}
             </n-ellipsis>
@@ -92,7 +98,7 @@ const isHavaItem = async (sumId: string, hId: number) => {
     <n-input
       v-model:value="hContent.content"
       type="textarea" spellcheck="false"
-      autosize show-count
+      autosize :show-count="isEdit"
       maxlength="200"
       placeholder="请输入拉黑原因"
       style="height: 120px;"
@@ -105,7 +111,7 @@ const isHavaItem = async (sumId: string, hId: number) => {
                 :type="hContent.isShow?'error':'success'">
         {{ hContent.tag }}
       </n-button>
-      <n-space>
+      <n-space v-if="isEdit">
         <n-button
           size="small" type="info"
           @click="reviseContent(hContent)">
@@ -125,7 +131,16 @@ const isHavaItem = async (sumId: string, hId: number) => {
         </n-popconfirm>
 
       </n-space>
+      <n-tag :bordered="false" :type="hContent.isShow?'error':'success'" :disabled="true"
+             v-else>
+        <n-ellipsis :tooltip="false" style="max-width: 150px">
+          {{hContent.playerSumName}}
+        </n-ellipsis>
+      </n-tag>
     </div>
+    <text class="absolute text-xs text-gray-400" style="bottom: 53px;left: 76px" v-if="!isEdit">
+      点击玩家昵称查询此局详细数据
+    </text>
   </n-drawer-content>
 </template>
 

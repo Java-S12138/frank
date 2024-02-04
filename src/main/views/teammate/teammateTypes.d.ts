@@ -21,10 +21,15 @@ export interface SummonerInfoList {
   puuid: string,
   imgUrl: string,
   rank: string,
+  kda?: string,
+  hater?:boolean
+  haterIndex?:number
 }
 
 export interface CurrentSumInfoTypes {
-  kda:number|undefined,
+  kda:string|undefined,
+  hater:boolean|undefined,
+  haterIndex:number|undefined
   name: string,
   puuid: string
   rank: string,

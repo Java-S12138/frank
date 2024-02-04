@@ -5,7 +5,8 @@ import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 import {getIconImg} from "@/queryMatch/utils/tools";
 
 
-const {sumList, addBlackList} = defineProps<{
+const {isTeamOne,sumList, addBlackList} = defineProps<{
+  isTeamOne:boolean,
   sumList: SummonerDetailInfo[],
   addBlackList: (isHater: boolean, requiredInfo: { name: string; sumId: string }) => void
 }>()
@@ -19,7 +20,7 @@ const handleAdd = (isHater:boolean,summonerInfo:SummonerDetailInfo) => {
   const requiredInfo = {
     name:summonerInfo.name,
     sumId:String(summonerInfo.accountId),
-    teamType:summonerInfo.teamType
+    teamType:isTeamOne
   }
   addBlackList(isHater,requiredInfo)
 }

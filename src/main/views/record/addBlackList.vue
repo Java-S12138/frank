@@ -8,10 +8,10 @@ import {useRecordStore} from "@/main/store/useRecord";
 
 const {isHater,hInfo,platformId,gameId,backSelectState} = defineProps<{
   isHater:boolean,
-  hInfo:{name:string,sumId:string,teamType:number},
+  hInfo:{name:string,sumId:string,isTeamOne:boolean},
   platformId:string,
   gameId:number,
-  backSelectState:(teamType:number) => void
+  backSelectState:(isTeamOne:boolean) => void
 }>()
 
 const recordStore = useRecordStore()
@@ -42,7 +42,7 @@ const updateHaterInfo = async () => {
     "playerSumId": String(localSumInfo.summonerId),
     "matchId": String(gameId),
     "sumId": hInfo.sumId,
-    "tag": isHater ?'气愤':'愉快',
+    "tag": isHater ?'红温':'愉快',
     "content": conDetails,
     "handAdd": false,
     "isShow": isHater
@@ -82,8 +82,8 @@ const updatePlayerInfo = async () => {
   return res
 }
 
-const handleAddData = async (teamType:number) => {
-  backSelectState(teamType)
+const handleAddData = async (isTeamOne:boolean) => {
+  backSelectState(isTeamOne)
   if (await updatePlayerInfo()){
     if (await updateHaterInfo()){
       recordStore.init()
@@ -124,7 +124,7 @@ const getData = () => {
       type="textarea" spellcheck="false"
       autosize show-count
       maxlength="200"
-      placeholder="请输入点赞原因，如果不想输入内容。自动填充左下角信息，点击标签，顺序切换内容"
+      :placeholder='"请输入"+(isHater?"拉黑":"点赞")+"原因，如果不想输入内容。自动填充左下角信息，点击标签，顺序切换内容"'
       style="height: 120px;"
     />
     <n-divider dashed style="margin: 16px 0;"/>
@@ -137,13 +137,13 @@ const getData = () => {
 
       <n-popconfirm
         :show-icon="false"
-        @positive-click="handleAddData(hInfo.teamType)"
+        @positive-click="handleAddData(hInfo.isTeamOne)"
       >
         <template #trigger>
           <n-button
             :type="isHater?'error':'success'"
             :bordered="false" size="small" type="success">
-            点赞一下
+            {{ isHater?'拉黑黑':'点赞赞' }}
           </n-button>
         </template>
         是否添加到排位笔记

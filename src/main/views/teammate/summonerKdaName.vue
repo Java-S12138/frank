@@ -1,15 +1,37 @@
 <script setup lang="ts">
 import {ThumbDown, ThumbUp} from "@vicons/tabler";
 import {NEllipsis, NIcon, NTag} from "naive-ui";
+const {kda,name,hater,haterIndex,openDrawer} = defineProps<{
+  kda: string | undefined,
+  name: string,
+  hater:boolean|undefined,
+  haterIndex?:number|undefined,
+  openDrawer?:(haterIndex:number) => void
+}>()
 
-const {kda, name} = defineProps<{ kda: number | undefined, name: string }>()
+const checkHater = (hater) => {
+  if (hater===undefined){
+    return 'default'
+  }
+  if (hater){
+    return 'error'
+  }else {
+    return 'success'
+  }
+}
+const handleOpenDrawer = (hater:boolean|undefined,haterIndex:number|undefined) => {
+  if (openDrawer === undefined || hater===undefined){
+    return
+  }
+  openDrawer(haterIndex as number)
+}
 </script>
 
 <template>
   <n-tag
     v-if="kda === undefined"
     round size="small" class="w-full justify-center text-sm"
-    :bordered="false" type="success">
+    :bordered="false" :type="checkHater(hater)" @click="handleOpenDrawer(hater,haterIndex)">
     <n-ellipsis :tooltip="false" style="max-width: 180px">
       {{ name }}
     </n-ellipsis>
@@ -30,7 +52,9 @@ const {kda, name} = defineProps<{ kda: number | undefined, name: string }>()
     </n-tag>
     <n-tag
       round size="small" class="w-full justify-center text-sm"
-      :bordered="false" :disabled="true" style="cursor: default !important;">
+      :bordered="false" :disabled="hater===undefined?true:false"
+      :type="checkHater(hater)" @click="handleOpenDrawer(hater,haterIndex)"
+      style="cursor: default !important;">
       <n-ellipsis :tooltip="false" style="max-width: 130px">
         {{ name }}
       </n-ellipsis>
