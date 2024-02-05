@@ -53,6 +53,7 @@ export default class MatchDetails {
     if (participants?.length !== 10){
       return null
     }
+
     const isTeamOne = res.participantIdentities.slice(0,5).find(value => value.player.summonerId===sumId) ? true :false
 
     const titleList = this.getDetailsTitle(res.gameCreation,res.gameDuration,queId)

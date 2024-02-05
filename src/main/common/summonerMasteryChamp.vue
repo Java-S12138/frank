@@ -45,7 +45,7 @@ onMounted(() => {
           style="height: 50px" has-sider>
           <div width="50" style="margin-right: 8px;">
             <div class="flex gap-x-3">
-              <div class="flex items-center justify-center rounded bg-blue-100 dark:bg-sky-900"
+              <div class="flex items-center justify-center rounded bg-blue-100 dark:bg-[#70c0e850]"
                    style="width: 50px;height: 50px;">
                 <n-avatar
                   lazy

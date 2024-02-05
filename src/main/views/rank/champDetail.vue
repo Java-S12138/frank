@@ -97,8 +97,8 @@ const changeRes = () => {
             <n-space vertical :size=[0,2]>
               <text>{{ selectedList[1] }}</text>
               <n-space justify="space-between">
-                <text style="color: #d03050;cursor: pointer;font-size: 13px" @click=changeRes v-if="isRestraint">劣势对线</text>
-                <text style="color: #18a058;cursor: pointer;font-size: 13px" @click=changeRes v-else>优势对线</text>
+                <text class="cursor-pointer text-ss text-[#d03050] dark:text-[#e88080]" @click=changeRes v-if="isRestraint">劣势对线</text>
+                <text class="cursor-pointer text-ss text-[#18a058] dark:text-[#63e2b7]" @click=changeRes v-else>优势对线</text>
                 <text class="text-gray-400" style="font-size: 13px">下方数据为当前英雄胜率</text>
               </n-space>
             </n-space>

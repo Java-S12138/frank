@@ -5,6 +5,7 @@ export interface ConfigSettingTypes {
   autoAccept: number;
   theme: string;
   isGameInWindow:boolean;
+  isGameInTips:boolean;
   autoWriteBlock:boolean;
 }
 

@@ -7,7 +7,7 @@ const {titleList} = defineProps<{
 </script>
 
 <template>
-  <n-grid class="bg-neutral-100 rounded" :cols="7">
+  <n-grid class="bg-neutral-100 rounded dark:bg-neutral-800" :cols="7">
     <n-gi>
       <n-space vertical align="center">
         <text class="text-gray-400">对局日期</text>

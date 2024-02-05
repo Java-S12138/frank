@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {NSwitch, NCheckbox, NTag, NIcon, NButton, NButtonGroup, NPopconfirm, NDivider} from 'naive-ui'
 import {ThumbUp, ThumbDown, Bulb, CircleMinus, CircleX} from "@vicons/tabler";
-import {reactive, ref} from "vue"
+import {onMounted, reactive, ref} from "vue"
+import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 
 const {winCount,isFriCount} = defineProps<{
   winCount:
@@ -9,10 +10,15 @@ const {winCount,isFriCount} = defineProps<{
   isFriCount: boolean
 }>()
 
-const config = reactive(JSON.parse(<string>(localStorage.getItem('configSetting'))))
-const isModalOpen = ref(false)
-const isTips = ref(false)
+const config:ConfigSettingTypes = reactive(JSON.parse(<string>(localStorage.getItem('configSetting'))))
 
+const isModalOpen = ref(false)
+
+onMounted(() => {
+  if (!config.isGameInTips){
+    isModalOpen.value = true
+  }
+})
 const handleMin = () => {
   //@ts-ignore
   cube.windows.hide(cube.windows.current.id())
@@ -32,7 +38,9 @@ const dragMove = () => {
   // @ts-ignore
   cube.windows.current.dragMove()
 }
-
+const changeConfig = () => {
+  localStorage.setItem('configSetting',JSON.stringify(config))
+}
 </script>
 
 <template>
@@ -101,8 +109,8 @@ const dragMove = () => {
   <!-- Modal -->
   <div v-if="isModalOpen" @click="closeModalOutside"
        class="fixed inset-0 bg-neutral-950 bg-opacity-40
-       flex items-center justify-center z-50">
-    <div class="bg-white px-6 py-4 rounded shadow-md">
+       flex items-center justify-center z-50 rounded-lg">
+    <div class="bg-white text-neutral-900 px-6 py-4 rounded shadow-md dark:bg-neutral-900 dark:text-neutral-200">
       <!-- Modal content goes here -->
       <text class="text-xl">Tips</text>
       <p class="my-1">1：[ 订阅 ] 游戏模式为单双 / 灵活排位时只显示，排位数据。</p>
@@ -114,12 +122,16 @@ const dragMove = () => {
 
       <div class="flex items-center justify-between">
         <p class="m-0">
-          <n-checkbox v-model:checked="isTips">
+          <n-checkbox v-model:checked="config.isGameInTips" @update:checked="changeConfig">
             <text class="text-gray-400">不再自动弹出</text>
           </n-checkbox>
         </p>
         <text class="text-gray-400 ml-3">游戏启动时，自动打开此窗口</text>
-        <n-switch style="margin-bottom: 3px;" :default-value="true"/>
+        <n-switch
+          v-model:value="config.isGameInWindow"
+          @update:value="changeConfig"
+          style="margin-bottom: 3px;"
+        />
       </div>
     </div>
   </div>

@@ -1,3 +1,5 @@
+const isDark = localStorage.getItem('theme') ==='dark'
+
 // 英文段位昵称转中文
 export const englishToChinese = (tier:string) => {
   switch (tier) {
@@ -77,6 +79,10 @@ export const getItemImgUrl = (item:number) => {
   }
 }
 export const gerNoneImg = () => {
+  if (isDark){
+    // @ts-ignore
+    return new URL("/src/assets/svg/imageDark.png", import.meta.url).href
+  }
   // @ts-ignore
   return new URL("/src/assets/svg/image.png", import.meta.url).href
 }

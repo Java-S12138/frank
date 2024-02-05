@@ -25,16 +25,17 @@ onBeforeMount(() => {
   if (isQueryRecord === null){
     matchStore.init()
   }else {
-    handleBlackListMatch(isQueryRecord)
-    localStorage.removeItem('queSumMatch')
+    handleBlackListMatch(isQueryRecord).then(() => {
+      localStorage.removeItem('queSumMatch')
+    })
   }
 })
 
 const handleBlackListMatch = async (isQueryRecord:string) => {
   const locSumId = JSON.parse((localStorage.getItem('sumInfo') as string)).summonerId
   const queSumMatchInfo = isQueryRecord.split('-')
-  if (queSumMatchInfo[1]!=='') {
-    const participantsInfo = await matchStore.queryMatchDetail(Number((queSumMatchInfo[1])))
+  if (queSumMatchInfo[1] !=='') {
+    const participantsInfo = await matchStore.queryMatchDetail(Number((queSumMatchInfo[1])),Number(queSumMatchInfo[0]))
     if (participantsInfo===null){return}
     blackMatchDetails.value = [participantsInfo,Number(queSumMatchInfo[0])]
     blackMatchDrawer.value = true

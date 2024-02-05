@@ -24,6 +24,8 @@ onMounted(() => {
   router.push({name: 'home'})
   recordStore.init()
   // testCSSession()
+  // testEndOfGame()
+  // testRune()
 })
 
 cube.windows.message.on('received', (messageId, content) => {
@@ -142,7 +144,7 @@ const preventAccess = (index: number) => {
   }
 }
 const testRune = () => {
-  handleChampion('Champion',112)
+  handleChampion('Champion',84)
 }
 const testCSSession = async () => {
   await handleCSSession('CSSession', champSession,true)

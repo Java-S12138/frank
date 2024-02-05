@@ -4,7 +4,7 @@ import {
   NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer
 } from 'naive-ui'
 import './assistCommon.css'
-import {onMounted, Ref, ref} from "vue";
+import {onDeactivated, onMounted, Ref, ref} from "vue";
 import {
   rankOptions,
   cnOptions,
@@ -32,7 +32,6 @@ const tier = ref(configRank.tier)
 const lane = ref(configRank.lane)
 const is101 = ref(configRank.is101)
 const isCheck = ref(1)
-const inputValue = ref('')
 const champSliceList:Ref<ChampInfo[]> = ref([])
 const currentChampDrawer:Ref<{champId:number,selectedList:string[]}> = ref({
   champId: 0,
@@ -176,6 +175,10 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
   }
 }
 
+onDeactivated(() => {
+  isShowDrawer.value = false
+  initDesDrawer(false)
+})
 </script>
 
 <template>
@@ -220,7 +223,7 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
         <n-scrollbar style="max-height: 432px;padding-right: 13px">
           <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
             <div class="flex gap-x-3" >
-              <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer dark:bg-sky-900">
+              <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer dark:bg-[#70c0e850]">
                 <n-avatar
                   @click="initDesDrawer(true,chapm.champId,chapm.imgUrl,chapm.tLevel)"
                   :bordered="false"

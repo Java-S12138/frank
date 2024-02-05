@@ -8,11 +8,11 @@ import {getIconImg} from "@/queryMatch/utils/tools";
 const {isTeamOne,sumList, addBlackList} = defineProps<{
   isTeamOne:boolean,
   sumList: SummonerDetailInfo[],
-  addBlackList: (isHater: boolean, requiredInfo: { name: string; sumId: string }) => void
+  addBlackList: (isHater: boolean, requiredInfo: {name:string,sumId:string,isTeamOne:boolean}) => void
 }>()
 
 const searchMatch = (summonerId: number) => {
-  localStorage.setItem('queSumMatch', String(summonerId))
+  localStorage.setItem('queSumMatch', String(summonerId)+'-')
   cube.windows.obtainDeclaredWindow('queryMatch')
 }
 
@@ -20,7 +20,7 @@ const handleAdd = (isHater:boolean,summonerInfo:SummonerDetailInfo) => {
   const requiredInfo = {
     name:summonerInfo.name,
     sumId:String(summonerInfo.accountId),
-    teamType:isTeamOne
+    isTeamOne:isTeamOne
   }
   addBlackList(isHater,requiredInfo)
 }

@@ -37,12 +37,6 @@ export interface summonerInfo {
   tagLine:string|undefined
 }
 
-interface Statstone {
-  championId: string;
-  name: string;
-  imgUrl: string;
-  value: string;
-}
 
 export interface SummonerData {
   summonerInfo:summonerInfo|null;

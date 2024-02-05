@@ -47,7 +47,7 @@ const removeItem = async () => {
   <n-scrollbar style="max-height: 475px;padding-right: 10px">
     <n-grid :cols="2" x-gap="15" style="margin-top: 4px">
       <n-gi v-for="blockItems in storeRune.blockDataList">
-        <div class="blockMain runeDivDash">
+        <div class="blockMain runeDivDash dark:border-gray-700">
           <div v-for="block in blockItems.buildItems.blocks">
             <n-space :size=[8,0] style="height: 28.5px;">
               <img class="itemImg" draggable="false" v-for="img in block.items"
@@ -66,11 +66,11 @@ const removeItem = async () => {
         </div>
       </n-gi>
     </n-grid>
-    <div class="tipBottom runeDivDash">
+    <div class="tipBottom runeDivDash dark:border-gray-700">
       <p>应用符文时自动应用装备</p>
       <n-switch v-model:value="active" size="small"  @click="changeSetting" />
     </div>
-    <div class="tipBottom runeDivDash">
+    <div class="tipBottom runeDivDash dark:border-gray-700">
       <p>删除游戏内现有配装方案</p>
       <n-popconfirm
         @positive-click="removeItem"

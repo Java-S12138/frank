@@ -61,10 +61,11 @@ const searchSum = async () => {
   }
   const sumInfo = await querySummonerInfo(undefined, inputVal.value)
   if (sumInfo === null) {
-    message.error('当前召唤师不存在')
+    message.error('当前召唤师不存在，[ 跨区服务器需要加上编号 ] xxx#12138')
     clearVal()
     return
   }
+
   if (sumInfo.privacy !== 'PUBLIC') {
     message.error('当前召唤师战绩为隐藏状态')
     clearVal()

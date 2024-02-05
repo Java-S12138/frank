@@ -13,6 +13,7 @@ const configSetting: ConfigSettingTypes = {
   'autoAccept': 50,
   'theme': 'light',
   'isGameInWindow':true,
+  'isGameInTips':false,
   'autoWriteBlock':true,
 }
 

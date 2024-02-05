@@ -46,7 +46,7 @@ const getImgUrl = (rune: number) => {
 
     <!--    符文-->
     <div class="flex justify-between border-dashed my-3
-     border border-gray-300  rounded p-1">
+     border border-gray-300  rounded p-1  dark:border-gray-700">
       <img v-for="runeIndex in personalDetails.runesList"
            :src="getImgUrl(runeIndex)" alt="" class="runImg">
     </div>

@@ -2,7 +2,7 @@
 import {Ref, ref} from "vue";
 import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 import {optionsChampion, keywordsList} from "@/resources/champList";
-import {NDrawerContent, NSpace, NTag, NSelect, NSwitch, NSlider, NRadio, useDialog,} from 'naive-ui'
+import {NDrawerContent, NSpace, NTag, NSelect, NSwitch, NSlider, NRadio, useDialog} from 'naive-ui'
 
 const config:Ref<ConfigSettingTypes> = ref(JSON.parse(localStorage.getItem('configSetting') as string))
 const theme = localStorage.getItem('theme')  || 'light'
@@ -33,6 +33,7 @@ const handleThemeChange = () => {
     }
   })
 }
+
 const commoneChnageSecond = (option:string,second:string) => {
   if (config.value[option][second] !== true) {
     config.value[option][second] = false
@@ -40,16 +41,6 @@ const commoneChnageSecond = (option:string,second:string) => {
   } else {
     config.value[option][second] = true
     saveConfig()
-  }
-}
-// 设置是否选项共用函数
-const commoneChnage = (option:string) => {
-  if (config.value[option] !== true) {
-    config.value[option] = false
-    localStorage.setItem('configSetting',JSON.stringify(config.value))
-  } else {
-    config.value[option] = true
-    localStorage.setItem('configSetting',JSON.stringify(config.value))
   }
 }
 // 设置是否自动选择英雄
@@ -78,15 +69,14 @@ const searchChamp = (pattern: string, option: object) => {
     }
   }
 }
-// 设置是否开启自动打开游戏内窗口
-const changeAutoGameInWin = () => {
-  commoneChnage('isGameInWindow')
+const openWeb = () => {
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank')
 }
 </script>
 
 <template>
   <n-drawer-content body-style='padding:4px 17px 0px 17px'>
-    <n-space vertical :size="[0,18]">
+    <n-space class="mt-0.5" vertical :size="[0,18]">
       <!--        切换主题-->
       <n-space vertical>
         <n-space align="center">
@@ -116,6 +106,7 @@ const changeAutoGameInWin = () => {
           <n-select
             v-model:value="config.autoPickChampion.championId"
             filterable
+            spellcheck="false"
             size="small"
             :filter="searchChamp"
             :options="optionsChampion"
@@ -135,6 +126,7 @@ const changeAutoGameInWin = () => {
           <n-select
             v-model:value="config.autoBanChampion.championId"
             filterable
+            spellcheck="false"
             size="small"
             :filter="searchChamp"
             :options="optionsChampion"
@@ -165,8 +157,10 @@ const changeAutoGameInWin = () => {
       <n-space>
         <n-tag :bordered="false">游戏窗口</n-tag>
         <div style="width: 188px;" class="flex items-center justify-between">
-          <n-tag type="success">自动打开游戏窗口</n-tag>
-          <n-switch v-model:value="config.isGameInWindow" @click="changeAutoGameInWin"/>
+          <n-tag :type="config.isGameInWindow?'success':'default'"
+                 :disabled="!config.isGameInWindow">
+            自动打开游戏窗口</n-tag>
+          <n-switch v-model:value="config.isGameInWindow" @click="saveConfig"/>
         </div>
 
         <n-tag :disabled="true" :bordered="false"
@@ -184,6 +178,12 @@ const changeAutoGameInWin = () => {
         <n-tag :disabled="true" :bordered="false"
                size="small" style="width: 270px;justify-content: center">滑块的值: [ {{'='}}60  延迟两秒 ] 以此类推</n-tag>
       </n-space>
+    </n-space>
+    <!--      使用手册-->
+    <n-space class="mt-2" justify="space-between">
+      <n-tag :bordered="false">使用手册</n-tag>
+      <n-tag class="cursor-pointer" style="width: 188px" @click="openWeb"
+             type="success" :bordered="false">Frank Powered By Java_S</n-tag>
     </n-space>
   </n-drawer-content>
 </template>

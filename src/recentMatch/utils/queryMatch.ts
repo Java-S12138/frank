@@ -6,7 +6,7 @@ import {Games} from "@/lcu/types/queryMatchLcuTypes";
 class QueryMatch {
   public winCount = 0
 
-  public queryMatchHistory = async (puuid: string, queueId: number, summonerState: string):Promise<[MatchItemTypes[],number,boolean]> => {
+  public queryMatchHistory = async (puuid: string, queueId: number, summonerState: string): Promise<[MatchItemTypes[], number, boolean]> => {
     let matchList
 
     if (queueId === 420 || queueId === 440) {
@@ -15,7 +15,7 @@ class QueryMatch {
       matchList = await this.findMatch(puuid)
     }
 
-    const winCount = this.winCount
+    const winCount = matchList.length > 0 ? this.winCount : 0
     const isExcel = this.isExcelPlayer(summonerState, matchList)
     this.winCount = 0
     return [matchList, winCount, isExcel]
@@ -34,43 +34,45 @@ class QueryMatch {
     }
   }
 
-  public isExcelPlayer = (summonerState: string,matchList:MatchItemTypes[]) => {
+  public isExcelPlayer = (summonerState: string, matchList: MatchItemTypes[]) => {
     // 判断是否为小代
-    if (summonerState !== "Y"){
+    if (summonerState !== "Y") {
       return false
     }
     let excellentCount = 0
 
-    for (let match of matchList.slice(0,5)) {
-      if ((match.kills+match.assists)/match.deaths*3 >= 12) {
+    for (let match of matchList.slice(0, 5)) {
+      const kda = match.deaths === 0 ? (match.kills + match.assists) * 2 : (match.kills + match.assists) / match.deaths * 3
+      if (kda >= 12) {
         excellentCount += 1
       }
     }
     return excellentCount >= 3
   }
 
-  public findMatch = async (puuid: string): Promise<MatchItemTypes[]> => {
+  public findMatch = async (puuid: string, queueId?: number): Promise<MatchItemTypes[]> => {
     const matchList = await queryMatchHistory(puuid, 0, 9)
     if (matchList !== null) {
-      return matchList.map(games => this.parseMatch(games))
+      return matchList
+        .filter((games) => queueId === undefined || queueId === games.queueId)
+        .map((games) => this.parseMatch(games))
     } else {
       return []
     }
   }
   public findSpecialMatch = async (puuid: string, queueId: number): Promise<MatchItemTypes[]> => {
-    const specialList = (await this.findMatch(puuid))
-      .filter(matchList => matchList.queueId === queueId)
+    const specialList = await this.findMatch(puuid, queueId)
     if (specialList.length === 10) {
       return specialList
     }
     const otherList = await queryMatchHistory(puuid, 10, 99)
-    if (otherList===null){
+    if (otherList === null) {
       return specialList
     }
     for (const games of otherList) {
       if (games.queueId === queueId) {
         specialList.push(this.parseMatch(games))
-        if (specialList.length===10){
+        if (specialList.length === 10) {
           return specialList
         }
       }

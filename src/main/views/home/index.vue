@@ -7,6 +7,7 @@ import {onActivated, onMounted, reactive} from "vue";
 import {SummonerData} from "@/lcu/types/SummonerTypes";
 import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
 import StartGame from "./startGame.vue";
+import {GameInfo, sumInfoTypes} from "@/background/utils/backgroundTypes";
 
 const summonerData:SummonerData = reactive({
   summonerInfo: null,
@@ -48,11 +49,24 @@ const init = async () => {
   if (summonerAllInfo === null){
     return false
   }
-
-  summonerData.summonerInfo = summonerAllInfo.summonerInfo
-  summonerData.rankList = summonerAllInfo.rankList as string[]
-  summonerData.champLevel = summonerAllInfo.champLevel as string[][]
+  writeSumInfo(summonerAllInfo)
   return true
+}
+
+const writeSumInfo = (sInfo) => {
+  summonerData.summonerInfo = sInfo.summonerInfo
+  summonerData.rankList = sInfo.rankList as string[]
+  summonerData.champLevel = sInfo.champLevel as string[][]
+
+  cube.games.launchers.events.getInfo(10902).then((info:GameInfo) => {
+    // 设置召唤师信息
+    const sumInfo:sumInfoTypes = {
+      name:sInfo.summonerInfo.name,
+      summonerId:sInfo.summonerInfo.currentId,
+      platformId:<string>info.summoner_info?.platform_id
+    }
+    localStorage.setItem('sumInfo',JSON.stringify(sumInfo))
+  })
 }
 
 const onClientLaunch = () => {

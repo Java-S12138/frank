@@ -71,7 +71,7 @@ const showSumDetails = (isOne,index) => {
 
 .progressP {
   height: 6px;
-  border-radius: 2px;
+  border-radius: 1px;
   margin: 0px;
 }
 
@@ -79,7 +79,6 @@ const showSumDetails = (isOne,index) => {
   width: 290px;
   height: 26px;
   border-radius: 2px;
-  background-color: #ffffff;
   display: flex;
   align-items: center;
   gap: 12px;

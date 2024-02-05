@@ -79,8 +79,8 @@ const useMatchStore = defineStore('useMatchStore', {
     async getMatchDetail(gameId: number) {
       this.participantsInfo = await matchDetials.queryGameDetail(gameId, this.summonerId)
     },
-    async queryMatchDetail(gameId: number) {
-      return await matchDetials.queryGameDetail(gameId, this.summonerId)
+    async queryMatchDetail(gameId: number,summonerId:number) {
+      return await matchDetials.queryGameDetail(gameId, summonerId)
     },
     fromSpecialToMatchList(page= 1){
       this.matchList = this.specialMatchList.slice(9*(page-1),9*page)

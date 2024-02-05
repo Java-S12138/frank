@@ -41,6 +41,7 @@ const handleAddBlackList = (
 const backSelectState = (isTeamOne:boolean) => {
   if (isTeamOne){
     valueRef.value = 'friend'
+    return
   }
   valueRef.value = 'enemy'
 }

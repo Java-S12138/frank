@@ -65,7 +65,7 @@ const handleSub = (key:number) => {
     <div @mousedown="dragMove()" class="dragDiv"></div>
     <div class="flex items-center">
       <img src="../../assets/icon/app-icon.png" class="h-8" draggable="false">
-      <img src="../../assets/icon/Frank.png" draggable="false" class="pt-1 pl-2 h-6">
+      <img src="../../assets/icon/Frank.png" draggable="false" class="pl-1 h-[25px]">
     </div>
     <n-dropdown v-if="isShowSub" trigger="hover"
                 :options="subscribes" @select="handleSub">
@@ -103,7 +103,7 @@ const handleSub = (key:number) => {
     v-model:show="isShowDrawer"
     :placement="'bottom'"
     :auto-focus="false"
-    height="432"
+    height="473"
   >
     <setting/>
   </n-drawer>

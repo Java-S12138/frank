@@ -66,7 +66,7 @@ const getPosition = (pos: string) => {
     <div class="flex flex-col">
       <n-space justify="space-between" :size="[0,29]">
         <div v-for="rune in runeList">
-          <div class="runeDivDash"
+          <div class="runeDivDash dark:border-gray-700"
                style="width: 100px; padding: 8px 10px 9px">
             <n-space :size=[0,0] justify="space-between" class="px-1.5">
               <n-space vertical align="center" :size=[0,10]>

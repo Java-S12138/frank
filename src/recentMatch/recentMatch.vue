@@ -64,6 +64,8 @@ const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, is
     // 判断是否为小代
     if (resultList[2]) {
       summoner.summonerState = 'S'
+    }else {
+      summoner.summonerState = 'Z'
     }
 
     // 判断是否为友方或敌方，分别写入不同的数据
@@ -96,6 +98,8 @@ const getSumInfoFromCache = (sumInfos: RecentSumInfo[], simpleMatchList: { [key:
     // 判断是否为小代
     if (queryMatch.isExcelPlayer(sumInfo.summonerState, matchListElement)) {
       sumInfo.summonerState = 'S'
+    }else {
+      sumInfo.summonerState = 'Z'
     }
     sumInfo.matchList = matchListElement
     friendList.value.push(sumInfo)
@@ -137,7 +141,7 @@ const closeModalOutside = (event) => {
   <div v-if="isDetailModal" @click="closeModalOutside"
        class="fixed inset-0 bg-neutral-950 bg-opacity-40
        flex items-center z-50" :class="isDetailModalLeft?'justify-end':'justify-start'">
-    <div class="bg-white p-3 h-full box-border rounded" style="width: 632px">
+    <div class="bg-white text-neutral-900 p-3 h-full box-border rounded dark:bg-zinc-900 dark:text-neutral-200" style="width: 632px">
       <match-content
         v-if="participantsInfo!==null"
         :header-info="participantsInfo.headerInfo"
