@@ -13,7 +13,7 @@ const restraintList:Ref<[string,string,number,number,number][]> = ref([])
 let preselectActionID:number|null = null
 
 onMounted(async () => {
-  const res = await getRestraintData(champId,lane,tier,is101,localStorage.getItem('version') as string)
+  const res = await getRestraintData(champId,lane,tier,is101,localStorage.getItem('rankVers') as string)
   if (res!==null){
     restraintList.value = res
   }else {
@@ -23,10 +23,11 @@ onMounted(async () => {
 
 // 预选英雄
 const preselectChamp = async (champId:number) => {
-  if (localStorage.getItem('isSubscribe') === 'f'){
+  // todo
+ /* if (localStorage.getItem('isSubscribe') === 'f'){
     message.warning('预选英雄功能 需要订阅服务')
     return
-  }
+  }*/
   if (preselectActionID===null){
     const res = await invokeLcu('get','/lol-champ-select/v1/session')
     if (res?.success === false){

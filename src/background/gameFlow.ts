@@ -6,6 +6,7 @@ import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 export class GameFlow {
   public mainWin: WindowInfo | null = null
   public recentMatchWin: WindowInfo | null = null
+  public mapId = - 1
   // 给主窗口发生信息
   public sendMesToMain = async (messageId: string, content = '') => {
     this.mainWin = this.mainWin || await cube.windows.getWindowByName('main')
@@ -40,9 +41,10 @@ export class GameFlow {
   }
   // 自动接收对局
   public autoAcceptGame = async () => {
-    if (localStorage.getItem('isSubscribe') === 'f') {
+    // todo
+    /*if (localStorage.getItem('isSubscribe') === 'f') {
       return
-    }
+    }*/
     const isAutoAccept = (JSON.parse(<string>(localStorage.getItem('configSetting')))).autoAccept
     if (isAutoAccept < 50) {
       return
@@ -68,32 +70,41 @@ export class GameFlow {
       this.coloseWin('matchAnalysis');this.coloseWin('queryMatch')
 
       const gameInfo = JSON.parse(<string>(localStorage.getItem('gameInfo')))
+      this.mapId = gameInfo.mapId
 
-      if (gameInfo.mapId === 12 || gameInfo.mapId === 11) {
+      if (this.mapId === 12 || this.mapId === 11) {
         const configSetting = JSON.parse(<string>(localStorage.getItem('configSetting')))
         if (configSetting.isGameInWindow){
-          cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true, show_center: true}).then((v) => {
-            this.recentMatchWin = v
+          cube.windows.obtainDeclaredWindow('recentMatch',
+            {gamein: true, show_center: true}).then((winInfo) => {
+            this.recentMatchWin = winInfo
           })
         }
       }
     })
-
-    // 游戏内监听按键, 显示或隐藏游戏内窗口
+    this.onListenKeyboards()
+  }
+  // 游戏内监听按键, 显示或隐藏游戏内窗口
+  public onListenKeyboards = () => {
     cube.settings.hotkeys.game.on('pressed', async (hotKeyName: string) => {
+      if (![11, 12].includes(this.mapId)) {
+        return
+      }
       if (hotKeyName === 'show_recentMatch') {
-        if (this.recentMatchWin===null){
+        if (this.recentMatchWin === null){
           this.recentMatchWin =await cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true, show_center: true})
           return
         }
-        if (<boolean>this.recentMatchWin.show) {
-          cube.windows.hide(<number>this.recentMatchWin?.id).then(() => {
-            (<WindowInfo>this.recentMatchWin).show = false
-          })
+
+        const windowId = <number>this.recentMatchWin.id
+        const isWindowShown = <boolean>this.recentMatchWin.show
+
+        if (isWindowShown) {
+          await cube.windows.hide(windowId)
+            .then(value => (this.recentMatchWin as WindowInfo).show = false)
         } else {
-          cube.windows.show(<number>this.recentMatchWin?.id).then(() => {
-            (<WindowInfo>this.recentMatchWin).show = true
-          })
+          await cube.windows.show(windowId)
+            .then(value => (this.recentMatchWin as WindowInfo).show = true)
         }
       }
     })

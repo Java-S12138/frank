@@ -116,7 +116,7 @@ const queryChampRankData = async () => {
     }
   }else {
     const laneKr = getPostion(lane.value)
-    const champInfo = await queryKRServe(configRank,tier.value,laneKr,localStorage.getItem('version') as string)
+    const champInfo = await queryKRServe(configRank,tier.value,laneKr,localStorage.getItem('rankVers') as string)
     if (champInfo){
       champSliceList.value = champInfo
     }else {

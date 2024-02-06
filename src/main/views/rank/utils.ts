@@ -145,7 +145,7 @@ export const queryCNServe = async (configRank:ConfigRank,tier:number, lane:strin
     return null
   }
   configRank.tier = tier
-  localStorage.setItem('config',JSON.stringify(configRank))
+  localStorage.setItem('configRank',JSON.stringify(configRank))
 
   let championdetails = ''
   let champSliceList:any[] = []
@@ -189,7 +189,7 @@ export const queryCNServe = async (configRank:ConfigRank,tier:number, lane:strin
 // 查询韩服数据
 export const queryKRServe = async (configRank:ConfigRank,tier:number,lane:string,version:string) => {
   configRank.tier = tier
-  localStorage.setItem('config',JSON.stringify(configRank))
+  localStorage.setItem('configRank',JSON.stringify(configRank))
   try {
     const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=${version}&tier=${tier}&lane=${lane}`
     const res = await request({

@@ -12,7 +12,6 @@ class QuerySummoner {
   // 初始化数据
   public init = async () => {
     try {
-      // this.matchSession = sessionInf
       this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
       this.queueId = this.matchSession.gameData.queue.id
     }catch (e){
@@ -35,11 +34,11 @@ class QuerySummoner {
     const isTeamOne = this.matchSession.gameData.teamOne.find((i: TeamData) => i.summonerId === this.currentId) !== undefined?true:false
     const [friendList,enemyList] = await Promise.all([
       isTeamOne === true
-        ? this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
-        : this.simplifySummonerInfo(this.matchSession.gameData.teamTwo),
+        ? await this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
+        : await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo),
       isTeamOne === true
-        ? this.simplifySummonerInfo(this.matchSession.gameData.teamTwo)
-        : this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
+        ? await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo)
+        : await this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
     ])
     return {friendList, enemyList,queueId:this.queueId}
   }
@@ -98,20 +97,21 @@ class QuerySummoner {
   }
   // 获取召唤师英雄绝活数据 Z:正常 A:绝活 B:熟练 S:小代 Y:未知 (需要进行下一步判断)
   public querySummonerSuperChampData = async (puuid:string,champAlias:string) => {
-    if (localStorage.getItem('isSubscribe') ==='f'){
+    // todo
+    /*if (localStorage.getItem('isSubscribe') ==='f'){
       return 'Z'
-    }
+    }*/
     if (this.queueId === 420 || this.queueId === 440){
       const superList:SuperChampTypes[] = (await invokeLcu('get',`/lol-collections/v1/inventories/${puuid}/champion-mastery`)).slice(0,20)
       const champId = aliasToId[champAlias]
 
       for (let i = 0; i < superList.length; i++) {
-        if (champId === superList[i].championId && superList[i].championLevel > 5 && i< 3){
+        if (champId === superList[i].championId && i < 3){
           return 'A'
-        }else if (champId === superList[i].championId && superList[i].championLevel > 5){
+        }else if (champId === superList[i].championId && i < 6){
           return 'B'
         }
-        if (superList[i].championLevel <=5){
+        if (i >= 6 ){
           return 'Z'
         }
       }

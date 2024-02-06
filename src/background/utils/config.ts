@@ -41,6 +41,7 @@ const addConfig = (configName:string,configObj:any) => {
 
 
 if (localStorage.getItem('init') === null) {
+  localStorage.clear()
   localStorage.setItem('init', 'SYJun')
   localStorage.setItem('configSetting', JSON.stringify(configSetting))
   localStorage.setItem('configRank', JSON.stringify(configRank))

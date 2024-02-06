@@ -47,7 +47,7 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
     queueId.value = allSumInfo.queueId
     // 是否从缓存数据中获取队友的战绩数据
     Object.keys(simpleMatchList).length > 0
-      ? getSumInfoFromCache(allSumInfo.friendList, simpleMatchList)
+      ? await getSumInfoFromCache(allSumInfo.friendList, simpleMatchList)
       : await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
 
     await getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
@@ -58,6 +58,7 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
 
 const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, isFri: boolean) => {
   for (const summoner of sumInfos) {
+    await new Promise(resolve => setTimeout(resolve, 200))
     // 根据已获取的召唤师puuid获取每一个召唤师的战绩数据
     const resultList = await queryMatch.queryMatchHistory(summoner.puuid, queueId, summoner.summonerState)
     summoner.matchList = resultList[0]
@@ -79,8 +80,7 @@ const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, is
 }
 
 
-const getSumInfoFromCache = (sumInfos: RecentSumInfo[], simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
-
+const getSumInfoFromCache = async (sumInfos: RecentSumInfo[], simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
   for (const sumInfo of sumInfos) {
     let winMatchCount = 0
     const matchListElement = simpleMatchList[String(sumInfo.summonerId)].map((match) => {
@@ -102,10 +102,10 @@ const getSumInfoFromCache = (sumInfos: RecentSumInfo[], simpleMatchList: { [key:
       sumInfo.summonerState = 'Z'
     }
     sumInfo.matchList = matchListElement
-    friendList.value.push(sumInfo)
     winCount.value.friend[0] += winMatchCount
     winCount.value.friend[1] += matchListElement.length
   }
+  friendList.value = sumInfos
 }
 
 const openDetailDrawer = async (gameId: number, summonerId: number, isFri: boolean) => {

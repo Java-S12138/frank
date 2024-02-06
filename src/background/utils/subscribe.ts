@@ -1,3 +1,5 @@
+localStorage.setItem('isSubscribe','t')
+/*
 // @ts-ignore
 cube.profile.subscriptions.getDetailedActivePlans('1588508786787356673').then(subsDetailType => {
   localStorage.setItem('isSubscribe','f')
@@ -30,3 +32,4 @@ cube.profile.subscriptions.getDetailedActivePlans('1588508786787356673').then(su
 })
 
 
+*/

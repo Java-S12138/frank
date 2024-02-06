@@ -16,10 +16,11 @@ const changeSetting = () => {
 }
 
 const applyBlock = (block:any) => {
-  if (localStorage.getItem('isSubscribe') === 'f'){
+  // todo
+ /* if (localStorage.getItem('isSubscribe') === 'f'){
     message.warning('装备配置 需要订阅服务',{duration: 5000})
     return
-  }
+  }*/
   applyBlockPage(JSON.parse(JSON.stringify(block))).then((v) => {
     if (v){
       message.success('装备配置成功！')

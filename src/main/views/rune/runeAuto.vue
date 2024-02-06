@@ -42,10 +42,11 @@ const initRuneData = async () => {
 }
 
 const writeAutoRune = () => {
-  if (localStorage.getItem('isSubscribe') === 'f'){
+  // todo
+  /*if (localStorage.getItem('isSubscribe') === 'f'){
     message.warning('自动符文 需要订阅')
     return
-  }
+  }*/
   if (champ ===''){
     return
   }

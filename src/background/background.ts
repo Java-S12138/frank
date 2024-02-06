@@ -1,3 +1,4 @@
+// @ts-ignore
 import './utils/subscribe.ts'
 import './utils/config'
 import './utils/tray'
@@ -41,7 +42,6 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         gameFlow.showHideMainWin(false, 'GameStart')
         return
       case 'EndOfGame':
-        // gameFlow.isShowBlack()
         gameFlow.showHideMainWin(true, 'EndOfGame')
         return
       case 'ReadyCheck':

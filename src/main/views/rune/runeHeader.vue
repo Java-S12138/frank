@@ -33,10 +33,11 @@ const setupAutoRune = (type:string) => {
 
 // 自动配置符文
 const autoWriteRune = () => {
-  if (localStorage.getItem('isSubscribe') === 'f'){
+  // todo
+  /*if (localStorage.getItem('isSubscribe') === 'f'){
     message.warning('自动符文，需要订阅，请手动配置', {duration: 3000})
     return
-  }
+  }*/
   const localRuneStr = localStorage.getItem('autoRune') as string
   const runeData = JSON.parse(localRuneStr)[storeRune.currentChampAlias]
 

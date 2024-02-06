@@ -24,8 +24,8 @@ onMounted(() => {
   router.push({name: 'home'})
   recordStore.init()
   // testCSSession()
-  // testEndOfGame()
   // testRune()
+  // testEndOfGame()
 })
 
 cube.windows.message.on('received', (messageId, content) => {

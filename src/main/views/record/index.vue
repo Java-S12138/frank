@@ -20,8 +20,11 @@ onActivated(async () => {
   // 游戏结束，弹出的结算窗口
   if (router.currentRoute.value.query.id === '1') {
     const session =  await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
-    gameId.value = session.gameData.gameId
+    if (session.map?.id !== 12 && session.map?.id !==11){
+      return
+    }
 
+    gameId.value = session.gameData.gameId
     const matchDetail = new MatchDetails()
     matchDetail.queryGameDetail(gameId.value, recordStore.localSumInfo.summonerId).then((info) => {
       if (info !== null) {
