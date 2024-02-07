@@ -5,14 +5,18 @@
     "author": "Java_S",
     "icon": "icon.png",
     "window_icon": "icon.ico",
+<<<<<<< HEAD
     "version": "1.729.142",
+=======
+    "version": "2.0.0",
+>>>>>>> frank2
     "display_name": "Frank",
     "minimumCubeVersion": "0.0.1",
     "description": "A bran-new League of Legends assistant software, Powered By Cube."
   },
   "data": {
     "game_in_hotkeys": {
-      "show_matchHistory": {
+      "show_recentMatch": {
         "title": "显示隐藏战绩历史窗口",
         "default": "SHIFT+TAB",
         "passthrough": false
@@ -21,55 +25,45 @@
     "launcher_hotkeys": {},
     "start_window": "background",
     "windows": {
-      "main": {
-        "file": "src/pages/main/index.html",
-        "frame": false,
-        "width": 400,
-        "height": 650,
-        "resizable": false,
-        "desktop_only": true,
-        "keep_window_location": false
-      },
       "background": {
-        "file": "src/pages/background/index.html",
+        "file": "src/background/index.html",
         "is_background_page": true,
         "open_dev_tools": false
       },
-      "queryMatch": {
-        "file": "src/pages/main/index.html/#/querymatch",
+      "main": {
+        "file": "src/main/index.html",
         "frame": false,
-        "width": 1166,
-        "height": 650,
+        "width": 320,
+        "height": 720,
+        "resizable": false,
+        "desktop_only": true
+      },
+      "queryMatch": {
+        "file": "src/queryMatch/index.html",
+        "frame": false,
+        "width": 1174,
+        "height": 668,
         "desktop_only": true,
         "resizable": false
       },
-      "assist": {
-        "file": "src/pages/main/index.html/#/assist",
-        "show": false,
+      "recentMatch": {
+        "file": "src/recentMatch/index.html",
         "frame": false,
+        "width": 1254,
+        "height": 562,
         "resizable": false,
-        "width": 320,
-        "height": 720,
-        "desktop_only": true,
-        "show_in_taskbar": false
+        "in_game_only": false,
+        "title_bar_height": 20,
+        "transparent": true,
+        "background_color": "#00000000"
       },
-      "matchHistory": {
-        "file": "src/pages/main/index.html/#/matchHistory",
+      "matchAnalysis": {
+        "file": "src/matchAnalysis/index.html",
         "frame": false,
         "width": 1024,
         "height": 576,
         "resizable": false,
-        "desktop_only": true,
-        "keep_window_location": false
-      },
-      "recentMatch": {
-        "file": "src/pages/main/index.html/#/recentMatch",
-        "frame": false,
-        "width": 1180,
-        "height": 555,
-        "resizable": false,
-        "in_game_only": false,
-        "title_bar_height": 20
+        "desktop_only": true
       }
     }
   },

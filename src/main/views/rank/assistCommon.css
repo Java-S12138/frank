@@ -1,0 +1,63 @@
+.top {
+    width: 36px;
+    height: 36px;
+    background-image: url('@/assets/tLevel/top.svg');
+}
+
+.mid {
+    width: 36px;
+    height: 36px;
+    background-image: url('@/assets/tLevel/mid.svg');
+}
+
+.jungle {
+    width: 36px;
+    height: 36px;
+    background-image: url('@/assets/tLevel/jug.svg');
+}
+
+.bottom {
+    width: 36px;
+    height: 36px;
+    background-image: url('@/assets/tLevel/bot.svg');
+}
+
+.support {
+    width: 36px;
+    height: 36px;
+    background-image: url('@/assets/tLevel/sup.svg');
+}
+.imgT0 {
+    width: 24px;
+    height: 24px;
+    background-image: url('@/assets/tLevel/t0.svg');
+}
+
+.imgT1 {
+    width: 24px;
+    height: 24px;
+    background-image: url('@/assets/tLevel/t1.svg');
+}
+
+.imgT2 {
+    width: 24px;
+    height: 24px;
+    background-image: url('@/assets/tLevel/t2.svg');
+}
+
+.imgT3 {
+    width: 24px;
+    height: 24px;
+    background-image: url('@/assets/tLevel/t3.svg');
+}
+
+.imgT4 {
+    width: 24px;
+    height: 24px;
+    background-image: url('@/assets/tLevel/t4.svg');
+}
+.imgT5 {
+    width: 24px;
+    height: 24px;
+    background-image: url('@/assets/tLevel/t5.svg');
+}

@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "DingTalk";
+    src: url("../assets/font/DingTalk JinBuTi.ttf");
+}
+
+:root {
+    font-size: 16px;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+}
+
+body {
+    font-family: DingTalk;
+    -webkit-user-select: none;
+}
+
+.main {
+    height: calc(100vh - 1rem);
+    weight: calc(100vw - 1rem);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.text-ss {
+    font-size: 13px;
+    line-height: 16px;
+}
+
+.text-ss5 {
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.champAvatarColorBlue {
+    background-color: #66B3FF;
+}
+.champAvatarColorRed {
+    background-color: #ff6666;
+}
+.dragDiv {
+    width: calc(100vw - 1rem);
+    height: 18px;
+    position: absolute;
+    top: -8px;
+}

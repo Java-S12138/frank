@@ -24,4 +24,4 @@ dist-ssr
 *.sln
 *.sw?
 
-src/pages/main/utils/subscribe.ts
+src/background/utils/subscribe.ts
