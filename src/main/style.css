@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "DingTalk";
+    src: url("../assets/font/DingTalk JinBuTi.ttf");
+}
+
+:root {
+    font-size: 16px;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+}
+
+body {
+    font-family: DingTalk;
+    -webkit-user-select: none;
+}
+
+.main {
+    height: 100vh;
+    weight: 100vw;
+    box-sizing: border-box;
+    padding: .5rem .5rem 3.5rem .5rem;
+    position: relative;
+}
+.mainContent {
+    height: 616px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.dragDiv {
+    width: 100vw;
+    height: 18px;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+}
+
+.navDiv {
+    border: 1px solid rgba(255,255,255,0.09);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 48px;
+    border-top-left-radius: .75rem;
+    border-top-right-radius: .75rem;
+}
+
+.avatarEffect {
+    animation: light 4s ease-in-out infinite;
+    transition: 0.5s;
+}
+
+@keyframes light {
+    0% {
+        box-shadow: 0 0 4px #ff6666;
+    }
+
+    25% {
+        box-shadow: 0 0 16px #18a058;
+    }
+
+    50% {
+        box-shadow: 0 0 4px #2080f0;
+    }
+
+    75% {
+        box-shadow: 0 0 16px #f0a020;
+    }
+
+    100% {
+        box-shadow: 0 0 4px #d03050;
+    }
+}
+
+.imgItem {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+    display: block;
+}
+
+.runeDivDash {
+    border-radius: 8px;
+    border: 1px dashed #dfdfdf;
+}
+.matchAnalysisDash {
+    margin-top: 2px;
+    padding: 4px;
+    border-radius: 99px;
+    border: 1px dashed #dfdfdf;
+}
+
+.text-ss {
+    font-size: 13px;
+    line-height: 17px;
+}

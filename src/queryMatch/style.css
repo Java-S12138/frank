@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "DingTalk";
+    src: url("../assets/font/DingTalk JinBuTi.ttf");
+}
+
+:root {
+    font-size: 16px;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+}
+
+body {
+    font-family: DingTalk;
+    -webkit-user-select: none;
+}
+
+.main {
+    height: calc(100vh - 1.5rem);
+    width: calc(100vw - 1.5rem);
+    padding: 12px;
+    position: relative;
+}
+
+
+.avatarEffect {
+    animation: light 4s ease-in-out infinite;
+    transition: 0.5s;
+}
+
+@keyframes light {
+    0% {
+        box-shadow: 0 0 4px #ff6666;
+    }
+
+    25% {
+        box-shadow: 0 0 16px #18a058;
+    }
+
+    50% {
+        box-shadow: 0 0 4px #2080f0;
+    }
+
+    75% {
+        box-shadow: 0 0 16px #f0a020;
+    }
+
+    100% {
+        box-shadow: 0 0 4px #d03050;
+    }
+}
+
+.imgItem {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+    display: block;
+}
+
+.text-ss {
+    font-size: 13px;
+    line-height: 17px;
+}
+
+.text-ss5 {
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.dragDiv {
+    width: calc(100vw - 1rem);
+    height: 18px;
+    position: absolute;
+    top: 0px;
+}
+
+.scale-in-hor-left {
+    animation: scale-in-hor-left .8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes scale-in-hor-left {
+    0% {
+        transform: scaleX(0);
+        transform-origin: 0% 0%;
+        opacity: 1;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: 0% 0%;
+        opacity: 1;
+    }
+}
+
+.slideSum {
+    animation: slideSum-in-right .8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slideSum-in-right {
+    0% {
+        transform: translateX(150px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.champAvatarColorBlue {
+    background-color: #66B3FF;
+}
+.champAvatarColorRed {
+    background-color: #ff6666;
+}
