@@ -3,6 +3,7 @@ import '../main/utils/config.ts'
 import '../main/utils/tray.ts'
 import { GameFlow } from '../main/utils/gameFlow'
 
+// cube.windows.openDevTools(cube.windows.current.id())
 cube.extensions.on('launch-triggered', (s) => {
   if (!s.gamein){
     cube.windows.obtainDeclaredWindow('main')

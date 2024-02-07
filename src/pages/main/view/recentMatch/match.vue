@@ -128,6 +128,7 @@ const initMatchList = async () => {
     }
   }
 }
+
 class Match {
   public classicMode: matchTypes[] = []
   public matchCount = 0

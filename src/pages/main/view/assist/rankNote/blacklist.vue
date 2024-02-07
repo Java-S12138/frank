@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <n-card class="boxShadow listCard" size="small" content-style="padding:0px">
       <n-space v-if="onlineListStatus===0" style="margin: 10px 0px 10px 0px"
                justify="center" :size="[0,0]">
@@ -250,7 +249,6 @@ const queryBlacklist = async () => {
     url:`/player/findPlayerByPlayerId?playerId=${cubeUserId.value}`,
     method:'GET'
   })
-
   if (res.data.code !== 0){
     onlineListStatus.value=2
     message.error('接口出现异常')
