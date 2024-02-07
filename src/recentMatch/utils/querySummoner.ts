@@ -2,7 +2,6 @@ import {englishToChinese} from "@/lcu/utils";
 import {aliasToId, champDict} from "@/resources/champList";
 import {invokeLcu} from "@/lcu";
 import {PlayerChampionSelection, RecentSumInfo, SessionTypes, TeamData,SuperChampTypes} from "@/recentMatch/utils/queryTypes";
-import {sessionCommon} from "@/test";
 
 class QuerySummoner {
   public matchSession: null|SessionTypes = null
@@ -13,8 +12,7 @@ class QuerySummoner {
   // 初始化数据
   public init = async () => {
     try {
-      this.matchSession = sessionCommon
-      // this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
+      this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
       this.queueId = this.matchSession.gameData.queue.id
     }catch (e){
       this.matchSession = null

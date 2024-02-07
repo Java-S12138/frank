@@ -10,7 +10,6 @@ export const useRecordStore = defineStore('useRecordStore', {
       haterList: [] as Hater[] | null,
       userInfos: null as UserInfos|null,
       localSumInfo:blackList.sumInfo,
-      isGameEnd:false,
       cubeUserId:null as string|null
     }
   },
