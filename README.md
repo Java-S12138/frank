@@ -1,5 +1,5 @@
 # Frank 2.0 Introduction
-<img src="./readme/introduction.png" height="400" /> 
+<img src="./readme/introduction.png"/> 
 
 > ❤️ [使用教程](https://www.yuque.com/java-s/frank/introduction)
 🚩 [软件下载](https://lolfrank.cn/)
