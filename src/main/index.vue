@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {invokeLcu} from "@/lcu";
 import {useMessage} from "naive-ui"
 import {useRouter} from "vue-router";
 import {useRuneStore} from "@/main/store/useRune";

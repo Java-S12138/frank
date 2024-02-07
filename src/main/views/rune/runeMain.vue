@@ -2,7 +2,7 @@
 import {NTabs, NTabPane,NCard} from "naive-ui"
 import RuneContent from "./runeContent.vue";
 import BlockContent from "./blockContent.vue";
-import {onMounted, Ref, ref} from "vue";
+import {onActivated, Ref, ref} from "vue";
 import {Rune} from "./runeTypes";
 import {useRuneStore} from "@/main/store/useRune";
 import {get101Runes} from "./get101Runes";
@@ -11,7 +11,7 @@ const storeRune = useRuneStore()
 
 const rune101List:Ref<Rune[]> = ref([])
 
-onMounted(async () => {
+onActivated(async () => {
     rune101List.value = await get101Runes(storeRune.currentChamp)
 })
 

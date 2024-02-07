@@ -108,7 +108,6 @@ export interface RecentSumInfo {
   summonerState: string;
   championUrl: string;
   teamParticipantId: number;
-  index:number;
   matchList:MatchItemTypes[];
 }
 export interface RecentAllSumInfo {

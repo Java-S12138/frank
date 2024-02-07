@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, Ref} from "vue";
+import {onMounted, ref, Ref} from "vue";
 import QuerySummoner from "@/recentMatch/utils/querySummoner";
 import Dashboard from "@/recentMatch/components/dashboard.vue";
 import RecentMatchList from "@/recentMatch/components/recentMatchList.vue";
@@ -15,7 +15,7 @@ import NullPage from "@/recentMatch/components/nullPage.vue";
 const querySummoner = new QuerySummoner()
 const queryMatch = new QueryMatch()
 
-const isLcuErr = ref(false)
+const isLcuErr = ref(true)
 const friendList: Ref<RecentSumInfo[]> = ref([])
 const enemyList: Ref<RecentSumInfo[]> = ref([])
 const queueId: Ref<number> = ref(0)
@@ -30,12 +30,16 @@ const participantsInfo: Ref<ParticipantsInfo | null> = ref(null)
 
 // cube.windows.openDevTools(cube.windows.current.id())
 
-cube.windows.getWindowByName('main').then((mainWin: any) => {
-  cube.windows.message
-    .invoke(<number>mainWin.id, 'getMatchList', '')
-    .then((simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
-      init(simpleMatchList)
+onMounted(() => {
+  setTimeout(() => {
+    cube.windows.getWindowByName('main').then((mainWin: any) => {
+      cube.windows.message
+        .invoke(<number>mainWin.id, 'getMatchList', '')
+        .then((simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
+          init(simpleMatchList)
+        })
     })
+  },800)
 })
 
 const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
@@ -44,6 +48,8 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
       isLcuErr.value = true
       return
     }
+
+    isLcuErr.value = false
     queueId.value = allSumInfo.queueId
     // 是否从缓存数据中获取队友的战绩数据
     Object.keys(simpleMatchList).length > 0
@@ -58,14 +64,13 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
 
 const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, isFri: boolean) => {
   for (const summoner of sumInfos) {
-    await new Promise(resolve => setTimeout(resolve, 200))
     // 根据已获取的召唤师puuid获取每一个召唤师的战绩数据
     const resultList = await queryMatch.queryMatchHistory(summoner.puuid, queueId, summoner.summonerState)
     summoner.matchList = resultList[0]
     // 判断是否为小代
-    if (resultList[2]) {
+    if ( summoner.summonerState === 'Y' && resultList[2]) {
       summoner.summonerState = 'S'
-    }else {
+    }else if (summoner.summonerState === 'Y') {
       summoner.summonerState = 'Z'
     }
 
@@ -76,6 +81,7 @@ const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, is
     countList[0] += resultList[1]
     countList[1] += resultList[0].length
     targetList.push(summoner)
+    await new Promise(resolve => setTimeout(resolve, 300))
   }
 }
 
@@ -96,16 +102,17 @@ const getSumInfoFromCache = async (sumInfos: RecentSumInfo[], simpleMatchList: {
       }
     })
     // 判断是否为小代
-    if (queryMatch.isExcelPlayer(sumInfo.summonerState, matchListElement)) {
-      sumInfo.summonerState = 'S'
-    }else {
+    if (sumInfo.summonerState === 'Y' && queryMatch.isExcelPlayer(sumInfo.summonerState, matchListElement)){
+        sumInfo.summonerState = 'S'
+    }else if (sumInfo.summonerState === 'Y') {
       sumInfo.summonerState = 'Z'
     }
     sumInfo.matchList = matchListElement
+    friendList.value.push(sumInfo)
     winCount.value.friend[0] += winMatchCount
     winCount.value.friend[1] += matchListElement.length
+    await new Promise(resolve => setTimeout(resolve, 300))
   }
-  friendList.value = sumInfos
 }
 
 const openDetailDrawer = async (gameId: number, summonerId: number, isFri: boolean) => {

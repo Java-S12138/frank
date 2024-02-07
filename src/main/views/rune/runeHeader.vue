@@ -2,7 +2,7 @@
 import {NCard, NAvatar, NButton, NBadge, NDrawer, useMessage} from 'naive-ui';
 import {useRuneStore} from "@/main/store/useRune";
 import RuneAuto from "@/main/views/rune/runeAuto.vue";
-import {onDeactivated, onMounted, ref} from "vue";
+import {onDeactivated, onActivated, ref} from "vue";
 import {isStoreageHas} from "@/lcu/utils";
 import {handleRunesWrite} from "@/main/views/rune/runes";
 
@@ -12,11 +12,14 @@ const autoRuneActive = ref(false)
 const isAutoRune = ref(false)
 const message = useMessage()
 
-onMounted(() => {
+onActivated(() => {
   isAutoRune.value = isStoreageHas('autoRune',storeRune.currentChampAlias)
   if (isAutoRune.value){
     autoWriteRune()
   }
+})
+onDeactivated(() => {
+  isAutoRune.value = false
 })
 
 const openDrawer = () => {

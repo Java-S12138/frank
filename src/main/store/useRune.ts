@@ -42,12 +42,6 @@ export const useRuneStore = defineStore('useRuneStore', {
       }else {
         return true
       }
-    },
-    clearStore() {
-      this.currentChamp = 0
-      this.runeDataList = []
-      this.blockDataList = []
-      this.skillsList = []
     }
   }
 })

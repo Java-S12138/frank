@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NList, NListItem, NButton, NEllipsis, NDrawer} from "naive-ui"
+import {NList, NListItem, NButton, NEllipsis, NDrawer,NScrollbar} from "naive-ui"
 import {Hater, HaterItem} from "./blackListTypes";
 import {Ref, ref} from "vue";
 import HaterDetails from "./haterDetails.vue";
@@ -38,29 +38,31 @@ const formatDate = (dateStr: string) => {
 
 <template>
   <n-list>
-    <div v-for="hater in haterList">
-      <div v-for="haterInfo in hater.blacklist">
-        <n-list-item
-          v-if="haterInfo.playerSumId===String(localSumId)">
-          <div
-            class="flex justify-between items-center">
-            <n-ellipsis :tooltip="false" style="max-width: 130px">
-              <text>{{ hater.nickName }}</text>
-            </n-ellipsis>
-            <div class="flex gap-x-3 items-center">
-              <text class="text-gray-400">{{ formatDate(haterInfo.UpdatedAt) }}</text>
-              <n-button
-                @click="openDetailsDrawer(haterInfo,hater.nickName,hater.sumId)"
-                size="small" secondary
-                :type="haterInfo.isShow?'error':'success'"
-                :focusable="false">
-                {{ haterInfo.tag }}
-              </n-button>
+    <n-scrollbar style="max-height: 580px;padding-right: 13px">
+      <div v-for="hater in haterList">
+        <div v-for="haterInfo in hater.blacklist">
+          <n-list-item
+            v-if="haterInfo.playerSumId===String(localSumId)">
+            <div
+              class="flex justify-between items-center">
+              <n-ellipsis :tooltip="false" style="max-width: 130px">
+                <text>{{ hater.nickName }}</text>
+              </n-ellipsis>
+              <div class="flex gap-x-3 items-center">
+                <text class="text-gray-400">{{ formatDate(haterInfo.UpdatedAt) }}</text>
+                <n-button
+                  @click="openDetailsDrawer(haterInfo,hater.nickName,hater.sumId)"
+                  size="small" secondary
+                  :type="haterInfo.isShow?'error':'success'"
+                  :focusable="false">
+                  {{ haterInfo.tag }}
+                </n-button>
+              </div>
             </div>
-          </div>
-        </n-list-item>
+          </n-list-item>
+        </div>
       </div>
-    </div>
+    </n-scrollbar>
   </n-list>
 
   <n-drawer
