@@ -8,9 +8,7 @@ import {GameFlow} from "./gameFlow";
 
 // 启动主窗口
 cube.extensions.on('launch-triggered', (s) => {
-    cube.windows.obtainDeclaredWindow('main').then((win) => {
-      cube.windows.setPosition(win.id,1600,160)
-    })
+    cube.windows.obtainDeclaredWindow('main')
 })
 
 let isStart: boolean | null = true

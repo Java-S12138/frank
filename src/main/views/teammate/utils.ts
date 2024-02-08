@@ -42,7 +42,7 @@ const querySummonerRank = async (puuid: string) => {
 
 // 获取我方召唤师ID和昵称
 export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoList[]> => {
-  console.log('获取我方召唤师ID和昵称')
+  // console.log('获取我方召唤师ID和昵称')
   const summonerInfoList: SummonerInfoList[] = []
   const allSummonerId = await queryAllSummonerId(mactchSession)
   if (allSummonerId === null) {

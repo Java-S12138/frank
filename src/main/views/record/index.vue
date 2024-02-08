@@ -1,48 +1,20 @@
 <script setup lang="ts">
 import {NCard, NAlert, NDrawer} from "naive-ui"
-import {onActivated, onDeactivated, Ref, ref} from "vue";
+import {onDeactivated} from "vue";
 import BlackSummonerList from "./blackSummonerList.vue";
-import {useRouter} from "vue-router";
-import MatchDetails from "@/queryMatch/utils/matchDetails";
 import GameEnd from "@/main/views/record/gameEnd.vue";
-import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import {useRecordStore} from "@/main/store/useRecord";
-import {invokeLcu} from "@/lcu";
-import {SessionTypes} from "@/recentMatch/utils/queryTypes";
 
-const router = useRouter()
 const recordStore = useRecordStore()
-const showGameEnd = ref(false)
-const participantsInfo: Ref<ParticipantsInfo | null> = ref(null)
-const gameId = ref(0)
-
-onActivated(async () => {
-  // 游戏结束，弹出的结算窗口
-  if (router.currentRoute.value.query.id === '1') {
-    const session =  await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
-    if (session.map?.id !== 12 && session.map?.id !==11){
-      return
-    }
-
-    gameId.value = session.gameData.gameId
-    const matchDetail = new MatchDetails()
-    matchDetail.queryGameDetail(gameId.value, recordStore.localSumInfo.summonerId).then((info) => {
-      if (info !== null) {
-        participantsInfo.value = info
-        showGameEnd.value = true
-      }
-    })
-  }
-})
 
 onDeactivated(() => {
   closeDrawer()
 })
 
 const closeDrawer = () => {
-  showGameEnd.value = false
+  recordStore.showGameEnd = false
   setTimeout(() => {
-    participantsInfo.value = null
+    recordStore.participantsInfo = null
   },1000)
 }
 </script>
@@ -73,15 +45,15 @@ const closeDrawer = () => {
 
   <!--  游戏结束，弹出增加玩家的窗口-->
   <n-drawer
-    v-model:show="showGameEnd" class="rounded-t-xl"
+    v-model:show="recordStore.showGameEnd" class="rounded-t-xl"
     :mask-closable="false" :auto-focus="false"
     height="400" placement="bottom">
     <game-end
-      v-if="participantsInfo"
+      v-if="recordStore.participantsInfo"
       :close-drawer="closeDrawer"
-      :team-one="participantsInfo.teamOne"
-      :team-two="participantsInfo.teamTwo"
-      :game-id="gameId"
+      :team-one="recordStore.participantsInfo.teamOne"
+      :team-two="recordStore.participantsInfo.teamTwo"
+      :game-id="recordStore.participantsInfo.gameId"
       :platform-id="recordStore.localSumInfo.platformId"
     />
   </n-drawer>

@@ -39,7 +39,7 @@ const subscribes = [
 ]
 
 // todo 设置窗口置顶
-cube.windows.setTopmost(cube.windows.current.id(),true)
+// cube.windows.setTopmost(cube.windows.current.id(),true)
 
 const dragMove = () => {
   // @ts-ignore

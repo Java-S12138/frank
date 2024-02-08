@@ -53,7 +53,7 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
     queueId.value = allSumInfo.queueId
     // 是否从缓存数据中获取队友的战绩数据
     Object.keys(simpleMatchList).length > 0
-      ? await getSumInfoFromCache(allSumInfo.friendList, simpleMatchList)
+      ? await getSumInfoFromCache(allSumInfo.friendList, simpleMatchList,allSumInfo.queueId)
       : await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
 
     await getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
@@ -86,32 +86,36 @@ const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, is
 }
 
 
-const getSumInfoFromCache = async (sumInfos: RecentSumInfo[], simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
-  for (const sumInfo of sumInfos) {
-    let winMatchCount = 0
-    const matchListElement = simpleMatchList[String(sumInfo.summonerId)].map((match) => {
-      winMatchCount = match.isWin ? winMatchCount + 1 : winMatchCount
-      return {
-        champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${match.champImgUrl}`,
-        kills: match.kills,
-        deaths: match.deaths,
-        assists: match.assists,
-        isWin: match.isWin,
-        gameId: match.gameId,
-        queueId: match.queueId,
-      }
-    })
-    // 判断是否为小代
-    if (sumInfo.summonerState === 'Y' && queryMatch.isExcelPlayer(sumInfo.summonerState, matchListElement)){
+const getSumInfoFromCache = async (sumInfos: RecentSumInfo[], simpleMatchList: { [key: string]: SimpleMatchTypes[] },queueId:number) => {
+  try {
+    for (const sumInfo of sumInfos) {
+      let winMatchCount = 0
+      const matchListElement = simpleMatchList[String(sumInfo.summonerId)].map((match) => {
+        winMatchCount = match.isWin ? winMatchCount + 1 : winMatchCount
+        return {
+          champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${match.champImgUrl}`,
+          kills: match.kills,
+          deaths: match.deaths,
+          assists: match.assists,
+          isWin: match.isWin,
+          gameId: match.gameId,
+          queueId: match.queueId,
+        }
+      })
+      // 判断是否为小代
+      if (sumInfo.summonerState === 'Y' && queryMatch.isExcelPlayer(sumInfo.summonerState, matchListElement)){
         sumInfo.summonerState = 'S'
-    }else if (sumInfo.summonerState === 'Y') {
-      sumInfo.summonerState = 'Z'
+      }else if (sumInfo.summonerState === 'Y') {
+        sumInfo.summonerState = 'Z'
+      }
+      sumInfo.matchList = matchListElement
+      friendList.value.push(sumInfo)
+      winCount.value.friend[0] += winMatchCount
+      winCount.value.friend[1] += matchListElement.length
+      await new Promise(resolve => setTimeout(resolve, 300))
     }
-    sumInfo.matchList = matchListElement
-    friendList.value.push(sumInfo)
-    winCount.value.friend[0] += winMatchCount
-    winCount.value.friend[1] += matchListElement.length
-    await new Promise(resolve => setTimeout(resolve, 300))
+  }catch (e) {
+    await getCompleteSumInfo(sumInfos, queueId, true)
   }
 }
 

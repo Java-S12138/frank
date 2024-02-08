@@ -8,15 +8,18 @@ import {SummonerData} from "@/lcu/types/SummonerTypes";
 import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
 import StartGame from "./startGame.vue";
 import {GameInfo, sumInfoTypes} from "@/background/utils/backgroundTypes";
+import {TencentRsoPlatformId} from "@/resources/areaList";
+import {useRecordStore} from "@/main/store/useRecord";
 
 const summonerData:SummonerData = reactive({
   summonerInfo: null,
   rankList: null,
   champLevel: null,
 })
+const recordStore = useRecordStore()
 
 onMounted( () => {
-  init().then(async (value) =>  {
+  init(true).then(async (value) =>  {
     if (!value){
       const lolCient = (await cube.games.launchers.getRunningLaunchers())
         .find(((i:any) => i.classId===10902))
@@ -28,7 +31,7 @@ onMounted( () => {
         const maxAttempts = 3
         const launchInterval = setInterval(async () => {
           timer++
-          const isInit = await init()
+          const isInit = await init(true)
           if (isInit || timer === maxAttempts) {
             clearInterval(launchInterval)
           }
@@ -39,33 +42,37 @@ onMounted( () => {
 })
 
 onActivated(() => {
-  if (summonerData.summonerInfo!==null){
-    init()
+  if (summonerData.summonerInfo !== null){
+    init(false)
   }
 })
 
-const init = async () => {
+const init = async (isFirst:boolean) => {
   const summonerAllInfo = await getCurrentSummonerAllInfo()
   if (summonerAllInfo === null){
     return false
   }
-  writeSumInfo(summonerAllInfo)
+  if (isFirst){
+    writeSumInfo(summonerAllInfo)
+  }
+
+  summonerData.summonerInfo = summonerAllInfo.summonerInfo
+  summonerData.rankList = summonerAllInfo.rankList as string[]
+  summonerData.champLevel = summonerAllInfo.champLevel as string[][]
   return true
 }
 
 const writeSumInfo = (sInfo) => {
-  summonerData.summonerInfo = sInfo.summonerInfo
-  summonerData.rankList = sInfo.rankList as string[]
-  summonerData.champLevel = sInfo.champLevel as string[][]
-
   cube.games.launchers.events.getInfo(10902).then((info:GameInfo) => {
+    const area = TencentRsoPlatformId[<string>info.summoner_info?.platform_id] || <string>info.summoner_info?.platform_id
     // 设置召唤师信息
     const sumInfo:sumInfoTypes = {
       name:sInfo.summonerInfo.name,
       summonerId:sInfo.summonerInfo.currentId,
-      platformId:<string>info.summoner_info?.platform_id
+      platformId:area
     }
     localStorage.setItem('sumInfo',JSON.stringify(sumInfo))
+    recordStore.init()
   })
 }
 
@@ -76,7 +83,7 @@ const onClientLaunch = () => {
       const interval = setInterval(async () => {
         timer += 1
         if (summonerData.summonerInfo === null){
-          init()
+          init(true)
         }else {
           clearInterval(interval)
           closeMessageOn()

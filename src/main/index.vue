@@ -21,7 +21,6 @@ let curFlow = 'None'
 
 onMounted(() => {
   router.push({name: 'home'})
-  recordStore.init()
   // testCSSession()
   // testRune()
   // testEndOfGame()
@@ -86,6 +85,13 @@ const handleCSSession = async (id: string, content: any,isChangeState:boolean) =
       teammateStore.initStore(summonerInfoList, queueId,value)
       if (isChangeState){
         changeState(id, 'teammate', 2)
+      }else {
+        // 从符文配置界面切换过来
+        if (value !== null && value.length !== 0){
+          setTimeout(() => {
+            changeState(id, 'teammate', 2)
+          },3000)
+        }
       }
     })
   })
@@ -98,6 +104,7 @@ const handleChampion = (id: string, content: any) => {
   runeStore.initStore(content).then((res) => {
     if (res) {
       message.error('当前英雄暂无符文数据')
+      return
     } else {
       changeState(id, 'rune', 3)
     }
@@ -106,15 +113,19 @@ const handleChampion = (id: string, content: any) => {
 // 处理GameStart状态
 const handleGameStart = (id: string) => {
   runeStore.$reset()
-  changeState(id, 'rank', 1)
+  changeState(id, 'record', 4)
 }
 // 处理EndOfGame状态
 const handleEndOfGame = (id: string) => {
   teammateStore.$reset()
   isCSSProcess = false
-  curFlow = id
-  curPos.value = 4
-  router.push({name: 'record',query:{id:'1'}})
+  recordStore.getParticipantsInfo()
+  localStorage.setItem('gameInfo',
+    String(JSON.stringify({
+      queueId: '-1',
+      mapId: '-1'})
+    )
+  )
 }
 
 // 改变页面
@@ -153,6 +164,7 @@ const testEndOfGame = async ()  => {
   curFlow = 'EndOfGame'
   curPos.value = 4
   router.push({name: 'record',query:{id:'1'}})
+  recordStore.getParticipantsInfo()
 }
 
 

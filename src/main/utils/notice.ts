@@ -20,6 +20,8 @@ export class Notice {
   public notice:null|NoticeTypes = null
 
   public async init() {
+    this.checkCubeLogin()
+
     const timestamp = new Date().getTime()
     const res = await request.get(this.url + `?date=${timestamp}`)
     if (res.status !== 200) {
@@ -67,6 +69,21 @@ export class Notice {
       onNegativeClick: () => {
         localStorage.setItem('oldNoticeId', notice.noticeId)
       }
+    })
+  }
+  public checkCubeLogin(){
+    cube.profile.getCurrentUser().catch(() => {
+      this.dialog.error({
+        title: '温馨提示',
+        closable:false,
+        maskClosable:false,
+        content: "Cube账号未登录 ψ(._. )>> 将会导致无法正常使用部分功能。请登录Cube账号后，重启Frank。",
+        positiveText: '关闭软件',
+        style:'width:360px',
+        onPositiveClick: () => {
+          cube.extensions.terminate()
+        }
+      })
     })
   }
 }
