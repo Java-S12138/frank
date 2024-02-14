@@ -84,7 +84,7 @@ const getImgUrl = (imgId: any) => {
 }
 
 const openWeb = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction#bKYAM')
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction#Lmsmu')
 }
 </script>
 

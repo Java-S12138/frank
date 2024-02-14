@@ -16,8 +16,10 @@ const currentSumInfo: Ref<CurrentSumInfoTypes | null> = ref(null)
 const currentHaterInfo: Ref<BlackItemsTypes | null> = ref(null)
 
 watch(teammateStore.blackItems, () => {
-  currentHaterInfo.value = teammateStore.blackItems[0]
-  drawerBlackActive.value = true
+  if (teammateStore.blackItems.length !== 0 ){
+    currentHaterInfo.value = teammateStore.blackItems[0]
+    drawerBlackActive.value = true
+  }
 })
 
 const getCurrentSum = (summoner: SummonerInfoList, index: number) => {

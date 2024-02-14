@@ -55,8 +55,8 @@ const handleOpenDrawer = (hater:boolean|undefined,haterIndex:number|undefined) =
       :bordered="false" :disabled="hater===undefined?true:false"
       :type="checkHater(hater)" @click="handleOpenDrawer(hater,haterIndex)"
       style="cursor: default !important;">
-      <n-ellipsis :tooltip="false" style="max-width: 130px">
-        {{ name }}
+      <n-ellipsis :tooltip="false" style="max-width: 104px">
+        {{name}}
       </n-ellipsis>
     </n-tag>
   </div>

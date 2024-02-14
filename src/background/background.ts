@@ -7,13 +7,15 @@ import {GameFlow} from "./gameFlow";
 // cube.windows.openDevTools(cube.windows.current.id())
 
 // 启动主窗口
-cube.extensions.on('launch-triggered', (s) => {
-    cube.windows.obtainDeclaredWindow('main').then((win) => {
-      cube.windows.setPosition(win.id,1600,160)
-    })
+cube.extensions.on('launch-triggered', async (s) => {
+   await cube.windows.obtainDeclaredWindow('main')
 })
 
 let isStart: boolean | null = true
+let isCSSestion = true
+const gameFlow = new GameFlow()
+gameFlow.initGameInWindow()
+
 // 检测是否存在LOL
 cube.games.launchers.getRunningLaunchers().then((value) => {
   const isLoL = value.find(((i: any) => i.classId === 10902))
@@ -23,13 +25,9 @@ cube.games.launchers.getRunningLaunchers().then((value) => {
 })
 
 
-let isCSSestion = true
-const gameFlow = new GameFlow()
-gameFlow.initGameInWindow()
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
   if (info.category === 'game_flow') {
-    console.log(info.value)
     switch (info.value) {
       case 'ChampSelect':
         if (isStart) {
@@ -46,6 +44,7 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         return
       case 'ReadyCheck':
         gameFlow.autoAcceptGame()
+        gameFlow.writeGameInfo()
         return
       case 'Lobby':
         return gameFlow.sendMesToMain('Lobby', '')

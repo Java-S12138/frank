@@ -21,6 +21,9 @@ export const useTeammateStore = defineStore('useTeammate', {
   },
   actions: {
     async initStore(summonerInfo: SummonerInfoList[], queueId: number, blacklist: Hater[] | null) {
+      if (this.summonerInfo.length !==0 ){
+        this.$reset()
+      }
       this.summonerInfo = summonerInfo
       await this.getMatchList(summonerInfo)
       await this.cacheMatchRecord(summonerInfo, queueId)

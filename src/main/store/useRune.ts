@@ -1,8 +1,9 @@
 import {defineStore} from 'pinia'
 import {champDict} from "@/resources/champList";
-import {isStoreageHas} from "@/lcu/utils";
 import {ItemBuild, Rune} from "@/main/views/rune/runeTypes";
 import {QueryRune} from "@/main/views/rune/queryRune";
+
+const queryRune = new QueryRune()
 
 export const useRuneStore = defineStore('useRuneStore', {
   state: () => {
@@ -28,10 +29,13 @@ export const useRuneStore = defineStore('useRuneStore', {
       if (champId === this.currentChamp){
         return false
       }
+      if (this.runeDataList.length !==0 ) {
+        this.$reset()
+      }
 
       this.mapChampInfo(champId)
-      const mapId:number = (JSON.parse(localStorage.getItem('gameInfo') as string)).mapId
-      const queryRune = new QueryRune(mapId)
+
+
       const runesData = await queryRune.getRunesData(this.currentChampAlias)
 
       if (runesData !== null){

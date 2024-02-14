@@ -6,10 +6,14 @@
     "icon": "icon.png",
     "window_icon": "icon.ico",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "version": "1.729.142",
 =======
     "version": "2.0.0",
 >>>>>>> frank2
+=======
+    "version": "2.01.142",
+>>>>>>> origin/frank2
     "display_name": "Frank",
     "minimumCubeVersion": "0.0.1",
     "description": "A bran-new League of Legends assistant software, Powered By Cube."

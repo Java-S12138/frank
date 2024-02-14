@@ -4,10 +4,6 @@ import {Block, OnlineRunes} from "@/main/views/rune/runeTypes";
 
 export class QueryRune {
 
-  constructor(mapId: number) {
-    this.mapId = mapId
-  }
-
   public mapId = 0
 
   // 获取英雄数据
@@ -35,6 +31,7 @@ export class QueryRune {
   // 获取符文数据
   public getRunesData = async (alias:string) => {
     try {
+      this.mapId = (JSON.parse(localStorage.getItem('gameInfo') as string)).mapId
       const champInfo: OnlineRunes[] = await this.getChampInfo(alias)
       // 技能
       const skillsList = this.getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)

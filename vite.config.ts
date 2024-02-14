@@ -8,8 +8,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'src/pages/main/index.html'),
-        background: path.resolve(__dirname, 'src/pages/background/index.html'),
+        main: path.resolve(__dirname, 'src/main/index.html'),
+        background: path.resolve(__dirname, 'src/background/index.html'),
+        queryMatch: path.resolve(__dirname, 'src/queryMatch/index.html'),
+        recentMatch: path.resolve(__dirname, 'src/recentMatch/index.html'),
+        matchAnalysis: path.resolve(__dirname, 'src/matchAnalysis/index.html'),
       },
     },
   },

@@ -42,7 +42,7 @@ const querySummonerRank = async (puuid: string) => {
 
 // 获取我方召唤师ID和昵称
 export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoList[]> => {
-  console.log('获取我方召唤师ID和昵称')
+  // console.log('获取我方召唤师ID和昵称')
   const summonerInfoList: SummonerInfoList[] = []
   const allSummonerId = await queryAllSummonerId(mactchSession)
   if (allSummonerId === null) {
@@ -115,21 +115,4 @@ export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAn
     }
   })
   return {top3Champions, totalChampions, roleCountMap}
-}
-
-// 写入游戏数据到localstore
-export const writeGameInfo = async () => {
-  const res: any = await invokeLcu('get', '/lol-gameflow/v1/session')
-  let queueId = 0
-  // 获取对局ID和地图ID
-  if (res?.gameData !== undefined) {
-    queueId = res.gameData.queue.id
-    localStorage.setItem('gameInfo',
-      String(JSON.stringify({
-        queueId: res.gameData.queue.id,
-        mapId: res.gameData.queue.mapId})
-      )
-    )
-  }
-  return queueId
 }

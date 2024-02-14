@@ -2,7 +2,7 @@
 import {NCard, NAvatar, NButton, NBadge, NDrawer, useMessage} from 'naive-ui';
 import {useRuneStore} from "@/main/store/useRune";
 import RuneAuto from "@/main/views/rune/runeAuto.vue";
-import {onDeactivated, onActivated, ref} from "vue";
+import {onDeactivated, ref, watch} from "vue";
 import {isStoreageHas} from "@/lcu/utils";
 import {handleRunesWrite} from "@/main/views/rune/runes";
 
@@ -12,37 +12,15 @@ const autoRuneActive = ref(false)
 const isAutoRune = ref(false)
 const message = useMessage()
 
-onActivated(() => {
-  isAutoRune.value = isStoreageHas('autoRune',storeRune.currentChampAlias)
-  if (isAutoRune.value){
-    autoWriteRune()
-  }
-})
-onDeactivated(() => {
-  isAutoRune.value = false
-})
-
-const openDrawer = () => {
-  autoRuneActive.value = true
-}
-const setupAutoRune = (type:string) => {
-  if (type ==='auto'){
-    autoRuneActive.value = false
-    isAutoRune.value = true
-  }else {
-    isAutoRune.value = false
-  }
-}
-
 // 自动配置符文
-const autoWriteRune = () => {
+const autoWriteRune = (alias:string) => {
   // todo
   /*if (localStorage.getItem('isSubscribe') === 'f'){
     message.warning('自动符文，需要订阅，请手动配置', {duration: 3000})
     return
   }*/
   const localRuneStr = localStorage.getItem('autoRune') as string
-  const runeData = JSON.parse(localRuneStr)[storeRune.currentChampAlias]
+  const runeData = JSON.parse(localRuneStr)[alias]
 
   if (runeData === undefined){
     message.error('自动符文，数据获取失败', {duration: 3000})
@@ -58,6 +36,29 @@ const autoWriteRune = () => {
   })
 
 }
+
+watch(() => storeRune.currentChampAlias,async (alias:string) => {
+  isAutoRune.value = isStoreageHas('autoRune',alias)
+  if (isAutoRune.value){
+    autoWriteRune(alias)
+  }else {
+    isAutoRune.value = false
+  }
+},{ immediate: true })
+
+const openDrawer = () => {
+  autoRuneActive.value = true
+}
+const setupAutoRune = (type:string) => {
+  if (type ==='auto'){
+    autoRuneActive.value = false
+    isAutoRune.value = true
+  }else {
+    isAutoRune.value = false
+  }
+}
+
+
 onDeactivated(() => {
   autoRuneActive.value = false
 })
