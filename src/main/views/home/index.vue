@@ -16,7 +16,7 @@ const summonerData:SummonerData = reactive({
   rankList: null,
   champLevel: null,
 })
-const recordStore = useRecordStore()
+let recordStore:any = useRecordStore()
 
 onMounted( () => {
   init(true).then(async (value) =>  {
@@ -72,7 +72,7 @@ const writeSumInfo = (sInfo) => {
       platformId:area
     }
     localStorage.setItem('sumInfo',JSON.stringify(sumInfo))
-    recordStore.init()
+    recordStore.init();recordStore=null
   })
 }
 

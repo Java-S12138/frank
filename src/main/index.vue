@@ -2,13 +2,13 @@
 import {onMounted, ref} from "vue";
 import {useMessage} from "naive-ui"
 import {useRouter} from "vue-router";
+import {champSession} from "@/test";
 import {useRuneStore} from "@/main/store/useRune";
-import {useRecordStore} from "@/main/store/useRecord";
 import Dashboard from "@/main/common/dashboard.vue"
+import {useRecordStore} from "@/main/store/useRecord";
 import Navigation from "@/main/common/navigation.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
-import {queryFriendInfo, writeGameInfo} from "@/main/views/teammate/utils";
-import {champSession} from "@/test";
+import {queryFriendInfo} from "@/main/views/teammate/utils";
 
 const router = useRouter()
 const curPos = ref(0)
@@ -61,6 +61,7 @@ const handleNone = (id: string) => {
   }
   runeStore.$reset()
   teammateStore.$reset()
+  isCSSProcess = false
   changeState(id, 'home', 0)
 }
 // 处理Lobby状态
@@ -70,6 +71,7 @@ const handleLobby = (id: string) => {
   }
   runeStore.$reset()
   teammateStore.$reset()
+  isCSSProcess = false
   changeState(id, 'rank', 1)
 }
 // 处理CSSession状态
@@ -77,12 +79,14 @@ const handleCSSession = async (id: string, content: any,isChangeState:boolean) =
   // 解决极地大乱斗模式问题
   if (isCSSProcess){return}
   isCSSProcess = true
-  const queueId = await writeGameInfo()
+
+  const queueId:number = JSON.parse(localStorage.getItem('gameInfo') as string).queueId
+
   queryFriendInfo(content).then(async (summonerInfoList) => {
     const summonerIdList = summonerInfoList.map(summoner => summoner.summonerId)
     // 判断是否存在黑名单数据
     recordStore.checkFriSum(summonerIdList).then(value => {
-      teammateStore.initStore(summonerInfoList, queueId,value)
+      teammateStore.initStore(summonerInfoList, queueId, value)
       if (isChangeState){
         changeState(id, 'teammate', 2)
       }else {
@@ -120,12 +124,6 @@ const handleEndOfGame = (id: string) => {
   teammateStore.$reset()
   isCSSProcess = false
   recordStore.getParticipantsInfo()
-  localStorage.setItem('gameInfo',
-    String(JSON.stringify({
-      queueId: '-1',
-      mapId: '-1'})
-    )
-  )
 }
 
 // 改变页面
@@ -173,11 +171,11 @@ const testEndOfGame = async ()  => {
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard/>
-      <router-view v-slot="{ Component }">
-        <keep-alive>
-          <component :is="Component"/>
-        </keep-alive>
-      </router-view>
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component"/>
+      </keep-alive>
+    </router-view>
     <navigation :cur-pos="curPos" :navigate-to-page="navigateToPage"/>
   </div>
 </template>

@@ -22,12 +22,12 @@ class BlackList {
     const haterList = haterIdList[this.sumInfo.platformId]
 
     if (haterList === undefined){
-      return null
+      return [[],res]
     }else {
       // 如果存在数据，判断是否为当前召唤师的数据
       const existData:undefined|ExsitDataTypes = haterList[this.sumInfo.summonerId]
       if (existData === undefined){
-        return null
+        return [[],res]
       }
       return [existData.sumIdList,res]
     }

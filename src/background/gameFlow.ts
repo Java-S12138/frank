@@ -6,7 +6,8 @@ import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 export class GameFlow {
   public mainWin: WindowInfo | null = null
   public recentMatchWin: WindowInfo | null = null
-  public mapId = - 1
+  public mapId = -1
+
   // 给主窗口发生信息
   public sendMesToMain = async (messageId: string, content = '') => {
     this.mainWin = this.mainWin || await cube.windows.getWindowByName('main')
@@ -69,9 +70,6 @@ export class GameFlow {
     cube.games.on('launched', () => {
       this.coloseWin('matchAnalysis');this.coloseWin('queryMatch')
 
-      const gameInfo = JSON.parse(<string>(localStorage.getItem('gameInfo')))
-      this.mapId = gameInfo.mapId
-
       if (this.mapId === 12 || this.mapId === 11) {
         const configSetting = JSON.parse(<string>(localStorage.getItem('configSetting')))
         if (configSetting.isGameInWindow){
@@ -108,5 +106,19 @@ export class GameFlow {
         }
       }
     })
+  }
+  // 写入游戏信息
+  public writeGameInfo =  async () => {
+    const res: any = await invokeLcu('get', '/lol-gameflow/v1/session')
+    // 获取对局ID和地图ID
+    if (res?.gameData !== undefined) {
+      this.mapId = res.gameData.queue.mapId
+      localStorage.setItem('gameInfo',
+        String(JSON.stringify({
+          queueId: res.gameData.queue.id,
+          mapId: res.gameData.queue.mapId})
+        )
+      )
+    }
   }
 }
