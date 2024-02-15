@@ -28,6 +28,10 @@ export default class MatchDetails {
   public queryGameDetail = async (gameId:number,sumId:number) => {
     this.init()
     const response:GameDetailedInfo = await invokeLcu('get',`/lol-match-history/v1/games/${gameId}`)
+    if (response?.queueId === undefined){
+      return null
+    }
+
     if (response.queueId === 1700){
       return this.getFighterParticipantsDetails(response,response.participants, response.participantIdentities,gameId,sumId,response.queueId)
     }

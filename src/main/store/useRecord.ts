@@ -14,18 +14,18 @@ export const useRecordStore = defineStore('useRecordStore', {
   state: () => {
     return {
       haterList: [] as Hater[] | null,
-      userInfos: null as UserInfos|null,
-      localSumInfo:null as sumInfoTypes|null,
-      cubeUserId:null as string|null,
-      participantsInfo:null as ParticipantsInfo | null,
-      showGameEnd:false
+      userInfos: null as UserInfos | null,
+      localSumInfo: null as sumInfoTypes | null,
+      cubeUserId: null as string | null,
+      participantsInfo: null as ParticipantsInfo | null,
+      showGameEnd: false
     }
   },
   actions: {
-    async init(){
-      this.localSumInfo = this.localSumInfo|| JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
+    async init() {
+      this.localSumInfo = this.localSumInfo || JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
 
-      if (this.cubeUserId === null){
+      if (this.cubeUserId === null) {
         this.cubeUserId = (await cube.profile.getCurrentUser())?.userId
       }
 
@@ -40,37 +40,51 @@ export const useRecordStore = defineStore('useRecordStore', {
       // 判断是否数据量匹配
       this.handleHaterVolume(resBlack[0])
     },
-    handleHaterVolume(sumIdList:string[]){
-      if (this.haterList === null || sumIdList.length ===0){
+    handleHaterVolume(sumIdList: string[]) {
+      if (this.haterList === null || sumIdList.length === 0) {
         return
       }
       const validSumId = this.haterList.map(hater => hater.sumId)
-      if (validSumId.length !== sumIdList.length){
-        blackList.updateUserInfo(JSON.parse(JSON.stringify(this.userInfos)),validSumId)
+      if (validSumId.length !== sumIdList.length) {
+        blackList.updateUserInfo(JSON.parse(JSON.stringify(this.userInfos)), validSumId)
       }
     },
-    async checkFriSum(sumIdList:string[]){
+    async checkFriSum(sumIdList: string[]) {
       const existSumDetails = await blackList.querySumDetails(sumIdList)
-      if (existSumDetails === null ||existSumDetails.length === 0){
+      if (existSumDetails === null || existSumDetails.length === 0) {
         return null
       }
       return existSumDetails
     },
-    async getParticipantsInfo(){
+    async getParticipantsInfo() {
       this.localSumInfo = this.localSumInfo || JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
 
-      const session =  await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
+      const session = await invokeLcu('get', '/lol-gameflow/v1/session') as SessionTypes
       if (session.map?.id !== 12 && session.map?.id !==11){
+        console.log(session)
         return
       }
 
       const gameId = session.gameData.gameId
-      matchDetail.queryGameDetail(gameId, this.localSumInfo.summonerId).then((info) => {
+
+      this.executeAsyncWithRetry(gameId, this.localSumInfo.summonerId).then((info) => {
         if (info !== null) {
           this.participantsInfo = info
           this.showGameEnd = true
         }
       })
+    },
+    async executeAsyncWithRetry(gameId: number, sumId: number) {
+      let retryCount = 0
+      while (retryCount < 3) {
+        const result = await matchDetail.queryGameDetail(gameId, sumId)
+        if (result !== null) {
+          return result
+        }
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        retryCount++
+      }
+      return null
     }
   }
 })

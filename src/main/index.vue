@@ -2,7 +2,6 @@
 import {onMounted, ref} from "vue";
 import {useMessage} from "naive-ui"
 import {useRouter} from "vue-router";
-import {champSession} from "@/test";
 import {useRuneStore} from "@/main/store/useRune";
 import Dashboard from "@/main/common/dashboard.vue"
 import {useRecordStore} from "@/main/store/useRecord";
@@ -151,11 +150,13 @@ const preventAccess = (index: number) => {
       return true
   }
 }
+
+/*
 const testRune = () => {
   handleChampion('Champion',84)
 }
 const testCSSession = async () => {
-  await handleCSSession('CSSession', champSession,true)
+  // await handleCSSession('CSSession', champSession,true)
   // cube.windows.obtainDeclaredWindow('recentMatch')
 }
 const testEndOfGame = async ()  => {
@@ -164,6 +165,7 @@ const testEndOfGame = async ()  => {
   router.push({name: 'record',query:{id:'1'}})
   recordStore.getParticipantsInfo()
 }
+*/
 
 
 </script>

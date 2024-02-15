@@ -116,7 +116,7 @@ const showDialog = () => {
     v-model:show="isShowDrawer"
     :placement="'bottom'"
     :auto-focus="false"
-    height="473"
+    height="476"
   >
     <setting/>
   </n-drawer>
