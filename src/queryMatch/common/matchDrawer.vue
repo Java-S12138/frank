@@ -3,8 +3,8 @@ import {NDrawerContent, NAvatar, NSpace, NTag, NList, NListItem, NButton} from "
 import {SumDetail} from "@/queryMatch/utils/MatchDetail";
 import {getspellImgUrl,gerNoneImg} from "@/lcu/utils";
 
-const {personalDetails,searchSummoner} = defineProps<{
-  personalDetails: SumDetail,searchSummoner:() => void }>()
+const {personalDetails,gameId,searchSummoner} = defineProps<{
+  personalDetails: SumDetail,gameId:number,searchSummoner:() => void }>()
 
 const getImgUrl = (rune: number) => {
   if (rune===0){
@@ -13,6 +13,13 @@ const getImgUrl = (rune: number) => {
   return new URL(`/src/assets/runes/${rune}.png`, import.meta.url).href
 }
 
+const addBlackList = async () => {
+  const mainWin:any = await cube.windows.getWindowByName('main')
+  if (mainWin.minimized || !mainWin.show){
+    cube.windows.show(mainWin.id)
+  }
+  cube.windows.message.send(mainWin.id,'AddBlackList',gameId)
+}
 
 </script>
 
@@ -105,10 +112,15 @@ const getImgUrl = (rune: number) => {
         </n-space>
       </n-list-item>
       </n-list>
-    <n-button type="success" :bordered="false" @click="searchSummoner"
-              style="margin-top: 8px;width: 100%;">
-      查询详细战绩
-    </n-button>
+    <div class="mt-2 flex justify-between">
+      <n-button type="success" :bordered="false" @click="searchSummoner">
+        查询详细战绩
+      </n-button>
+      <n-button type="warning" :bordered="false" @click="addBlackList">
+        新增排位笔记
+      </n-button>
+    </div>
+
   </n-drawer-content>
 </template>
 

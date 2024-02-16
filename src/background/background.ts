@@ -28,6 +28,7 @@ cube.games.launchers.getRunningLaunchers().then((value) => {
 
 cube.games.launchers.events.on('update-info', async (classId, info) => {
   if (info.category === 'game_flow') {
+    // console.log(info.value)
     switch (info.value) {
       case 'ChampSelect':
         if (isStart) {
@@ -41,6 +42,9 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
         return
       case 'EndOfGame':
         gameFlow.showHideMainWin(true, 'EndOfGame')
+        return
+      case 'Matchmaking':
+        gameFlow.sendMesToMain('Matchmaking', '')
         return
       case 'ReadyCheck':
         gameFlow.autoAcceptGame()

@@ -56,16 +56,16 @@ export const useRecordStore = defineStore('useRecordStore', {
       }
       return existSumDetails
     },
-    async getParticipantsInfo() {
-      this.localSumInfo = this.localSumInfo || JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
+    async getParticipantsInfo(addGameId?:number) {
+      this.participantsInfo = null
 
-      const session = await invokeLcu('get', '/lol-gameflow/v1/session') as SessionTypes
-      if (session.map?.id !== 12 && session.map?.id !==11){
-        console.log(session)
+      this.localSumInfo = this.localSumInfo ?? JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
+
+      const gameId = addGameId ?? (await this.getGameIdFromSession())
+
+      if (!gameId) {
         return
       }
-
-      const gameId = session.gameData.gameId
 
       this.executeAsyncWithRetry(gameId, this.localSumInfo.summonerId).then((info) => {
         if (info !== null) {
@@ -73,6 +73,15 @@ export const useRecordStore = defineStore('useRecordStore', {
           this.showGameEnd = true
         }
       })
+    },
+    async getGameIdFromSession() {
+      const session = (await invokeLcu('get', '/lol-gameflow/v1/session')) as SessionTypes
+
+      if (session.map?.id !== 12 && session.map?.id !== 11) {
+        return null
+      }
+
+      return session.gameData.gameId
     },
     async executeAsyncWithRetry(gameId: number, sumId: number) {
       let retryCount = 0

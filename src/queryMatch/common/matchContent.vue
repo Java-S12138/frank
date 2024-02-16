@@ -9,13 +9,14 @@ import MatchDetailsFighter from "@/queryMatch/common/matchDetailsFighter.vue";
 import {SumDetail, SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 
 const emits = defineEmits(['changeSum'])
-const {teamOne, teamTwo, headerInfo, summonerId, queueId, isGameIn} = defineProps<{
+const {teamOne, teamTwo, headerInfo, summonerId, queueId, isGameIn,gameId} = defineProps<{
   teamOne: SummonerDetailInfo[],
   teamTwo: SummonerDetailInfo[],
   headerInfo: string[],
   queueId: number,
   summonerId: number,
-  isGameIn: boolean
+  isGameIn: boolean,
+  gameId:number
 }>()
 
 const rotatedIndex = ref(0)
@@ -108,6 +109,7 @@ const searchSummoner = () => {
     :width="265" placement="left">
     <match-drawer v-if="curMatchDraData!==null"
                   :search-summoner="searchSummoner"
+                  :game-id="gameId"
                   :personal-details="curMatchDraData"/>
   </n-drawer>
 </template>
