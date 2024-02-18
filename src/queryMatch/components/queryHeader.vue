@@ -41,6 +41,7 @@ const options = [
     value: 1700
   },
 ]
+const subscribe = localStorage.getItem('subscribe')
 
 const changeMatchMode = async (queueId: number) => {
   if (matchStore.sumInfo !== null) {
@@ -66,8 +67,8 @@ const searchSum = async () => {
     return
   }
 
-  if (sumInfo.privacy !== 'PUBLIC') {
-    message.error('当前召唤师战绩为隐藏状态')
+  if (sumInfo.privacy !== 'PUBLIC' && !subscribe) {
+    message.error('Sorry，不支持查询隐藏战绩玩家')
     clearVal()
     return
   }
@@ -140,7 +141,7 @@ const pageChange = (page: number) => {
       <n-pagination v-model:page="pageVal"
                     @update-page="pageChange"
                     :page-slot="10"
-                    :page-count="20"/>
+                    :page-count="subscribe?30:10"/>
 
       <n-space style="margin-left: 21px;" class="pt-2" :size=[8,0]>
         <n-button @click="handleMin" text>

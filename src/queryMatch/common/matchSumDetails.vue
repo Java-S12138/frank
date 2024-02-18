@@ -9,7 +9,7 @@ const {summoner, summonerId,isOne} = defineProps<{ summoner: SummonerDetailInfo,
 <template>
   <div class="flex gap-x-3 divMain">
     <!--      头像-->
-    <div class="relative">
+    <div class="relative cursor-pointer">
       <n-avatar
         :bordered="false"
         :size="50"

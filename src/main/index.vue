@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useMessage} from "naive-ui"
+import {useMessage,MessageReactive} from "naive-ui"
 import {useRouter} from "vue-router";
 import {useRuneStore} from "@/main/store/useRune";
 import Dashboard from "@/main/common/dashboard.vue"
@@ -12,6 +12,7 @@ import {queryFriendInfo} from "@/main/views/teammate/utils";
 const router = useRouter()
 const curPos = ref(0)
 const message = useMessage()
+let messageReactive: MessageReactive | null = null
 const teammateStore = useTeammateStore()
 const runeStore = useRuneStore()
 const recordStore = useRecordStore()
@@ -20,7 +21,6 @@ onMounted(() => {
   router.push({name: 'home'})
   // testCSSession()
   // testRune()
-  // testEndOfGame()
 })
 
 // 处理不同的状态
@@ -41,7 +41,8 @@ class GameState {
   // 改变底部页面图标
   public navigateToPage = (page: string, index: number) => {
     if (!this.preventAccess(index)) {
-      message.warning('当前状态无法查看此页面', {duration: 2000})
+      const mess = index===2?'选择英雄阶段，方可使用':'选择英雄之后，才可使用'
+      message.warning(mess, {duration: 2000})
       return
     }
     curPos.value = index
@@ -86,8 +87,11 @@ class GameState {
       return
     }
     this.isCSSProcess = true
-
-    const queueId: number = JSON.parse(localStorage.getItem('gameInfo') as string).queueId
+    this.hanleFriendInfo(id,content,isChangeState)
+  }
+  // 获取队友数据
+  public hanleFriendInfo = (id: string, content: any, isChangeState: boolean) => {
+    const queueId: number = this.queryGameInfo()
 
     queryFriendInfo(content).then(async (summonerInfoList) => {
       const summonerIdList = summonerInfoList.map(summoner => summoner.summonerId)
@@ -100,12 +104,27 @@ class GameState {
           // 从符文配置界面切换过来
           if (value !== null && value.length !== 0) {
             setTimeout(() => {
-              this.changeState(id, 'teammate', 2)
+              this.changeState('Champion', 'teammate', 2)
+              message.success('检测到被标记玩家！！！')
             }, 3000)
           }
         }
       })
     })
+  }
+  // 获取GameInfo
+  public queryGameInfo = () => {
+    const gameInfo = localStorage.getItem('gameInfo')
+    if (gameInfo===null){
+      localStorage.setItem('gameInfo',
+        String(JSON.stringify({
+        queueId: 420,
+        mapId: 11})
+      ))
+      return 420
+    }else {
+      return JSON.parse(gameInfo).queueId
+    }
   }
   // 处理Champion状态
   public handleChampion = (id: string, content: any) => {
@@ -127,7 +146,22 @@ class GameState {
   }
   // 处理EndOfGame状态
   public handleEndOfGame = () => {
-    recordStore.getParticipantsInfo()
+    if (!messageReactive) {
+      messageReactive = message.loading('对局结算数据加载中...', {
+        duration: 0
+      })
+    }
+
+    recordStore.getParticipantsInfo().then((isSuccess) => {
+      messageReactive?.destroy()
+      messageReactive = null
+      if (!isSuccess){
+        message.error('获取数据失败，请到查询战绩界面添加', {
+          closable: true,
+          duration: 5000
+        })
+      }
+    })
   }
   // 处理AddBlackList状态
   public handleAddBlackList = (gameId:number) => {
@@ -171,21 +205,14 @@ cube.windows.message.on('invoked', (id, content, reply) => {
   }
 })
 
-/*
-const testRune = () => {
-  handleChampion('Champion',84)
-}
-const testCSSession = async () => {
-  // await handleCSSession('CSSession', champSession,true)
-  // cube.windows.obtainDeclaredWindow('recentMatch')
-}
-const testEndOfGame = async ()  => {
-  curFlow = 'EndOfGame'
-  curPos.value = 4
-  router.push({name: 'record',query:{id:'1'}})
-  recordStore.getParticipantsInfo()
-}
-*/
+// const testRune = () => {
+//   gameState.handleChampion('Champion',84)
+// }
+// const testCSSession = async () => {
+//   await handleCSSession('CSSession', champSession,true)
+//   cube.windows.obtainDeclaredWindow('recentMatch')
+// }
+
 
 
 </script>

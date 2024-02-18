@@ -11,20 +11,19 @@ onMounted(() => {
       isShowNoticeIcon.value = true
     }
   })
-  // todo
-/*  if (isSubscribe==='t'){
+  if (subscribe){
     const remainSub = localStorage.getItem('remainSub')
-    if (remainSub !== '' && remainSub !==null){
+    if (remainSub !== '' && remainSub !== null){
       subInfo.value = `${remainSub}天后到期`
       isShowSub.value = true
     }
-  }*/
+  }
 })
 
-// const isSubscribe = localStorage.getItem('isSubscribe')
+const subscribe = localStorage.getItem('subscribe')
 const notice = new Notice()
 const subInfo = ref('订阅服务')
-const isShowSub = ref(false)
+const isShowSub = ref(subscribe===null)
 const isShowDrawer = ref(false)
 const isShowNoticeIcon = ref(false)
 const subscribes = [
@@ -77,7 +76,7 @@ const showDialog = () => {
     </div>
     <n-dropdown v-if="isShowSub" trigger="hover"
                 :options="subscribes" @select="handleSub">
-      <n-button type="warning" size="small">
+      <n-button type="warning" size="small" style="height: 25px;padding: 4px">
           {{subInfo}}
       </n-button>
     </n-dropdown>
@@ -116,7 +115,7 @@ const showDialog = () => {
     v-model:show="isShowDrawer"
     :placement="'bottom'"
     :auto-focus="false"
-    height="476"
+    height="464"
   >
     <setting/>
   </n-drawer>

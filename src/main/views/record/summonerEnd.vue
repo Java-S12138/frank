@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NPopover, NTag, NIcon, NButton, NEllipsis, NAvatar, NSkeleton} from "naive-ui"
+import {NPopover, NTag, NIcon, NButton, NEllipsis, NAvatar, NSkeleton,useMessage} from "naive-ui"
 import {ThumbDown, ThumbUp} from "@vicons/tabler";
 import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 import {getIconImg} from "@/queryMatch/utils/tools";
@@ -11,7 +11,13 @@ const {isTeamOne,sumList, addBlackList} = defineProps<{
   addBlackList: (isHater: boolean, requiredInfo: {name:string,sumId:string,isTeamOne:boolean}) => void
 }>()
 
+const message = useMessage()
+
 const searchMatch = (summonerId: number) => {
+  if (localStorage.getItem('subscribe') === null){
+    message.warning('跳转战绩页面，需要订阅服务')
+    return
+  }
   localStorage.setItem('queSumMatch', String(summonerId)+'-')
   cube.windows.obtainDeclaredWindow('queryMatch')
 }

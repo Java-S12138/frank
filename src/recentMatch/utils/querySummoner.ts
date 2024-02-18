@@ -96,10 +96,9 @@ class QuerySummoner {
   }
   // 获取召唤师英雄绝活数据 Z:正常 A:绝活 B:熟练 S:小代 Y:未知 (需要进行下一步判断)
   public querySummonerSuperChampData = async (puuid:string,champAlias:string) => {
-    // todo
-    /*   if (localStorage.getItem('isSubscribe') ==='f'){
+    if (localStorage.getItem('subscribe') === null){
       return 'Z'
-    }*/
+    }
     if (this.queueId === 420 || this.queueId === 440){
       const superList:SuperChampTypes[] = (await invokeLcu('get',`/lol-collections/v1/inventories/${puuid}/champion-mastery`)).slice(0,6)
       const champId = aliasToId[champAlias]

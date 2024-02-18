@@ -15,11 +15,10 @@ const {runeList} = defineProps<{runeList:Rune[]}>()
 
 // 应用符文&装备
 const applyRune = async (data: any) => {
-  // todo
-  /*if (localStorage.getItem('isSubscribe') === 'f') {
-    message.warning('一键符文，需要订阅 请手动配置', {duration: 5000})
+  if (localStorage.getItem('subscribe') === null) {
+    message.warning('一键符文，需要订阅，请手动配置', {duration: 5000})
     return
-  }*/
+  }
 
   const tempData = JSON.parse(JSON.stringify(data))
   tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"

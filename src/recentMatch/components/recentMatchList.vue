@@ -7,6 +7,9 @@ const emits = defineEmits(['showDetail'])
 const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
   emits('showDetail',gameId,summonerId,isFri)
 }
+const teamColors = ['#2080f0','#f0a020','#18a058','#d03050','#9333ea']
+const subscribe = localStorage.getItem('subscribe')
+
 </script>
 
 <template>
@@ -47,15 +50,18 @@ const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
           <n-ellipsis :tooltip="false" style="max-width: 85px;">
             {{ summoner.summonerName }}
           </n-ellipsis>
-          <div class="absolute text-xs bg-blue-500 text-neutral-50 rounded-full"
-               style="bottom: 22px;right: 0;width: 16px;height: 16px;text-align: center">
+          <div
+            v-if="subscribe"
+            class="absolute text-xs text-neutral-50 rounded-full"
+            style="bottom: 22px;right: 0;width: 16px;height: 16px;text-align: center"
+            :style="'background-color:'+teamColors[(summoner.teamParticipantId -1)%5]">
             {{ summoner.teamParticipantId }}
           </div>
         </n-tag>
 
         <!--      战绩-->
         <div class="flex flex-col gap-y-2">
-          <div v-for="match in summoner.matchList"
+          <div v-for="match in subscribe?summoner.matchList:summoner.matchList.slice(5)"
                @click="showDetail(match.gameId,summoner.summonerId,isFri)"
                class="flex w-full gap-x-2">
             <n-avatar

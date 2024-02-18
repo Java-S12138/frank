@@ -64,13 +64,16 @@ export const useRecordStore = defineStore('useRecordStore', {
       const gameId = addGameId ?? (await this.getGameIdFromSession())
 
       if (!gameId) {
-        return
+        return false
       }
 
-      this.executeAsyncWithRetry(gameId, this.localSumInfo.summonerId).then((info) => {
+      return this.executeAsyncWithRetry(gameId, this.localSumInfo.summonerId).then((info) => {
         if (info !== null) {
           this.participantsInfo = info
           this.showGameEnd = true
+          return true
+        }else {
+          return false
         }
       })
     },
@@ -85,12 +88,12 @@ export const useRecordStore = defineStore('useRecordStore', {
     },
     async executeAsyncWithRetry(gameId: number, sumId: number) {
       let retryCount = 0
-      while (retryCount < 3) {
+      while (retryCount < 8) {
         const result = await matchDetail.queryGameDetail(gameId, sumId)
         if (result !== null) {
           return result
         }
-        await new Promise(resolve => setTimeout(resolve, 1500))
+        await new Promise(resolve => setTimeout(resolve, 500))
         retryCount++
       }
       return null

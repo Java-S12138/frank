@@ -2,10 +2,11 @@
 import {Ref, ref} from "vue";
 import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 import {optionsChampion, keywordsList} from "@/resources/champList";
-import {NDrawerContent, NTag, NSelect, NSwitch, NSlider, NRadio,NList,NListItem, useDialog} from 'naive-ui'
+import {NDrawerContent, NTag,NButton, NSelect, NSwitch, NSlider, NRadio,NList,NListItem, useDialog} from 'naive-ui'
 
 const config:Ref<ConfigSettingTypes> = ref(JSON.parse(localStorage.getItem('configSetting') as string))
 const theme = localStorage.getItem('theme')  || 'light'
+const subscribe = localStorage.getItem('subscribe')
 const dialog = useDialog()
 
 const saveConfig = () => {
@@ -74,12 +75,14 @@ const openWeb = (isSYJ:boolean) => {
   }else {
     cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank')
   }
-
+}
+const restart = () => {
+  cube.extensions.relaunch()
 }
 </script>
 
 <template>
-  <n-drawer-content body-style='padding:12px 22px' body-content-style="padding:0px">
+  <n-drawer-content body-style='padding:20px 22px' body-content-style="padding:0px">
       <n-list>
         <!--        切换主题-->
         <n-list-item style="padding-top: 0px;">
@@ -178,7 +181,7 @@ const openWeb = (isSYJ:boolean) => {
             游戏内显示战绩窗口 隐藏|显示 SHIFT+TAB</n-tag>
         </n-list-item>
         <!--        秒接对局-->
-        <n-list-item>
+        <n-list-item v-if="subscribe">
           <div class="gap-x-5 flex justify-between items-center">
             <n-tag :bordered="false">秒接对局</n-tag>
             <n-slider v-model:value="config.autoAccept" :step="10" @update:value="saveConfig"/>
@@ -186,14 +189,28 @@ const openWeb = (isSYJ:boolean) => {
           <n-tag class="mt-1.5 w-full justify-center" :disabled="true" :bordered="false"
           size="small">数值: [ {{'<'}}50  关闭 ] [ =50 开启 ] [ {{'='}}60  延迟两秒 ]</n-tag>
         </n-list-item>
-        <n-list-item style="padding-bottom: 0px;">
-          <div class="gap-x-5 flex justify-between items-center">
-            <n-tag @click="openWeb(false)" class="cursor-pointer" :bordered="false">使用手册</n-tag>
-            <n-tag class="cursor-pointer flex-grow" @click="openWeb(true)"
-                   type="success" :bordered="false">Frank Powered By Java_S</n-tag>
-          </div>
+        <n-list-item v-else>
+          <n-tag type="warning" :bordered="false" class="w-full justify-center">
+            秒接对局，订阅后即可使用
+          </n-tag>
           <n-tag class="mt-1.5 w-full justify-center" :disabled="true" :bordered="false"
-                 size="small">点击上方标签，即可打开对应页面</n-tag>
+                 size="small">订阅成功后，请重启Frank，更新订阅资源</n-tag>
+        </n-list-item>
+        <n-list-item style="padding-bottom: 0px;">
+          <div class="flex justify-between items-center">
+            <n-button
+              size="small" secondary type="tertiary" @click="openWeb(false)">
+              使用手册
+            </n-button>
+            <n-button
+              size="small" secondary type="tertiary" @click="openWeb(true)">
+              By Java_S
+            </n-button>
+            <n-button
+              size="small" secondary type="tertiary" @click="restart">
+              重启软件
+            </n-button>
+          </div>
         </n-list-item>
       </n-list>
   </n-drawer-content>

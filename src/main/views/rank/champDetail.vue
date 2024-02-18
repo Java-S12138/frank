@@ -23,11 +23,10 @@ onMounted(async () => {
 
 // 预选英雄
 const preselectChamp = async (champId:number) => {
-  // todo
- /* if (localStorage.getItem('isSubscribe') === 'f'){
-    message.warning('预选英雄功能 需要订阅服务')
+  if (localStorage.getItem('subscribe') === null){
+    message.warning('预选英雄功能，需要订阅服务')
     return
-  }*/
+  }
   if (preselectActionID===null){
     const res = await invokeLcu('get','/lol-champ-select/v1/session')
     if (res?.success === false){

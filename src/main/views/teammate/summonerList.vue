@@ -6,7 +6,7 @@ import {useTeammateStore} from "@/main/store/useTeammate";
 import HaterDetails from "@/main/views/record/haterDetails.vue";
 import {CurrentSumInfoTypes, SummonerInfoList,} from "./teammateTypes";
 import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
-import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag} from "naive-ui";
+import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag,useMessage} from "naive-ui";
 import {BlackItemsTypes} from "@/main/views/record/blackListTypes";
 
 const teammateStore = useTeammateStore()
@@ -14,6 +14,7 @@ const drawerActive = ref(false)
 const drawerBlackActive = ref(false)
 const currentSumInfo: Ref<CurrentSumInfoTypes | null> = ref(null)
 const currentHaterInfo: Ref<BlackItemsTypes | null> = ref(null)
+const message = useMessage()
 
 watch(teammateStore.blackItems, () => {
   if (teammateStore.blackItems.length !== 0 ){
@@ -23,12 +24,6 @@ watch(teammateStore.blackItems, () => {
 })
 
 const getCurrentSum = (summoner: SummonerInfoList, index: number) => {
-  // todo isSubscribe
-  // if (isSubscribe ==='f'){
-  //   message.warning('查看更多信息 需要订阅服务')
-  //   return
-  // }
-  drawerActive.value = true
   currentSumInfo.value = {
     kda: summoner?.kda,
     hater: summoner?.hater,
@@ -38,6 +33,7 @@ const getCurrentSum = (summoner: SummonerInfoList, index: number) => {
     index: index,
     imgUrl: summoner.imgUrl,
   } as CurrentSumInfoTypes
+  drawerActive.value = true
 }
 
 const clearInfo = () => {

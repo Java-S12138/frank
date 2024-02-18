@@ -14,11 +14,10 @@ const message = useMessage()
 
 // 自动配置符文
 const autoWriteRune = (alias:string) => {
-  // todo
-  /*if (localStorage.getItem('isSubscribe') === 'f'){
-    message.warning('自动符文，需要订阅，请手动配置', {duration: 3000})
+  if (localStorage.getItem('subscribe') === null){
+    message.warning('自动符文，需要订阅，请手动配置')
     return
-  }*/
+  }
   const localRuneStr = localStorage.getItem('autoRune') as string
   const runeData = JSON.parse(localRuneStr)[alias]
 

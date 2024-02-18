@@ -6,6 +6,7 @@ import {queryMasteryChampList} from "@/lcu/aboutSummoner";
 import {Hater, HaterItem, BlackItemsTypes} from "@/main/views/record/blackListTypes";
 
 const useMatch = new QueryMatch()
+const subscribe = localStorage.getItem('subscribe')
 
 export const useTeammateStore = defineStore('useTeammate', {
   state: () => {
@@ -36,7 +37,7 @@ export const useTeammateStore = defineStore('useTeammate', {
     },
     async getMatchList(summonerInfo: SummonerInfoList[]) {
       for (const [index, summoner] of summonerInfo.entries()) {
-        const matchList = await useMatch.getMatchHis(summoner.puuid)
+        const matchList = await useMatch.getMatchHis(summoner.puuid,subscribe)
         if (matchList.length === 0) {
           // 查询最近战绩出错
           this.recentMatchList = []

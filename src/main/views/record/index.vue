@@ -37,7 +37,7 @@ const closeDrawer = () => {
     </n-alert>
     <black-summoner-list
       v-else
-      :local-sum-id="recordStore.localSumInfo.summonerId"
+      :local-sum-id="<number>recordStore.localSumInfo?.summonerId"
       :hater-list="recordStore.haterList"
       :refresh-list="recordStore.init"
     />
@@ -54,7 +54,7 @@ const closeDrawer = () => {
       :team-one="recordStore.participantsInfo.teamOne"
       :team-two="recordStore.participantsInfo.teamTwo"
       :game-id="recordStore.participantsInfo.gameId"
-      :platform-id="recordStore.localSumInfo.platformId"
+      :platform-id="<string>recordStore.localSumInfo?.platformId"
     />
   </n-drawer>
 </template>

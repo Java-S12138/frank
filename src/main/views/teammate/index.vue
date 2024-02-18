@@ -7,6 +7,10 @@ const teammateStore = useTeammateStore()
 const message = useMessage()
 
 const openWin = () => {
+  if (localStorage.getItem('subscribe') === null){
+    message.warning('对局分析，需要订阅服务')
+    return
+  }
   cube.windows.obtainDeclaredWindow('matchAnalysis')
 }
 

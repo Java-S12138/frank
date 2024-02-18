@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {NSpace, NTag, NGrid, NGi,NSwitch, useMessage, NPopconfirm,NScrollbar
-} from 'naive-ui'
+import {NSpace, NTag, NGrid, NGi,NSwitch, useMessage, NPopconfirm,NScrollbar} from 'naive-ui'
 import {ref} from "vue";
 import {invokeLcu} from "@/lcu";
 import {applyBlockPage} from "@/lcu/aboutRune";
@@ -16,11 +15,10 @@ const changeSetting = () => {
 }
 
 const applyBlock = (block:any) => {
-  // todo
- /* if (localStorage.getItem('isSubscribe') === 'f'){
-    message.warning('装备配置 需要订阅服务',{duration: 5000})
+  if (localStorage.getItem('subscribe') === null){
+    message.warning('装备配置 需要订阅服务')
     return
-  }*/
+  }
   applyBlockPage(JSON.parse(JSON.stringify(block))).then((v) => {
     if (v){
       message.success('装备配置成功！')
@@ -45,7 +43,7 @@ const removeItem = async () => {
 
 
 <template>
-  <n-scrollbar style="max-height: 475px;padding-right: 10px">
+  <n-scrollbar style="height: 442px;padding-right: 12px;">
     <n-grid :cols="2" x-gap="15" style="margin-top: 4px">
       <n-gi v-for="blockItems in storeRune.blockDataList">
         <div class="blockMain runeDivDash dark:border-gray-700">

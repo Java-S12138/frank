@@ -29,7 +29,7 @@ export const useRuneStore = defineStore('useRuneStore', {
       if (champId === this.currentChamp){
         return false
       }
-      if (this.runeDataList.length !==0 ) {
+      if (this.runeDataList.length !== 0 ) {
         this.$reset()
       }
 

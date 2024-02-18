@@ -102,7 +102,10 @@ export class QueryMatch {
     }
   }
 
-  public getMatchHis = async (puuid: string) => {
+  public getMatchHis = async (puuid: string,subscribe:null|string) => {
+    if (!subscribe){
+      return await this.dealMatchHistory(puuid, 0, 5)
+    }
     return await this.dealMatchHistory(puuid, 0, 19)
   }
   public getSpecialMatchHis = async (puuid: string, matchHis20: SimpleMatchTypes[], queueId: number) => {

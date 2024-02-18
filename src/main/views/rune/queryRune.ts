@@ -26,7 +26,7 @@ export class QueryRune {
     return skillsImg.map((img:string, i:number) => [
       `https://game.gtimg.cn/images/lol/act/img/spell/${img}`,
       skills[i]
-    ]);
+    ])
   }
   // 获取符文数据
   public getRunesData = async (alias:string) => {

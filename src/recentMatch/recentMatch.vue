@@ -52,10 +52,11 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
     isLcuErr.value = false
     queueId.value = allSumInfo.queueId
     // 是否从缓存数据中获取队友的战绩数据
-    Object.keys(simpleMatchList).length > 0
-      ? await getSumInfoFromCache(allSumInfo.friendList, simpleMatchList,allSumInfo.queueId)
-      : await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
-
+    if (localStorage.getItem('subscribe') === null || Object.keys(simpleMatchList).length === 0){
+      await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
+    }else {
+      await getSumInfoFromCache(allSumInfo.friendList, simpleMatchList,allSumInfo.queueId)
+    }
     await getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
     // 判断敌我双方谁的赢场最多
     isFriCount.value = winCount.value.friend[0] >= winCount.value.enemy[0]

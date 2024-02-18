@@ -1,11 +1,9 @@
-localStorage.setItem('isSubscribe','t')
-/*
 // @ts-ignore
 cube.profile.subscriptions.getDetailedActivePlans('1588508786787356673').then(subsDetailType => {
-  localStorage.setItem('isSubscribe','f')
+  localStorage.removeItem('subscribe')
   cube.profile.getCurrentUser().then(value => {
     if (value.userId === "U202108121313410404"){
-      localStorage.setItem('isSubscribe','t')
+      localStorage.setItem('subscribe','t')
       localStorage.setItem('remainSub','')
     }else {
       if (subsDetailType.length === 0){
@@ -13,7 +11,7 @@ cube.profile.subscriptions.getDetailedActivePlans('1588508786787356673').then(su
       }
       for (const subItem of subsDetailType) {
         if (subItem.status === 1){
-          localStorage.setItem('isSubscribe','t')
+          localStorage.setItem('subscribe','t')
           const date = new Date(Number(subItem.expireTime) * 1000)
           const today = new Date()
           const remainDay = date.getDate()-today.getDate()
@@ -28,8 +26,7 @@ cube.profile.subscriptions.getDetailedActivePlans('1588508786787356673').then(su
     }
   })
 }).catch(() => {
-  localStorage.setItem('isSubscribe','f')
+  localStorage.removeItem('subscribe')
 })
 
 
-*/

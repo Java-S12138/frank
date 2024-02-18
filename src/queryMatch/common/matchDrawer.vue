@@ -6,6 +6,8 @@ import {getspellImgUrl,gerNoneImg} from "@/lcu/utils";
 const {personalDetails,gameId,searchSummoner} = defineProps<{
   personalDetails: SumDetail,gameId:number,searchSummoner:() => void }>()
 
+const subscribe = localStorage.getItem('subscribe')
+
 const getImgUrl = (rune: number) => {
   if (rune===0){
    return  gerNoneImg()
@@ -113,9 +115,11 @@ const addBlackList = async () => {
       </n-list-item>
       </n-list>
     <div class="mt-2 flex justify-between">
-      <n-button type="success" :bordered="false" @click="searchSummoner">
+      <n-button type="success" :bordered="false"
+                @click="searchSummoner" :disabled="subscribe===null">
         查询详细战绩
       </n-button>
+
       <n-button type="warning" :bordered="false" @click="addBlackList">
         新增排位笔记
       </n-button>

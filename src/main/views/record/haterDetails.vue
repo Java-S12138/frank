@@ -6,6 +6,7 @@ import {
 import {HaterItem} from "./blackListTypes";
 import {deleteBlacklist, deleteHater, findBlacklistByHId, reviseHaterContent} from "@/main/utils/request";
 import {throttle} from "./utils";
+import {ref} from "vue";
 
 const {hContent, hInfo, closeDrawer} = defineProps<{
   hContent: HaterItem,
@@ -15,13 +16,18 @@ const {hContent, hInfo, closeDrawer} = defineProps<{
 }>()
 
 const message = useMessage()
+const contentVal = ref(hContent.content)
 
 // 格式化数据库时间格式
 const formatDate = (dateStr: string) => {
   return dateStr.split('T')[0]
 }
 // 修改内容
-const reviseContent = throttle(async (oldContnet: HaterItem) => {
+const reviseContent = throttle(async (oldContnet: HaterItem,isChangeTag:boolean) => {
+  if (isChangeTag){
+    changeTag(oldContnet)
+  }
+  oldContnet.content = contentVal.value
   const newContnet: HaterItem = JSON.parse(JSON.stringify(oldContnet))
   const res = await reviseHaterContent({
     url: '/blacklist/updateBlacklist',
@@ -72,8 +78,21 @@ const isHavaItem = async (sumId: string, hId: number) => {
 }
 
 const searchMatch = (summonerId:string,matchId:string) => {
+  if (localStorage.getItem('subscribe') === null){
+    message.warning('对局详细数据，需要订阅服务')
+    return
+  }
   localStorage.setItem('queSumMatch', summonerId+'-'+matchId)
   cube.windows.obtainDeclaredWindow('queryMatch')
+}
+const changeTag = (oldContnet: HaterItem) => {
+  if (oldContnet.isShow){
+    oldContnet.tag = '愉快'
+    oldContnet.isShow = false
+  }else {
+    oldContnet.tag = '红温'
+    oldContnet.isShow = true
+  }
 }
 </script>
 
@@ -96,25 +115,32 @@ const searchMatch = (summonerId:string,matchId:string) => {
     </div>
     <n-divider style="margin: 16px 0;"/>
     <n-input
-      v-model:value="hContent.content"
+      v-if="isEdit"
+      v-model:value="contentVal"
       type="textarea" spellcheck="false"
-      autosize :show-count="isEdit"
+      autosize :show-count="true"
       maxlength="200"
       placeholder="请输入拉黑原因"
       style="height: 120px;"
     />
+    <n-input
+      v-else :value="contentVal"
+      type="textarea" spellcheck="false" autosize
+      maxlength="200" style="height: 120px;"
+    />
 
     <n-divider dashed style="margin: 16px 0;"/>
-    <div class="flex justify-between">
+    <div v-if="isEdit"  class="flex justify-between">
       <n-button secondary size="small"
+                @click="reviseContent(hContent,true)"
                 :bordered="false"
                 :type="hContent.isShow?'error':'success'">
         {{ hContent.tag }}
       </n-button>
-      <n-space v-if="isEdit">
+      <n-space>
         <n-button
           size="small" type="info"
-          @click="reviseContent(hContent)">
+          @click="reviseContent(hContent,false)">
           修改
         </n-button>
         <n-popconfirm
@@ -127,12 +153,17 @@ const searchMatch = (summonerId:string,matchId:string) => {
               删除
             </n-button>
           </template>
-          是否将当前召唤师移除名单
+          删除当前召唤师数据
         </n-popconfirm>
 
       </n-space>
-      <n-tag :bordered="false" :type="hContent.isShow?'error':'success'" :disabled="true"
-             v-else>
+    </div>
+    <div v-else class="flex justify-between">
+      <n-tag :bordered="false"
+                :type="hContent.isShow?'error':'success'">
+        {{ hContent.tag }}
+      </n-tag>
+      <n-tag :bordered="false" :type="hContent.isShow?'error':'success'" :disabled="true">
         <n-ellipsis :tooltip="false" style="max-width: 150px">
           {{hContent.playerSumName}}
         </n-ellipsis>
