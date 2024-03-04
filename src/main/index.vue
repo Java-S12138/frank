@@ -155,8 +155,11 @@ class GameState {
     recordStore.getParticipantsInfo().then((isSuccess) => {
       messageReactive?.destroy()
       messageReactive = null
-      if (!isSuccess){
-        message.error('获取数据失败，请到查询战绩界面添加', {
+
+      if (isSuccess === null){
+        return
+      }else if (isSuccess === false) {
+        message.error('获取数据失败，请到查询战绩添加', {
           closable: true,
           duration: 5000
         })

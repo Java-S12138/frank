@@ -76,8 +76,10 @@ cube.games.launchers.events.on('update-info', async (classId, info) => {
     const obj: { data: any; eventType: string; uri: string } = JSON.parse(info.value)
     switch (obj.uri) {
       case '/lol-champ-select/v1/current-champion':
-        gameFlow.sendMesToMain('Champion', obj.data)
-        return
+        if (gameFlow.mapId === 22) {
+          return
+        }
+        return gameFlow.sendMesToMain('Champion', obj.data)
       case '/lol-champ-select/v1/session':
         if (isCSSestion && obj.data.actions.length !== 0) {
           isCSSestion = false

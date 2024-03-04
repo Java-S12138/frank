@@ -14,9 +14,10 @@ const emits = defineEmits(['openDrawer'])
 const isMatchDra = ref(false)
 const curMatchDraData:Ref<null|SumDetail> = ref(null)
 
-const showSumDetails = (isOne,index) => {
-  emits('openDrawer',isOne,index)
+const showSumDetails = (summonerId:number) => {
+  emits('openDrawer',summonerId)
 }
+
 </script>
 
 <template>
@@ -47,8 +48,8 @@ const showSumDetails = (isOne,index) => {
     </n-gi>
   </n-grid>
     <n-space style="margin-top: 17px;" :size="[0,54.8]" justify="space-between">
-      <div v-for="(summoner,index) in teamOne" >
-        <n-space style="width: 290px;" @click="showSumDetails(true,index)" vertical>
+      <div v-for="summoner in teamOne" >
+        <n-space style="width: 290px;" @click="showSumDetails(summoner.accountId)" vertical>
           <match-sum-details :summoner="summoner" :summoner-id="summonerId"/>
           <div class="flex justify-between">
             <n-tag style="width: 82px;justify-content: center;height: 26px;" type="success"

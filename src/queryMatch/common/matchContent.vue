@@ -28,12 +28,12 @@ const changeShowMode = () => {
   rotatedIndex.value = (rotatedIndex.value += 1) % titleArr.length
 }
 
-const openMatchDra = async (isOne, index) => {
+const openMatchDra = async (summonerId:number) => {
   if (isGameIn){
     // 如果是游戏里面的窗口显示此页面，不让打开抽屉窗口
     return
   }
-  const summonerInfo: SummonerDetailInfo = isOne ? teamOne[index] : teamTwo[index]
+  const summonerInfo = teamOne.concat(teamTwo).find(v => v.accountId===summonerId)
   curMatchDraData.value = await getDrawerData(summonerInfo)
   isMatchDra.value = true
 }

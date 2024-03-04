@@ -64,7 +64,7 @@ export const useRecordStore = defineStore('useRecordStore', {
       const gameId = addGameId ?? (await this.getGameIdFromSession())
 
       if (!gameId) {
-        return false
+        return null
       }
 
       return this.executeAsyncWithRetry(gameId, this.localSumInfo.summonerId).then((info) => {

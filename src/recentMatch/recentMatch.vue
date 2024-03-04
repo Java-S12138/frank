@@ -53,11 +53,16 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
     queueId.value = allSumInfo.queueId
     // 是否从缓存数据中获取队友的战绩数据
     if (localStorage.getItem('subscribe') === null || Object.keys(simpleMatchList).length === 0){
-      await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
+     await Promise.all([
+        getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true),
+        getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
+      ])
     }else {
-      await getSumInfoFromCache(allSumInfo.friendList, simpleMatchList,allSumInfo.queueId)
+      await Promise.all([
+        getSumInfoFromCache(allSumInfo.friendList, simpleMatchList,allSumInfo.queueId),
+        getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
+      ])
     }
-    await getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
     // 判断敌我双方谁的赢场最多
     isFriCount.value = winCount.value.friend[0] >= winCount.value.enemy[0]
   })
@@ -82,7 +87,7 @@ const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, is
     countList[0] += resultList[1]
     countList[1] += resultList[0].length
     targetList.push(summoner)
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await new Promise(resolve => setTimeout(resolve, 200))
   }
 }
 
@@ -113,9 +118,12 @@ const getSumInfoFromCache = async (sumInfos: RecentSumInfo[], simpleMatchList: {
       friendList.value.push(sumInfo)
       winCount.value.friend[0] += winMatchCount
       winCount.value.friend[1] += matchListElement.length
-      await new Promise(resolve => setTimeout(resolve, 300))
+      await new Promise(resolve => setTimeout(resolve, 200))
     }
   }catch (e) {
+    friendList.value = []
+    winCount.value.friend[0] = 0
+    winCount.value.friend[1] = 0
     await getCompleteSumInfo(sumInfos, queueId, true)
   }
 }

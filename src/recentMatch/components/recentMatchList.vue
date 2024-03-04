@@ -61,7 +61,7 @@ const subscribe = localStorage.getItem('subscribe')
 
         <!--      战绩-->
         <div class="flex flex-col gap-y-2">
-          <div v-for="match in subscribe?summoner.matchList:summoner.matchList.slice(5)"
+          <div v-for="match in subscribe ? summoner.matchList : summoner.matchList.slice(0,5)"
                @click="showDetail(match.gameId,summoner.summonerId,isFri)"
                class="flex w-full gap-x-2">
             <n-avatar

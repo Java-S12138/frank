@@ -8,6 +8,7 @@ import MatchDetails from "@/queryMatch/utils/matchDetails";
 const baseMatch = new BaseMatch()
 const matchDetials = new MatchDetails()
 
+
 const useMatchStore = defineStore('useMatchStore', {
   state: () => {
     return {
@@ -28,7 +29,7 @@ const useMatchStore = defineStore('useMatchStore', {
       }
       if (summonerId === undefined && locSumId === undefined) {
         this.localSumId = sumResult.summonerInfo.currentId
-      }else {
+      }else if (locSumId !== undefined) {
         this.localSumId = locSumId as number
       }
       this.sumInfo = {info: sumResult.summonerInfo, rank: sumResult.rankList}
