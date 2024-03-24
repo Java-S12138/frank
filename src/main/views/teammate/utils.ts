@@ -20,6 +20,7 @@ export const queryAllSummonerId = async (mactchSession?:any) => {
   let summonerIdList: number[] = []
   if (myTeam) {
     for (const summoner of myTeam) {
+      // obfuscatedSummonerId
       summonerIdList.push(summoner.summonerId)
     }
     return summonerIdList
@@ -51,6 +52,7 @@ export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoL
 
   for (const summonerId of allSummonerId) {
     const currentSummonerInfo = await querySummonerInfo(summonerId) as summonerInfo
+    console.log(currentSummonerInfo)
     const rankHandler = await querySummonerRank(currentSummonerInfo.puuid)
     summonerInfoList.push({
       name: currentSummonerInfo.name,

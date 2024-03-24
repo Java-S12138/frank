@@ -164,7 +164,7 @@ export default class MatchDetails {
     for (const participantIdentity of participantIdentities) {
       dataList.push({
         puuid:participantIdentity.player.puuid,
-        name: participantIdentity.player.summonerName,
+        name: participantIdentity.player.gameName || participantIdentity.player.summonerName,
         summonerId:participantIdentity.player.summonerId})
     }
     return dataList

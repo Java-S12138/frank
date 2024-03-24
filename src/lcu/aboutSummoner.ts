@@ -21,7 +21,7 @@ export const querySummonerInfo = async (summonerId?:number|string,summonerName?:
     privacy:summonerInfo.privacy,
     puuid:summonerInfo.puuid,
     tagLine:summonerInfo.tagLine,
-    name:summonerInfo.displayName||summonerInfo.gameName,
+    name:summonerInfo.gameName||summonerInfo.displayName,
     currentId: summonerInfo.summonerId,
     lv:"Lv "+summonerInfo.summonerLevel,
     xp:parseInt(String((summonerInfo.xpSinceLastLevel / summonerInfo.xpUntilNextLevel ) * 100)),

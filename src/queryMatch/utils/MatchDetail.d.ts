@@ -36,6 +36,7 @@ interface Player {
   profileIcon: number;
   summonerId: number;
   summonerName: string;
+  gameName: string;
   puuid:string;
 }
 
