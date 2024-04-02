@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NSwitch, NCheckbox, NTag, NIcon, NButton, NButtonGroup, NPopconfirm, NDivider} from 'naive-ui'
+import {NSwitch, NCheckbox, NTag, NIcon, NButton, NButtonGroup, NPopconfirm, NDivider,NSlider} from 'naive-ui'
 import {ThumbUp, ThumbDown, Bulb, CircleMinus, CircleX} from "@vicons/tabler";
 import {onMounted, reactive, ref} from "vue"
 import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
@@ -13,12 +13,32 @@ const subscribe = localStorage.getItem('subscribe')
 const config:ConfigSettingTypes = reactive(JSON.parse(<string>(localStorage.getItem('configSetting'))))
 
 const isModalOpen = ref(false)
+const opacityVal = ref(config.inWinOpacity)
+const winType = ref(0)
 
 onMounted(() => {
   if (!config.isGameInTips){
     isModalOpen.value = true
   }
+  cube.windows.getCurrentWindow().then((value) => {
+    // @ts-ignore
+    if (value.type === 2 && config.inWinOpacity !== 100 ){
+      // @ts-ignore
+      winType.value = value.type
+      setTimeout(() => {
+          // @ts-ignore
+          cube.windows.setOpacity(value.id,config.inWinOpacity / 100)
+        },1500)
+    }
+  })
 })
+const changeOpacity =  () => {
+  // @ts-ignore
+  cube.windows.setOpacity(cube.windows.current.id(),opacityVal.value / 100)
+  config.inWinOpacity = opacityVal.value
+  changeConfig()
+}
+
 const handleMin = () => {
   //@ts-ignore
   cube.windows.hide(cube.windows.current.id())
@@ -128,7 +148,17 @@ const changeConfig = () => {
 
       <n-divider style="margin: 22px 0 20px 0"/>
 
-      <div class="flex items-center justify-between">
+      <div class="flex justify-between">
+        <p class="my-0">Set 窗口的透明度</p>
+        <n-slider style="width: 232px;"
+                  v-model:value="opacityVal"
+                  @dragend="changeOpacity"
+                  :disabled="winType !== 2"
+                  :min="50"
+                  :step="10" />
+      </div>
+
+      <div class="mt-2 flex items-center justify-between">
         <p class="m-0">
           <n-checkbox v-model:checked="config.isGameInTips" @update:checked="changeConfig">
             <text class="text-gray-400">不再自动弹出</text>

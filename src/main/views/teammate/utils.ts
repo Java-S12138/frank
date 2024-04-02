@@ -52,7 +52,6 @@ export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoL
 
   for (const summonerId of allSummonerId) {
     const currentSummonerInfo = await querySummonerInfo(summonerId) as summonerInfo
-    console.log(currentSummonerInfo)
     const rankHandler = await querySummonerRank(currentSummonerInfo.puuid)
     summonerInfoList.push({
       name: currentSummonerInfo.name,

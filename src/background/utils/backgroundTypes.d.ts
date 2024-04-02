@@ -7,6 +7,7 @@ export interface ConfigSettingTypes {
   isGameInWindow:boolean;
   isGameInTips:boolean;
   autoWriteBlock:boolean;
+  inWinOpacity:number;
 }
 
 export interface ConfigRank {

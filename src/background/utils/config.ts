@@ -15,6 +15,7 @@ const configSetting: ConfigSettingTypes = {
   'isGameInWindow':true,
   'isGameInTips':false,
   'autoWriteBlock':true,
+  'inWinOpacity':100
 }
 
 

@@ -68,13 +68,13 @@ const makePerkData = (perk:any, champion:string, position:string) => {
   if (position==='mid'){
     position = 'middle'
   }
-  const runeList:number[] = runes.map((i:string) => {
-    if (i === '0'){
-      i = '5001'
-    }
-    return Number(i)
-  })
-  data.selectedPerkIds = runeList.slice(0,9)
+  // const runeList:number[] = runes.map((i:string) => {
+  //   if (i === '0'){
+  //     i = '5001'
+  //   }
+  //   return Number(i)
+  // })
+  data.selectedPerkIds = runes
   data.alias = champion;
   data.position = position;
   data.pickCount = igamecnt;

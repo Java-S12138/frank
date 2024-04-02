@@ -16,7 +16,6 @@ export const querySummonerInfo = async (summonerId?:number|string,summonerName?:
   if (summonerInfo?.summonerId===undefined){
     return null
   }
-
   return {
     privacy:summonerInfo.privacy,
     puuid:summonerInfo.puuid,

@@ -6,7 +6,7 @@ import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
 export class GameFlow {
   public mainWin: WindowInfo | null = null
   public recentMatchWin: WindowInfo | null = null
-  public mapId = -1
+  public mapId = 11
 
   // 给主窗口发生信息
   public sendMesToMain = async (messageId: string, content = '') => {
@@ -67,6 +67,7 @@ export class GameFlow {
   public initGameInWindow = async () => {
     //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
     cube.games.on('launched', () => {
+      console.log(this.mapId)
       this.coloseWin('matchAnalysis');this.coloseWin('queryMatch')
 
       if (this.mapId === 12 || this.mapId === 11) {
