@@ -22,9 +22,9 @@ onMounted(() => {
   }
   cube.windows.getCurrentWindow().then((value) => {
     // @ts-ignore
+    winType.value = value.type
+    // @ts-ignore
     if (value.type === 2 && config.inWinOpacity !== 100 ){
-      // @ts-ignore
-      winType.value = value.type
       setTimeout(() => {
           // @ts-ignore
           cube.windows.setOpacity(value.id,config.inWinOpacity / 100)

@@ -27,7 +27,7 @@ const rankRender = [
                  justify="space-between" vertical>
           <div class="flex justify-between">
             <!--昵称-->
-            <n-tag class="w-full justify-center" type="success" :bordered="false" round>
+            <n-tag class="w-full justify-center" style="width: 164px;" type="success" :bordered="false" round>
               <n-ellipsis style="max-width: 140px">
                 {{ sumInfo.info.name }}
               </n-ellipsis>
