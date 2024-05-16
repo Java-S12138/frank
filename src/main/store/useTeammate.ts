@@ -17,7 +17,7 @@ export const useTeammateStore = defineStore('useTeammate', {
       masteryChampList: [] as string[][][],
       blackItems: [] as BlackItemsTypes[],
       isLcuErr: false,
-      isCacheSuccess: false,
+      isCacheSuccess: 0,
     }
   },
   actions: {
@@ -56,6 +56,7 @@ export const useTeammateStore = defineStore('useTeammate', {
         this.masteryChampList.push(list || [])
       }
       this.isLcuErr = true
+      this.isCacheSuccess = -1
     },
     // 缓存战绩数据
     async cacheMatchRecord(summonerInfo: SummonerInfoList[], queueId: number) {
@@ -74,7 +75,7 @@ export const useTeammateStore = defineStore('useTeammate', {
           this.cacheMatchList[summoner.summonerId] = matchHis20.slice(0, 10)
         }
       }
-      this.isCacheSuccess = true
+      this.isCacheSuccess = 1
     },
     // 计算kda
     calculateAverageKDA(statsArray: SimpleMatchTypes[]) {

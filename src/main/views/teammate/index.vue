@@ -28,14 +28,21 @@ const openWin = () => {
       <n-space justify="space-between" style="width: 100%;">
         <n-button @click="openWin" size="small"
                   class="px-2" type="success"
-                  :disabled="!teammateStore.isCacheSuccess"
+                  :disabled="teammateStore.isCacheSuccess !== 1"
                   :bordered="false" round>
           对局分析
         </n-button>
-        <n-tag type="success" round
+        <n-tag type="info" round v-if="teammateStore.isCacheSuccess === 0"
                :disabled="true" :bordered="false">
-          {{teammateStore.isCacheSuccess
-          ?'点击头像查看更多信息':'啊哦~ 战绩数据获取异常'}}
+          正在获取队友战绩数据
+        </n-tag>
+        <n-tag type="success" round v-else-if="teammateStore.isCacheSuccess===1"
+               :disabled="true" :bordered="false">
+          点击左侧按钮查看更多
+        </n-tag>
+        <n-tag type="error" round v-else-if="teammateStore.isCacheSuccess===-1"
+               :disabled="true" :bordered="false">
+          啊哦~ 战绩数据获取异常
         </n-tag>
       </n-space>
     </div>
