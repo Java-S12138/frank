@@ -3,8 +3,8 @@ import {NDrawerContent, NAvatar, NSpace, NTag, NList, NListItem, NButton} from "
 import {SumDetail} from "@/queryMatch/utils/MatchDetail";
 import {getspellImgUrl,gerNoneImg} from "@/lcu/utils";
 
-const {personalDetails,gameId,searchSummoner} = defineProps<{
-  personalDetails: SumDetail,gameId:number,searchSummoner:() => void }>()
+const {personalDetails,gameId,searchSummoner,isAllowAdd} = defineProps<{
+  personalDetails: SumDetail,gameId:number,isAllowAdd:boolean,searchSummoner:() => void }>()
 
 const subscribe = localStorage.getItem('subscribe')
 
@@ -120,7 +120,7 @@ const addBlackList = async () => {
         查询详细战绩
       </n-button>
 
-      <n-button type="warning" :bordered="false" @click="addBlackList">
+      <n-button type="warning" :bordered="false" :disabled="isAllowAdd===false" @click="addBlackList">
         新增排位笔记
       </n-button>
     </div>

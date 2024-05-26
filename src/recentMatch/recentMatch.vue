@@ -170,6 +170,7 @@ const closeModalOutside = (event) => {
         :queue-id="participantsInfo.queueId"
         :summoner-id="currentId"
         :is-game-in="true"
+        :game-id="participantsInfo.gameId"
       />
       <div class="w-full h-full flex justify-center items-center" v-else>
         <n-result

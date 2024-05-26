@@ -50,36 +50,41 @@ class QueryMatch {
     return excellentCount >= 3
   }
 
-  public findMatch = async (puuid: string, queueId?: number): Promise<MatchItemTypes[]> => {
+  public findMatch = async (puuid: string): Promise<MatchItemTypes[]> => {
     const matchList = await queryMatchHistory(puuid, 0, 9)
     if (matchList !== null) {
-      return matchList
-        .filter((games) => queueId === undefined || queueId === games.queueId)
-        .map((games) => this.parseMatch(games))
+      return matchList.map((games) => this.parseMatch(games))
     } else {
       return []
     }
   }
+
   public findSpecialMatch = async (puuid: string, queueId: number): Promise<MatchItemTypes[]> => {
-    const specialList = await this.findMatch(puuid, queueId)
-    if (specialList.length === 10) {
-      return specialList
-    }
-    const otherList = await queryMatchHistory(puuid, 10, 99)
-    if (otherList === null) {
-      return specialList
-    }
-    for (const games of otherList) {
-      if (games.queueId === queueId) {
-        specialList.push(this.parseMatch(games))
+    const latestMatch = await queryMatchHistory(puuid, 0, 9)
+    const specialList: MatchItemTypes[] = []
+
+    let offset = 0
+    while (offset < 30 ) {
+      const matchHistory =
+        offset === 0 ? latestMatch : await queryMatchHistory(puuid, offset, offset+9)
+      if (!matchHistory || matchHistory.length === 0) {
+        break
+      }
+      const filterMatch =  matchHistory.filter((games) => queueId === games.queueId)
+
+      for (const game of filterMatch) {
+        specialList.push(this.parseMatch(game))
         if (specialList.length === 10) {
           return specialList
         }
       }
-    }
-    return specialList
-  }
 
+      offset += 10
+    }
+    if (specialList.length === 0 && latestMatch !== null){
+      return latestMatch.map((games) => this.parseMatch(games))
+    }else return specialList
+  }
 }
 
 export default QueryMatch
