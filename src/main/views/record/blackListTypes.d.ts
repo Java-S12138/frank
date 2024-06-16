@@ -1,3 +1,5 @@
+import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
+
 export interface UserInfos {
   ID: number;
   CreatedAt: string;
@@ -60,4 +62,20 @@ export interface BlacklistListTypes {
 export interface BlackItemsTypes {
   hInfo: { name: string, sumId: string },
   hContent: HaterItem,
+}
+export interface ParticipantsInfoPlanB {
+  teamOne: BlacklistPlanbTypes[],
+  teamTwo: BlacklistPlanbTypes[],
+  headerInfo: string[],
+  queueId:number,
+  gameId:number
+}
+export interface BlacklistPlanbTypes {
+  name:string;
+  accountId:number;
+  champImgUrl:string;
+  score:string;
+  iconList:string[];
+  isMvp:boolean;
+  isWin:boolean;
 }

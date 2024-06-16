@@ -15,7 +15,7 @@ onMounted(() => {
   } else {
     queryMasteryChampList(puuid).then((value) => {
       if (value === null) {
-        champList.value = null
+        champList.value = []
       } else {
         champList.value = value
       }

@@ -1,11 +1,12 @@
 import {defineStore} from 'pinia'
-import {Hater, UserInfos} from "@/main/views/record/blackListTypes";
+import {BlacklistPlanbTypes, Hater, ParticipantsInfoPlanB, UserInfos} from "@/main/views/record/blackListTypes";
 import BlackList from "@/main/views/record/blackList";
 import MatchDetails from "@/queryMatch/utils/matchDetails";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import {invokeLcu} from "@/lcu";
-import {SessionTypes} from "@/recentMatch/utils/queryTypes";
+import {SessionTypes, TeamData} from "@/recentMatch/utils/queryTypes";
 import {sumInfoTypes} from "@/background/utils/backgroundTypes";
+import {champDict} from "@/resources/champList";
 
 const blackList = new BlackList()
 const matchDetail = new MatchDetails()
@@ -18,6 +19,7 @@ export const useRecordStore = defineStore('useRecordStore', {
       localSumInfo: null as sumInfoTypes | null,
       cubeUserId: null as string | null,
       participantsInfo: null as ParticipantsInfo | null,
+      participantsInfoPlanB: null as ParticipantsInfoPlanB | null,
       showGameEnd: false
     }
   },
@@ -58,10 +60,11 @@ export const useRecordStore = defineStore('useRecordStore', {
     },
     async getParticipantsInfo(addGameId?:number) {
       this.participantsInfo = null
+      this.participantsInfoPlanB = null
 
       this.localSumInfo = this.localSumInfo ?? JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
 
-      const gameId = addGameId ?? (await this.getGameIdFromSession())
+      const gameId = addGameId ?? (await this.getGameIdFromSession(this.localSumInfo.summonerId))
 
       if (!gameId) {
         return null
@@ -73,22 +76,25 @@ export const useRecordStore = defineStore('useRecordStore', {
           this.showGameEnd = true
           return true
         }else {
-          return false
+          this.participantsInfo = info
+          this.showGameEnd = true
+          return true
         }
       })
     },
-    async getGameIdFromSession() {
+    async getGameIdFromSession(localSumId:number) {
       const session = (await invokeLcu('get', '/lol-gameflow/v1/session')) as SessionTypes
 
       if (session.map?.id !== 12 && session.map?.id !== 11) {
         return null
       }
+      this.executePlanB(session,localSumId)
 
       return session.gameData.gameId
     },
     async executeAsyncWithRetry(gameId: number, sumId: number) {
       let retryCount = 0
-      while (retryCount < 8) {
+      while (retryCount < 4) {
         const result = await matchDetail.queryGameDetail(gameId, sumId)
         if (result !== null) {
           return result
@@ -97,6 +103,36 @@ export const useRecordStore = defineStore('useRecordStore', {
         retryCount++
       }
       return null
+    },
+    // 对局数据获取失败，PlanB
+    executePlanB(session:SessionTypes,localSumId:number) {
+      const dftTeamOne = session.gameData.teamOne
+      const dftTeamTwo = session.gameData.teamTwo
+      const isTeamOne = dftTeamOne.find((v) => v.summonerId === localSumId) !== undefined
+
+      const teamOne = isTeamOne ? this.handleTeamData(dftTeamOne) : this.handleTeamData(dftTeamTwo)
+      const teamTwo = isTeamOne ? this.handleTeamData(dftTeamTwo) : this.handleTeamData(dftTeamOne)
+      this.participantsInfoPlanB = {
+        teamOne:teamOne,
+        teamTwo:teamTwo,
+        headerInfo: [],
+        queueId:420,
+        gameId:session.gameData.gameId
+      }
+    },
+    // 处理Team字段数据
+    handleTeamData(teamData:TeamData[]):BlacklistPlanbTypes[] {
+      return teamData.map((player:TeamData) => {
+        return {
+          name:player.summonerName,
+          accountId:player.summonerId,
+          champImgUrl:`${champDict[player.championId].alias}.png`,
+          score:'-1',
+          iconList:[],
+          isWin:false,
+          isMvp:false
+        }
+      })
     }
   }
 })

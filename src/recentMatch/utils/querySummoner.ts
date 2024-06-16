@@ -96,6 +96,7 @@ class QuerySummoner {
   }
   // 获取召唤师英雄绝活数据 Z:正常 A:绝活 B:熟练 S:小代 Y:未知 (需要进行下一步判断)
   public querySummonerSuperChampData = async (puuid:string,champAlias:string) => {
+    return 'Z'
     if (localStorage.getItem('subscribe') === null){
       return 'Z'
     }

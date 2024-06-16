@@ -5,12 +5,13 @@ import SummonerEnd from "@/main/views/record/summonerEnd.vue";
 import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 import {Ref, ref} from "vue";
 import AddBlackList from "@/main/views/record/addBlackList.vue";
-import {HaterStructTypes} from "@/main/views/record/blackListTypes";
+import {BlacklistPlanbTypes} from "@/main/views/record/blackListTypes";
+
 
 const {closeDrawer, teamOne, teamTwo,gameId,platformId} = defineProps<{
   closeDrawer: () => void,
-  teamOne: SummonerDetailInfo[]
-  teamTwo: SummonerDetailInfo[],
+  teamOne: SummonerDetailInfo[] | BlacklistPlanbTypes[],
+  teamTwo: SummonerDetailInfo[] | BlacklistPlanbTypes[],
   gameId:number,
   platformId:string
 }>()

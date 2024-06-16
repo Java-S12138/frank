@@ -56,5 +56,13 @@ const closeDrawer = () => {
       :game-id="recordStore.participantsInfo.gameId"
       :platform-id="<string>recordStore.localSumInfo?.platformId"
     />
+    <game-end
+      v-else-if = "recordStore.participantsInfoPlanB"
+      :close-drawer="closeDrawer"
+      :team-one="recordStore.participantsInfoPlanB.teamOne"
+      :team-two="recordStore.participantsInfoPlanB.teamTwo"
+      :game-id="recordStore.participantsInfoPlanB.gameId"
+      :platform-id="<string>recordStore.localSumInfo?.platformId"
+    />
   </n-drawer>
 </template>

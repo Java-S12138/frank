@@ -3,11 +3,12 @@ import {NPopover, NTag, NIcon, NButton, NEllipsis, NAvatar, NSkeleton,useMessage
 import {ThumbDown, ThumbUp} from "@vicons/tabler";
 import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 import {getIconImg} from "@/queryMatch/utils/tools";
+import {BlacklistPlanbTypes} from "@/main/views/record/blackListTypes";
 
 
 const {isTeamOne,sumList, addBlackList} = defineProps<{
   isTeamOne:boolean,
-  sumList: SummonerDetailInfo[],
+  sumList: SummonerDetailInfo[] | BlacklistPlanbTypes[],
   addBlackList: (isHater: boolean, requiredInfo: {name:string,sumId:string,isTeamOne:boolean}) => void
 }>()
 
@@ -22,7 +23,7 @@ const searchMatch = (summonerId: number) => {
   cube.windows.obtainDeclaredWindow('queryMatch')
 }
 
-const handleAdd = (isHater:boolean,summonerInfo:SummonerDetailInfo) => {
+const handleAdd = (isHater:boolean,summonerInfo:SummonerDetailInfo | BlacklistPlanbTypes) => {
   const requiredInfo = {
     name:summonerInfo.name,
     sumId:String(summonerInfo.accountId),
@@ -59,7 +60,7 @@ const handleAdd = (isHater:boolean,summonerInfo:SummonerDetailInfo) => {
             </n-tag>
           </div>
           <div class="flex items-center" style="column-gap: 6px"
-               v-if="summoner.iconList.length!==0 || summoner.isMvp">
+               v-if="summoner.iconList.length !==0 || summoner.isMvp">
             <n-popover v-for="icon in getIconImg(summoner.iconList,summoner.isMvp,summoner.isWin).slice(0,8)"
                        :show-arrow="false"
                        style="padding: 2px 6px;font-size: 13px" trigger="hover">
