@@ -247,4 +247,5 @@ export interface SimpleMatchDetailsTypes {
   startTime: string;
   gameModel: string;
   queueId:number;
+  champId: number;
 }

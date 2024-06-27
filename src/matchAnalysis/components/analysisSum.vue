@@ -26,8 +26,8 @@ const colorGreen = {
   bgColor: 'rgba(24,160,88,0.1)'
 }
 const colorBlue = {
-  color: '#2080F0',
-  bgColor: 'rgba(32,128,240,0.2)'
+  color: '#f0a020',
+  bgColor: 'rgba(240,160,32,0.2)'
 }
 
 

@@ -46,9 +46,10 @@ const subscribe = localStorage.getItem('subscribe')
 const changeMatchMode = async (queueId: number) => {
   if (matchStore.sumInfo !== null) {
     const curMod = options.find(i => i.value === selectVal.value)?.label
-    const mes: MessageReactive = message.loading(`${curMod} 加载中...`)
-    await matchStore.getSpecialMatchList(queueId,matchStore.sumInfo.info.puuid)
-    mes.destroy()
+    const mes: MessageReactive = message.loading(`${curMod} 加载中...`,
+      {duration:6666})
+    matchStore.getSpecialMatchList(queueId,matchStore.sumInfo.info.puuid).then(() => mes.destroy())
+
   } else {
     matchStore.getSpecialMatchList(queueId)
   }

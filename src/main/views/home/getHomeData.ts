@@ -1,5 +1,4 @@
 import {
-  queryMasteryChampList,
   queryRankPoint,
   querySummonerInfo,
   querySummonerHonorLevel
@@ -14,12 +13,11 @@ export const getCurrentSummonerAllInfo = async () => {
     return null
   }
 
-  const [rankList, champLevel, honorData] = await Promise.all([
+  const [rankList, honorData] = await Promise.all([
     queryRankPoint(),
-    queryMasteryChampList(summonerInfo.puuid),
     querySummonerHonorLevel(),
   ])
 
   rankList.push(honorData)
-  return { summonerInfo, rankList, champLevel }
+  return { summonerInfo, rankList}
 }

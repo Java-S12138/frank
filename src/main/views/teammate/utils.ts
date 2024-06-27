@@ -64,11 +64,11 @@ export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoL
   return summonerInfoList
 }
 
-export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAnalysisTypes | null => {
-  if (match === undefined) {
+export const findTopChamp = (match: SimpleMatchTypes[]|undefined|null): RencentDataAnalysisTypes | null => {
+  if (match === undefined || match===null) {
     return null
   }
-
+  const oneGameId = match[0].gameId
   // 使用 Map 统计每个 champId 出现的次数
   const champIdCountMap = new Map<number, number>()
   const roleCountMap: RoleCountMapTypes = {
@@ -115,5 +115,5 @@ export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAn
       count
     }
   })
-  return {top3Champions, totalChampions, roleCountMap}
+  return {top3Champions, totalChampions, roleCountMap,oneGameId}
 }

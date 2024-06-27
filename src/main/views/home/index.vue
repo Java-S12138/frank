@@ -1,32 +1,54 @@
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NProgress, NSpace, NTag, NDivider,NList, NListItem,NButton,NEllipsis
+  NCard,
+  NAvatar,
+  NProgress,
+  NSpace,
+  NTag,
+  NDivider,
+  NList,
+  NListItem,
+  NButton,
+  NEllipsis,
+  NResult,
+  NSkeleton,
+  NStep,
+  NIcon, NSteps
 } from 'naive-ui'
 import {getCurrentSummonerAllInfo} from "./getHomeData";
-import {onActivated, onMounted, reactive} from "vue";
+import {onActivated, onMounted, reactive, Ref, ref} from "vue";
 import {SummonerData} from "@/lcu/types/SummonerTypes";
-import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
 import StartGame from "./startGame.vue";
 import {GameInfo, sumInfoTypes} from "@/background/utils/backgroundTypes";
 import {TencentRsoPlatformId} from "@/resources/areaList";
 import {useRecordStore} from "@/main/store/useRecord";
+import MatchAnalysis from "@/main/views/teammate/matchAnalysis.vue";
+import {RencentDataAnalysisTypes} from "@/main/views/teammate/teammateTypes";
+import {findTopChamp} from "@/main/views/teammate/utils";
+import {Bulb, Crown, Planet} from "@vicons/tabler";
+import {queryMatchHistory} from "@/lcu/aboutMatch";
+import BaseMatch from "@/queryMatch/utils/baseMatch";
 
-const summonerData:SummonerData = reactive({
+const summonerData: SummonerData = reactive({
   summonerInfo: null,
   rankList: null,
   champLevel: null,
 })
-let recordStore:any = useRecordStore()
+let recordStore: any = useRecordStore()
 
-onMounted( () => {
-  init(true).then(async (value) =>  {
-    if (!value){
+const baseMatch = new BaseMatch()
+const analysisData: Ref<RencentDataAnalysisTypes | null> = ref(null)
+const isLodaing: Ref<boolean|null> = ref(true)
+
+onMounted(() => {
+  init(true).then(async (value) => {
+    if (!value) {
       const lolCient = (await cube.games.launchers.getRunningLaunchers())
-        .find(((i:any) => i.classId===10902))
+        .find(((i: any) => i.classId === 10902))
 
-      if (lolCient === undefined){
+      if (lolCient === undefined) {
         onClientLaunch()
-      }else {
+      } else {
         let timer = 0
         const maxAttempts = 3
         const launchInterval = setInterval(async () => {
@@ -42,37 +64,62 @@ onMounted( () => {
 })
 
 onActivated(() => {
-  if (summonerData.summonerInfo !== null){
+  if (summonerData.summonerInfo !== null) {
     init(false)
   }
 })
 
-const init = async (isFirst:boolean) => {
+const init = async (isFirst: boolean) => {
   const summonerAllInfo = await getCurrentSummonerAllInfo()
-  if (summonerAllInfo === null){
+  if (summonerAllInfo === null) {
     return false
   }
-  if (isFirst){
+  if (isFirst) {
     writeSumInfo(summonerAllInfo)
   }
 
   summonerData.summonerInfo = summonerAllInfo.summonerInfo
   summonerData.rankList = summonerAllInfo.rankList as string[]
-  summonerData.champLevel = summonerAllInfo.champLevel as string[][]
+  getAnalysis(summonerData.summonerInfo.puuid)
   return true
+}
+// 获取战绩分析数据
+const getAnalysis = async (puuid: string) => {
+// 如果 analysisData 为空，直接获取分析数据
+  if (analysisData.value === null) {
+    const rawMatch: any = await baseMatch.dealMatchHistory(puuid, 0, 19)
+    analysisData.value = findTopChamp(rawMatch)
+    isLodaing.value = null
+    return
+  }
+
+  // 获取最近的一场比赛
+  const recentMatch = await queryMatchHistory(puuid, 0, 0)
+  const recentGameId = recentMatch?.[0]?.gameId || null
+
+  // 如果最近比赛的 ID 与当前分析数据中的 ID 一致，退出函数
+  if (analysisData.value?.oneGameId === recentGameId) {
+    return
+  }
+
+  // 否则，重新获取分析数据
+  const rawMatch: any = await baseMatch.dealMatchHistory(puuid, 0, 19)
+  analysisData.value = findTopChamp(rawMatch)
+  isLodaing.value = null
 }
 
 const writeSumInfo = (sInfo) => {
-  cube.games.launchers.events.getInfo(10902).then((info:GameInfo) => {
+  cube.games.launchers.events.getInfo(10902).then((info: GameInfo) => {
     const area = TencentRsoPlatformId[<string>info.summoner_info?.platform_id] || <string>info.summoner_info?.platform_id
     // 设置召唤师信息
-    const sumInfo:sumInfoTypes = {
-      name:sInfo.summonerInfo.name,
-      summonerId:sInfo.summonerInfo.currentId,
-      platformId:area
+    const sumInfo: sumInfoTypes = {
+      name: sInfo.summonerInfo.name,
+      summonerId: sInfo.summonerInfo.currentId,
+      platformId: area
     }
-    localStorage.setItem('sumInfo',JSON.stringify(sumInfo))
-    recordStore.init();recordStore=null
+    localStorage.setItem('sumInfo', JSON.stringify(sumInfo))
+    recordStore.init();
+    recordStore = null
   })
 }
 
@@ -82,17 +129,17 @@ const onClientLaunch = () => {
       let timer = 0
       const interval = setInterval(async () => {
         timer += 1
-        if (summonerData.summonerInfo === null){
+        if (summonerData.summonerInfo === null) {
           init(true)
-        }else {
+        } else {
           clearInterval(interval)
           closeMessageOn()
         }
-        if (timer===8){
+        if (timer === 8) {
           clearInterval(interval)
           closeMessageOn()
         }
-      },3000)
+      }, 3000)
     }
   })
 }
@@ -120,10 +167,10 @@ const openWin = () => {
                    style="width: 130px;justify-content: center"
                    :bordered="false" round>
               <n-ellipsis style="max-width: 110px" :tooltip="false">
-                {{summonerData.summonerInfo.name}}
+                {{ summonerData.summonerInfo.name }}
               </n-ellipsis>
             </n-tag>
-            <n-button class="px-2"  :bordered="false"
+            <n-button class="px-2" :bordered="false"
                       @click="openWin"
                       type="success" size="small" round>
               查询战绩
@@ -156,7 +203,7 @@ const openWin = () => {
       </div>
       <!--    头像 昵称 等级-->
 
-    <n-divider dashed style="margin: 14px 0 2px 0"/>
+      <n-divider dashed style="margin: 14px 0 2px 0"/>
 
       <!--段位 荣誉等级-->
       <n-list>
@@ -185,8 +232,66 @@ const openWin = () => {
     </n-card>
     <n-card size="small" content-style="padding-top:10px"
             class="shadow" style="height: 402px;">
-      <summoner-mastery-champ v-if="summonerData.champLevel"
-                              :max-h="378" :puuid="''" :exist-champ-list="summonerData.champLevel"/>
+      <!--      战绩分析加载页面-->
+      <div class="pl-0.5" v-if="isLodaing">
+        <n-steps size="small" vertical>
+          <n-step
+            style="margin: 4px 0"
+            title="近期使用英雄">
+            <template #icon>
+              <n-icon>
+                <Crown/>
+              </n-icon>
+            </template>
+            <n-space justify="space-between">
+              <n-space vertical :size="[0,2.5]" v-for="i in 3">
+                <n-skeleton height="55px" width="55px" :sharp="false"/>
+                <n-tag :bordered="false" size="small" class="text-sm"
+                       style="width: 55px;justify-content: center">
+                </n-tag>
+              </n-space>
+            </n-space>
+          </n-step>
+          <n-step
+            style="margin: 0"
+            title="近期活跃程度">
+            <template #icon>
+              <n-icon>
+                <Planet/>
+              </n-icon>
+            </template>
+            <n-space justify="space-between">
+              <n-space vertical v-for="i in 6">
+                <n-skeleton height="55px" circle/>
+                <n-tag :bordered="false" round
+                       style="width: 55px;padding: 0 12px">
+                  <text class="absolute" style="top: 7px;right: 5px"></text>
+                </n-tag>
+              </n-space>
+            </n-space>
+          </n-step>
+          <n-step
+            status="wait"
+            title="节选最近 20场对局分析">
+            <template #icon>
+              <n-icon>
+                <Bulb/>
+              </n-icon>
+            </template>
+          </n-step>
+        </n-steps>
+      </div>
+      <!--      战绩分析加载页面-->
+      <match-analysis
+        v-else-if="analysisData && !isLodaing"
+        :analysis-data="analysisData"
+        :page-type="0"
+        :is-home="true"
+      />
+      <n-result
+        class="mt-20"
+        v-else status="404" title="404 资源不存在" description="数据获取失败，或者战绩数量太少">
+      </n-result>
     </n-card>
   </div>
   <div class="mainContent" v-else>

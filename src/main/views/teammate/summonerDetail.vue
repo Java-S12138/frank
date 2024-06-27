@@ -40,7 +40,7 @@ const existChampList = teammateStore.masteryChampList[index]
          <summoner-match :match-list="teammateStore.recentMatchList[index]"/>
       </n-tab-pane>
       <n-tab-pane v-if="analysisData!==null" name="数据分析" tab="数据分析">
-        <match-analysis :analysis-data="analysisData"/>
+        <match-analysis :analysis-data="analysisData" :page-type="0"/>
       </n-tab-pane>
       <n-tab-pane name="绝活英雄" tab="绝活英雄" display-directive="show">
         <summoner-mastery-champ

@@ -54,7 +54,8 @@ export default class BaseMatch {
       // 游戏模式
       gameModel:queryGameType(match.queueId),
       //游戏对局ID
-      queueId:match.queueId
+      queueId:match.queueId,
+      champId: match.participants[0].championId
     }
   }
 

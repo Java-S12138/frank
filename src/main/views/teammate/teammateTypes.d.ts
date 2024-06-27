@@ -49,5 +49,6 @@ export interface RoleCountMapTypes {
 export interface RencentDataAnalysisTypes {
   top3Champions: { champId: number; count: number; }[],
   totalChampions: number,
-  roleCountMap: RoleCountMapTypes
+  roleCountMap: RoleCountMapTypes,
+  oneGameId:number
 }

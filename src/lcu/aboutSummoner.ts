@@ -64,11 +64,14 @@ export const querySummonerHonorLevel = async ():Promise<string> => {
 
 // 查询召唤师绝活英雄数据
 export const queryMasteryChampList = async (summonerPuuid: string) => {
-  if (summonerPuuid === '') {
+  return []
+ /* if (summonerPuuid === '') {
     return []
   }
+
   try {
-    const summonerSuperChampData: ChampionMasteryTypes[] = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
+    // const summonerSuperChampData: ChampionMasteryTypes[] = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
+    const summonerSuperChampData: ChampionMasteryTypes[] = await invokeLcu('get', `/lol/champion-mastery/v4/champion-masteries/by-puuid/${summonerPuuid}`)
     return summonerSuperChampData.slice(0, 20).reduce((res: string[][], item: ChampionMasteryTypes) => {
       return res.concat([[
         `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,
@@ -78,5 +81,5 @@ export const queryMasteryChampList = async (summonerPuuid: string) => {
     }, [])
   } catch (e) {
     return null
-  }
+  }*/
 }

@@ -3,11 +3,12 @@ import QueryHeader from "./components/queryHeader.vue";
 import SummonerInfoView from "./components/summonerInfoView.vue";
 import MatchMain from "./components/matchMain.vue";
 import useMatchStore from "@/queryMatch/store";
-import {NCard, NResult,NDrawer,NDrawerContent} from "naive-ui";
+import {NCard, NResult,NDrawer,NDrawerContent,NSkeleton} from "naive-ui";
 import MatchErr from "@/queryMatch/components/matchErr.vue";
 import {onBeforeMount, Ref, ref} from "vue";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import MatchContent from "@/queryMatch/common/matchContent.vue";
+import LoadingAnime from "@/queryMatch/components/loadingAnime.vue";
 
 const dragMove = () => {
   // @ts-ignore
@@ -61,6 +62,7 @@ const clearBlackMatch = () => {
         :sum-info="matchStore.sumInfo"/>
       <div class="ml-3 flex-grow">
         <n-card
+          v-if="!matchStore.matchLoading"
           class="shadow h-full" size="small" style="height: 596px;"
           content-style="padding:0 0 0 12px">
           <match-err v-if="matchStore.matchList === null" />
@@ -79,6 +81,12 @@ const clearBlackMatch = () => {
               </template>
             </n-result>
           </div>
+        </n-card>
+        <n-card
+          v-else
+        class="shadow h-full" size="small" style="height: 596px;"
+        content-style="padding:0 0 0 12px">
+         <loading-anime/>
         </n-card>
       </div>
     </div>
