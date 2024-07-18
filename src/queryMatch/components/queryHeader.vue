@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {NButton, NInput, NSelect, NPagination, useMessage, NIcon, NSpace, MessageReactive} from "naive-ui"
+import {NButton, NInput, NSelect, NPagination,NAlert,NModal,NCard,
+  useMessage, NIcon, NSpace, MessageReactive} from "naive-ui"
 import {ref, watch} from "vue";
 import {CircleMinus, CircleX, Settings} from "@vicons/tabler";
 import {querySummonerInfo} from "@/lcu/aboutSummoner";
@@ -41,6 +42,7 @@ const options = [
     value: 1700
   },
 ]
+const showModal = ref(false)
 const subscribe = localStorage.getItem('subscribe')
 
 const changeMatchMode = async (queueId: number) => {
@@ -57,7 +59,8 @@ const changeMatchMode = async (queueId: number) => {
 }
 
 const searchSum = async () => {
-  if (inputVal.value === '') {
+  showModal.value = !showModal.value
+/*  if (inputVal.value === '') {
     message.warning('召唤师昵称不能为空')
     return
   }
@@ -74,7 +77,7 @@ const searchSum = async () => {
     return
   }
   matchStore.init(sumInfo.currentId)
-  clearVal()
+  clearVal()*/
 }
 const clearVal = () => {
   inputVal.value = ''
@@ -106,6 +109,9 @@ const pageChange = (page: number) => {
     matchStore.fromSpecialToMatchList(page)
   }
 }
+const refreshPage = () => {
+  matchStore.init()
+}
 </script>
 
 <template>
@@ -129,11 +135,15 @@ const pageChange = (page: number) => {
       </n-button>
     </div>
     <div class="flex-grow flex items-center gap-x-3">
-      <n-input v-model:value="inputVal" type="text" spellcheck="false" style="width: 141px;font-size: 13.5px"
-               size="small" placeholder="仅支持同服务器玩家"/>
-      <n-button size="small" :bordered="false" @click="searchSum"
+<!--      <n-input v-model:value="inputVal" type="text" spellcheck="false" style="width: 141px;font-size: 13.5px"
+               size="small" placeholder="仅显示我的战绩数据"/>-->
+      <n-button size="small" secondary type="tertiary" :bordered="false" @click="searchSum"
+                style="width: 141px;color: #666666;font-size: 13.5px">
+        仅显示玩家战绩数据
+      </n-button>
+      <n-button size="small" :bordered="false" @click="refreshPage"
                 type="success" style="width: 46px;padding: 0 9px">
-        查询
+        刷新
       </n-button>
       <n-select size="small" v-model:value="selectVal"
                 :disabled="inputVal!==''"
@@ -162,6 +172,24 @@ const pageChange = (page: number) => {
         </n-button>
       </n-space>
     </div>
+    <n-modal v-model:show="showModal" transform-origin="center">
+      <n-card
+        style="width: 540px;border-radius: 8px"
+        :bordered="false"
+        size="small"
+        role="dialog"
+        aria-modal="true"
+      >
+        <n-alert title="查询战绩已禁用" type="error">
+          尊敬的用户：<br><br>
+          根据英雄联盟官方要求，将于2024年7月17日起停止提供战绩查询功能。
+          对此给您带来的不便，深表歉意，感谢您一直对Frank的支持与理解。<br><br>
+          Frank开发者敬上
+        </n-alert>
+      </n-card>
+
+    </n-modal>
   </header>
+
 </template>
 

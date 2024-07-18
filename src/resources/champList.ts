@@ -1457,6 +1457,14 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
     "roles": [
       "marksman"
     ]
+  },
+  "893": {
+    "label": "双界灵兔",
+    "alias": "Aurora",
+    "title": "阿萝拉",
+    "roles": [
+      "mage","assassin"
+    ]
   }
 }
 export const optionsChampion = [
@@ -1967,6 +1975,10 @@ export const optionsChampion = [
   {
     'value': '901',
     'label': '炽炎雏龙'
+  },
+  {
+    'value': '893',
+    'label': '双界灵兔'
   }
 ]
 export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } = {
@@ -2137,6 +2149,7 @@ export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } =
   'Briar': {'label': '狂厄蔷薇', 'name': '贝蕾亚'},
   'Hwei': {'label': '异画师', 'name': '彗'},
   'Smolder': {'label': '炽炎雏龙', 'name': '斯莫德'},
+  'Aurora': {'label': '双界灵兔', 'name': '阿萝拉'},
 }
 export const aliasToId:{ [key: string]: number } = {
   "Annie": 1,
@@ -2306,6 +2319,7 @@ export const aliasToId:{ [key: string]: number } = {
   "Briar": 233,
   "Hwei": 910,
   "Smolder": 901,
+  "Aurora": 893,
 }
 export const keywordsList = [
   {
@@ -3142,5 +3156,10 @@ export const keywordsList = [
     "alias": "Smolder",
     "name": "炽炎雏龙",
     "keywords": "炽炎雏龙,斯莫德,chiyanchulong,simode,cycl,smd"
+  },
+  {
+    "alias": "Aurora",
+    "name": "双界灵兔",
+    "keywords": "双界灵兔,阿萝拉,shuangjielingtu,aluola,sjlt,all"
   }
 ]

@@ -43,7 +43,8 @@ class BlackList {
     if (res === null){
       return null
     }
-    return res
+    const rec = res.reverse()
+    return rec
   }
   // 更新user过期的数据
   public updateUserInfo = async (userInfos:UserInfos,newSumId:string[]) => {

@@ -117,7 +117,7 @@ const addBlackList = async () => {
     <div class="mt-2 flex justify-between">
       <n-button type="success" :bordered="false"
                 @click="searchSummoner" :disabled="subscribe===null">
-        查询详细战绩
+        查看详细信息
       </n-button>
 
       <n-button type="warning" :bordered="false" :disabled="isAllowAdd===false" @click="addBlackList">

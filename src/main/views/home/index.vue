@@ -173,7 +173,7 @@ const openWin = () => {
             <n-button class="px-2" :bordered="false"
                       @click="openWin"
                       type="success" size="small" round>
-              查询战绩
+              我的战绩
             </n-button>
           </div>
           <div class="flex justify-between gap-x-3">
