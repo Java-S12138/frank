@@ -3,7 +3,7 @@ import {NButton, NInput, NSelect, NPagination,NAlert,NModal,NCard,
   useMessage, NIcon, NSpace, MessageReactive} from "naive-ui"
 import {ref, watch} from "vue";
 import {CircleMinus, CircleX, Settings} from "@vicons/tabler";
-import {querySummonerInfo} from "@/lcu/aboutSummoner";
+// import {querySummonerInfo} from "@/lcu/aboutSummoner";
 import useMatchStore from "@/queryMatch/store";
 
 const matchStore = useMatchStore()

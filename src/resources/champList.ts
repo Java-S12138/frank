@@ -1465,7 +1465,70 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
     "roles": [
       "mage","assassin"
     ]
-  }
+  },
+  "3151": {
+    "label": "暴走萝莉",
+    "alias": "Jinx",
+    "title": "金克丝",
+    "roles": [
+    ]
+  },
+  "3157": {
+    "label": "疾风剑豪",
+    "alias": "Yasuo",
+    "title": "亚索",
+    "roles": [
+    ]
+  },
+  "3156": {
+    "label": "狂厄蔷薇",
+    "alias": "Briar",
+    "title": "贝蕾亚",
+    "roles": [
+    ]
+  },
+  "3678": {
+    "label": "海兽祭司",
+    "alias": "Illaoi",
+    "title": "俄洛伊",
+    "roles": [
+    ]
+  },
+  "3152": {
+    "label": "曙光女神",
+    "alias": "Leona",
+    "title": "蕾欧娜",
+    "roles": [
+    ]
+  },
+  "3947": {
+    "label": "逆羽",
+    "alias": "Xayah",
+    "title": "霞",
+    "roles": [
+    ]
+  },
+  "3147": {
+    "label": "放逐之刃",
+      "alias": "Riven",
+    "title": "锐雯",
+    "roles": [
+    ]
+  },
+  "3153": {
+    "label": "星籁歌姬",
+    "alias": "Seraphine",
+    "title": "萨勒芬妮",
+    "roles": [
+    ]
+  },
+  "3159": {
+    "label": "双界灵兔",
+    "alias": "Aurora",
+    "title": "阿萝拉",
+    "roles": [
+    ]
+  },
 }
 export const optionsChampion = [
   {
