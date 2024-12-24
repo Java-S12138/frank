@@ -56,7 +56,7 @@ const handleClose = async () => {
 
 const handleSub = (key:number) => {
   if (key===1){
-    cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/proposal')
+    cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction')
   }else if (key===2){
     cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
   }

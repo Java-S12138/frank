@@ -32,18 +32,18 @@ const openGuideSite = () => {
   cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank')
 }
 const openIntro = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/proposal')
+  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction')
 }
 
 const tableData = [
   ["秒选英雄 / 秒禁英雄", "✅", "✅"],
   ["自动接收对局", "❌", "✅"],
-  ["查询召唤师战绩", "✅", "✅"],
-  ["对局详细数据", "❌", "✅"],
+  ["英雄符文展示", "✅", "✅"],
+  ["一键配置符文", "❌", "✅"],
   ["国服 / 韩服 英雄数据", "✅", "✅"],
-  ["队友战绩数据分析", "❌", "✅"],
-  ["游戏内显示敌方数据", "✅", "✅"],
-  ["绝活/熟练/小代 检测", "❌", "✅"],
+  ["自动配置符文", "❌", "✅"],
+  ["排位笔记", "✅", "✅"],
+  ["自动弹出提示", "✅", "✅"],
 ]
 </script>
 

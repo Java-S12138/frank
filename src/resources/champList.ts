@@ -819,7 +819,7 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
     ]
   },
   "112": {
-    "label": "机械先驱",
+    "label": "奥术先驱",
     "alias": "Viktor",
     "title": "维克托",
     "roles": [
@@ -1466,6 +1466,14 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
       "mage","assassin"
     ]
   },
+  "799": {
+    "label": "铁血狼母",
+    "alias": "Ambessa",
+    "title": "安蓓萨",
+    "roles": [
+      "fighter", "assassin"
+    ]
+  },
   "3151": {
     "label": "暴走萝莉",
     "alias": "Jinx",
@@ -1812,7 +1820,7 @@ export const optionsChampion = [
     'label': '深海泰坦'
   }, {
     'value': '112',
-    'label': '机械先驱'
+    'label': '奥术先驱'
   }, {
     'value': '113',
     'label': '北地之怒'
@@ -2042,6 +2050,10 @@ export const optionsChampion = [
   {
     'value': '893',
     'label': '双界灵兔'
+  },
+  {
+    'value': '799',
+    'label': '铁血狼母'
   }
 ]
 export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } = {
@@ -2138,7 +2150,7 @@ export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } =
   'Rengar': {'label': '傲之追猎者', 'name': '雷恩加尔'},
   'Varus': {'label': '惩戒之箭', 'name': '韦鲁斯'},
   'Nautilus': {'label': '深海泰坦', 'name': '诺提勒斯'},
-  'Viktor': {'label': '机械先驱', 'name': '维克托'},
+  'Viktor': {'label': '奥术先驱', 'name': '维克托'},
   'Sejuani': {'label': '北地之怒', 'name': '瑟庄妮'},
   'Fiora': {'label': '无双剑姬', 'name': '菲奥娜'},
   'Ziggs': {'label': '爆破鬼才', 'name': '吉格斯'},
@@ -2213,6 +2225,7 @@ export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } =
   'Hwei': {'label': '异画师', 'name': '彗'},
   'Smolder': {'label': '炽炎雏龙', 'name': '斯莫德'},
   'Aurora': {'label': '双界灵兔', 'name': '阿萝拉'},
+  'Ambessa': {'label': '铁血狼母', 'name': '安蓓萨'},
 }
 export const aliasToId:{ [key: string]: number } = {
   "Annie": 1,
@@ -2383,6 +2396,7 @@ export const aliasToId:{ [key: string]: number } = {
   "Hwei": 910,
   "Smolder": 901,
   "Aurora": 893,
+  "Ambessa": 799,
 }
 export const keywordsList = [
   {
@@ -2852,8 +2866,8 @@ export const keywordsList = [
   },
   {
     "alias": "Viktor",
-    "name": "机械先驱",
-    "keywords": "机械先驱,维克托,三只手,szs,wkt,jxxq,Viktor,jixiexianqu,weiketuo,sanzhishou"
+    "name": "奥术先驱",
+    "keywords": "奥术先驱，机械先驱,维克托,三只手,szs,wkt,jxxq,Viktor,jixiexianqu,weiketuo,sanzhishou"
   },
   {
     "alias": "Sejuani",
@@ -3224,5 +3238,10 @@ export const keywordsList = [
     "alias": "Aurora",
     "name": "双界灵兔",
     "keywords": "双界灵兔,阿萝拉,shuangjielingtu,aluola,sjlt,all"
+  },
+  {
+    "alias": "Ambessa",
+    "name": "铁血狼母",
+    "keywords": "安蓓萨,铁血狼母,anbeisa,tiexuelangmu,abs"
   }
 ]

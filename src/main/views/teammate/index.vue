@@ -7,11 +7,14 @@ const teammateStore = useTeammateStore()
 const message = useMessage()
 
 const openWin = () => {
-  if (localStorage.getItem('subscribe') === null){
+  /*if (localStorage.getItem('subscribe') === null){
     message.warning('对局分析，需要订阅服务')
     return
   }
-  cube.windows.obtainDeclaredWindow('matchAnalysis')
+  cube.windows.obtainDeclaredWindow('matchAnalysis')*/
+  if (localStorage.getItem('remainWin') === 't'){
+    cube.windows.obtainDeclaredWindow('matchAnalysis')
+  }
 }
 
 </script>
@@ -34,7 +37,7 @@ const openWin = () => {
         </n-button>
         <n-tag type="info" round v-if="teammateStore.isCacheSuccess === 0"
                :disabled="true" :bordered="false">
-          正在获取队友战绩数据
+          正在获取队友段位数据
         </n-tag>
         <n-tag type="success" round v-else-if="teammateStore.isCacheSuccess===1"
                :disabled="true" :bordered="false">
@@ -42,7 +45,7 @@ const openWin = () => {
         </n-tag>
         <n-tag type="error" round v-else-if="teammateStore.isCacheSuccess===-1"
                :disabled="true" :bordered="false">
-          啊哦~ 战绩数据获取异常
+          啊哦~ 队友数据获取异常
         </n-tag>
       </n-space>
     </div>

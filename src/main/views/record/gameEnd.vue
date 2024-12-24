@@ -89,7 +89,7 @@ const backSelectState = (isTeamOne:boolean) => {
     <text
       style="left: 77px;bottom: 2px"
       class="absolute text-gray-400 text-xs">
-      {{valueRef==='add'?'添加成功后下次遇见将弹出提示':'点击英雄头像可查看召唤师战绩'}}
+      {{valueRef==='add'?'添加成功后下次遇见将弹出提示':'评分为-1代表游戏数据获取失败'}}
     </text>
   </n-drawer-content>
 </template>

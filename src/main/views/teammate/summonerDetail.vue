@@ -42,11 +42,11 @@ const existChampList = teammateStore.masteryChampList[index]
       <n-tab-pane v-if="analysisData!==null" name="数据分析" tab="数据分析">
         <match-analysis :analysis-data="analysisData" :page-type="0"/>
       </n-tab-pane>
-      <n-tab-pane name="绝活英雄" tab="绝活英雄" display-directive="show">
+<!--      <n-tab-pane name="绝活英雄" tab="绝活英雄" display-direc tive="show">
         <summoner-mastery-champ
           :max-h="378" :p-right="14"
           :puuid="sumInfo.puuid" :exist-champ-list="existChampList"/>
-      </n-tab-pane>
+      </n-tab-pane>-->
     </n-tabs>
   </n-drawer-content>
 </template>

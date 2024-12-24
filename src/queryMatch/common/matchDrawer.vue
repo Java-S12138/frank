@@ -7,6 +7,7 @@ const {personalDetails,gameId,searchSummoner,isAllowAdd} = defineProps<{
   personalDetails: SumDetail,gameId:number,isAllowAdd:boolean,searchSummoner:() => void }>()
 
 const subscribe = localStorage.getItem('subscribe')
+const remainWin = localStorage.getItem('remainWin')
 
 const getImgUrl = (rune: number) => {
   if (rune===0){
@@ -116,7 +117,7 @@ const addBlackList = async () => {
       </n-list>
     <div class="mt-2 flex justify-between">
       <n-button type="success" :bordered="false"
-                @click="searchSummoner" :disabled="subscribe===null">
+                @click="searchSummoner" :disabled="remainWin===null">
         查看详细信息
       </n-button>
 

@@ -20,7 +20,7 @@ export class Notice {
   public notice:null|NoticeTypes = null
 
   public async init() {
-    this.checkCubeLogin()
+    // this.checkCubeLogin()
 
     const timestamp = new Date().getTime()
     const res = await request.get(this.url + `?date=${timestamp}`)

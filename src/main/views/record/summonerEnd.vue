@@ -15,8 +15,8 @@ const {isTeamOne,sumList, addBlackList} = defineProps<{
 const message = useMessage()
 
 const searchMatch = (summonerId: number) => {
-  if (localStorage.getItem('subscribe') === null){
-    message.warning('跳转战绩页面，需要订阅服务')
+  if (localStorage.getItem('remainWin') === null){
+    // message.warning('跳转战绩页面，需要订阅服务')
     return
   }
   localStorage.setItem('queSumMatch', String(summonerId)+'-')

@@ -67,20 +67,21 @@ export class GameFlow {
   public initGameInWindow = async () => {
     //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
     cube.games.on('launched', () => {
-      console.log(this.mapId)
       this.coloseWin('matchAnalysis');this.coloseWin('queryMatch')
-
-      if (this.mapId === 12 || this.mapId === 11) {
-        const configSetting = JSON.parse(<string>(localStorage.getItem('configSetting')))
-        if (configSetting.isGameInWindow){
-          cube.windows.obtainDeclaredWindow('recentMatch',
-            {gamein: true, show_center: true}).then((winInfo) => {
-            this.recentMatchWin = winInfo
-          })
+      if (localStorage.getItem('remainWin') === 't') {
+        if (this.mapId === 12 || this.mapId === 11) {
+          const configSetting = JSON.parse(<string>(localStorage.getItem('configSetting')))
+          if (configSetting.isGameInWindow){
+            cube.windows.obtainDeclaredWindow('recentMatch',
+              {gamein: true, show_center: true}).then((winInfo) => {
+              this.recentMatchWin = winInfo
+            })
+          }
         }
+        this.onListenKeyboards()
       }
     })
-    this.onListenKeyboards()
+
   }
   // 游戏内监听按键, 显示或隐藏游戏内窗口
   public onListenKeyboards = () => {
@@ -90,7 +91,7 @@ export class GameFlow {
       }
       if (hotKeyName === 'show_recentMatch') {
         if (this.recentMatchWin === null){
-          this.recentMatchWin =await cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true, show_center: true})
+          this.recentMatchWin = await cube.windows.obtainDeclaredWindow('recentMatch', {gamein: true, show_center: true})
           return
         }
 
