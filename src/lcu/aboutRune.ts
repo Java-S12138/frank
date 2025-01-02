@@ -14,10 +14,12 @@ interface T {
 }
 
 // 应用符文页面
-export const applyRunePage = async (data: any) => {
+export const applyRunePage = async (data: T) => {
   try {
     // 获取符文页信息
-    const currentRuneList: Array<LcuRuneInfo> = await invokeLcu('get', '/lol-perks/v1/pages')
+    const currentRuneList: Array<LcuRuneInfo>|null = await invokeLcu('get', '/lol-perks/v1/pages')
+    if (currentRuneList===null) return false;
+
     const current = currentRuneList.find((i: LcuRuneInfo) => i.isDeletable && !i.isTemporary)
     if (current === undefined) {
       return false
@@ -25,19 +27,10 @@ export const applyRunePage = async (data: any) => {
     // 删除当前符文页
     await invokeLcu('delete', `/lol-perks/v1/pages/${current.id}`)
     // 写入新的符文页
-    await invokeLcu('post', '/lol-perks/v1/pages', [data])
+    await invokeLcu('post', '/lol-perks/v1/pages', JSON.stringify(data))
     return true
   } catch (e) {
     return false
   }
 }
 
-export const applyBlockPage = async (buildItems:any) => {
-  const blockPath = (await invokeLcu('get','/data-store/v1/install-dir')).
-  replace('LeagueClient','Game')+"/Config/Global/Recommended/frank.json"
-
-  return await cube.io
-    .writeFileContents(blockPath, JSON.stringify(buildItems))
-    .then((res) => true)
-    .catch((err) => false)
-}

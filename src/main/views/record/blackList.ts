@@ -6,11 +6,11 @@ class BlackList {
   public sumInfo:sumInfoTypes|null = null
 
   // 从本地查询黑名单列表
-  public queryBlacklist = async (cubeUserId:string):Promise<[string[],UserInfos]|null> => {
+  public queryBlacklist = async (playerPuuid:string):Promise<[string[],UserInfos]|null> => {
     this.sumInfo = this.sumInfo || JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
 
     const res = await findPlayerByPlayerId({
-      url:`/player/findPlayerByPlayerId?playerId=${cubeUserId}`,
+      url:`/player/findPlayerByPlayerId?playerId=${playerPuuid}`,
       method:'GET'
     })
     if (res === null){
@@ -43,7 +43,8 @@ class BlackList {
     if (res === null){
       return null
     }
-    return res
+    const rec = res.reverse()
+    return rec
   }
   // 更新user过期的数据
   public updateUserInfo = async (userInfos:UserInfos,newSumId:string[]) => {

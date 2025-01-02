@@ -1,4 +1,5 @@
-import {ConfigRank, ConfigSettingTypes} from "./backgroundTypes";
+import {ConfigRank, ConfigSettingTypes} from "../types";
+import {invokeLcu} from "@/lcu";
 
 const configSetting: ConfigSettingTypes = {
   'autoPickChampion': {
@@ -15,6 +16,7 @@ const configSetting: ConfigSettingTypes = {
   'isGameInWindow':true,
   'isGameInTips':false,
   'autoWriteBlock':true,
+  'inWinOpacity':100
 }
 
 
@@ -39,14 +41,31 @@ const addConfig = (configName:string,configObj:any) => {
   }
 }
 
-
-if (localStorage.getItem('init') === null) {
-  localStorage.clear()
-  localStorage.setItem('init', 'SYJun')
-  localStorage.setItem('configSetting', JSON.stringify(configSetting))
-  localStorage.setItem('configRank', JSON.stringify(configRank))
-} else {
-  addConfig('configSetting',configSetting)
-  addConfig('configRank',configRank)
+export const configInit = () => {
+  if (localStorage.getItem('configSetting') === null) {
+    localStorage.setItem('configSetting', JSON.stringify(configSetting))
+    localStorage.setItem('configRank', JSON.stringify(configRank))
+  } else {
+    addConfig('configSetting',configSetting)
+    addConfig('configRank',configRank)
+  }
 }
+
+export const getClientPath = async () => {
+  const clientPath = await invokeLcu<string | null>('get', '/data-store/v1/install-dir');
+
+  if (clientPath === null) return false;  // 早期返回，避免后续代码执行
+
+  const storedPath = localStorage.getItem('clientPath');
+  const updatedPath = clientPath.replace('LeagueClient', 'TCLS\\client.exe');
+
+  // 只在路径不一致时更新
+  if (storedPath?.toLowerCase() !== updatedPath.toLowerCase()) {
+    localStorage.setItem('clientPath', updatedPath);
+  }
+  return true
+}
+
+
+
 

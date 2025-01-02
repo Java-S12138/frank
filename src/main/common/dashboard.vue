@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import {NIcon, NButton, NPopconfirm, NDropdown, NDrawer} from 'naive-ui'
+import {NIcon, NButton, NPopconfirm, NDrawer} from 'naive-ui'
 import {CircleMinus, Settings, CircleX,Bulb} from '@vicons/tabler'
 import {onMounted, ref} from "vue";
 import Setting from "@/main/common/setting.vue";
 import {Notice} from "@/main/utils/notice";
+import { exit } from '@tauri-apps/plugin-process';
+import { getCurrentWindow } from '@tauri-apps/api/window';
+
+
+const notice = new Notice()
+const isShowDrawer = ref(false)
+const isShowNoticeIcon = ref(false)
+
 
 onMounted(() => {
   notice.init().then((v) => {
@@ -11,76 +19,34 @@ onMounted(() => {
       isShowNoticeIcon.value = true
     }
   })
-  // todo
-/*  if (isSubscribe==='t'){
-    const remainSub = localStorage.getItem('remainSub')
-    if (remainSub !== '' && remainSub !==null){
-      subInfo.value = `${remainSub}天后到期`
-      isShowSub.value = true
-    }
-  }*/
 })
 
-// const isSubscribe = localStorage.getItem('isSubscribe')
-const notice = new Notice()
-const subInfo = ref('订阅服务')
-const isShowSub = ref(false)
-const isShowDrawer = ref(false)
-const isShowNoticeIcon = ref(false)
-const subscribes = [
-  {
-    label: '订阅须知',
-    key: 1
-  },
-  {
-    label: '支持一下',
-    key: 2
-  },
-]
-
-// todo 设置窗口置顶
-// cube.windows.setTopmost(cube.windows.current.id(),true)
-
-const dragMove = () => {
-  // @ts-ignore
-  cube.windows.current.dragMove()
-}
-
-const handleMin = () => {
-  // @ts-ignore
-  cube.windows.minimize(cube.windows.current.id())
+const handleMin = async () => {
+  await getCurrentWindow().minimize()
 }
 
 const handleClose = async () => {
-  cube.extensions.terminate()
+  const appWindow = getCurrentWindow()
+  const position = await appWindow.innerPosition()
+  localStorage.setItem('position', `${position.x}+${position.y}`)
+  await exit(1)
 }
 
-const handleSub = (key:number) => {
-  if (key===1){
-    cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/proposal')
-  }else if (key===2){
-    cube.profile.subscriptions.inapp.subscribe('1627551195412164610')
-  }
-}
 const showDialog = () => {
   notice.showDialog()
 }
+
+
 
 </script>
 
 <template>
   <header class="flex justify-between items-center h-8 mb-2 relative">
-    <div @mousedown="dragMove()" class="dragDiv"></div>
+    <div data-tauri-drag-region class="dragDiv"></div>
     <div class="flex items-center">
       <img src="../../assets/icon/app-icon.png" class="h-8" draggable="false">
       <img src="../../assets/icon/Frank.png" draggable="false" class="pl-1 h-[25px]">
     </div>
-    <n-dropdown v-if="isShowSub" trigger="hover"
-                :options="subscribes" @select="handleSub">
-      <n-button type="warning" size="small">
-          {{subInfo}}
-      </n-button>
-    </n-dropdown>
     <div class="flex mt-0.5 gap-x-2">
       <n-button v-if="isShowNoticeIcon" :focusable="false" @click="showDialog" text>
         <n-icon size="20" :color="'#f0a020'">
@@ -112,11 +78,11 @@ const showDialog = () => {
   </header>
 
   <n-drawer
-    class="rounded-t-xl"
+    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
     v-model:show="isShowDrawer"
     :placement="'bottom'"
     :auto-focus="false"
-    height="473"
+    height="464"
   >
     <setting/>
   </n-drawer>

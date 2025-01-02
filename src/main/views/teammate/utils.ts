@@ -1,5 +1,5 @@
 import {invokeLcu} from "@/lcu";
-import {lcuSummonerInfo, summonerInfo} from "@/lcu/types/SummonerTypes";
+import {summonerInfo} from "@/lcu/types/SummonerTypes";
 import {
   MyTeamObject,
   RencentDataAnalysisTypes,
@@ -10,25 +10,34 @@ import {dealDivsion, englishToChinese} from "@/lcu/utils";
 import {champDict} from "@/resources/champList";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {querySummonerInfo} from "@/lcu/aboutSummoner";
+import {ChampionSession} from "@/background/types";
 
 // 获取选择英雄时 获取所以友方召唤师ID /lol-champ-select/v1/session 的值
-export const queryAllSummonerId = async (mactchSession?:any) => {
-  if (mactchSession === undefined || mactchSession?.myTeam === undefined){
-    mactchSession = await invokeLcu('get','/lol-champ-select/v1/session')
-  }
-  const myTeam: MyTeamObject[] = mactchSession?.myTeam
+export const queryAllSummonerId = async (islistenSession:boolean) => {
+  await new Promise(resolve => setTimeout(resolve, 666));
+
+  const mactchSession = await invokeLcu<ChampionSession>('get','/lol-champ-select/v1/session')
+  if (mactchSession===null) return null;
+
+  const getChampId = islistenSession === false ? await invokeLcu<number|null>('get','/lol-champ-select/v1/current-champion') : 0
+
+  const myTeam: MyTeamObject[] = mactchSession.myTeam
   let summonerIdList: number[] = []
   if (myTeam) {
     for (const summoner of myTeam) {
       summonerIdList.push(summoner.summonerId)
     }
-    return summonerIdList
+    return {
+      summonerIdList:summonerIdList,
+      champId:getChampId === null ? 0 : getChampId
+    }
   }
   return null
 }
 
 // 获取排位段位数据
 const querySummonerRank = async (puuid: string) => {
+  // @ts-ignore
   const rankPoint = (await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`))?.queues
   if (rankPoint === undefined) {
     return ['error', 'error']
@@ -41,15 +50,15 @@ const querySummonerRank = async (puuid: string) => {
 }
 
 // 获取我方召唤师ID和昵称
-export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoList[]> => {
-  // console.log('获取我方召唤师ID和昵称')
+export const queryFriendInfo = async (islistenSession:boolean): Promise<{list: SummonerInfoList[],champId:number }> => {
   const summonerInfoList: SummonerInfoList[] = []
-  const allSummonerId = await queryAllSummonerId(mactchSession)
-  if (allSummonerId === null) {
-    return []
+  const summonerInfos = await queryAllSummonerId(islistenSession)
+
+  if (summonerInfos === null) {
+    return {list:[],champId:0}
   }
 
-  for (const summonerId of allSummonerId) {
+  for (const summonerId of summonerInfos.summonerIdList) {
     const currentSummonerInfo = await querySummonerInfo(summonerId) as summonerInfo
     const rankHandler = await querySummonerRank(currentSummonerInfo.puuid)
     summonerInfoList.push({
@@ -60,14 +69,14 @@ export const queryFriendInfo = async (mactchSession?:any): Promise<SummonerInfoL
       rank: `${rankHandler[0]} • ${rankHandler[1]}`,
     })
   }
-  return summonerInfoList
+  return {list:summonerInfoList,champId:summonerInfos.champId}
 }
 
-export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAnalysisTypes | null => {
-  if (match === undefined) {
+export const findTopChamp = (match: SimpleMatchTypes[]|undefined|null): RencentDataAnalysisTypes | null => {
+  if (match === undefined || match===null) {
     return null
   }
-
+  const oneGameId = match[0].gameId
   // 使用 Map 统计每个 champId 出现的次数
   const champIdCountMap = new Map<number, number>()
   const roleCountMap: RoleCountMapTypes = {
@@ -114,5 +123,5 @@ export const findTopChamp = (match: SimpleMatchTypes[]|undefined): RencentDataAn
       count
     }
   })
-  return {top3Champions, totalChampions, roleCountMap}
+  return {top3Champions, totalChampions, roleCountMap,oneGameId}
 }

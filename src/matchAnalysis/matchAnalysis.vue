@@ -6,6 +6,13 @@ import {findTopChamp} from "@/main/views/teammate/utils";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {SummonerInfoList} from "@/main/views/teammate/teammateTypes";
 import {SummonerAnaInfo} from "@/matchAnalysis/utils/MatchAnalysisTypes";
+import {window} from "@tauri-apps/api";
+import {emitTo, once} from "@tauri-apps/api/event";
+
+interface TeammateData {
+  summonerInfo:SummonerInfoList[],
+  cacheMatchList:SimpleMatchTypes[],
+}
 
 const isShowMatch = ref(true)
 const summonerList:Ref<SummonerAnaInfo[]> = ref([])
@@ -14,15 +21,14 @@ const changeShowType = () => {
   isShowMatch.value = !isShowMatch.value
 }
 
-cube.windows.getWindowByName('main').then((mainWin: any) => {
-  cube.windows.message
-    .invoke(<number>mainWin.id, 'getTeammate', '')
-    .then((res: {
-      summonerInfo:SummonerInfoList[],
-      cacheMatchList:SimpleMatchTypes[],
-    }) => {
-      init(res.summonerInfo,res.cacheMatchList)
-    })
+once<TeammateData>('teammateData',(res) => {
+  init(res.payload.summonerInfo,res.payload.cacheMatchList)
+})
+
+window.Window.getByLabel('mainWindow').then((win) => {
+  if (win !== null) {
+    emitTo('mainWindow','cacheMatchList','getTeammate')
+  }
 })
 
 const init = (summonerInfoList:SummonerInfoList[],cacheMatchList:SimpleMatchTypes[]) => {

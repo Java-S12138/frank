@@ -1,26 +1,28 @@
 {
-  "name": "frank",
-  "author": "Java_S",
+  "name": "Frank",
   "private": true,
-<<<<<<< HEAD
-  "version": "1.729.142",
-=======
-  "version": "2.01.142",
->>>>>>> origin/frank2
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "node ./scripts/debug && vite --mode development",
-    "build": "vite build && node ./scripts/pack",
-    "preview": "vite preview"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
   },
   "dependencies": {
-    "vue": "^3.4.10"
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-process": "^2.2.0",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@cube/types": "git+https://gitee.com/cube_1/types.git",
-    "@types/node": "^20.10.5",
+    "@tauri-apps/cli": "^2",
+    "@tauri-apps/plugin-global-shortcut": "^2.2.0",
+    "@tauri-apps/plugin-http": "^2.2.0",
+    "@tauri-apps/plugin-shell": "^2.2.0",
+    "@types/node": "^22.10.2",
     "@vicons/tabler": "^0.12.0",
-    "@vitejs/plugin-vue": "^4.5.2",
+    "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.3",
     "lodash": "^4.17.21",
@@ -28,10 +30,9 @@
     "pinia": "^2.1.7",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.3",
     "vue-router": "^4.2.5",
-    "vue-tsc": "^1.8.25",
-    "zip-a-folder": "^1.1.5"
+    "vue-tsc": "^2.1.10"
   }
 }

@@ -1,4 +1,4 @@
-import {request} from "@/main/utils/request";
+import {requestFetch} from "@/main/utils/request";
 import {useDialog} from "naive-ui";
 import {h} from "vue";
 
@@ -20,14 +20,14 @@ export class Notice {
   public notice:null|NoticeTypes = null
 
   public async init() {
-    this.checkCubeLogin()
 
     const timestamp = new Date().getTime()
-    const res = await request.get(this.url + `?date=${timestamp}`)
-    if (res.status !== 200) {
+    const res = await requestFetch<NoticeTypes>(this.url + `?date=${timestamp}`,'GET')
+
+    if (res === null) {
       return false
     }
-    this.notice = res.data as NoticeTypes
+    this.notice = res as NoticeTypes
 
     localStorage.setItem('rankVers', this.notice.rankVers)
     if (!this.notice.isShow) {
@@ -63,27 +63,12 @@ export class Notice {
       style: 'margin:8px;max-width:334px',
       positiveText: notice.buttonContent,
       negativeText: '不再提醒',
-      onPositiveClick: () => {
-        cube.utils.openUrlInDefaultBrowser(notice.url)
+      onPositiveClick:  () => {
+        open(notice.url)
       },
       onNegativeClick: () => {
         localStorage.setItem('oldNoticeId', notice.noticeId)
       }
-    })
-  }
-  public checkCubeLogin(){
-    cube.profile.getCurrentUser().catch(() => {
-      this.dialog.error({
-        title: '温馨提示',
-        closable:false,
-        maskClosable:false,
-        content: "Cube账号未登录 ψ(._. )>> 将会导致无法正常使用部分功能。请登录Cube账号后，重启Frank。",
-        positiveText: '关闭软件',
-        style:'width:360px',
-        onPositiveClick: () => {
-          cube.extensions.terminate()
-        }
-      })
     })
   }
 }

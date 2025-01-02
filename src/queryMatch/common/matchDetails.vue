@@ -14,8 +14,8 @@ const {summonerList,summonerId,isOne} = defineProps<{
 
 const emits = defineEmits(['openDrawer'])
 
-const showSumDetails = (isOne,index) => {
-  emits('openDrawer',isOne,index)
+const showSumDetails = (summonerId:number) => {
+  emits('openDrawer',summonerId)
 }
 
 </script>
@@ -24,9 +24,9 @@ const showSumDetails = (isOne,index) => {
   <div class="flex flex-col justify-between" style="margin-top: 17px;">
     <!--    每一个英雄数据-->
     <n-space
-      v-for="(summoner,index) in summonerList" vertical>
+      v-for="summoner in summonerList" vertical>
       <match-sum-details
-        @click="showSumDetails(isOne,index)"
+        @click="showSumDetails(summoner.accountId)"
         :summoner="summoner" :summoner-id="summonerId" :is-one="isOne"/>
       <!--        数据显示-->
       <div class='progressDivP'>

@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-pnpm-lock.yaml
 
 node_modules
 dist
@@ -23,5 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-src/background/utils/subscribe.ts

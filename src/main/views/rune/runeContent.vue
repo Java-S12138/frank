@@ -2,37 +2,23 @@
 import {
   NSpace, NTag,useMessage, NScrollbar
 } from 'naive-ui'
-import {applyRunePage, applyBlockPage} from "@/lcu/aboutRune";
-import {onMounted} from "vue";
-import {useRuneStore} from "@/main/store/useRune";
 import {Rune} from "@/main/views/rune/runeTypes";
 import {mapNameFromUrl} from "@/resources/champList";
 import {handleRunesWrite} from "@/main/views/rune/runes";
 
-const storeRune = useRuneStore()
 const message = useMessage()
 const {runeList} = defineProps<{runeList:Rune[]}>()
 
 // 应用符文&装备
 const applyRune = async (data: any) => {
-  // todo
-  /*if (localStorage.getItem('isSubscribe') === 'f') {
-    message.warning('一键符文，需要订阅 请手动配置', {duration: 5000})
-    return
-  }*/
-
   const tempData = JSON.parse(JSON.stringify(data))
   tempData.name = mapNameFromUrl[data.alias].name + " lolfrank.cn"
-  const isAutoWriteBlock = JSON.parse(<string>(localStorage.getItem('configSetting'))).autoWriteBlock
-  const blockList = JSON.parse(JSON.stringify(storeRune.blockDataList))
 
-  handleRunesWrite(tempData,isAutoWriteBlock,blockList).then((writeRes) => {
-    if (writeRes===1){
-      message.success('符文数据配置成功')
-    }else if (writeRes===2){
-      message.success('符文&装备 配置成功')
+  handleRunesWrite(tempData).then((writeRes) => {
+    if (writeRes){
+      message.success('符文数据写入成功')
     }else {
-      message.error('符文数据配置失败')
+      message.error('符文配置失败，或许没有符文页')
     }
   })
 }

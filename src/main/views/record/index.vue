@@ -37,7 +37,7 @@ const closeDrawer = () => {
     </n-alert>
     <black-summoner-list
       v-else
-      :local-sum-id="recordStore.localSumInfo.summonerId"
+      :local-sum-id="<number>recordStore.localSumInfo?.summonerId"
       :hater-list="recordStore.haterList"
       :refresh-list="recordStore.init"
     />
@@ -45,7 +45,8 @@ const closeDrawer = () => {
 
   <!--  游戏结束，弹出增加玩家的窗口-->
   <n-drawer
-    v-model:show="recordStore.showGameEnd" class="rounded-t-xl"
+    v-model:show="recordStore.showGameEnd"
+    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
     :mask-closable="false" :auto-focus="false"
     height="400" placement="bottom">
     <game-end
@@ -54,7 +55,15 @@ const closeDrawer = () => {
       :team-one="recordStore.participantsInfo.teamOne"
       :team-two="recordStore.participantsInfo.teamTwo"
       :game-id="recordStore.participantsInfo.gameId"
-      :platform-id="recordStore.localSumInfo.platformId"
+      :platform-id="<string>recordStore.localSumInfo?.platformId"
+    />
+    <game-end
+      v-else-if = "recordStore.participantsInfoPlanB"
+      :close-drawer="closeDrawer"
+      :team-one="recordStore.participantsInfoPlanB.teamOne"
+      :team-two="recordStore.participantsInfoPlanB.teamTwo"
+      :game-id="recordStore.participantsInfoPlanB.gameId"
+      :platform-id="<string>recordStore.localSumInfo?.platformId"
     />
   </n-drawer>
 </template>

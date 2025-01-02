@@ -1,169 +1,231 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {useMessage} from "naive-ui"
 import {useRouter} from "vue-router";
-import {champSession} from "@/test";
+import {window} from "@tauri-apps/api";
 import {useRuneStore} from "@/main/store/useRune";
+import {useMessage,MessageReactive} from "naive-ui"
 import Dashboard from "@/main/common/dashboard.vue"
+import {emitTo, listen} from '@tauri-apps/api/event';
 import {useRecordStore} from "@/main/store/useRecord";
 import Navigation from "@/main/common/navigation.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import {queryFriendInfo} from "@/main/views/teammate/utils";
+import {invoke} from "@tauri-apps/api/core";
 
 const router = useRouter()
 const curPos = ref(0)
 const message = useMessage()
+let messageReactive: MessageReactive | null = null
 const teammateStore = useTeammateStore()
 const runeStore = useRuneStore()
 const recordStore = useRecordStore()
-let isCSSProcess = false
-let curFlow = 'None'
 
 onMounted(() => {
   router.push({name: 'home'})
-  // testCSSession()
   // testRune()
-  // testEndOfGame()
 })
 
-cube.windows.message.on('received', (messageId, content) => {
-  switch (messageId) {
-    case 'None':
-      return handleNone(messageId)
-    case 'Lobby':
-      return handleLobby(messageId)
-    case 'CSSession':
-      return handleCSSession(messageId, content,true)
-    case 'ChampSelect':
-      return handleCSSession(messageId, content,false)
-    case 'Champion':
-      return handleChampion(messageId, content)
-    case 'GameStart':
-      return handleGameStart(messageId)
-    case 'EndOfGame':
-      return handleEndOfGame(messageId)
-  }
-})
-cube.windows.message.on('invoked', (id, content, reply) => {
-  if (id === 'getMatchList') {
-    return reply(JSON.parse(JSON.stringify(teammateStore.cacheMatchList)))
-  } else if (id === 'getTeammate') {
-    const summonerInfo = JSON.parse(JSON.stringify(teammateStore.summonerInfo))
-    const cacheMatchList = JSON.parse(JSON.stringify(teammateStore.cacheMatchList))
-    return reply({summonerInfo,cacheMatchList})
-  }
-})
+// 处理不同的状态
+class GameState {
+  public curFlow = 'None'
+  public isPolar = false;
+  public islistenSession = false
 
-// 处理None状态
-const handleNone = (id: string) => {
-  if (id === curFlow){
-    return
+  // 重置Store数据
+  public resetStore = () => {
+    runeStore.$reset()
+    teammateStore.$reset()
   }
-  runeStore.$reset()
-  teammateStore.$reset()
-  isCSSProcess = false
-  changeState(id, 'home', 0)
-}
-// 处理Lobby状态
-const handleLobby = (id: string) => {
-  if (id === curFlow){
-    return
+  // 改变页面
+  public changeState = (id: string, page: string, index: number) => {
+    this.curFlow = id
+    this.navigateToPage(page, index)
   }
-  runeStore.$reset()
-  teammateStore.$reset()
-  isCSSProcess = false
-  changeState(id, 'rank', 1)
-}
-// 处理CSSession状态
-const handleCSSession = async (id: string, content: any,isChangeState:boolean) => {
-  // 解决极地大乱斗模式问题
-  if (isCSSProcess){return}
-  isCSSProcess = true
-
-  const queueId:number = JSON.parse(localStorage.getItem('gameInfo') as string).queueId
-
-  queryFriendInfo(content).then(async (summonerInfoList) => {
-    const summonerIdList = summonerInfoList.map(summoner => summoner.summonerId)
-    // 判断是否存在黑名单数据
-    recordStore.checkFriSum(summonerIdList).then(value => {
-      teammateStore.initStore(summonerInfoList, queueId, value)
-      if (isChangeState){
-        changeState(id, 'teammate', 2)
-      }else {
-        // 从符文配置界面切换过来
-        if (value !== null && value.length !== 0){
-          setTimeout(() => {
-            changeState(id, 'teammate', 2)
-          },3000)
+  // 改变底部页面图标
+  public navigateToPage = (page: string, index: number) => {
+    if (!this.preventAccess(index)) {
+      const mess = index===2?'选择英雄阶段，方可使用':'选择英雄之后，才可使用'
+      message.warning(mess, {duration: 2000})
+      return
+    }
+    curPos.value = index
+    router.push({name: page})
+  }
+  // 防止访问
+  public preventAccess = (index: number) => {
+    switch (index) {
+      case 2:
+        return this.curFlow === 'ChampSelect' || this.curFlow === 'Champion'
+      case 3:
+        return this.curFlow === 'ChampSelect' || this.curFlow === 'Champion'
+      default:
+        return true
+    }
+  }
+  // 处理None状态
+  public handleNone = (id: string) => {
+    this.isPolar = false
+    if (id === this.curFlow) {
+      return
+    }
+    this.changeState(id, 'home', 0)
+  }
+  // 处理Lobby状态
+  public handleLobby = (id: string) => {
+    if (id === this.curFlow) {
+      return
+    }
+    this.changeState(id, 'rank', 1)
+  }
+  // 处理Matchmaking状态
+  public handleMatchmaking = (id: string) => {
+    this.changeState(id, 'rank', 1)
+  }
+  // 处理ChampSelect状态
+  public handleChampSelect = async (id: string) => {
+    this.resetStore()
+    if (!this.isPolar) {
+      this.changeState(id, 'teammate', 2)
+    }
+    this.hanleFriendInfo()
+  }
+  // 获取队友数据
+  public hanleFriendInfo = () => {
+    const queueId: number = this.queryGameInfo()
+    queryFriendInfo(this.islistenSession).then((summonerInfo) => {
+      // 启动选择英雄监听
+      if(!this.islistenSession){
+        this.islistenSession = true
+        invoke("start_champ_select")
+        if(summonerInfo.champId !== 0){
+          this.handleChampion('Champion',summonerInfo.champId)
         }
       }
+
+      const summonerIdList = summonerInfo.list.map(summoner => summoner.summonerId)
+      // 判断是否存在黑名单数据
+      recordStore.checkFriSum(summonerIdList).then(value => {
+        teammateStore.initStore(summonerInfo.list, queueId, value,false)
+        // 从符文配置界面切换过来
+        if (value !== null && value.length !== 0) {
+          setTimeout(() => {
+            this.changeState('Champion', 'teammate', 2)
+            message.success('检测到被标记玩家！！！')
+          }, 3000)
+        }
+      })
     })
-  })
-}
-// 处理Champion状态
-const handleChampion = (id: string, content: any) => {
-  if (content === 0) {
-    return
   }
-  runeStore.initStore(content).then((res) => {
-    if (res) {
-      message.error('当前英雄暂无符文数据')
-      return
-    } else {
-      changeState(id, 'rune', 3)
+  // 获取GameInfo
+  public queryGameInfo = () => {
+    const gameInfo = localStorage.getItem('gameInfo')
+    if (gameInfo===null){
+      localStorage.setItem('gameInfo',
+        String(JSON.stringify({
+        queueId: 420,
+        mapId: 11})
+      ))
+      return 420
+    }else {
+      return JSON.parse(gameInfo).queueId
     }
-  })
-}
-// 处理GameStart状态
-const handleGameStart = (id: string) => {
-  runeStore.$reset()
-  changeState(id, 'record', 4)
-}
-// 处理EndOfGame状态
-const handleEndOfGame = (id: string) => {
-  teammateStore.$reset()
-  isCSSProcess = false
-  recordStore.getParticipantsInfo()
+  }
+  // 处理Champion状态
+  public handleChampion = (id: string, content: any) => {
+    if (content === 0) {
+      return
+    }
+    runeStore.initStore(content).then((res) => {
+      if (res) {
+        message.error('当前英雄暂无符文数据')
+        return
+      } else {
+        this.isPolar = true
+        this.changeState(id, 'rune', 3)
+      }
+    })
+  }
+  // 处理GameStart状态
+  public handleGameStart = (id: string) => {
+    this.isPolar = false
+    this.changeState(id, 'record', 4)
+  }
+  // 处理EndOfGame状态
+  public handleEndOfGame = () => {
+    if (!messageReactive) {
+      messageReactive = message.loading('对局结算数据加载中...', {
+        duration: 0
+      })
+    }
+
+    recordStore.getParticipantsInfo().then((isSuccess) => {
+      messageReactive?.destroy()
+      messageReactive = null
+
+      if (isSuccess === null){
+        return
+      }else if (isSuccess === false) {
+        message.error('获取数据失败，请到查询战绩添加', {
+          closable: true,
+          duration: 3000
+        })
+      }
+    })
+  }
+  // 处理AddBlackList状态
+  public handleAddBlackList = (gameId:number) => {
+    this.changeState('GameStart', 'record', 4)
+    recordStore.getParticipantsInfo(gameId)
+  }
 }
 
-// 改变页面
-const changeState = (id: string, page: string, index: number) => {
-  curFlow = id
-  navigateToPage(page, index)
-}
-// 改变底部页面图标
-const navigateToPage = (page: string, index: number) => {
-  if (!preventAccess(index)){
-    message.warning('当前状态无法查看此页面', {duration: 2000})
-    return
+const gameState = new GameState()
+
+
+listen<{ messageId:string,content:string}>('clientStatus', (event) => {
+  switch (event.payload.messageId) {
+    case 'None':
+      return gameState.handleNone('None')
+    case 'Lobby':
+      return gameState.handleLobby('Lobby')
+    case 'Matchmaking':
+      return gameState.handleMatchmaking('Matchmaking')
+    case 'ChampSelect':
+      return gameState.handleChampSelect('ChampSelect')
+    case 'Champion':
+      return gameState.handleChampion('Champion', event.payload.content)
+    case 'GameStart':
+      return gameState.handleGameStart('GameStart')
+    case 'EndOfGame':
+      return gameState.handleEndOfGame()
+    case 'AddBlackList':
+      return gameState.handleAddBlackList(event.payload.content as number)
   }
-  curPos.value = index
-  router.push({name: page})
-}
-// 防止访问
-const preventAccess = (index: number) => {
-  switch (index) {
-    case 2:
-      return curFlow === 'CSSession' || curFlow === 'ChampSelect' || curFlow === 'Champion'
-    case 3:
-      return curFlow === 'Champion'
-    default:
-      return true
+})
+
+listen<string>('cacheMatchList', (event) => {
+  if (event.payload === 'getMatchList') {
+    window.Window.getByLabel('recentMatchWindow').then((win) => {
+      if (win !== null) {
+        emitTo('recentMatchWindow','matchListCache',
+          JSON.parse(JSON.stringify(teammateStore.cacheMatchList)))
+        /*emitTo('recentMatchWindow','matchListCache',
+          session450)*/
+      }
+    })
+  } else if (event.payload === 'getTeammate') {
+
+    const summonerInfo = JSON.parse(JSON.stringify(teammateStore.summonerInfo))
+    const cacheMatchList = JSON.parse(JSON.stringify(teammateStore.cacheMatchList))
+
+    window.Window.getByLabel('matchAnalysisWindow').then((win) => {
+      if (win !== null) {
+        emitTo('matchAnalysisWindow','teammateData',
+          {summonerInfo:summonerInfo,cacheMatchList:cacheMatchList})
+      }
+    })
   }
-}
-const testRune = () => {
-  handleChampion('Champion',84)
-}
-const testCSSession = async () => {
-  await handleCSSession('CSSession', champSession,true)
-  // cube.windows.obtainDeclaredWindow('recentMatch')
-}
-const testEndOfGame = async ()  => {
-  curFlow = 'EndOfGame'
-  curPos.value = 4
-  router.push({name: 'record',query:{id:'1'}})
-  recordStore.getParticipantsInfo()
-}
+})
 
 
 </script>
@@ -171,11 +233,12 @@ const testEndOfGame = async ()  => {
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard/>
+<!--    <button @click="gameState.handleCSSession('CSSession', champSession, true)">NULL</button>-->
     <router-view v-slot="{ Component }">
       <keep-alive>
         <component :is="Component"/>
       </keep-alive>
     </router-view>
-    <navigation :cur-pos="curPos" :navigate-to-page="navigateToPage"/>
+    <navigation :cur-pos="curPos" :navigate-to-page="gameState.navigateToPage"/>
   </div>
 </template>

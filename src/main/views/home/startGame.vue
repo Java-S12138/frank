@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {NCard,NSpace,NTag, NDropdown, useMessage, NButton,NTable} from 'naive-ui'
+import {open} from "@tauri-apps/plugin-shell";
 
 const message = useMessage()
 const options = [
@@ -17,33 +18,31 @@ const options = [
   },
 ]
 
-const startGame = (gameId:number) => {
-  if (gameId===10086){
-    message.warning('请手动启动客户端', {duration: 5000})
-    return
+const startGame = () => {
+  const path = localStorage.getItem('clientPath')
+  if (path===null) {
+    message.info('路径不存在，首次启动请先打开客户端',{duration:4000})
+  }else {
+    open(path)
+    message.loading('英雄联盟客户端启动中...')
   }
-  cube.utils.launchGame(gameId).then(() => {
-    message.loading('英雄联盟客户端启动中...', {duration: 5000})
-  }).catch(() => {
-    message.error('台服客户端不存在`(*>﹏<*)′')
-  })
 }
 const openGuideSite = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank')
+  open('https://www.yuque.com/java-s/frank')
 }
 const openIntro = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/proposal')
+  open('https://www.yuque.com/java-s/frank/introduction')
 }
 
 const tableData = [
+  ["排位笔记", "✅", "✅"],
+  ["自动接收对局", "✅", "✅"],
+  ["英雄符文展示", "✅", "✅"],
+  ["一键配置符文", "✅", "✅"],
+  ["自动配置符文", "✅", "✅"],
+  ["对局结束后评分", "✅", "✅"],
   ["秒选英雄 / 秒禁英雄", "✅", "✅"],
-  ["自动接收对局", "❌", "✅"],
-  ["查询召唤师战绩", "✅", "✅"],
-  ["对局详细数据", "❌", "✅"],
   ["国服 / 韩服 英雄数据", "✅", "✅"],
-  ["队友战绩数据分析", "❌", "✅"],
-  ["游戏内显示敌方数据", "✅", "✅"],
-  ["绝活/熟练/小代 检测", "❌", "✅"],
 ]
 </script>
 
@@ -55,9 +54,7 @@ const tableData = [
     <n-space vertical>
       <n-space justify="space-between">
         <n-button type="success" @click="openGuideSite" secondary>使用手册</n-button>
-        <n-dropdown trigger="click" :options="options" @select="startGame">
-          <n-button type="success">开始游戏</n-button>
-        </n-dropdown>
+          <n-button type="success" @click="startGame">开始游戏</n-button>
       </n-space>
       <n-tag  type="success" size="small" style="width: 203px;justify-content: center"
               :bordered="false">
@@ -70,8 +67,8 @@ const tableData = [
       <thead>
       <tr>
         <th>Software Introduction </th>
-        <th style="width: 28px;">普通</th>
-        <th style="width: 28px;">订阅</th>
+        <th style="width: 28px;">完全</th>
+        <th style="width: 28px;">免费</th>
       </tr>
       </thead>
       <tbody>

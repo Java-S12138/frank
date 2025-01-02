@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {NResult,NButton} from "naive-ui"
+import {open} from "@tauri-apps/plugin-shell";
 
 const openWeb = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/bug')
+   open('https://www.yuque.com/java-s/frank/bug')
 }
 </script>
 

@@ -9,8 +9,10 @@ import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import MatchContent from "@/queryMatch/common/matchContent.vue";
 import MatchDetails from "@/queryMatch/utils/matchDetails";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
-import {NResult} from "naive-ui";
+import {NDrawer, NResult} from "naive-ui";
 import NullPage from "@/recentMatch/components/nullPage.vue";
+import {emitTo, once} from "@tauri-apps/api/event";
+import {window} from "@tauri-apps/api";
 
 const querySummoner = new QuerySummoner()
 const queryMatch = new QueryMatch()
@@ -18,6 +20,8 @@ const queryMatch = new QueryMatch()
 const isLcuErr = ref(true)
 const friendList: Ref<RecentSumInfo[]> = ref([])
 const enemyList: Ref<RecentSumInfo[]> = ref([])
+const fScoreMax = ref(0)
+const eScoreMax = ref(0)
 const queueId: Ref<number> = ref(0)
 const winCount = ref({friend: [0, 0], enemy: [0, 0]})
 const isFriCount = ref(true)
@@ -28,19 +32,22 @@ const isDetailModal = ref(false)
 const isDetailModalLeft = ref(true)
 const participantsInfo: Ref<ParticipantsInfo | null> = ref(null)
 
-// cube.windows.openDevTools(cube.windows.current.id())
+interface simpleMatchList{
+ [key: string]: SimpleMatchTypes[]
+}
+
+once<simpleMatchList>('matchListCache',(res) => {
+  init(res.payload)
+})
 
 onMounted(() => {
-  setTimeout(() => {
-    cube.windows.getWindowByName('main').then((mainWin: any) => {
-      cube.windows.message
-        .invoke(<number>mainWin.id, 'getMatchList', '')
-        .then((simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
-          init(simpleMatchList)
-        })
-    })
-  },800)
+  window.Window.getByLabel('mainWindow').then((win) => {
+    if (win !== null) {
+      emitTo('mainWindow','cacheMatchList','getMatchList')
+    }
+  })
 })
+
 
 const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
   querySummoner.fromLcuQuery().then(async (allSumInfo: RecentAllSumInfo | null) => {
@@ -52,26 +59,34 @@ const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
     isLcuErr.value = false
     queueId.value = allSumInfo.queueId
     // 是否从缓存数据中获取队友的战绩数据
-    Object.keys(simpleMatchList).length > 0
-      ? await getSumInfoFromCache(allSumInfo.friendList, simpleMatchList,allSumInfo.queueId)
-      : await getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true)
-
-    await getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
+    if (Object.keys(simpleMatchList).length === 0){
+     await Promise.all([
+        getCompleteSumInfo(allSumInfo.friendList, allSumInfo.queueId, true),
+        getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
+      ])
+    }else {
+      await Promise.all([
+        getSumInfoFromCache(allSumInfo.friendList, simpleMatchList,allSumInfo.queueId),
+        getCompleteSumInfo(allSumInfo.enemyList, allSumInfo.queueId, false)
+      ])
+    }
     // 判断敌我双方谁的赢场最多
     isFriCount.value = winCount.value.friend[0] >= winCount.value.enemy[0]
+    fScoreMax.value = getMaxSummonerStateScore(friendList.value )
+    eScoreMax.value = getMaxSummonerStateScore(enemyList.value)
   })
 }
 
 const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, isFri: boolean) => {
   for (const summoner of sumInfos) {
     // 根据已获取的召唤师puuid获取每一个召唤师的战绩数据
-    const resultList = await queryMatch.queryMatchHistory(summoner.puuid, queueId, summoner.summonerState)
+    const resultList = await queryMatch.queryMatchHistory(summoner.puuid, queueId, summoner.summonerState.label)
     summoner.matchList = resultList[0]
     // 判断是否为小代
-    if ( summoner.summonerState === 'Y' && resultList[2]) {
-      summoner.summonerState = 'S'
-    }else if (summoner.summonerState === 'Y') {
-      summoner.summonerState = 'Z'
+    if ( summoner.summonerState.label === 'Y' && resultList[2]) {
+      summoner.summonerState.label = 'S'
+    }else if (summoner.summonerState.label === 'Y') {
+      summoner.summonerState.label = 'Z'
     }
 
     // 判断是否为友方或敌方，分别写入不同的数据
@@ -81,7 +96,7 @@ const getCompleteSumInfo = async (sumInfos: RecentSumInfo[], queueId: number, is
     countList[0] += resultList[1]
     countList[1] += resultList[0].length
     targetList.push(summoner)
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await new Promise(resolve => setTimeout(resolve, 200))
   }
 }
 
@@ -103,18 +118,21 @@ const getSumInfoFromCache = async (sumInfos: RecentSumInfo[], simpleMatchList: {
         }
       })
       // 判断是否为小代
-      if (sumInfo.summonerState === 'Y' && queryMatch.isExcelPlayer(sumInfo.summonerState, matchListElement)){
-        sumInfo.summonerState = 'S'
-      }else if (sumInfo.summonerState === 'Y') {
-        sumInfo.summonerState = 'Z'
+      if (sumInfo.summonerState.label === 'Y' && queryMatch.isExcelPlayer(sumInfo.summonerState.label, matchListElement)){
+        sumInfo.summonerState.label = 'S'
+      }else if (sumInfo.summonerState.label === 'Y') {
+        sumInfo.summonerState.label = 'Z'
       }
       sumInfo.matchList = matchListElement
       friendList.value.push(sumInfo)
       winCount.value.friend[0] += winMatchCount
       winCount.value.friend[1] += matchListElement.length
-      await new Promise(resolve => setTimeout(resolve, 300))
+      await new Promise(resolve => setTimeout(resolve, 200))
     }
   }catch (e) {
+    friendList.value = []
+    winCount.value.friend[0] = 0
+    winCount.value.friend[1] = 0
     await getCompleteSumInfo(sumInfos, queueId, true)
   }
 }
@@ -128,11 +146,16 @@ const openDetailDrawer = async (gameId: number, summonerId: number, isFri: boole
   }
   isDetailModal.value = true
 }
-const closeModalOutside = (event) => {
-  if (!event.target.closest('.bg-white')) {
-    isDetailModal.value = false
+
+const getMaxSummonerStateScore = (recentSumInfoList: RecentSumInfo[]): number => {
+  if (!recentSumInfoList || recentSumInfoList.length === 0) {
+    return 0;
   }
-}
+
+  return recentSumInfoList.reduce((maxScore, current) => {
+    return Math.max(maxScore, current.summonerState.score);
+  }, 0);
+};
 </script>
 
 <template>
@@ -142,17 +165,22 @@ const closeModalOutside = (event) => {
     <null-page v-if="isLcuErr"/>
 
     <div v-else class="flex justify-between">
-      <recent-match-list @show-detail="openDetailDrawer"
+      <recent-match-list @show-detail="openDetailDrawer" :max-score = "fScoreMax"
                          :sum-list="friendList" :queue-id="queueId" :is-fri="true"/>
-      <recent-match-list @show-detail="openDetailDrawer"
+      <recent-match-list @show-detail="openDetailDrawer" :max-score = "eScoreMax"
                          :sum-list="enemyList" :queue-id="queueId" :is-fri="false"/>
     </div>
   </div>
-  <!-- Modal -->
-  <div v-if="isDetailModal" @click="closeModalOutside"
-       class="fixed inset-0 bg-neutral-950 bg-opacity-40
-       flex items-center z-50" :class="isDetailModalLeft?'justify-end':'justify-start'">
-    <div class="bg-white text-neutral-900 p-3 h-full box-border rounded dark:bg-zinc-900 dark:text-neutral-200" style="width: 632px">
+
+  <n-drawer
+    style="border-radius: 0.5rem;"
+    v-model:show="isDetailModal"
+    :placement="isDetailModalLeft ? 'left':'right'"
+    :auto-focus="false"
+    width="632px"
+  >
+    <div
+      class="bg-white text-neutral-900 p-3 h-full box-border rounded-lg dark:bg-zinc-900 dark:text-neutral-200">
       <match-content
         v-if="participantsInfo!==null"
         :header-info="participantsInfo.headerInfo"
@@ -161,17 +189,17 @@ const closeModalOutside = (event) => {
         :queue-id="participantsInfo.queueId"
         :summoner-id="currentId"
         :is-game-in="true"
+        :game-id="participantsInfo.gameId"
       />
       <div class="w-full h-full flex justify-center items-center" v-else>
-        <n-result
-          size="large"
-          status="418"
-          title="获取当前战绩数据异常"
-          description="请切换其它战绩, 尝试再次获取数据..."
-        >
-        </n-result>
-      </div>
+      <n-result
+        size="large"
+        status="418"
+        title="获取当前战绩数据异常"
+        description="请切换其它战绩, 尝试再次获取数据..."
+      >
+      </n-result>
     </div>
-
-  </div>
+    </div>
+  </n-drawer>
 </template>

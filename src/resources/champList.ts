@@ -819,7 +819,7 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
     ]
   },
   "112": {
-    "label": "机械先驱",
+    "label": "奥术先驱",
     "alias": "Viktor",
     "title": "维克托",
     "roles": [
@@ -1457,7 +1457,86 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
     "roles": [
       "marksman"
     ]
-  }
+  },
+  "893": {
+    "label": "双界灵兔",
+    "alias": "Aurora",
+    "title": "阿萝拉",
+    "roles": [
+      "mage","assassin"
+    ]
+  },
+  "799": {
+    "label": "铁血狼母",
+    "alias": "Ambessa",
+    "title": "安蓓萨",
+    "roles": [
+      "fighter", "assassin"
+    ]
+  },
+  "3151": {
+    "label": "暴走萝莉",
+    "alias": "Jinx",
+    "title": "金克丝",
+    "roles": [
+    ]
+  },
+  "3157": {
+    "label": "疾风剑豪",
+    "alias": "Yasuo",
+    "title": "亚索",
+    "roles": [
+    ]
+  },
+  "3156": {
+    "label": "狂厄蔷薇",
+    "alias": "Briar",
+    "title": "贝蕾亚",
+    "roles": [
+    ]
+  },
+  "3678": {
+    "label": "海兽祭司",
+    "alias": "Illaoi",
+    "title": "俄洛伊",
+    "roles": [
+    ]
+  },
+  "3152": {
+    "label": "曙光女神",
+    "alias": "Leona",
+    "title": "蕾欧娜",
+    "roles": [
+    ]
+  },
+  "3947": {
+    "label": "逆羽",
+    "alias": "Xayah",
+    "title": "霞",
+    "roles": [
+    ]
+  },
+  "3147": {
+    "label": "放逐之刃",
+      "alias": "Riven",
+    "title": "锐雯",
+    "roles": [
+    ]
+  },
+  "3153": {
+    "label": "星籁歌姬",
+    "alias": "Seraphine",
+    "title": "萨勒芬妮",
+    "roles": [
+    ]
+  },
+  "3159": {
+    "label": "双界灵兔",
+    "alias": "Aurora",
+    "title": "阿萝拉",
+    "roles": [
+    ]
+  },
 }
 export const optionsChampion = [
   {
@@ -1741,7 +1820,7 @@ export const optionsChampion = [
     'label': '深海泰坦'
   }, {
     'value': '112',
-    'label': '机械先驱'
+    'label': '奥术先驱'
   }, {
     'value': '113',
     'label': '北地之怒'
@@ -1967,6 +2046,14 @@ export const optionsChampion = [
   {
     'value': '901',
     'label': '炽炎雏龙'
+  },
+  {
+    'value': '893',
+    'label': '双界灵兔'
+  },
+  {
+    'value': '799',
+    'label': '铁血狼母'
   }
 ]
 export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } = {
@@ -2063,7 +2150,7 @@ export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } =
   'Rengar': {'label': '傲之追猎者', 'name': '雷恩加尔'},
   'Varus': {'label': '惩戒之箭', 'name': '韦鲁斯'},
   'Nautilus': {'label': '深海泰坦', 'name': '诺提勒斯'},
-  'Viktor': {'label': '机械先驱', 'name': '维克托'},
+  'Viktor': {'label': '奥术先驱', 'name': '维克托'},
   'Sejuani': {'label': '北地之怒', 'name': '瑟庄妮'},
   'Fiora': {'label': '无双剑姬', 'name': '菲奥娜'},
   'Ziggs': {'label': '爆破鬼才', 'name': '吉格斯'},
@@ -2137,6 +2224,8 @@ export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } =
   'Briar': {'label': '狂厄蔷薇', 'name': '贝蕾亚'},
   'Hwei': {'label': '异画师', 'name': '彗'},
   'Smolder': {'label': '炽炎雏龙', 'name': '斯莫德'},
+  'Aurora': {'label': '双界灵兔', 'name': '阿萝拉'},
+  'Ambessa': {'label': '铁血狼母', 'name': '安蓓萨'},
 }
 export const aliasToId:{ [key: string]: number } = {
   "Annie": 1,
@@ -2306,6 +2395,8 @@ export const aliasToId:{ [key: string]: number } = {
   "Briar": 233,
   "Hwei": 910,
   "Smolder": 901,
+  "Aurora": 893,
+  "Ambessa": 799,
 }
 export const keywordsList = [
   {
@@ -2775,8 +2866,8 @@ export const keywordsList = [
   },
   {
     "alias": "Viktor",
-    "name": "机械先驱",
-    "keywords": "机械先驱,维克托,三只手,szs,wkt,jxxq,Viktor,jixiexianqu,weiketuo,sanzhishou"
+    "name": "奥术先驱",
+    "keywords": "奥术先驱，机械先驱,维克托,三只手,szs,wkt,jxxq,Viktor,jixiexianqu,weiketuo,sanzhishou"
   },
   {
     "alias": "Sejuani",
@@ -3142,5 +3233,15 @@ export const keywordsList = [
     "alias": "Smolder",
     "name": "炽炎雏龙",
     "keywords": "炽炎雏龙,斯莫德,chiyanchulong,simode,cycl,smd"
+  },
+  {
+    "alias": "Aurora",
+    "name": "双界灵兔",
+    "keywords": "双界灵兔,阿萝拉,shuangjielingtu,aluola,sjlt,all"
+  },
+  {
+    "alias": "Ambessa",
+    "name": "铁血狼母",
+    "keywords": "安蓓萨,铁血狼母,anbeisa,tiexuelangmu,abs"
   }
 ]

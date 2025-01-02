@@ -108,22 +108,26 @@ const ghostButtons = [
 ]
 
 // 获取不同服务器的数据
-const queryChampRankData = async () => {
+const queryChampRankData = async ():Promise<boolean> => {
   if (is101.value){
     const champInfo = await queryCNServe(configRank,tier.value, lane.value, getLacalDateStr(),1)
     if (champInfo){
       champSliceList.value = champInfo
+      return true
     }
   }else {
     const laneKr = getPostion(lane.value)
     const champInfo = await queryKRServe(configRank,tier.value,laneKr,localStorage.getItem('rankVers') as string)
     if (champInfo){
       champSliceList.value = champInfo
+      return true
     }else {
-      message.warning('韩服数据异常 已切换为国服数据')
+      message.error('韩服数据获取异常')
       handleRankSelect()
+      return false
     }
   }
+  return false
 }
 // 改变不同服务器的数据排行
 const handleRankSelect = () => {
@@ -131,16 +135,20 @@ const handleRankSelect = () => {
   is101.value = !is101.value
   tier.value = is101.value ? 200 : 2
   champSliceList.value = []
-  queryChampRankData().then(() => {
-    if (is101.value){
-      message.success('国服数据获取成功')
-    }else {
-      message.success('韩服数据获取成功')
+
+  queryChampRankData().then((isSuccess) => {
+    if (isSuccess){
+      if (is101.value){
+        message.success('国服数据获取成功')
+      }else {
+        message.success('韩服数据获取成功')
+      }
+      configRank.tier = tier.value
+      configRank.is101 = is101.value
+      localStorage.setItem('configRank',JSON.stringify(configRank))
     }
   })
-  configRank.tier = tier.value
-  configRank.is101 = is101.value
-  localStorage.setItem('configRank',JSON.stringify(configRank))
+
 }
 
 //搜索英雄数据
@@ -229,6 +237,10 @@ onDeactivated(() => {
                   :bordered="false"
                   :size="40"
                   lazy
+                  :render-placeholder="() => null"
+                  :intersection-observer-options="{
+                    root: '#image-scroll-container',
+                   }"
                   :src=chapm.imgUrl
                   fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                 />
@@ -258,7 +270,8 @@ onDeactivated(() => {
       </n-list>
     </n-card>
     <n-drawer
-      class="rounded-t-xl" v-model:show="isShowDrawer"
+      style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+      v-model:show="isShowDrawer"
       placement="bottom" :auto-focus="true" height="444"
       @after-leave="initDesDrawer(false)"
     >

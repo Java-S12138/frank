@@ -66,7 +66,8 @@ const formatDate = (dateStr: string) => {
   </n-list>
 
   <n-drawer
-    v-model:show="showDetails" class="rounded-t-xl"
+    v-model:show="showDetails"
+    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
     @after-leave="clearDrawer"
     :auto-focus="false" height="264" placement="bottom">
     <hater-details

@@ -1,7 +1,7 @@
-import {request} from "@/main/utils/request";
+import {requestFetch} from "@/main/utils/request";
 import {champDict} from "@/resources/champList";
 import {ChampInfo} from "@/main/views/rank/rankTypes";
-import {ConfigRank} from "@/background/utils/backgroundTypes";
+import {ConfigRank} from "@/background/types";
 
 export const rankOptions =  [
   {
@@ -149,19 +149,22 @@ export const queryCNServe = async (configRank:ConfigRank,tier:number, lane:strin
 
   let championdetails = ''
   let champSliceList:any[] = []
-  let partUrl = 'https://x1-6833.native.qq.com/x1/6833/1061021&3af49f?championid=666'
-  const res = await request({
-    url: partUrl + `&lane=${lane}&ijob=all&dtstatdate=${time}&gamequeueconfigid=420&tier=${tier}`,
-    method: 'GET',
-  })
+  const partUrl = 'https://x1-6833.native.qq.com/x1/6833/1061021&3af49f?championid=666'
+  const url = partUrl + `&lane=${lane}&ijob=all&dtstatdate=${time}&gamequeueconfigid=420&tier=${tier}`
 
-  if (res.data.data.result === "") {
-    recursionCount += 1
-    return queryCNServe(configRank,tier, lane, time - 1,recursionCount)
+  const res = await requestFetch<any>(url,'GET')
+
+  if (res === null) {
+    return []
+  }else {
+    if (res.data.result === "") {
+      recursionCount += 1
+      return queryCNServe(configRank,tier, lane, time - 1,recursionCount)
+    }
   }
 
   try {
-    championdetails = JSON.parse(res.data.data.result).championdetails
+    championdetails = JSON.parse(res.data.result).championdetails
   } catch (e) {
     return champSliceList
   }
@@ -192,11 +195,9 @@ export const queryKRServe = async (configRank:ConfigRank,tier:number,lane:string
   localStorage.setItem('configRank',JSON.stringify(configRank))
   try {
     const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=${version}&tier=${tier}&lane=${lane}`
-    const res = await request({
-      url:url,
-      method:"GET"
-    })
-    const champList:ChampInfo[] = res.data.data.reduce((res:any,item:any,index:number) => {
+    const res = await requestFetch<any>(url,'GET')
+
+    const champList:ChampInfo[] = res.data.reduce((res:any,item:any,index:number) => {
 
       const currentChamp:ChampInfo = {
         appearance: Number(item.pickRate).toFixed(1) +'%',
@@ -225,19 +226,18 @@ export const getRestraintData = async (champId:number, lane:string,tier:number,i
     tierRes = tier
   }
   const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=${version}&tier=${tierRes}&lane=${position}`
-  const result = await request({
-    'url': url,
-    method: 'GET'
-  })
 
-  if (result.data.data == null || result.status !== 200){
+  const result = await requestFetch<any>(url,'GET')
+
+
+  if (result===null) {
     return null
   }
 
   const resList:[string,string,number,number,number][] = []
-  const counterChampionIdList = JSON.parse(result.data.data['counterChampionIdList'])
-  const counterWinrateList = JSON.parse(result.data.data['counterWinrateList'])
-  const counterCountList = JSON.parse(result.data.data['counterCountList'])
+  const counterChampionIdList = JSON.parse(result.data['counterChampionIdList'])
+  const counterWinrateList = JSON.parse(result.data['counterWinrateList'])
+  const counterCountList = JSON.parse(result.data['counterCountList'])
   for (let i = 0; i < counterChampionIdList.length; i++) {
     const chapmId:number = counterChampionIdList[i]
     const label = champDict[chapmId].label +'•' + champDict[chapmId].title

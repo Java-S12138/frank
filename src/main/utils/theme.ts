@@ -37,5 +37,8 @@ export const themeOverrides: GlobalThemeOverrides = {
   Tabs:{
     tabTextColorLine:'#9ca3af',
     tabFontSizeSmall:'13px'
+  },
+  Steps:{
+    splitorColorProcess:'#ffffff00'
   }
 }

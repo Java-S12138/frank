@@ -2,9 +2,14 @@
 import {NDrawerContent, NAvatar, NSpace, NTag, NList, NListItem, NButton} from "naive-ui"
 import {SumDetail} from "@/queryMatch/utils/MatchDetail";
 import {getspellImgUrl,gerNoneImg} from "@/lcu/utils";
+import {window} from "@tauri-apps/api";
+import {emitTo} from "@tauri-apps/api/event";
 
-const {personalDetails,searchSummoner} = defineProps<{
-  personalDetails: SumDetail,searchSummoner:() => void }>()
+const {personalDetails,gameId,searchSummoner,isAllowAdd} = defineProps<{
+  personalDetails: SumDetail,gameId:number,isAllowAdd:boolean,searchSummoner:() => void }>()
+
+const subscribe = localStorage.getItem('subscribe')
+const remainWin = localStorage.getItem('remainWin')
 
 const getImgUrl = (rune: number) => {
   if (rune===0){
@@ -13,6 +18,17 @@ const getImgUrl = (rune: number) => {
   return new URL(`/src/assets/runes/${rune}.png`, import.meta.url).href
 }
 
+const addBlackList = async () => {
+  window.Window.getByLabel('mainWindow').then(async (win) => {
+    if (win !== null) {
+      if (!await win.isVisible()) {
+        await win.show()
+      }
+      emitTo('mainWindow', 'clientStatus',
+        {messageId: "AddBlackList", content: gameId})
+    }
+  })
+}
 
 </script>
 
@@ -105,10 +121,17 @@ const getImgUrl = (rune: number) => {
         </n-space>
       </n-list-item>
       </n-list>
-    <n-button type="success" :bordered="false" @click="searchSummoner"
-              style="margin-top: 8px;width: 100%;">
-      查询详细战绩
-    </n-button>
+    <div class="mt-2 flex justify-between">
+      <n-button type="success" :bordered="false"
+                @click="searchSummoner">
+        查看详细信息
+      </n-button>
+
+      <n-button type="warning" :bordered="false" :disabled="isAllowAdd===false" @click="addBlackList">
+        新增排位笔记
+      </n-button>
+    </div>
+
   </n-drawer-content>
 </template>
 

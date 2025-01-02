@@ -16,32 +16,39 @@ export const useTeammateStore = defineStore('useTeammate', {
       masteryChampList: [] as string[][][],
       blackItems: [] as BlackItemsTypes[],
       isLcuErr: false,
-      isCacheSuccess: false,
+      isCacheSuccess: 0,
+      queueId:0,
+      blacklist:null as Hater[] | null
     }
   },
   actions: {
-    async initStore(summonerInfo: SummonerInfoList[], queueId: number, blacklist: Hater[] | null) {
-      if (this.summonerInfo.length !==0 ){
+    async initStore(summonerInfo: SummonerInfoList[], queueId: number, blacklist: Hater[] | null,isReGet:boolean) {
+      if (this.summonerInfo.length !== 0 ){
         this.$reset()
       }
       this.summonerInfo = summonerInfo
-      await this.getMatchList(summonerInfo)
-      await this.cacheMatchRecord(summonerInfo, queueId)
+      this.queueId = queueId
+      await this.getMatchList(summonerInfo,isReGet)
+      if (!isReGet) {
+        await this.cacheMatchRecord(summonerInfo, queueId)
+      }
 
       if (blacklist !== null) {
+        this.blacklist = blacklist
         setTimeout(() => {
           this.addBlackList(blacklist)
         }, 500)
       }
     },
-    async getMatchList(summonerInfo: SummonerInfoList[]) {
+    async getMatchList(summonerInfo: SummonerInfoList[],isReGet:boolean) {
       for (const [index, summoner] of summonerInfo.entries()) {
-        const matchList = await useMatch.getMatchHis(summoner.puuid)
-        if (matchList.length === 0) {
+        const matchList = await useMatch.getMatchHis(summoner.puuid,isReGet)
+        if (matchList === null) {
           // 查询最近战绩出错
           this.recentMatchList = []
           this.summonerInfo = summonerInfo
-          return this.getMatchListFromChamp(summonerInfo)
+          this.getMatchListFromChamp(summonerInfo)
+          return
         } else {
           this.summonerInfo[index].kda = this.calculateAverageKDA(matchList)
           this.recentMatchList.push(matchList)
@@ -55,6 +62,7 @@ export const useTeammateStore = defineStore('useTeammate', {
         this.masteryChampList.push(list || [])
       }
       this.isLcuErr = true
+      this.isCacheSuccess = -1
     },
     // 缓存战绩数据
     async cacheMatchRecord(summonerInfo: SummonerInfoList[], queueId: number) {
@@ -73,7 +81,7 @@ export const useTeammateStore = defineStore('useTeammate', {
           this.cacheMatchList[summoner.summonerId] = matchHis20.slice(0, 10)
         }
       }
-      this.isCacheSuccess = true
+      this.isCacheSuccess = 1
     },
     // 计算kda
     calculateAverageKDA(statsArray: SimpleMatchTypes[]) {
@@ -103,5 +111,9 @@ export const useTeammateStore = defineStore('useTeammate', {
         haterSum['hater'] = hContent.isShow;haterSum['haterIndex'] = index
       }
     },
+    // 重新获取数据，MatchList进行限制
+    reInit(){
+      this.initStore(this.summonerInfo,this.queueId,this.blacklist,true)
+    }
   }
 })

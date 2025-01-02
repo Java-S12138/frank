@@ -14,11 +14,6 @@ const message = useMessage()
 
 // 自动配置符文
 const autoWriteRune = (alias:string) => {
-  // todo
-  /*if (localStorage.getItem('isSubscribe') === 'f'){
-    message.warning('自动符文，需要订阅，请手动配置', {duration: 3000})
-    return
-  }*/
   const localRuneStr = localStorage.getItem('autoRune') as string
   const runeData = JSON.parse(localRuneStr)[alias]
 
@@ -27,11 +22,11 @@ const autoWriteRune = (alias:string) => {
     return
   }
 
-  handleRunesWrite(runeData,false,[]).then((writeRes) => {
-    if (writeRes===1){
+  handleRunesWrite(runeData).then((writeRes) => {
+    if (writeRes){
       message.success('自动符文配置成功')
-    }else if (writeRes===3){
-      message.success('自动符文配置失败')
+    }else{
+      message.error('自动符文配置失败')
     }
   })
 
@@ -105,7 +100,7 @@ onDeactivated(() => {
 
   </n-card>
   <n-drawer
-    class="rounded-t-xl"
+    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
     v-model:show="autoRuneActive"
     :height="288" :auto-focus="false" placement="bottom">
     <rune-auto :champ="storeRune.currentChampAlias"

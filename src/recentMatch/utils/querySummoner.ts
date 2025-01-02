@@ -2,6 +2,7 @@ import {englishToChinese} from "@/lcu/utils";
 import {aliasToId, champDict} from "@/resources/champList";
 import {invokeLcu} from "@/lcu";
 import {PlayerChampionSelection, RecentSumInfo, SessionTypes, TeamData,SuperChampTypes} from "@/recentMatch/utils/queryTypes";
+import {sessionCommon} from "@/test";
 
 class QuerySummoner {
   public matchSession: null|SessionTypes = null
@@ -12,7 +13,8 @@ class QuerySummoner {
   // 初始化数据
   public init = async () => {
     try {
-      this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
+      this.matchSession = sessionCommon
+      // this.matchSession = await invokeLcu('get','/lol-gameflow/v1/session') as SessionTypes
       this.queueId = this.matchSession.gameData.queue.id
     }catch (e){
       this.matchSession = null
@@ -79,10 +81,10 @@ class QuerySummoner {
   // 获取段位数据
   public queryRankPoint = async (puuid: string):Promise<string[]> => {
     return await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`).then((res: any) => {
-      const rankData = res.queueMap
-      if (rankData ===undefined){
+      if (res === null){
         return ['error','error']
       }
+      const rankData = res.queueMap
       return ['RANKED_SOLO_5x5', 'RANKED_FLEX_SR'].reduce((res: any, item: string) => {
         const tier = rankData[item].tier === "" ? '未定级' : englishToChinese(rankData[item].tier)
         const division = rankData[item].division === 'NA' ? '' : rankData[item].division
@@ -95,27 +97,40 @@ class QuerySummoner {
     })
   }
   // 获取召唤师英雄绝活数据 Z:正常 A:绝活 B:熟练 S:小代 Y:未知 (需要进行下一步判断)
-  public querySummonerSuperChampData = async (puuid:string,champAlias:string) => {
-    // todo
-    /*   if (localStorage.getItem('isSubscribe') ==='f'){
-      return 'Z'
-    }*/
-    if (this.queueId === 420 || this.queueId === 440){
-      const superList:SuperChampTypes[] = (await invokeLcu('get',`/lol-collections/v1/inventories/${puuid}/champion-mastery`)).slice(0,6)
-      const champId = aliasToId[champAlias]
+  public querySummonerSuperChampData = async (puuid: string, champAlias: string) => {
+    // 获取英雄 ID
+    const champId = aliasToId[champAlias];
+    const curChampMark = { lv: -1, score: -1 };
 
-      for (let i = 0; i < superList.length; i++) {
-        if (champId === superList[i].championId && i < 3){
-          return 'A'
-        }else if (champId === superList[i].championId){
-          return 'B'
-        }
-      }
-      return 'Y'
-    }else {
-      return "Z"
+    // 获取召唤师英雄绝活数据
+    const superList: SuperChampTypes[] | null = await invokeLcu('get', `/lol-champion-mastery/v1/${puuid}/champion-mastery`);
+
+    if (!superList) {
+      return { label: 'Z', lv: curChampMark.lv, score: curChampMark.score };
     }
-  }
+
+    // 查找当前英雄的等级和分数
+    const curChamp = superList.find((val: SuperChampTypes) => val.championId === champId);
+    if (curChamp) {
+      curChampMark.lv = curChamp.championLevel;
+      curChampMark.score = curChamp.championPoints;
+    }
+
+    // 检查前 6 名中的位置
+    const top6List = superList.slice(0, 6);
+    const champIndex = top6List.findIndex((val: SuperChampTypes) => val.championId === champId);
+
+    if (champIndex !== -1) {
+      return {
+        label: champIndex < 3 ? 'Z' : 'B',
+        lv: curChampMark.lv,
+        score: curChampMark.score,
+      };
+    }
+
+    // 英雄未上榜
+    return { label: 'Y', lv: curChampMark.lv, score: curChampMark.score };
+  };
 }
 
 export default QuerySummoner

@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import {NCard, NAvatar, NTag, NEllipsis,NResult} from "naive-ui"
+import {NCard, NAvatar, NTag,NResult} from "naive-ui"
 import {RecentSumInfo} from "@/recentMatch/utils/queryTypes";
 
-const {sumList,queueId,isFri} = defineProps<{ sumList: RecentSumInfo[], queueId:number,isFri:boolean}>()
+const {sumList,queueId,isFri,maxScore} = defineProps<{ sumList: RecentSumInfo[], queueId:number,isFri:boolean,maxScore:number}>()
+
+
 const emits = defineEmits(['showDetail'])
 const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
   emits('showDetail',gameId,summonerId,isFri)
 }
+const teamColors = [
+  '#2080f0',
+  '#f0a020',
+  '#18a058',
+  '#d03050',
+  '#9333ea']
 </script>
 
 <template>
@@ -18,7 +26,7 @@ const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
         <!--    头像-->
         <div class="flex justify-between relative">
           <n-avatar
-            :size="55"
+          :size="55"
             :src="summoner.championUrl"
             fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
           />
@@ -34,27 +42,27 @@ const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
               <text>{{ summoner.rankPoint[1] }}</text>
             </div>
           </n-tag>
-          <div v-if="summoner.summonerState !=='Z'"
+          <div v-if="summoner.summonerState.label !=='Z'"
                class="absolute text-xs bg-red-500 text-neutral-50 rounded-sm box-border"
                style="bottom: 0;left: 39px;width: 16px;height: 16px;text-align: center">
-            {{ summoner.summonerState }}
-          </div>
-        </div>
+          {{ summoner.summonerState.label }}
+      </div>
+      </div>
 
-        <n-tag size="small" :bordered="false" type="info"
-               style="height: 30px;width: 100%;
+      <n-tag class="p-0" :type="summoner.summonerState.score===maxScore ? 'info' :'default' "
+               style="height: 30px;width: 100%;font-size: 13px;
                justify-content: center;margin: 4px 0;">
-          <n-ellipsis :tooltip="false" style="max-width: 85px;">
-            {{ summoner.summonerName }}
-          </n-ellipsis>
-          <div class="absolute text-xs bg-blue-500 text-neutral-50 rounded-full"
-               style="bottom: 22px;right: 0;width: 16px;height: 16px;text-align: center">
-            {{ summoner.teamParticipantId }}
+      Score: {{ summoner.summonerState.score }}
+      <div
+            class="absolute text-xs text-neutral-50 z-10 rounded-tr-md rounded-bl-md"
+            style="bottom: 22px;right: 0;width: 30px;height: 16px;text-align: center;"
+            :style="'background-color:'+teamColors[(summoner.teamParticipantId -1)%5]">
+            {{ summoner.summonerState.lv }}
           </div>
         </n-tag>
 
         <!--      战绩-->
-        <div class="flex flex-col gap-y-2">
+      <div class="flex flex-col gap-y-2">
           <div v-for="match in summoner.matchList"
                @click="showDetail(match.gameId,summoner.summonerId,isFri)"
                class="flex w-full gap-x-2">

@@ -23,6 +23,7 @@ const searchSum = (summonerId: number) => {
         :queue-id="matchStore.participantsInfo.queueId"
         :summoner-id="matchStore.summonerId"
         :is-game-in="false"
+        :game-id="matchStore.participantsInfo.gameId"
         @change-sum="searchSum"
       />
     </div>

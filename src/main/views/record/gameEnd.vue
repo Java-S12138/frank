@@ -5,12 +5,13 @@ import SummonerEnd from "@/main/views/record/summonerEnd.vue";
 import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 import {Ref, ref} from "vue";
 import AddBlackList from "@/main/views/record/addBlackList.vue";
-import {HaterStructTypes} from "@/main/views/record/blackListTypes";
+import {BlacklistPlanbTypes} from "@/main/views/record/blackListTypes";
+
 
 const {closeDrawer, teamOne, teamTwo,gameId,platformId} = defineProps<{
   closeDrawer: () => void,
-  teamOne: SummonerDetailInfo[]
-  teamTwo: SummonerDetailInfo[],
+  teamOne: SummonerDetailInfo[] | BlacklistPlanbTypes[],
+  teamTwo: SummonerDetailInfo[] | BlacklistPlanbTypes[],
   gameId:number,
   platformId:string
 }>()
@@ -88,7 +89,7 @@ const backSelectState = (isTeamOne:boolean) => {
     <text
       style="left: 77px;bottom: 2px"
       class="absolute text-gray-400 text-xs">
-      {{valueRef==='add'?'添加成功后下次遇见将弹出提示':'点击英雄头像可查看召唤师战绩'}}
+      {{valueRef==='add'?'添加成功后下次遇见将弹出提示':'评分为-1代表游戏数据获取失败'}}
     </text>
   </n-drawer-content>
 </template>

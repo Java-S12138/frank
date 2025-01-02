@@ -8,11 +8,7 @@ import MatchErr from "@/queryMatch/components/matchErr.vue";
 import {onBeforeMount, Ref, ref} from "vue";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
 import MatchContent from "@/queryMatch/common/matchContent.vue";
-
-const dragMove = () => {
-  // @ts-ignore
-  cube.windows.current.dragMove()
-}
+import LoadingAnime from "@/queryMatch/components/loadingAnime.vue";
 
 const matchStore = useMatchStore()
 const blackMatchDrawer = ref(false)
@@ -50,7 +46,7 @@ const clearBlackMatch = () => {
 
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
-    <div @mousedown="dragMove()" class="dragDiv"></div>
+    <div data-tauri-drag-region class="dragDiv"></div>
 
     <query-header class="h-10 mb-2"/>
 
@@ -59,8 +55,12 @@ const clearBlackMatch = () => {
         v-if="matchStore.sumInfo"
         :key="matchStore.summonerId"
         :sum-info="matchStore.sumInfo"/>
+      <div style="width: 254px;" v-else>
+
+      </div>
       <div class="ml-3 flex-grow">
         <n-card
+          v-if="!matchStore.matchLoading"
           class="shadow h-full" size="small" style="height: 596px;"
           content-style="padding:0 0 0 12px">
           <match-err v-if="matchStore.matchList === null" />
@@ -79,6 +79,12 @@ const clearBlackMatch = () => {
               </template>
             </n-result>
           </div>
+        </n-card>
+        <n-card
+          v-else
+        class="shadow h-full" size="small" style="height: 596px;"
+        content-style="padding:0 0 0 12px">
+         <loading-anime/>
         </n-card>
       </div>
     </div>

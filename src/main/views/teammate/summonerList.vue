@@ -6,7 +6,7 @@ import {useTeammateStore} from "@/main/store/useTeammate";
 import HaterDetails from "@/main/views/record/haterDetails.vue";
 import {CurrentSumInfoTypes, SummonerInfoList,} from "./teammateTypes";
 import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
-import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag} from "naive-ui";
+import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag,NSkeleton,useMessage} from "naive-ui";
 import {BlackItemsTypes} from "@/main/views/record/blackListTypes";
 
 const teammateStore = useTeammateStore()
@@ -14,6 +14,7 @@ const drawerActive = ref(false)
 const drawerBlackActive = ref(false)
 const currentSumInfo: Ref<CurrentSumInfoTypes | null> = ref(null)
 const currentHaterInfo: Ref<BlackItemsTypes | null> = ref(null)
+const message = useMessage()
 
 watch(teammateStore.blackItems, () => {
   if (teammateStore.blackItems.length !== 0 ){
@@ -23,12 +24,6 @@ watch(teammateStore.blackItems, () => {
 })
 
 const getCurrentSum = (summoner: SummonerInfoList, index: number) => {
-  // todo isSubscribe
-  // if (isSubscribe ==='f'){
-  //   message.warning('查看更多信息 需要订阅服务')
-  //   return
-  // }
-  drawerActive.value = true
   currentSumInfo.value = {
     kda: summoner?.kda,
     hater: summoner?.hater,
@@ -38,6 +33,7 @@ const getCurrentSum = (summoner: SummonerInfoList, index: number) => {
     index: index,
     imgUrl: summoner.imgUrl,
   } as CurrentSumInfoTypes
+  drawerActive.value = true
 }
 
 const clearInfo = () => {
@@ -59,7 +55,7 @@ onDeactivated(() => {
 </script>
 
 <template>
-  <n-list>
+  <n-list v-if="teammateStore.summonerInfo.length !== 0">
     <n-list-item
       v-for="(summoner,index) in teammateStore.summonerInfo" style="padding: 10px 0">
       <div class="flex gap-x-3" style="height: 50px;">
@@ -110,8 +106,14 @@ onDeactivated(() => {
     </n-list-item>
   </n-list>
 
+  <n-list v-else>
+    <n-list-item v-for="i in 5 ">
+      <n-skeleton class="rounded-md" height="88px" width="278px" />
+    </n-list-item>
+  </n-list>
   <n-drawer
-    class="rounded-t-xl" v-model:show="drawerActive"
+    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+    v-model:show="drawerActive"
     height="518" placement="bottom"
     @after-leave="clearInfo">
     <summoner-detail
@@ -122,7 +124,9 @@ onDeactivated(() => {
   </n-drawer>
 
   <n-drawer
-    v-model:show="drawerBlackActive" class="rounded-t-xl" :auto-focus="false"
+    v-model:show="drawerBlackActive"
+    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+    :auto-focus="false"
     @after-leave="clearBlackInfo" height="264" placement="bottom">
     <hater-details
       v-if="currentHaterInfo"

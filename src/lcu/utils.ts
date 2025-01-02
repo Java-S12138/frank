@@ -36,6 +36,14 @@ export const queryGameType = (queueId:number) => {
       return '斗魂竞技';
     case 1900 :
       return '无限火力';
+    case 1820 :
+      return '无尽狂潮';
+    case 1810 :
+      return '无尽狂潮';
+    case 1830 :
+      return '无尽狂潮';
+    case 1840 :
+      return '无尽狂潮';
   }
   return '其它模式'
 }

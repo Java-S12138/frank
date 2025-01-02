@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import {SumDetail, SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
-import {NGi, NGrid, NSpace,NTag} from "naive-ui";
-import {Ref, ref} from "vue";
+import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
+import {NGi, NGrid, NSpace,NTag,NScrollbar} from "naive-ui";
 import MatchSumDetails from "@/queryMatch/common/matchSumDetails.vue";
 
 const {teamOne,headerInfo,summonerId} = defineProps<{
@@ -11,12 +10,10 @@ const {teamOne,headerInfo,summonerId} = defineProps<{
 }>()
 
 const emits = defineEmits(['openDrawer'])
-const isMatchDra = ref(false)
-const curMatchDraData:Ref<null|SumDetail> = ref(null)
-
-const showSumDetails = (isOne,index) => {
-  emits('openDrawer',isOne,index)
+const showSumDetails = (summonerId:number) => {
+  emits('openDrawer',summonerId)
 }
+
 </script>
 
 <template>
@@ -46,9 +43,10 @@ const showSumDetails = (isOne,index) => {
       </n-space>
     </n-gi>
   </n-grid>
+  <n-scrollbar style="max-height: 518px;padding-right: 13px">
     <n-space style="margin-top: 17px;" :size="[0,54.8]" justify="space-between">
-      <div v-for="(summoner,index) in teamOne" >
-        <n-space style="width: 290px;" @click="showSumDetails(true,index)" vertical>
+      <div v-for="summoner in teamOne" >
+        <n-space style="width: 290px;" @click="showSumDetails(summoner.accountId)" vertical>
           <match-sum-details :summoner="summoner" :summoner-id="summonerId"/>
           <div class="flex justify-between">
             <n-tag style="width: 82px;justify-content: center;height: 26px;" type="success"
@@ -61,4 +59,6 @@ const showSumDetails = (isOne,index) => {
         </n-space>
       </div>
     </n-space>
+  </n-scrollbar>
+
 </template>

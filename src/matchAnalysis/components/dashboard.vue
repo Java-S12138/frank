@@ -1,34 +1,31 @@
 <script setup lang="ts">
 import {NButton, NIcon, NSpace, useMessage} from "naive-ui";
 import {CircleMinus, CircleX, Settings} from "@vicons/tabler";
+import {open} from "@tauri-apps/plugin-shell";
+import {getCurrentWindow} from "@tauri-apps/api/window";
 
 const {showType,changeShowType} = defineProps<{showType:boolean,changeShowType:() => void}>()
 
 const message = useMessage()
 
 const openWeb = () => {
-  cube.utils.openUrlInDefaultBrowser('https://lolfrank.cn')
+  open('https://lolfrank.cn')
 }
-const handleMin = () => {
-  // @ts-ignore
-  cube.windows.minimize(cube.windows.current.id())
+const handleMin = async () => {
+  await getCurrentWindow().minimize()
 }
+
 const handleClose = async () => {
-  // @ts-ignore
-  cube.windows.close(cube.windows.current.id())
+  await getCurrentWindow().close()
 }
 const handleSet = () => {
   message.info('无效按钮，或许起到了造型上的作用')
-}
-const dragMove = () => {
-  // @ts-ignore
-  cube.windows.current.dragMove()
 }
 </script>
 
 <template>
   <header class="flex relative">
-    <div @mousedown="dragMove()" class="dragDiv"></div>
+    <div data-tauri-drag-region class="dragDiv"></div>
     <div class="flex gap-x-3.5 items-center">
       <img @click="openWeb"
            src="@/assets/icon/siteLogo.png" class="h-10 cursor-pointer" draggable="false">

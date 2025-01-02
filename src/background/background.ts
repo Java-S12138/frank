@@ -1,88 +1,80 @@
-// @ts-ignore
-import './utils/subscribe.ts'
-import './utils/config'
-import './utils/tray'
-import {GameFlow} from "./gameFlow";
+import './utils/tray.ts'
+import {GameFlow} from "./gameFlow.ts";
+import {invoke} from "@tauri-apps/api/core";
+import {listen} from '@tauri-apps/api/event';
+import {configInit,getClientPath} from "@/background/utils/config.ts";
+import {MainWindow} from "./utils/creatWindow.ts";
 
-// cube.windows.openDevTools(cube.windows.current.id())
-
-// 启动主窗口
-cube.extensions.on('launch-triggered', async (s) => {
-   await cube.windows.obtainDeclaredWindow('main')
-})
-
-let isStart: boolean | null = true
-let isCSSestion = true
+new MainWindow();configInit()
 const gameFlow = new GameFlow()
-gameFlow.initGameInWindow()
 
-// 检测是否存在LOL
-cube.games.launchers.getRunningLaunchers().then((value) => {
-  const isLoL = value.find(((i: any) => i.classId === 10902))
-  if (isLoL !== undefined) {
-    isStart = null
-  }
-})
+const initFrank = () => {
+  const TIME_LIMIT = 30000; // 设置超时时间（例如：30秒）
+  let elapsedTime = 0; // 已经过去的时间
+  const intervalTime = 3000; // 每次检查的间隔时间（1秒）
+  invoke('init_keyboard')
 
+  const lcuSuccess = setInterval(async () => {
+    const isGetPath = await getClientPath()
+    if(isGetPath) {
+      clearInterval(lcuSuccess)
+      setTimeout(()=>{
+        gameFlow.sendStartEvent();
+        invoke("start_listener")
+      },500)
+    }
 
+    // 增加已用时间
+    elapsedTime += intervalTime;
 
-cube.games.launchers.events.on('update-info', async (classId, info) => {
-  if (info.category === 'game_flow') {
-    switch (info.value) {
+    // 如果超时，清除 interval 并执行其他操作
+    if (elapsedTime >= TIME_LIMIT) {
+      clearInterval(lcuSuccess);  // 停止检查
+      console.log("超时，客户端未启动");
+      // 这里可以执行超时后的操作，比如调用一个回调函数
+    }
+  }, intervalTime);  // 每秒检查一次
+
+}
+
+invoke('listen_for_client_start').then(() =>{
+  // listen client status
+  listen<string>('client_status', (event) => {
+    switch (event.payload) {
+      case 'ClientStarted':
+        initFrank()
+        return
       case 'ChampSelect':
-        if (isStart) {
-          isStart = null
-        }
         gameFlow.sendMesToMain('ChampSelect')
         gameFlow.autoPickBanChamp()
         return
       case 'GameStart':
         gameFlow.showHideMainWin(false, 'GameStart')
+        gameFlow.initGameInWindow()
         return
       case 'EndOfGame':
+        gameFlow.coloseWin('recentMatchWindow')
         gameFlow.showHideMainWin(true, 'EndOfGame')
+        return
+      case 'Matchmaking':
+        gameFlow.sendMesToMain('Matchmaking')
         return
       case 'ReadyCheck':
         gameFlow.autoAcceptGame()
         gameFlow.writeGameInfo()
         return
       case 'Lobby':
-        return gameFlow.sendMesToMain('Lobby', '')
+        return gameFlow.sendMesToMain('Lobby')
       case 'None':
-        if (isStart) {
-          gameFlow.sendStartEvent()
-          isStart = null
-        } else {
-          gameFlow.sendMesToMain('None', '')
-        }
+        gameFlow.sendMesToMain('None')
         return
     }
-/*  Matchmaking
-    ReadyCheck
-    ChampSelect
-    GameStart
-    InProgress
-    WaitingForStats
-    PreEndOfGame
-    EndOfGame
-    Lobby*/
-  }
+  })
 
-  if (info.category === 'json_api_event' && info.key === 'raw_data') {
-    const obj: { data: any; eventType: string; uri: string } = JSON.parse(info.value)
-    switch (obj.uri) {
-      case '/lol-champ-select/v1/current-champion':
-        gameFlow.sendMesToMain('Champion', obj.data)
-        return
-      case '/lol-champ-select/v1/session':
-        if (isCSSestion && obj.data.actions.length !== 0) {
-          isCSSestion = false
-          gameFlow.sendMesToMain('CSSession', obj.data)
-        } else if (obj.data.actions.length === 0) {
-          isCSSestion = true
-        }
-        return
+  listen<number>('lol-champ-select', (event) => {
+    const champId = event.payload;
+    if (champId !== 0) {
+      gameFlow.sendMesToMain('Champion', champId);
     }
-  }
+  })
 })
-

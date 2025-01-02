@@ -93,6 +93,7 @@ export interface GameDataTypes {
   teamOne: TeamData[];
   teamTwo: TeamData[];
 }
+
 export interface SessionTypes {
   gameClient: any;
   gameData: GameDataTypes;
@@ -100,21 +101,24 @@ export interface SessionTypes {
   map: any;
   phase: string;
 }
+
 export interface RecentSumInfo {
   summonerId: number;
   rankPoint: string[];
   summonerName: string;
   puuid: string;
-  summonerState: string;
+  summonerState: { label: string, lv: number, score: number };
   championUrl: string;
   teamParticipantId: number;
-  matchList:MatchItemTypes[];
+  matchList: MatchItemTypes[];
 }
+
 export interface RecentAllSumInfo {
-  friendList:RecentSumInfo[];
-  enemyList:RecentSumInfo[];
-  queueId:number;
+  friendList: RecentSumInfo[];
+  enemyList: RecentSumInfo[];
+  queueId: number;
 }
+
 export interface MatchItemTypes {
   champImg: string;
   kills: number;
@@ -124,6 +128,7 @@ export interface MatchItemTypes {
   gameId: number;
   queueId: number;
 }
+
 export interface SuperChampTypes {
   championId: number;
   championLevel: number;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NSpace, NScrollbar, NAvatar, NTag, NLayout, NLayoutSider, NResult, NSkeleton} from 'naive-ui'
+import {NSpace, NScrollbar, NAvatar, NTag, NResult, NSkeleton} from 'naive-ui'
 import {onMounted, ref} from "vue";
 import {queryMasteryChampList} from "@/lcu/aboutSummoner";
 
@@ -15,7 +15,7 @@ onMounted(() => {
   } else {
     queryMasteryChampList(puuid).then((value) => {
       if (value === null) {
-        champList.value = null
+        champList.value = []
       } else {
         champList.value = value
       }
@@ -36,7 +36,7 @@ onMounted(() => {
       </div>
     </n-space>
   </n-scrollbar>
-  <n-scrollbar v-else-if="champList.length !== 0" :style="stylySco">
+  <n-scrollbar id="image-scroll-container" v-else-if="champList.length !== 0" :style="stylySco">
     <div>
       <n-space vertical :size="[0,15]" style="margin-top: 3px">
         <div
@@ -48,9 +48,14 @@ onMounted(() => {
               <div class="flex items-center justify-center rounded bg-blue-100 dark:bg-[#70c0e850]"
                    style="width: 50px;height: 50px;">
                 <n-avatar
-                  lazy
                   :size="42"
                   :src="champ[0]"
+                  lazy
+                  :render-placeholder="() => null"
+                  :intersection-observer-options="{
+                    root: '#image-scroll-container',
+                   }"
+                  fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                   style="display: block"/>
               </div>
             </div>

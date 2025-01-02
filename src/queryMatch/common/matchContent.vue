@@ -9,17 +9,19 @@ import MatchDetailsFighter from "@/queryMatch/common/matchDetailsFighter.vue";
 import {SumDetail, SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
 
 const emits = defineEmits(['changeSum'])
-const {teamOne, teamTwo, headerInfo, summonerId, queueId, isGameIn} = defineProps<{
+const {teamOne, teamTwo, headerInfo, summonerId, queueId, isGameIn,gameId} = defineProps<{
   teamOne: SummonerDetailInfo[],
   teamTwo: SummonerDetailInfo[],
   headerInfo: string[],
   queueId: number,
   summonerId: number,
-  isGameIn: boolean
+  isGameIn: boolean,
+  gameId:number
 }>()
 
 const rotatedIndex = ref(0)
 const isMatchDra = ref(false)
+const isAllowAdd = ref(true)
 const curMatchDraData: Ref<null | SumDetail> = ref(null)
 const titleArr = [['totalDamageDealtToChampions', '输出伤害'], ['totalDamageTaken', '承受伤害'], ['goldEarned', '商店存款'], ['visionScore', '视野得分'], ['totalMinionsKilled', '击杀小兵']]
 
@@ -27,12 +29,14 @@ const changeShowMode = () => {
   rotatedIndex.value = (rotatedIndex.value += 1) % titleArr.length
 }
 
-const openMatchDra = async (isOne, index) => {
+const openMatchDra = async (summonerId:number) => {
   if (isGameIn){
     // 如果是游戏里面的窗口显示此页面，不让打开抽屉窗口
     return
   }
-  const summonerInfo: SummonerDetailInfo = isOne ? teamOne[index] : teamTwo[index]
+  const allTeam = teamOne.concat(teamTwo)
+  const summonerInfo = allTeam.find(v => v.accountId===summonerId)
+  isAllowAdd.value = allTeam.find(v => v.accountId === JSON.parse(localStorage.getItem('sumInfo') as string).summonerId) !== undefined
   curMatchDraData.value = await getDrawerData(summonerInfo)
   isMatchDra.value = true
 }
@@ -102,12 +106,14 @@ const searchSummoner = () => {
   <n-drawer
     v-if="!isGameIn"
     v-model:show="isMatchDra"
-    class="rounded-r-xl"
+    style="border-top-right-radius: 0.45rem;border-bottom-right-radius: 0.45rem"
     @after-leave="curMatchDraData=null"
     :auto-focus="false"
     :width="265" placement="left">
     <match-drawer v-if="curMatchDraData!==null"
                   :search-summoner="searchSummoner"
+                  :is-allow-add="isAllowAdd"
+                  :game-id="gameId"
                   :personal-details="curMatchDraData"/>
   </n-drawer>
 </template>

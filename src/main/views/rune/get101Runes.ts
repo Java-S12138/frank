@@ -1,8 +1,8 @@
-import {request} from "@/main/utils/request"
 // @ts-ignore
 import _orderBy from "lodash/orderBy";
 import {flatRunes} from './runes'
 import {champDict} from "@/resources/champList";
+import {fetch} from "@tauri-apps/plugin-http";
 
 const parseCode = (string:any) => {
   try {
@@ -68,13 +68,7 @@ const makePerkData = (perk:any, champion:string, position:string) => {
   if (position==='mid'){
     position = 'middle'
   }
-  const runeList:number[] = runes.map((i:string) => {
-    if (i === '0'){
-      i = '5001'
-    }
-    return Number(i)
-  })
-  data.selectedPerkIds = runeList.slice(0,9)
+  data.selectedPerkIds = runes
   data.alias = champion;
   data.position = position;
   data.pickCount = igamecnt;
@@ -83,11 +77,12 @@ const makePerkData = (perk:any, champion:string, position:string) => {
 
 export const get101Runes = async (champId:string|number) => {
   const url = `https://lol.qq.com/act/lbp/common/guides/champDetail/champDetail_${champId}.js`
-  const res = await request({
-    method:"GET",
-    url:url
-  })
-  const jsonRes = parseCode(res.data)
+
+  const res = await fetch(url, {method:'GET'})
+  const data = await res.text()
+
+  if (res.status !== 200) {return null}
+  const jsonRes = parseCode(data)
   const perks:any = Object.values(jsonRes.list.championLane).reduce((res:any, l:any) => {
     if (l.hold3 !==''){
       const perkDetail =  JSON.parse(l.perkdetail);

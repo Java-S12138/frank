@@ -1,4 +1,4 @@
-import {request} from "@/main/utils/request";
+import {requestFetch} from "@/main/utils/request";
 import {mapNameFromUrl} from "@/resources/champList";
 import {Block, OnlineRunes} from "@/main/views/rune/runeTypes";
 
@@ -9,16 +9,13 @@ export class QueryRune {
   // 获取英雄数据
   public getChampInfo = async (alias:string): Promise<OnlineRunes[]> => {
     const timestamp = new Date().getTime()
+    const baseUrl = 'https://frank-1304009809.cos.ap-chongqing.myqcloud.com'
     if (this.mapId === 12) {
-      return (await request({
-        url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg-aram/${alias}.json?date${timestamp}`,
-        method: 'GET',
-      })).data
+      const res = await requestFetch<any>(`${baseUrl}/op.gg-aram/${alias}.json?date${timestamp}`,'GET')
+      return res === null ? [] : res
     } else {
-      return (await request({
-        url: `https://frank-1304009809.cos.ap-chongqing.myqcloud.com/op.gg/${alias}.json?date${timestamp}`,
-        method: 'GET',
-      })).data
+      const res = await requestFetch<any>(`${baseUrl}/op.gg/${alias}.json?date${timestamp}`,'GET')
+      return res === null ? [] : res
     }
   }
   // 获取技能数据
@@ -26,7 +23,7 @@ export class QueryRune {
     return skillsImg.map((img:string, i:number) => [
       `https://game.gtimg.cn/images/lol/act/img/spell/${img}`,
       skills[i]
-    ]);
+    ])
   }
   // 获取符文数据
   public getRunesData = async (alias:string) => {

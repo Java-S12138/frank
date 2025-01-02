@@ -2,18 +2,20 @@ import {invokeLcu} from "./index"
 import {lcuSummonerInfo, summonerInfo,ChampionMasteryTypes} from "./types/SummonerTypes";
 import {dealDivsion, englishToChinese} from "./utils";
 import {champDict} from "@/resources/champList";
+import {queryMatchHistory} from "@/lcu/aboutMatch";
+import {TencentRsoPlatformId} from "@/resources/areaList";
 
 // 查询本地召唤师信息
 export const querySummonerInfo = async (summonerId?:number|string,summonerName?:string):Promise<summonerInfo | null> => {
   let summonerInfo:lcuSummonerInfo
-  if (summonerId!==undefined){
+  if (summonerId !==undefined){
     summonerInfo = await invokeLcu('get', `/lol-summoner/v1/summoners/${summonerId}`)
-  }else if (summonerName!==undefined){
-    summonerInfo =  await invokeLcu('get',`/lol-summoner/v1/summoners`,[summonerName])
+  }else if (summonerName !== undefined){
+    summonerInfo =  await invokeLcu('get', `/lol-summoner/v1/summoners/?name=${encodeURI(summonerName)}`)
   }else {
     summonerInfo = await invokeLcu('get','/lol-summoner/v1/current-summoner')
   }
-  if (summonerInfo?.summonerId===undefined){
+  if (summonerInfo?.summonerId === undefined){
     return null
   }
 
@@ -21,11 +23,21 @@ export const querySummonerInfo = async (summonerId?:number|string,summonerName?:
     privacy:summonerInfo.privacy,
     puuid:summonerInfo.puuid,
     tagLine:summonerInfo.tagLine,
-    name:summonerInfo.displayName||summonerInfo.gameName,
+    name:summonerInfo.gameName||summonerInfo.displayName,
     currentId: summonerInfo.summonerId,
     lv:"Lv "+summonerInfo.summonerLevel,
     xp:parseInt(String((summonerInfo.xpSinceLastLevel / summonerInfo.xpUntilNextLevel ) * 100)),
     imgUrl:`https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summonerInfo.profileIconId}.png`
+  }
+}
+
+// 查询所在服务器ID
+export const queryPlatformId = async (puuid:string):Promise<string> => {
+  const matchList = await queryMatchHistory(puuid,0,0)
+  if (matchList === null){
+    return ''
+  }else {
+    return TencentRsoPlatformId[matchList[0].platformId] ||matchList[0].platformId
   }
 }
 
@@ -64,12 +76,17 @@ export const querySummonerHonorLevel = async ():Promise<string> => {
 
 
 // 查询召唤师绝活英雄数据
-export const queryMasteryChampList = async (summonerPuuid: string) => {
+export const queryMasteryChampList = async (summonerPuuid?: string) => {
   if (summonerPuuid === '') {
     return []
   }
   try {
-    const summonerSuperChampData: ChampionMasteryTypes[] = await invokeLcu('get', `/lol-collections/v1/inventories/${summonerPuuid}/champion-mastery`)
+    let summonerSuperChampData: ChampionMasteryTypes[]
+    if (summonerPuuid === undefined) {
+      summonerSuperChampData = await invokeLcu('get', '/lol-champion-mastery/v1/local-player/champion-mastery')
+    }else {
+      summonerSuperChampData = await invokeLcu('get', `/lol-champion-mastery/v1/${summonerPuuid}/champion-mastery`)
+    }
     return summonerSuperChampData.slice(0, 20).reduce((res: string[][], item: ChampionMasteryTypes) => {
       return res.concat([[
         `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(item.championId)].alias}.png`,

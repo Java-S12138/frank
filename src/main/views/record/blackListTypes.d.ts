@@ -1,3 +1,5 @@
+import {SummonerDetailInfo} from "@/queryMatch/utils/MatchDetail";
+
 export interface UserInfos {
   ID: number;
   CreatedAt: string;
@@ -61,20 +63,19 @@ export interface BlackItemsTypes {
   hInfo: { name: string, sumId: string },
   hContent: HaterItem,
 }
-
-export interface MyTeamObject {
-  assignedPosition: string;
-  cellId: number;
-  championId: number;
-  championPickIntent: number;
-  nameVisibilityType: string;
-  obfuscatedPuuid: string;
-  obfuscatedSummonerId: number;
-  puuid: string;
-  selectedSkinId: number;
-  spell1Id: number;
-  spell2Id: number;
-  summonerId: number;
-  team: number;
-  wardSkinId: number;
+export interface ParticipantsInfoPlanB {
+  teamOne: BlacklistPlanbTypes[],
+  teamTwo: BlacklistPlanbTypes[],
+  headerInfo: string[],
+  queueId:number,
+  gameId:number
+}
+export interface BlacklistPlanbTypes {
+  name:string;
+  accountId:number;
+  champImgUrl:string;
+  score:string;
+  iconList:string[];
+  isMvp:boolean;
+  isWin:boolean;
 }

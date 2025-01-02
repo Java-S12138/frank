@@ -1,14 +1,15 @@
 import {invokeLcu} from "./index";
-import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";
+import {ConfigSettingTypes} from "@/background/types";
 
 //选择或者禁用英雄共用函数
 const champSelectPatchAction = async (actionID:any, champId:any, type:string,idSetInterval:number) => {
-  const localBody = {
+  const localBody:any = {
     "completed": true,
     "type": type,
     "championId": champId
   }
-  invokeLcu('patch',`/lol-champ-select/v1/session/actions/${actionID}`,[localBody]).then(value => {
+  invokeLcu('patch',`/lol-champ-select/v1/session/actions/${actionID}`,JSON.stringify(localBody)).then(value => {
+    clearInterval(idSetInterval)
     if (!value?.success && type==='pick'){
       clearInterval(idSetInterval)
     }

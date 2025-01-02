@@ -29,7 +29,7 @@ export const useRuneStore = defineStore('useRuneStore', {
       if (champId === this.currentChamp){
         return false
       }
-      if (this.runeDataList.length !==0 ) {
+      if (this.runeDataList.length !== 0 ) {
         this.$reset()
       }
 
@@ -37,7 +37,6 @@ export const useRuneStore = defineStore('useRuneStore', {
 
 
       const runesData = await queryRune.getRunesData(this.currentChampAlias)
-
       if (runesData !== null){
         this.skillsList = runesData.skillsList
         this.runeDataList = runesData.runeDataList

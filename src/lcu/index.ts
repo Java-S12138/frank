@@ -1,21 +1,14 @@
-// cube.games.launchers.getRunningLaunchers().then((launchers) => {
-//   launchers.forEach((v) => {
-//     cube.games.launchers.events.getInfo(v.classId).then((info) => {
-//       console.log('info ', info);
-//     });
-//   });
-// });
-// cube.games.launchers.events.on('update-info', (classId, info) => {
-//   console.log('update info ', classId, info);
-// });
+import {invoke} from "@tauri-apps/api/core";
 
-export const invokeLcu = (method: string, uri: string, args?: any) => {
-  return cube.games.launchers
-    .invokeLEP(10902, 'lcuRequest', {method: method, uri: uri, args: args})
-    .then((v) => {
-      return v
+export const invokeLcu = <T>(method: string, uri: string, body: string = ''): Promise<T | null> => {
+  return invoke<T | null>("invoke_lcu", {method: method, uri: uri, body: body})
+    .then((result) => {
+      if (result === null) {
+        return null
+      }
+      return result as T
     })
-    .catch((err) => {
-      return err
+    .catch(() => {
+      return null
     })
 }

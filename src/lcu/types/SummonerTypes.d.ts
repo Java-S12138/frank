@@ -14,11 +14,7 @@ export interface lcuSummonerInfo {
   unnamed: boolean;
   xpSinceLastLevel: number;
   xpUntilNextLevel: number;
-<<<<<<< HEAD:src/pages/main/lcu/types/homeLcuTypes.d.ts
-  httpStatus?:number
-=======
   success?:boolean
->>>>>>> frank2:src/lcu/types/SummonerTypes.d.ts
   tagLine:string
 }
 
@@ -38,11 +34,7 @@ export interface summonerInfo {
   xp:number,
   puuid:string,
   currentId:number,
-<<<<<<< HEAD:src/pages/main/lcu/types/homeLcuTypes.d.ts
-  tagLine:string
-=======
   tagLine:string|undefined
->>>>>>> frank2:src/lcu/types/SummonerTypes.d.ts
 }
 
 
@@ -65,4 +57,11 @@ export interface ChampionMasteryTypes {
   playerId: number;
   puuid: string;
   tokensEarned: number;
+}
+
+export interface sumInfoTypes{
+  puuid:string;
+  name:string
+  summonerId:number;
+  platformId:string;
 }

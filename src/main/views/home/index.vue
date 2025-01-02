@@ -1,105 +1,106 @@
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NProgress, NSpace, NTag, NDivider,NList, NListItem,NButton,NEllipsis
+  NCard,
+  NAvatar,
+  NProgress,
+  NSpace,
+  NTag,
+  NDivider,
+  NList,
+  NListItem,
+  NButton,
+  NEllipsis,
 } from 'naive-ui'
 import {getCurrentSummonerAllInfo} from "./getHomeData";
-import {onActivated, onMounted, reactive} from "vue";
-import {SummonerData} from "@/lcu/types/SummonerTypes";
-import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
+import {onActivated, onMounted, reactive, Ref, ref} from "vue";
+import {SummonerData, sumInfoTypes, summonerInfo} from "@/lcu/types/SummonerTypes";
 import StartGame from "./startGame.vue";
-import {GameInfo, sumInfoTypes} from "@/background/utils/backgroundTypes";
-import {TencentRsoPlatformId} from "@/resources/areaList";
 import {useRecordStore} from "@/main/store/useRecord";
+import {listen, once} from "@tauri-apps/api/event";
+import {invoke} from "@tauri-apps/api/core";
+import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
+import {QueryMatchWindow} from "@/background/utils/creatWindow.ts";
+import {queryPlatformId} from "@/lcu/aboutSummoner.ts";
 
-const summonerData:SummonerData = reactive({
+const summonerData: SummonerData = reactive({
   summonerInfo: null,
   rankList: null,
   champLevel: null,
 })
-let recordStore:any = useRecordStore()
+let recordStore: any = useRecordStore()
 
-onMounted( () => {
-  init(true).then(async (value) =>  {
-    if (!value){
-      const lolCient = (await cube.games.launchers.getRunningLaunchers())
-        .find(((i:any) => i.classId===10902))
 
-      if (lolCient === undefined){
-        onClientLaunch()
-      }else {
-        let timer = 0
-        const maxAttempts = 3
-        const launchInterval = setInterval(async () => {
-          timer++
-          const isInit = await init(true)
-          if (isInit || timer === maxAttempts) {
-            clearInterval(launchInterval)
-          }
-        }, 1500)
-      }
+onMounted(() => {
+  invoke<boolean>('is_lol_cilent').then((val: boolean) => {
+    if (val) {
+      init(true)
+    }else {
+      onClientLaunch()
     }
   })
 })
 
 onActivated(() => {
-  if (summonerData.summonerInfo !== null){
+  if (summonerData.summonerInfo !== null) {
     init(false)
   }
 })
 
-const init = async (isFirst:boolean) => {
+const init = async (isFirst: boolean) => {
   const summonerAllInfo = await getCurrentSummonerAllInfo()
-  if (summonerAllInfo === null){
+  if (summonerAllInfo === null) {
     return false
   }
-  if (isFirst){
-    writeSumInfo(summonerAllInfo)
+  if (isFirst) {
+    writeSumInfo(summonerAllInfo.summonerInfo)
   }
 
   summonerData.summonerInfo = summonerAllInfo.summonerInfo
   summonerData.rankList = summonerAllInfo.rankList as string[]
   summonerData.champLevel = summonerAllInfo.champLevel as string[][]
+
   return true
 }
 
-const writeSumInfo = (sInfo) => {
-  cube.games.launchers.events.getInfo(10902).then((info:GameInfo) => {
-    const area = TencentRsoPlatformId[<string>info.summoner_info?.platform_id] || <string>info.summoner_info?.platform_id
+
+const writeSumInfo = async (sInfo:summonerInfo) => {
+  const platformId = await queryPlatformId(sInfo.puuid)
     // 设置召唤师信息
-    const sumInfo:sumInfoTypes = {
-      name:sInfo.summonerInfo.name,
-      summonerId:sInfo.summonerInfo.currentId,
-      platformId:area
+    const sumInfo: sumInfoTypes = {
+      name: sInfo.name,
+      summonerId: sInfo.currentId,
+      puuid:sInfo.puuid,
+      platformId:  platformId,
     }
-    localStorage.setItem('sumInfo',JSON.stringify(sumInfo))
-    recordStore.init();recordStore=null
-  })
+    localStorage.setItem('sumInfo', JSON.stringify(sumInfo))
+    recordStore.init();
+    recordStore = null
 }
 
-const onClientLaunch = () => {
-  const closeMessageOn = cube.windows.message.on('received', async (id) => {
-    if (id === 'initHome') {
-      let timer = 0
-      const interval = setInterval(async () => {
-        timer += 1
-        if (summonerData.summonerInfo === null){
-          init(true)
-        }else {
-          clearInterval(interval)
-          closeMessageOn()
-        }
-        if (timer===8){
-          clearInterval(interval)
-          closeMessageOn()
-        }
-      },3000)
-    }
+
+const onClientLaunch = async () => {
+  const closeMessageOn = await listen<string>('initHome', () => {
+    let timer = 0
+    const interval = setInterval(async () => {
+      timer += 1
+      if (summonerData.summonerInfo === null) {
+        init(true)
+      } else {
+        clearInterval(interval)
+        closeMessageOn()
+      }
+      if (timer === 15) {
+        clearInterval(interval)
+        closeMessageOn()
+      }
+    }, 1000)
   })
 }
 
 const openWin = () => {
-  cube.windows.obtainDeclaredWindow('queryMatch')
+  new QueryMatchWindow()
 }
+
 
 </script>
 
@@ -120,13 +121,13 @@ const openWin = () => {
                    style="width: 130px;justify-content: center"
                    :bordered="false" round>
               <n-ellipsis style="max-width: 110px" :tooltip="false">
-                {{summonerData.summonerInfo.name}}
+                {{ summonerData.summonerInfo.name }}
               </n-ellipsis>
             </n-tag>
-            <n-button class="px-2"  :bordered="false"
+            <n-button class="px-2" :bordered="false"
                       @click="openWin"
                       type="success" size="small" round>
-              查询战绩
+              我的战绩
             </n-button>
           </div>
           <div class="flex justify-between gap-x-3">
@@ -156,7 +157,7 @@ const openWin = () => {
       </div>
       <!--    头像 昵称 等级-->
 
-    <n-divider dashed style="margin: 14px 0 2px 0"/>
+      <n-divider dashed style="margin: 14px 0 2px 0"/>
 
       <!--段位 荣誉等级-->
       <n-list>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import {NButton, NInput, NSelect, NPagination, useMessage, NIcon, NSpace, MessageReactive} from "naive-ui"
+import {NButton, NInput, NSelect, NPagination,NAlert,NModal,NCard,
+  useMessage, NIcon, NSpace, MessageReactive} from "naive-ui"
 import {ref, watch} from "vue";
 import {CircleMinus, CircleX, Settings} from "@vicons/tabler";
-import {querySummonerInfo} from "@/lcu/aboutSummoner";
+// import {querySummonerInfo} from "@/lcu/aboutSummoner";
 import useMatchStore from "@/queryMatch/store";
+import {getCurrentWindow} from "@tauri-apps/api/window";
+import { open } from '@tauri-apps/plugin-shell';
 
 const matchStore = useMatchStore()
 const inputVal = ref('')
@@ -41,13 +44,15 @@ const options = [
     value: 1700
   },
 ]
+const showModal = ref(false)
 
 const changeMatchMode = async (queueId: number) => {
   if (matchStore.sumInfo !== null) {
     const curMod = options.find(i => i.value === selectVal.value)?.label
-    const mes: MessageReactive = message.loading(`${curMod} 加载中...`)
-    await matchStore.getSpecialMatchList(queueId,matchStore.sumInfo.info.puuid)
-    mes.destroy()
+    const mes: MessageReactive = message.loading(`${curMod} 加载中...`,
+      {duration:6666})
+    matchStore.getSpecialMatchList(queueId,matchStore.sumInfo.info.puuid).then(() => mes.destroy())
+
   } else {
     matchStore.getSpecialMatchList(queueId)
   }
@@ -55,24 +60,25 @@ const changeMatchMode = async (queueId: number) => {
 }
 
 const searchSum = async () => {
-  if (inputVal.value === '') {
+  showModal.value = !showModal.value
+/*  if (inputVal.value === '') {
     message.warning('召唤师昵称不能为空')
     return
   }
   const sumInfo = await querySummonerInfo(undefined, inputVal.value)
   if (sumInfo === null) {
-    message.error('当前召唤师不存在，[ 跨区服务器需要加上编号 ] xxx#12138')
+    message.error('当前召唤师不存在，[ 需要加上编号，#号前后无空格 ] xxx#12138')
     clearVal()
     return
   }
 
-  if (sumInfo.privacy !== 'PUBLIC') {
-    message.error('当前召唤师战绩为隐藏状态')
+  if (sumInfo.privacy !== 'PUBLIC' && !subscribe) {
+    message.error('Sorry，不支持查询隐藏战绩玩家')
     clearVal()
     return
   }
   matchStore.init(sumInfo.currentId)
-  clearVal()
+  clearVal()*/
 }
 const clearVal = () => {
   inputVal.value = ''
@@ -80,15 +86,13 @@ const clearVal = () => {
   pageVal.value = 1
 }
 const openWeb = () => {
-  cube.utils.openUrlInDefaultBrowser('https://lolfrank.cn')
+  open('https://lolfrank.cn')
 }
-const handleMin = () => {
-  // @ts-ignore
-  cube.windows.minimize(cube.windows.current.id())
+const handleMin = async () => {
+  await getCurrentWindow().minimize()
 }
 const handleClose = async () => {
-  // @ts-ignore
-  cube.windows.close(cube.windows.current.id())
+  await getCurrentWindow().close()
 }
 const handleSet = () => {
   message.info('无效按钮，或许起到了造型上的作用')
@@ -103,6 +107,9 @@ const pageChange = (page: number) => {
   } else {
     matchStore.fromSpecialToMatchList(page)
   }
+}
+const refreshPage = () => {
+  matchStore.init()
 }
 </script>
 
@@ -127,11 +134,13 @@ const pageChange = (page: number) => {
       </n-button>
     </div>
     <div class="flex-grow flex items-center gap-x-3">
-      <n-input v-model:value="inputVal" type="text" spellcheck="false" style="width: 141px;font-size: 13.5px"
-               size="small" placeholder="仅支持同服务器玩家"/>
-      <n-button size="small" :bordered="false" @click="searchSum"
+      <n-button size="small" secondary type="tertiary" :bordered="false" @click="searchSum"
+                style="width: 141px;color: #666666;font-size: 13.5px">
+        仅显示玩家战绩数据
+      </n-button>
+      <n-button size="small" :bordered="false" @click="refreshPage"
                 type="success" style="width: 46px;padding: 0 9px">
-        查询
+        刷新
       </n-button>
       <n-select size="small" v-model:value="selectVal"
                 :disabled="inputVal!==''"
@@ -160,6 +169,22 @@ const pageChange = (page: number) => {
         </n-button>
       </n-space>
     </div>
+    <n-modal v-model:show="showModal" transform-origin="center">
+      <n-card
+        style="width: 540px;border-radius: 8px"
+        :bordered="false"
+        size="small"
+        role="dialog"
+        aria-modal="true"
+      >
+        <n-alert title="查询战绩已禁用" type="error">
+          尊敬的用户：<br><br>
+          根据英雄联盟官方要求，已于2024年7月17日起停止提供战绩查询功能。
+          对此给您带来的不便，深表歉意，感谢您一直对Frank的支持与理解。<br><br>
+          Frank开发者敬上
+        </n-alert>
+      </n-card>
+    </n-modal>
   </header>
 </template>
 

@@ -35,7 +35,7 @@ export class QueryMatch {
     const kills = match.participants[0].stats.kills
     const deaths = match.participants[0].stats.deaths
     const assists = match.participants[0].stats.assists
-    const kda = deaths ===0? kills+assists : Math.round((kills+assists)/deaths*3)
+    const kda = deaths === 0 ? kills + assists : Math.round((kills + assists) / deaths * 3)
 
     return {
       champId: match.participants[0].championId,
@@ -49,7 +49,7 @@ export class QueryMatch {
       // 助攻数目
       assists: assists,
       // KDA
-      kda:kda,
+      kda: kda,
       // 游戏时间
       matchTime: this.timestampToDate(match.gameCreation),
       // 游戏模式
@@ -73,11 +73,10 @@ export class QueryMatch {
     }
   }
   // process record data
-  public dealMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<SimpleMatchTypes[]> => {
+  public dealMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<SimpleMatchTypes[] | null> => {
     const matchList = await queryMatchHistory(puuid, begIndex, endIndex)
-
     if (matchList === null) {
-      return []
+      return null
     }
 
     return matchList.map((matchListElement) => {
@@ -94,7 +93,10 @@ export class QueryMatch {
     if (speListLen === 10 || matchHis20.length < 20) {
       return specialList
     } else {
-      const matchHis40 = await this.dealMatchHistory(puuid, 20, 59)
+      const matchHis40 = await this.dealMatchHistory(puuid, 20, 39)
+      if (matchHis40 === null) {
+        return specialList
+      }
       return [
         ...specialList,
         ...matchHis40.filter(matchList => matchList.queueId === queueId).slice(0, 10 - speListLen)
@@ -102,7 +104,10 @@ export class QueryMatch {
     }
   }
 
-  public getMatchHis = async (puuid: string) => {
+  public getMatchHis = async (puuid: string, isReGet: boolean) => {
+    if (isReGet) {
+      return await this.dealMatchHistory(puuid, 0, 9)
+    }
     return await this.dealMatchHistory(puuid, 0, 19)
   }
   public getSpecialMatchHis = async (puuid: string, matchHis20: SimpleMatchTypes[], queueId: number) => {

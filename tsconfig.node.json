@@ -4,10 +4,7 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "types": [
-      "@cube-internal/types"
-    ]
+    "allowSyntheticDefaultImports": true
   },
   "include": ["vite.config.ts"]
 }

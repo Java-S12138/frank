@@ -17,7 +17,6 @@ export default class BaseMatch {
 
   public dealMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<SimpleMatchDetailsTypes[]|null> => {
     const matchList = await queryMatchHistory(puuid, begIndex, endIndex)
-
     if (matchList === null) {
       return null
     }
@@ -54,7 +53,8 @@ export default class BaseMatch {
       // 游戏模式
       gameModel:queryGameType(match.queueId),
       //游戏对局ID
-      queueId:match.queueId
+      queueId:match.queueId,
+      champId: match.participants[0].championId
     }
   }
 
