@@ -2,12 +2,14 @@
 import {Ref, ref} from "vue";
 import {ConfigSettingTypes} from "@/background/types/";
 import {optionsChampion, keywordsList} from "@/resources/champList";
-import {NDrawerContent, NTag,NButton, NSelect, NSwitch, NSlider, NRadio,NList,NListItem, useDialog} from 'naive-ui'
+import {NDrawerContent,NModal, NTag,NButton, NSelect, NSwitch, NSlider, NRadio,NList,NListItem, useDialog} from 'naive-ui'
 import {relaunch} from "@tauri-apps/plugin-process";
+import Sponsor from "./sponsor.vue";
 
 const config:Ref<ConfigSettingTypes> = ref(JSON.parse(localStorage.getItem('configSetting') as string))
 const theme = localStorage.getItem('theme')  || 'light'
 const dialog = useDialog()
+const showModal = ref(false)
 
 const saveConfig = () => {
   localStorage.setItem('configSetting',JSON.stringify(config.value))
@@ -79,13 +81,27 @@ const openWeb = (isSYJ:boolean) => {
 const restart = async () => {
   await relaunch()
 }
+
+const sponsor = () => {
+  showModal.value = true
+}
 </script>
 
 <template>
   <n-drawer-content body-style='padding:20px 22px' body-content-style="padding:0px">
       <n-list>
-        <!--        切换主题-->
         <n-list-item style="padding-top: 0px;">
+          <div class="gap-x-5 flex justify-between items-center">
+            <n-tag :bordered="false">鼓励开发</n-tag>
+            <n-button
+              @click="sponsor"
+              style="width:186px;" size="small" secondary :bordered="false" type="warning">
+              赞助 Frank 英雄联盟助手
+            </n-button>
+          </div>
+        </n-list-item>
+        <!--        切换主题-->
+        <n-list-item >
           <div class="flex gap-x-5 justify-between items-center">
             <n-tag :bordered="false">主题样式</n-tag>
             <div class="flex flex-grow justify-between">
@@ -178,7 +194,9 @@ const restart = async () => {
             </div>
           </div>
           <n-tag class="mt-1.5 w-full justify-center"  :disabled="true" :bordered="false" size="small">
-            游戏内显示战绩窗口 隐藏|显示 SHIFT+TAB</n-tag>
+            游戏内显示战绩窗口，显示|隐藏 SHIFT+TAB</n-tag>
+          <n-tag class="mt-1.5 w-full justify-center"  :disabled="!config.isGameInWindow? false:true" :bordered="false" size="small">
+            关闭自动打开后，进入游戏需点击右下角图标</n-tag>
         </n-list-item>
         <!--        秒接对局-->
         <n-list-item>
@@ -189,6 +207,8 @@ const restart = async () => {
           <n-tag class="mt-1.5 w-full justify-center" :disabled="true" :bordered="false"
           size="small">数值: [ {{'<'}}50  关闭 ] [ =50 开启 ] [ {{'='}}60  延迟两秒 ]</n-tag>
         </n-list-item>
+        <!--        秒接对局-->
+
         <n-list-item style="padding-bottom: 0px;">
           <div class="flex justify-between items-center">
             <n-button
@@ -206,5 +226,9 @@ const restart = async () => {
           </div>
         </n-list-item>
       </n-list>
+
+    <n-modal style="margin:8px;max-width:334px" v-model:show="showModal">
+      <Sponsor></Sponsor>
+    </n-modal>
   </n-drawer-content>
 </template>

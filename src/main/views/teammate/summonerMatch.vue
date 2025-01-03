@@ -21,7 +21,7 @@ setTimeout(() => {
 </script>
 
 <template>
-  <n-scrollbar style="max-height: 378px;padding-right: 18px">
+  <n-scrollbar id="image-scroll-container-team" style="max-height: 378px;padding-right: 18px">
     <div v-if="isLoad===0">
       <summoner-match-load/>
     </div>
@@ -34,6 +34,10 @@ setTimeout(() => {
             <div>
               <n-avatar
                 lazy
+                :render-placeholder="() => null"
+                :intersection-observer-options="{
+                    root: '#image-scroll-container-team',
+                   }"
                 :size="50"
                 :src="'https://game.gtimg.cn/images/lol/act/img/champion/'+match.champImgUrl"
                 style="display: block"
@@ -49,6 +53,10 @@ setTimeout(() => {
               <div class="flex justify-between">
                 <n-avatar
                   lazy
+                  :render-placeholder="() => null"
+                  :intersection-observer-options="{
+                    root: '#image-scroll-container-team',
+                   }"
                   class="imgItem"
                   v-for="item in match.itemList"
                   :src='getItemImgUrl(item)'

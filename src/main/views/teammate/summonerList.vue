@@ -112,7 +112,7 @@ onDeactivated(() => {
     </n-list-item>
   </n-list>
   <n-drawer
-    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+    style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     v-model:show="drawerActive"
     height="518" placement="bottom"
     @after-leave="clearInfo">
@@ -125,7 +125,7 @@ onDeactivated(() => {
 
   <n-drawer
     v-model:show="drawerBlackActive"
-    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+    style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     :auto-focus="false"
     @after-leave="clearBlackInfo" height="264" placement="bottom">
     <hater-details

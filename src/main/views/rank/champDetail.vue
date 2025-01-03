@@ -113,7 +113,7 @@ const changeRes = () => {
           </n-space>
         </n-space>
       </n-list-item>
-      <n-scrollbar style="max-height: 350px;padding-right: 17px" v-else>
+      <n-scrollbar id="image-scroll-container" style="max-height: 350px;padding-right: 17px" v-else>
         <n-list-item v-for="champRes in restraintList">
           <div class="flex gap-x-3">
             <n-avatar
@@ -121,6 +121,10 @@ const changeRes = () => {
               style="transition: border-radius .5s cubic-bezier(0.4, 0, 0.2, 1);"
               round
               lazy
+              :render-placeholder="() => null"
+              :intersection-observer-options="{
+                    root: '#image-scroll-container',
+                   }"
               :bordered="false"
               :size="48"
               @click="preselectChamp(champRes[3])"

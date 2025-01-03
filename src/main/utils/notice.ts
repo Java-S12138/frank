@@ -13,7 +13,6 @@ interface NoticeTypes {
   noticeId: string;
 }
 
-
 export class Notice {
   public url = 'https://frank-notice-1302853015.cos.ap-chongqing.myqcloud.com/notice2.json'
   public dialog = useDialog()

@@ -270,7 +270,7 @@ onDeactivated(() => {
       </n-list>
     </n-card>
     <n-drawer
-      style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+      style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
       v-model:show="isShowDrawer"
       placement="bottom" :auto-focus="true" height="444"
       @after-leave="initDesDrawer(false)"

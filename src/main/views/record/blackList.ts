@@ -1,6 +1,6 @@
 import {findHaterByHaterId, findPlayerByPlayerId, updatePlayerRecord} from "@/main/utils/request";
 import {ExsitDataTypes, HateIdListType, Hater, UserInfos} from "./blackListTypes";
-import {sumInfoTypes} from "@/background/utils/backgroundTypes";
+import {sumInfoTypes} from "@/background/types";
 
 class BlackList {
   public sumInfo:sumInfoTypes|null = null

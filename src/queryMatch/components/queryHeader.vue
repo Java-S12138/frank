@@ -146,29 +146,30 @@ const refreshPage = () => {
                 :disabled="inputVal!==''"
                 @update:value="changeMatchMode"
                 :options="options" style="width: 100px;margin-left: 28px;"/>
+
       <n-pagination v-model:page="pageVal"
                     @update-page="pageChange"
                     :page-slot="10"
-                    :page-count="20"/>
+                    :page-count="12"/>
 
-      <n-space style="margin-left: 21px;" class="pt-2" :size=[8,0]>
-        <n-button @click="handleMin" text>
-          <n-icon size="20">
-            <circle-minus/>
-          </n-icon>
-        </n-button>
-        <n-button text circle @click="handleSet">
-          <n-icon size="20">
-            <settings/>
-          </n-icon>
-        </n-button>
-        <n-button text circle @click="handleClose">
-          <n-icon size="20">
-            <circle-x/>
-          </n-icon>
-        </n-button>
-      </n-space>
     </div>
+    <n-space style="padding-top: 10px;" :size=[8,0]>
+      <n-button @click="handleMin" text>
+        <n-icon size="20">
+          <circle-minus/>
+        </n-icon>
+      </n-button>
+      <n-button text circle @click="handleSet">
+        <n-icon size="20">
+          <settings/>
+        </n-icon>
+      </n-button>
+      <n-button text circle @click="handleClose">
+        <n-icon size="20">
+          <circle-x/>
+        </n-icon>
+      </n-button>
+    </n-space>
     <n-modal v-model:show="showModal" transform-origin="center">
       <n-card
         style="width: 540px;border-radius: 8px"

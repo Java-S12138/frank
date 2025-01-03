@@ -26,7 +26,7 @@ pub async fn listen_champ_select(app: AppHandle) {
     let mut client = ws::LcuWebsocketClient::connect().await.unwrap();
     client
         .subscribe(LcuSubscriptionType::JsonApiEvent(
-            "/lol-champ-select/v1/current-champion".to_string(),
+            "/lol-champ-select/v1/session".to_string(),
         ))
         .await
         .unwrap();

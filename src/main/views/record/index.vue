@@ -46,7 +46,7 @@ const closeDrawer = () => {
   <!--  游戏结束，弹出增加玩家的窗口-->
   <n-drawer
     v-model:show="recordStore.showGameEnd"
-    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+    style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     :mask-closable="false" :auto-focus="false"
     height="400" placement="bottom">
     <game-end

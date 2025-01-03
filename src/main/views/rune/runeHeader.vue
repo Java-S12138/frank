@@ -100,7 +100,7 @@ onDeactivated(() => {
 
   </n-card>
   <n-drawer
-    style="border-top-left-radius: 0.75rem;border-top-right-radius: 0.75rem"
+    style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     v-model:show="autoRuneActive"
     :height="288" :auto-focus="false" placement="bottom">
     <rune-auto :champ="storeRune.currentChampAlias"

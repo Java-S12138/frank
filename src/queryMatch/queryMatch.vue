@@ -91,7 +91,7 @@ const clearBlackMatch = () => {
   </div>
 
   <n-drawer v-model:show="blackMatchDrawer"  @after-leave="clearBlackMatch"
-            class="rounded-l-xl" :width="658" placement="right">
+            style="border-radius: 0.5rem;" :width="658" placement="right">
     <n-drawer-content body-content-style="padding:24px 12px" v-if="blackMatchDetails">
       <match-content
         :queue-id="blackMatchDetails[0].queueId"

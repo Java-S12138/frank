@@ -4,9 +4,11 @@ import {invoke} from "@tauri-apps/api/core";
 import {listen} from '@tauri-apps/api/event';
 import {configInit,getClientPath} from "@/background/utils/config.ts";
 import {MainWindow} from "./utils/creatWindow.ts";
+import {ChampionSession} from "@/background/types";
 
 new MainWindow();configInit()
 const gameFlow = new GameFlow()
+let lastProcessedTime = 0
 
 const initFrank = () => {
   const TIME_LIMIT = 30000; // 设置超时时间（例如：30秒）
@@ -70,11 +72,27 @@ invoke('listen_for_client_start').then(() =>{
         return
     }
   })
+  // listen champion select
+  listen<ChampionSession>('lol-champ-select', (event) => {
+    const champSession = event.payload;
 
-  listen<number>('lol-champ-select', (event) => {
-    const champId = event.payload;
-    if (champId !== 0) {
-      gameFlow.sendMesToMain('Champion', champId);
+    if (champSession.actions.length === 0) {
+      return;
     }
-  })
+
+    const currentTime = Date.now();
+    if (currentTime - lastProcessedTime < 200) {
+      return;
+    }
+    lastProcessedTime = currentTime
+
+    const localCellId = champSession.localPlayerCellId;
+    const localAction = champSession.actions[0].find(action => action.actorCellId === localCellId);
+
+    if (localAction?.completed) {
+      gameFlow.sendMesToMain('Champion', localAction.championId);
+    }
+  });
 })
+
+

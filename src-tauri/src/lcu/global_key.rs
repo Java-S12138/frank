@@ -41,13 +41,10 @@ fn handle_shift_press(shift_state: &mut bool) {
 fn handle_tab_press(shift_state: &mut bool, event: Event, app: &AppHandle) {
     if *shift_state {
         *shift_state = false;
-        let key_str = format!("{:?}", event.event_type);
         let win = app.get_webview_window("recentMatchWindow");
         if let Some(win) = win {
             if !win.is_visible().unwrap_or(false) {
                 win.show().expect("hide window failed");
-            }else {
-                win.hide().expect("hide window failed");
             }
         }
     }

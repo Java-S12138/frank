@@ -49,7 +49,7 @@ const openDetailDrawer = async (gameId: number, summonerId: number) => {
   </n-card>
 
   <n-drawer
-    class="rounded-l-xl"
+    style="border-radius: 0.5rem;"
     v-model:show="isDetailDrawer"
     @after-leave="() => participantsInfo = null"
     :width="630" placement="right">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NSwitch, NCheckbox, NTag, NIcon, NButton, NButtonGroup, NPopconfirm, NDivider, NSlider} from 'naive-ui'
+import {NCheckbox, NTag, NIcon, NButton, NButtonGroup, NPopconfirm, NDivider} from 'naive-ui'
 import {ThumbUp, ThumbDown, Bulb, CircleMinus, CircleX} from "@vicons/tabler";
 import {onMounted, reactive, ref} from "vue"
 import {ConfigSettingTypes} from "@/background/types";
@@ -14,7 +14,6 @@ const config:ConfigSettingTypes = reactive(JSON.parse(<string>(localStorage.getI
 
 const isModalOpen = ref(false)
 const opacityVal = ref(config.inWinOpacity)
-const winType = ref(0)
 
 onMounted(() => {
   if (!config.isGameInTips){
@@ -22,26 +21,7 @@ onMounted(() => {
   }
   window.addEventListener('keydown', handleKeyDown);
 
-  // TODO 设置透明度
-/* cube.windows.getCurrentWindow().then((value) => {
-    // @ts-ignore
-    winType.value = value.type
-    // @ts-ignore
-    if (value.type === 2 && config.inWinOpacity !== 100 ){
-      setTimeout(() => {
-          // @ts-ignore
-          cube.windows.setOpacity(value.id,config.inWinOpacity / 100)
-        },1500)
-    }
-  })*/
 })
-const changeOpacity =  () => {
-  // @ts-ignore
-  cube.windows.setOpacity(cube.windows.current.id(),opacityVal.value / 100)
-  config.inWinOpacity = opacityVal.value
-  changeConfig()
-}
-
 const handleMin = async () => {
   await getCurrentWindow().hide()
 }
@@ -136,7 +116,7 @@ const changeConfig = () => {
   <!-- Modal -->
   <div v-if="isModalOpen" @click="closeModalOutside"
        class="fixed inset-0 bg-neutral-950 bg-opacity-40
-       flex items-center justify-center z-50 rounded-lg">
+       flex items-center justify-center z-50">
     <div class="bg-white text-neutral-900 px-6 py-4 rounded shadow-md dark:bg-neutral-900 dark:text-neutral-200">
       <!-- Modal content goes here -->
       <text class="text-xl">Tips</text>
@@ -149,28 +129,12 @@ const changeConfig = () => {
 
       <n-divider style="margin: 22px 0 20px 0"/>
 
-      <div class="flex justify-between">
-        <p class="my-0">Set 窗口的透明度</p>
-        <n-slider style="width: 232px;"
-                  v-model:value="opacityVal"
-                  @dragend="changeOpacity"
-                  :disabled="winType !== 2"
-                  :min="50"
-                  :step="10" />
-      </div>
-
       <div class="mt-2 flex items-center justify-between">
         <p class="m-0">
           <n-checkbox v-model:checked="config.isGameInTips" @update:checked="changeConfig">
             <text class="text-gray-400">不再自动弹出</text>
           </n-checkbox>
         </p>
-        <text class="text-gray-400 ml-3">游戏启动时，自动打开此窗口</text>
-        <n-switch
-          v-model:value="config.isGameInWindow"
-          @update:value="changeConfig"
-          style="margin-bottom: 3px;"
-        />
       </div>
     </div>
   </div>
