@@ -175,7 +175,7 @@ const getMaxSummonerStateScore = (recentSumInfoList: RecentSumInfo[]): number =>
   <n-drawer
     style="border-radius: 0.5rem;"
     v-model:show="isDetailModal"
-    :placement="isDetailModalLeft ? 'left':'right'"
+    :placement="!isDetailModalLeft ? 'left':'right'"
     :auto-focus="false"
     width="632px"
   >

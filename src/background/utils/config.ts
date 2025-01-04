@@ -21,9 +21,9 @@ const configSetting: ConfigSettingTypes = {
 
 
 const configRank: ConfigRank = {
-  'tier': 2,
+  'tier': 200,
   'lane': 'mid',
-  'is101': false,
+  'is101': true,
 }
 
 const addConfig = (configName:string,configObj:any) => {
