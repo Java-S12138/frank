@@ -10,11 +10,11 @@ use crate::shaco::utils::process_info::get_auth_info;
 use futures_util::stream::StreamExt;
 use crate::shaco::rest::RESTClient;
 use serde_json::{from_value, Value};
-use tauri::{App, AppHandle, Emitter, EventTarget};
+use tauri::{AppHandle, Emitter};
 use once_cell::sync::OnceCell;
 use serde::Serialize;
 use tauri::ipc::IpcResponse;
-use crate::shaco::{ingame, ws};
+use crate::shaco::{ingame};
 use std::time::{Duration, Instant};
 use std::thread;
 

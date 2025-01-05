@@ -41,4 +41,3 @@ pub(crate) fn get_auth_info() -> Result<(String, String), ProcessInfoError> {
         port,
     ))
 }
-//("cmlvdDpYWFVVVHBXQzlMSkRRQnZ1SEtQOERn", "3670")

@@ -12,8 +12,6 @@
 /// Error types for the whole library
 pub mod error;
 /// Contains the [IngameClient](ingame::IngameClient) and [IngameClient](ingame::EventStream)
-pub mod ingame;
-/// Contains all the type definitions for the data returned by the library
 pub mod model;
 /// Contains the [RESTClient](rest::RESTClient)
 pub mod rest;

@@ -1,6 +1,6 @@
 [package]
 name = "Frank"
-version = "3.0.1"
+version = "0.1.0"
 description = "League of Legends Assistant On Frank"
 authors = ["Java_S"]
 edition = "2021"
@@ -39,7 +39,7 @@ once_cell = "1.20.2"
 rdev = { version="0.5.3"}
 
 [profile.release]
-panic = "unwind"
-codegen-units = 1
-lto = true
-opt-level = "z"
+opt-level = "s"     # Optimize for size.
+lto = true          # Enable Link Time Optimization
+codegen-units = 1   # Reduce number of codegen units to increase optimizations.
+strip = true        # Automatically strip symbols from the binary.

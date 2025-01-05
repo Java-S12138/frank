@@ -10,14 +10,14 @@ use tauri::{Listener, Manager};
 #[tokio::main]
 pub async fn run() {
     tauri::Builder::default()
-        .setup(|app| {
+   /*     .setup(|app| {
             #[cfg(debug_assertions)] // only include this code on debug builds
             {
                 let window = app.get_webview_window("background").unwrap();
                 window.open_devtools();
             }
             Ok(())
-        })
+        })*/
         .invoke_handler(tauri::generate_handler![
             is_lol_cilent,
             start_listener,
