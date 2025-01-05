@@ -2,6 +2,9 @@
 Frank Powered By Java_S
 </h2>
 <p align="center">
+<a href="https://lolfrank.cn" rel="nofollow"><img src="./public/preface.jpg"></a>
+</p>
+<p align="center">
 <a href="https://lolfrank.cn" style="margin-right: 24px" rel="nofollow">🚀立即下载</a>
 <a href="https://www.yuque.com/java-s/frank/introduction" rel="nofollow">🔎使用手册</a>
 </p>
@@ -64,3 +67,11 @@ pnpm run tauri dev
 ```
 pnpm run tauri build
 ```
+
+
+## 点个 Star 支持我们 ⭐
+<p align='center'>
+  <a href="https://github.com/Java-S12138/frank/stargazers">
+    <img src="https://api.star-history.com/svg?repos=Java-S12138/frank&type=Date">
+  </a>
+</p>
