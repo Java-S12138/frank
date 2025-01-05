@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NCard,NSpace,NTag, NDropdown, useMessage, NButton,NTable} from 'naive-ui'
+import {NCard,NSpace,NTag, useMessage, NButton,NTable} from 'naive-ui'
 import {open} from "@tauri-apps/plugin-shell";
 
 const message = useMessage()

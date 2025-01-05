@@ -5,6 +5,7 @@ import {optionsChampion, keywordsList} from "@/resources/champList";
 import {NDrawerContent,NModal, NTag,NButton, NSelect, NSwitch, NSlider, NRadio,NList,NListItem, useDialog} from 'naive-ui'
 import {relaunch} from "@tauri-apps/plugin-process";
 import Sponsor from "./sponsor.vue";
+import { open } from '@tauri-apps/plugin-shell';
 
 const config:Ref<ConfigSettingTypes> = ref(JSON.parse(localStorage.getItem('configSetting') as string))
 const theme = localStorage.getItem('theme')  || 'light'
@@ -228,7 +229,7 @@ const sponsor = () => {
       </n-list>
 
     <n-modal style="margin:8px;max-width:334px" v-model:show="showModal">
-      <Sponsor></Sponsor>
+      <Sponsor :is-completed="false"></Sponsor>
     </n-modal>
   </n-drawer-content>
 </template>

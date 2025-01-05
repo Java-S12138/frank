@@ -1,14 +1,16 @@
 import './utils/tray.ts'
+import {invokeLcu} from "@/lcu";
 import {GameFlow} from "./gameFlow.ts";
 import {invoke} from "@tauri-apps/api/core";
 import {listen} from '@tauri-apps/api/event';
-import {configInit, getClientPath} from "@/background/utils/config.ts";
 import {MainWindow} from "./utils/creatWindow.ts";
+import {TaskTracker} from "./utils/TaskTracker.ts";
 import {Action, ChampionSession} from "@/background/types";
-import {invokeLcu} from "@/lcu";
+import {configInit, getClientPath} from "@/background/utils/config.ts";
 
 new MainWindow();configInit()
 const gameFlow = new GameFlow()
+const taskTracker = new TaskTracker()
 let lastProcessedTime = 0
 // 用于记录已访问过的下标
 const visitedIndexes = new Set<number>();
@@ -61,22 +63,25 @@ const findLocalAction = (actionList:Action[][],localCellId:number) => {
       if (visitedIndexes.has(i)) {
         continue; // 跳过已访问的下标
       }
-
       const actionItem = actionList[i];
-      if (actionItem[0].type!=='pick') {
+      if (actionItem[0].type !== 'pick') {
         visitedIndexes.add(i); // 标记当前下标为已访问
+        continue;
       }
-      for (const action of actionItem) {
-        console.log(actionList);
-        if (action.actorCellId === localCellId && action.type === 'pick' && action.completed) {
-          return action.championId;
+
+      const localAction = actionList[i].find(action => action.actorCellId === localCellId);
+      if (localAction === undefined) {
+        visitedIndexes.add(i);
+        continue;
+      }else {
+        if (localAction.completed) {
+          return localAction.championId;
         }
       }
+
     }
-
     return null; // 未找到匹配的 action
-};
-
+}
 
 
 invoke('listen_for_client_start').then(() => {
@@ -87,6 +92,7 @@ invoke('listen_for_client_start').then(() => {
         initFrank()
         return
       case 'ChampSelect':
+        visitedIndexes.clear()
         gameFlow.sendMesToMain('ChampSelect')
         gameFlow.autoPickBanChamp()
         return
@@ -97,6 +103,7 @@ invoke('listen_for_client_start').then(() => {
       case 'EndOfGame':
         gameFlow.coloseWin('recentMatchWindow')
         gameFlow.showHideMainWin(true, 'EndOfGame')
+        taskTracker.completeTask()
         return
       case 'Matchmaking':
         gameFlow.sendMesToMain('Matchmaking')
@@ -132,6 +139,7 @@ invoke('listen_for_client_start').then(() => {
     }
 
     const localCellId = champSession.localPlayerCellId;
+    console.log(champSession);
     const championId = findLocalAction(champSession.actions, localCellId);
     // 如果找到了本地玩家的选中动作，处理它
     if (championId!==null) {

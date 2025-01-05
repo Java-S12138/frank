@@ -34,8 +34,6 @@ pub async fn listen_champ_select(app: AppHandle) {
         app.emit_to(
             EventTarget::labeled("background"),
             "lol-champ-select",
-            event.data,
-        )
-            .unwrap();
+            event.data).unwrap();
     }
 }

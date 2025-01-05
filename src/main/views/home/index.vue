@@ -9,18 +9,19 @@ import {
   NList,
   NListItem,
   NButton,
-  NEllipsis,
+  NEllipsis, NModal,
 } from 'naive-ui'
 import {getCurrentSummonerAllInfo} from "./getHomeData";
-import {onActivated, onMounted, reactive, Ref, ref} from "vue";
-import {SummonerData, sumInfoTypes, summonerInfo} from "@/lcu/types/SummonerTypes";
+import {onActivated, onMounted, reactive, ref} from "vue";
+import {SummonerData, sumInfoTypes, summonerInfo,TaskTrackerTypes} from "@/lcu/types/SummonerTypes";
 import StartGame from "./startGame.vue";
 import {useRecordStore} from "@/main/store/useRecord";
-import {listen, once} from "@tauri-apps/api/event";
+import {listen} from "@tauri-apps/api/event";
 import {invoke} from "@tauri-apps/api/core";
 import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
 import {QueryMatchWindow} from "@/background/utils/creatWindow.ts";
 import {queryPlatformId} from "@/lcu/aboutSummoner.ts";
+import Sponsor from "@/main/common/sponsor.vue";
 
 const summonerData: SummonerData = reactive({
   summonerInfo: null,
@@ -28,6 +29,7 @@ const summonerData: SummonerData = reactive({
   champLevel: null,
 })
 let recordStore: any = useRecordStore()
+const taskCompleted = ref(false)
 
 
 onMounted(() => {
@@ -52,7 +54,8 @@ const init = async (isFirst: boolean) => {
     return false
   }
   if (isFirst) {
-    writeSumInfo(summonerAllInfo.summonerInfo)
+    await writeSumInfo(summonerAllInfo.summonerInfo)
+    taskCheck()
   }
 
   summonerData.summonerInfo = summonerAllInfo.summonerInfo
@@ -101,7 +104,14 @@ const openWin = () => {
   new QueryMatchWindow()
 }
 
-
+const taskCheck = () => {
+  const data:TaskTrackerTypes = JSON.parse(localStorage.getItem('taskTracker') as string)
+  if (data.taskCount === 12){
+    taskCompleted.value = true
+    data.taskCount = 13
+    localStorage.setItem('taskTracker', JSON.stringify(data))
+  }
+}
 </script>
 
 <template>
@@ -193,4 +203,7 @@ const openWin = () => {
   <div class="mainContent" v-else>
     <start-game/>
   </div>
+  <n-modal style="margin:8px;max-width:334px" v-model:show="taskCompleted">
+    <Sponsor :is-completed="true"></Sponsor>
+  </n-modal>
 </template>

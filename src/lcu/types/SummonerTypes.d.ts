@@ -65,3 +65,7 @@ export interface sumInfoTypes{
   summonerId:number;
   platformId:string;
 }
+export interface TaskTrackerTypes {
+  currentMonth:number;
+  taskCount:number;
+}
