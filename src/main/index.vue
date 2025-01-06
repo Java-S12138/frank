@@ -22,7 +22,6 @@ const recordStore = useRecordStore()
 
 onMounted(() => {
   router.push({name: 'home'})
-  // testRune()
 })
 
 // 处理不同的状态
@@ -226,6 +225,7 @@ listen<string>('cacheMatchList', (event) => {
     })
   }
 })
+
 
 
 </script>

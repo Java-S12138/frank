@@ -1,6 +1,7 @@
 import {requestFetch} from "@/main/utils/request";
 import {useDialog} from "naive-ui";
 import {h} from "vue";
+import {open} from "@tauri-apps/plugin-shell";
 
 interface NoticeTypes {
   isShow: boolean;

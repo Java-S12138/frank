@@ -36,18 +36,36 @@ export const queryAllSummonerId = async (islistenSession:boolean) => {
 }
 
 // 获取排位段位数据
-const querySummonerRank = async (puuid: string) => {
-  // @ts-ignore
-  const rankPoint = (await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`))?.queues
-  if (rankPoint === undefined) {
-    return ['error', 'error']
+const querySummonerRank = async (puuid: string): Promise<[string, string]> => {
+  try {
+    // 调用接口获取数据
+    const response:any = await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`);
+    const rankPoint = response?.queues ?? [];
+
+    // 如果没有数据，返回默认值
+    if (!Array.isArray(rankPoint) || rankPoint.length === 0) {
+      return ['未定级', '未定级'];
+    }
+
+    // 查找不同模式的排名数据
+    const rankSolo = rankPoint.find((i: any) => i.queueType === "RANKED_SOLO_5x5");
+    const rankFlex = rankPoint.find((i: any) => i.queueType === "RANKED_FLEX_SR");
+
+    // 生成排名字符串的辅助函数
+    const generateRankString = (rank: any): string => {
+      if (!rank || rank.tier === "") return '未定级';
+      return `${englishToChinese(rank.tier)}${dealDivsion(rank.division)} ${rank.leaguePoints}`;
+    };
+
+    // 获取单人和灵活模式的排名信息
+    const RANKED_SOLO = generateRankString(rankSolo);
+    const RANKED_FLEX_SR = generateRankString(rankFlex);
+
+    return [RANKED_SOLO, RANKED_FLEX_SR];
+  } catch (error) {
+    return ['error', 'error'];
   }
-  const rankSolo = rankPoint.find((i: any) => i.queueType === "RANKED_SOLO_5x5")
-  const rankSr = rankPoint.find((i: any) => i.queueType === "RANKED_FLEX_SR")
-  const RANKED_SOLO = rankSolo.tier === "" ? '未定级' : `${englishToChinese(rankSolo.tier)}${dealDivsion(rankSolo.division)} ${rankSolo.leaguePoints}`
-  const RANKED_FLEX_SR = rankSr.tier === "" ? '未定级' : `${englishToChinese(rankSr.tier)}${dealDivsion(rankSr.division)} ${rankSr.leaguePoints}`
-  return [RANKED_SOLO, RANKED_FLEX_SR]
-}
+};
 
 // 获取我方召唤师ID和昵称
 export const queryFriendInfo = async (islistenSession:boolean): Promise<{list: SummonerInfoList[],champId:number }> => {
@@ -59,17 +77,31 @@ export const queryFriendInfo = async (islistenSession:boolean): Promise<{list: S
   }
 
   for (const summonerId of summonerInfos.summonerIdList) {
-    const currentSummonerInfo = await querySummonerInfo(summonerId) as summonerInfo
-    const rankHandler = await querySummonerRank(currentSummonerInfo.puuid)
+    const currentSummonerInfo: summonerInfo | null = await fetchSummonerInfoWithRetry(summonerId);
+
+    if (currentSummonerInfo === null) {
+      continue;
+    }
+    const rankHandler = await querySummonerRank(currentSummonerInfo.puuid);
+
     summonerInfoList.push({
       name: currentSummonerInfo.name,
       summonerId: `${summonerId}`,
       puuid: currentSummonerInfo.puuid,
       imgUrl: currentSummonerInfo.imgUrl,
       rank: `${rankHandler[0]} • ${rankHandler[1]}`,
-    })
+    });
   }
   return {list:summonerInfoList,champId:summonerInfos.champId}
+}
+
+const fetchSummonerInfoWithRetry = async (summonerId: number, maxAttempts = 3): Promise<summonerInfo | null> => {
+  for (let attempts = 0; attempts < maxAttempts; attempts++) {
+    const info = await querySummonerInfo(summonerId) as summonerInfo;
+    if (info) return info;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+  }
+  return null
 }
 
 export const findTopChamp = (match: SimpleMatchTypes[]|undefined|null): RencentDataAnalysisTypes | null => {

@@ -6,8 +6,8 @@ import {champDict} from "@/resources/champList";
 
 export default class BaseMatch {
 
-  public gerSummonerInfo = async (summonerId?: number, summonerName?: string) => {
-    const summonerInfo = await querySummonerInfo(summonerId, summonerName)
+  public gerSummonerInfo = async (summonerId?: number) => {
+    const summonerInfo = await querySummonerInfo(summonerId)
     if (summonerInfo !== null) {
       const rankList = await queryRankPoint(summonerInfo.puuid)
       return {summonerInfo,rankList}

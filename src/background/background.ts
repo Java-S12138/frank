@@ -8,144 +8,139 @@ import {TaskTracker} from "./utils/TaskTracker.ts";
 import {Action, ChampionSession} from "@/background/types";
 import {configInit, getClientPath} from "@/background/utils/config.ts";
 
-new MainWindow();configInit()
-const gameFlow = new GameFlow()
-const taskTracker = new TaskTracker()
-let lastProcessedTime = 0
-// 用于记录已访问过的下标
-const visitedIndexes = new Set<number>();
 
-const initFrank = () => {
-  const TIME_LIMIT = 30000; // 设置超时时间（例如：30秒）
-  let elapsedTime = 0; // 已经过去的时间
-  const intervalTime = 3000; // 每次检查的间隔时间（1秒）
-  invoke('init_keyboard')
+class Background {
+  private gameFlow: GameFlow;
+  private taskTracker: TaskTracker;
+  private lastProcessedTime :number;
+  private preChampId:number;
+  private visitedIndexes: Set<number>;
 
-  const lcuSuccess = setInterval(async () => {
-    const isGetPath = await getClientPath()
-    if (isGetPath) {
-      clearInterval(lcuSuccess)
-      setTimeout(() => {
-        gameFlow.sendStartEvent();
-        invoke("start_listener")
-      }, 500)
-    }
-
-    // 增加已用时间
-    elapsedTime += intervalTime;
-
-    // 如果超时，清除 interval 并执行其他操作
-    if (elapsedTime >= TIME_LIMIT) {
-      clearInterval(lcuSuccess);  // 停止检查
-      console.log("超时，客户端未启动");
-      // 这里可以执行超时后的操作，比如调用一个回调函数
-    }
-  }, intervalTime);  // 每秒检查一次
-
-}
-
-// 处理获取当前选中的 champion
-const handleGetCurrentChampion = async () => {
-  const value = await invokeLcu<number>('get', '/lol-champ-select/v1/current-champion');
-  if (value) {
-    gameFlow.sendMesToMain('Champion', value);
+  constructor() {
+    new MainWindow();
+    configInit();
+    this.gameFlow = new GameFlow();
+    this.taskTracker = new TaskTracker();
+    this.lastProcessedTime = 0;
+    this.preChampId = 0;
+    this.visitedIndexes = new Set<number>();
+    this.initializeListeners();
   }
-}
 
-// 查找玩家的选中动作
-const findLocalAction = (actionList:Action[][],localCellId:number) => {
-    if (actionList.length === 0) {
-      return null;
-    }
+  private initializeListeners() {
+    invoke('listen_for_client_start').then(() => {
+      listen<string>('client_status', (event) => this.handleClientStatus(event.payload));
+      listen<ChampionSession>('lol-champ-select', (event) => this.handleChampionSelect(event.payload));
+    });
+  }
 
-    // 遍历 actions，同时跳过已访问的下标
-    for (let i = 0; i < actionList.length; i++) {
-      if (visitedIndexes.has(i)) {
-        continue; // 跳过已访问的下标
+  private initFrank() {
+    const TIME_LIMIT = 30000;
+    let elapsedTime = 0;
+    const intervalTime = 3000;
+
+    invoke('init_keyboard');
+    const lcuSuccess = setInterval(async () => {
+      const isGetPath = await getClientPath();
+      if (isGetPath) {
+        clearInterval(lcuSuccess);
+        setTimeout(() => {
+          this.gameFlow.sendStartEvent();
+          invoke("start_listener");
+        }, 500);
       }
+
+      elapsedTime += intervalTime;
+      if (elapsedTime >= TIME_LIMIT) {
+        clearInterval(lcuSuccess);
+        console.log("超时，客户端未启动");
+      }
+    }, intervalTime);
+  }
+
+  private async handleGetCurrentChampion() {
+    const value = await invokeLcu<number>('get', '/lol-champ-select/v1/current-champion');
+    if (value) {
+      this.gameFlow.sendMesToMain('Champion', value);
+    }
+  }
+
+  private findLocalAction(actionList: Action[][], localCellId: number) {
+    for (let i = 0; i < actionList.length; i++) {
+      if (this.visitedIndexes.has(i)) continue;
       const actionItem = actionList[i];
       if (actionItem[0].type !== 'pick') {
-        visitedIndexes.add(i); // 标记当前下标为已访问
+        this.visitedIndexes.add(i);
         continue;
       }
 
       const localAction = actionList[i].find(action => action.actorCellId === localCellId);
       if (localAction === undefined) {
-        visitedIndexes.add(i);
+        this.visitedIndexes.add(i);
         continue;
       }else {
-        if (localAction.completed) {
+        if (localAction.completed && localAction.type==='pick') {
           return localAction.championId;
         }
       }
-
     }
-    return null; // 未找到匹配的 action
-}
+    return null;
+  }
 
-
-invoke('listen_for_client_start').then(() => {
-  // listen client status
-  listen<string>('client_status', (event) => {
-    switch (event.payload) {
+  private handleClientStatus(status: string) {
+    switch (status) {
       case 'ClientStarted':
-        initFrank()
-        return
+        this.initFrank();
+        break;
       case 'ChampSelect':
-        visitedIndexes.clear()
-        gameFlow.sendMesToMain('ChampSelect')
-        gameFlow.autoPickBanChamp()
-        return
+        this.visitedIndexes.clear();
+        this.preChampId = 0;
+        this.gameFlow.sendMesToMain('ChampSelect');
+        this.gameFlow.autoPickBanChamp();
+        break;
       case 'GameStart':
-        gameFlow.showHideMainWin(false, 'GameStart')
-        gameFlow.initGameInWindow()
-        return
+        this.gameFlow.showHideMainWin(false, 'GameStart');
+        this.gameFlow.initGameInWindow();
+        break;
       case 'EndOfGame':
-        gameFlow.coloseWin('recentMatchWindow')
-        gameFlow.showHideMainWin(true, 'EndOfGame')
-        taskTracker.completeTask()
-        return
+        this.gameFlow.coloseWin('recentMatchWindow');
+        this.gameFlow.showHideMainWin(true, 'EndOfGame');
+        this.taskTracker.completeTask();
+        break;
       case 'Matchmaking':
-        gameFlow.sendMesToMain('Matchmaking')
-        return
+        this.gameFlow.sendMesToMain('Matchmaking');
+        break;
       case 'ReadyCheck':
-        gameFlow.autoAcceptGame()
-        gameFlow.writeGameInfo()
-        return
+        this.gameFlow.autoAcceptGame();
+        this.gameFlow.writeGameInfo();
+        break;
       case 'Lobby':
-        return gameFlow.sendMesToMain('Lobby')
+        this.gameFlow.sendMesToMain('Lobby');
+        break;
       case 'None':
-        gameFlow.sendMesToMain('None')
-        return
+        this.gameFlow.sendMesToMain('None');
+        break;
     }
-  })
-  // listen champion select
-  listen<ChampionSession>('lol-champ-select', async (event) => {
+  }
+
+  private async handleChampionSelect(champSession: ChampionSession) {
     const currentTime = Date.now();
-
-    // 防止频繁处理事件
-    if (currentTime - lastProcessedTime < 300) {
-      return;
-    }
-    lastProcessedTime = currentTime;
-
-    const champSession = event.payload;
-
+    if (currentTime - this.lastProcessedTime < 300) return;
+    this.lastProcessedTime = currentTime;
     // 如果没有 actions 或者我的队伍为空
     if (champSession.actions.length === 0) {
       if (champSession.myTeam.length === 0) return;
-      await handleGetCurrentChampion();
+      await this.handleGetCurrentChampion();
       return;
     }
 
     const localCellId = champSession.localPlayerCellId;
-    console.log(champSession);
-    const championId = findLocalAction(champSession.actions, localCellId);
-    // 如果找到了本地玩家的选中动作，处理它
-    if (championId!==null) {
-      gameFlow.sendMesToMain('Champion', championId);
+    const championId = this.findLocalAction(champSession.actions, localCellId);
+    if (championId !== null && championId !== this.preChampId) {
+      this.preChampId = championId;
+      this.gameFlow.sendMesToMain('Champion', championId);
     }
-  });
-})
+  }
+}
 
-
+new Background();

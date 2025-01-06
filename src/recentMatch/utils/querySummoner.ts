@@ -77,23 +77,36 @@ class QuerySummoner {
     }
   }
   // 获取段位数据
-  public queryRankPoint = async (puuid: string):Promise<string[]> => {
-    return await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`).then((res: any) => {
-      if (res === null){
-        return ['error','error']
+  public queryRankPoint = async (puuid: string): Promise<string[]> => {
+    const fetchRankDataWithRetry = async (retries = 2): Promise<any> => {
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          const res = await invokeLcu('get', `/lol-ranked/v1/ranked-stats/${puuid}`);
+          if (res !== null) return res; // 如果获取成功，立即返回
+          await new Promise((resolve) => setTimeout(resolve, 300));
+        } catch (error) {
+          console.warn(`Attempt ${attempt + 1} failed:`, error);
+        }
       }
-      const rankData = res.queueMap
-      return ['RANKED_SOLO_5x5', 'RANKED_FLEX_SR'].reduce((res: any, item: string) => {
-        const tier = rankData[item].tier === "" ? '未定级' : englishToChinese(rankData[item].tier)
-        const division = rankData[item].division === 'NA' ? '' : rankData[item].division
-        return res.concat([
-          tier !== '未定级' ? `${tier}${division}`: '未定级'
-        ])
-      }, [])
-    }).catch(() => {
-      return []
-    })
-  }
+      return null; // 如果所有尝试均失败，返回 null
+    };
+
+    const res = await fetchRankDataWithRetry();
+
+    if (res === null) {
+      return ['error', 'error'];
+    }
+
+    // 解析 rank 数据
+    const rankData = res.queueMap;
+    return ['RANKED_SOLO_5x5', 'RANKED_FLEX_SR'].reduce((acc: string[], queueType: string) => {
+      const tier = rankData[queueType]?.tier === "" ? '未定级' : englishToChinese(rankData[queueType].tier);
+      const division = rankData[queueType]?.division === 'NA' ? '' : rankData[queueType]?.division || '';
+      acc.push(tier !== '未定级' ? `${tier}${division}` : '未定级');
+      return acc;
+    }, []);
+  };
+
   // 获取召唤师英雄绝活数据 Z:正常 A:绝活 B:熟练 S:小代 Y:未知 (需要进行下一步判断)
   public querySummonerSuperChampData = async (puuid: string, champAlias: string) => {
     // 获取英雄 ID

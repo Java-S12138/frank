@@ -74,7 +74,7 @@ const searchChamp = (pattern: string, option: object) => {
 }
 const openWeb = (isSYJ:boolean) => {
   if (isSYJ){
-     open('https://lolfrank.cn')
+     open('https://syjun.vip')
   }else {
      open('https://www.yuque.com/java-s/frank')
   }
