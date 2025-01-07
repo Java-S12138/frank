@@ -126,6 +126,7 @@ const changeConfig = () => {
       <p class="my-1">3：游戏模式为单双 / 灵活排位时，只显示排位数据</p>
       <p class="my-1">4：标签含义 【S : 小代】【A : 绝活】【B : 熟练】</p>
       <p class="my-1">5：点击下方战绩标签，即可查看此局详细数据</p>
+      <p class="my-1">6：点击英雄头像，可查看此英雄的技能信息</p>
 
       <n-divider style="margin: 22px 0 20px 0"/>
 

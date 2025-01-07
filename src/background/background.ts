@@ -2,19 +2,18 @@ import './utils/tray.ts'
 import {invokeLcu} from "@/lcu";
 import {GameFlow} from "./gameFlow.ts";
 import {invoke} from "@tauri-apps/api/core";
-import {listen} from '@tauri-apps/api/event';
+import {listen, UnlistenFn} from '@tauri-apps/api/event';
 import {MainWindow} from "./utils/creatWindow.ts";
 import {TaskTracker} from "./utils/TaskTracker.ts";
-import {Action, ChampionSession} from "@/background/types";
+import {ChampionSession} from "@/background/types";
 import {configInit, getClientPath} from "@/background/utils/config.ts";
-
 
 class Background {
   private gameFlow: GameFlow;
   private taskTracker: TaskTracker;
   private lastProcessedTime :number;
   private preChampId:number;
-  private visitedIndexes: Set<number>;
+  private unListenSelectSession: UnlistenFn | undefined
 
   constructor() {
     new MainWindow();
@@ -23,14 +22,15 @@ class Background {
     this.taskTracker = new TaskTracker();
     this.lastProcessedTime = 0;
     this.preChampId = 0;
-    this.visitedIndexes = new Set<number>();
     this.initializeListeners();
   }
 
-  private initializeListeners() {
-    invoke('listen_for_client_start').then(() => {
+  private  initializeListeners() {
+    invoke('listen_for_client_start').then(async () => {
       listen<string>('client_status', (event) => this.handleClientStatus(event.payload));
-      listen<ChampionSession>('lol-champ-select', (event) => this.handleChampionSelect(event.payload));
+      listen<number>('lol-current-champ-select', (event) => this.handleCueChamp(event.payload));
+      this.unListenSelectSession = await listen<ChampionSession>('lol-champ-select',
+        (event) => this.handleChampionSelect(event.payload));
     });
   }
 
@@ -60,32 +60,19 @@ class Background {
 
   private async handleGetCurrentChampion() {
     const value = await invokeLcu<number>('get', '/lol-champ-select/v1/current-champion');
-    if (value) {
+
+    if (value === null) return;
+
+    if (value !== 0 && value !== this.preChampId) {
       this.gameFlow.sendMesToMain('Champion', value);
+      this.preChampId = value;
+      if (this.unListenSelectSession !== undefined) {
+        this.unListenSelectSession();
+        invoke("start_current_champ_select");
+      }
     }
   }
 
-  private findLocalAction(actionList: Action[][], localCellId: number) {
-    for (let i = 0; i < actionList.length; i++) {
-      if (this.visitedIndexes.has(i)) continue;
-      const actionItem = actionList[i];
-      if (actionItem[0].type !== 'pick') {
-        this.visitedIndexes.add(i);
-        continue;
-      }
-
-      const localAction = actionList[i].find(action => action.actorCellId === localCellId);
-      if (localAction === undefined) {
-        this.visitedIndexes.add(i);
-        continue;
-      }else {
-        if (localAction.completed && localAction.type==='pick') {
-          return localAction.championId;
-        }
-      }
-    }
-    return null;
-  }
 
   private handleClientStatus(status: string) {
     switch (status) {
@@ -93,7 +80,6 @@ class Background {
         this.initFrank();
         break;
       case 'ChampSelect':
-        this.visitedIndexes.clear();
         this.preChampId = 0;
         this.gameFlow.sendMesToMain('ChampSelect');
         this.gameFlow.autoPickBanChamp();
@@ -126,6 +112,7 @@ class Background {
   private async handleChampionSelect(champSession: ChampionSession) {
     const currentTime = Date.now();
     if (currentTime - this.lastProcessedTime < 300) return;
+
     this.lastProcessedTime = currentTime;
     // 如果没有 actions 或者我的队伍为空
     if (champSession.actions.length === 0) {
@@ -133,12 +120,13 @@ class Background {
       await this.handleGetCurrentChampion();
       return;
     }
+    await this.handleGetCurrentChampion();
+  }
 
-    const localCellId = champSession.localPlayerCellId;
-    const championId = this.findLocalAction(champSession.actions, localCellId);
-    if (championId !== null && championId !== this.preChampId) {
-      this.preChampId = championId;
-      this.gameFlow.sendMesToMain('Champion', championId);
+  private handleCueChamp(champId:number) {
+    if (champId !== 0 && champId!== this.preChampId) {
+      this.preChampId = champId;
+      this.gameFlow.sendMesToMain('Champion', champId);
     }
   }
 }

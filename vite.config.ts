@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import packageInfo from './package.json';
 // @ts-ignore
 import * as path from "path";
 
@@ -9,12 +10,10 @@ const host = process.env.TAURI_DEV_HOST;
 // @ts-ignore
 export default defineConfig(async () => ({
   plugins: [vue()],
-
-  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-  //
-  // 1. prevent vite from obscuring rust errors
+  define: {
+    __APP_VERSION__: JSON.stringify(packageInfo.version),
+  },
   clearScreen: false,
-  // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
     strictPort: true,

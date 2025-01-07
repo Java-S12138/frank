@@ -64,6 +64,7 @@ class QuerySummoner {
           puuid:summoner.puuid,
           summonerName: summoner.summonerName,
           teamParticipantId:summoner.teamParticipantId,
+          champId:summoner.championId,
           championUrl: `https://game.gtimg.cn/images/lol/act/img/champion/${iconAlias}.png`
         }
       })

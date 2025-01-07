@@ -17,6 +17,7 @@ use tauri::ipc::IpcResponse;
 use crate::shaco::{ingame};
 use std::time::{Duration, Instant};
 use std::thread;
+use crate::lcu::listener::listen_current_champ_select;
 
 // 定义全局的 REST 客户端
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
@@ -125,6 +126,12 @@ pub async fn start_champ_select(app: AppHandle) {
     });
 }
 
+#[tauri::command]
+pub async fn start_current_champ_select(app: AppHandle) {
+    tokio::spawn(async move {
+        listen_current_champ_select(app).await;
+    });
+}
 
 #[tauri::command]
 pub async fn is_game_start()-> bool {

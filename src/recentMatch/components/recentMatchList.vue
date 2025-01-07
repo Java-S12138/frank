@@ -6,8 +6,8 @@ const {sumList,queueId,isFri,maxScore} = defineProps<{ sumList: RecentSumInfo[],
 
 
 const emits = defineEmits(['showDetail'])
-const showDetail = (gameId:number,summonerId:number,isFri:boolean) => {
-  emits('showDetail',gameId,summonerId,isFri)
+const showDetail = (gameId:number,summonerId:number,isFri:boolean,champId:number) => {
+  emits('showDetail',gameId,summonerId,isFri,champId)
 }
 const teamColors = [
   '#2080f0',
@@ -15,6 +15,8 @@ const teamColors = [
   '#18a058',
   '#d03050',
   '#9333ea']
+
+
 </script>
 
 <template>
@@ -26,7 +28,8 @@ const teamColors = [
         <!--    头像-->
         <div class="flex justify-between relative">
           <n-avatar
-          :size="55"
+            @click="showDetail(0,0,isFri,summoner.champId)"
+            :size="55"
             :src="summoner.championUrl"
             fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
           />
@@ -64,7 +67,7 @@ const teamColors = [
         <!--      战绩-->
       <div class="flex flex-col gap-y-2">
           <div v-for="match in summoner.matchList"
-               @click="showDetail(match.gameId,summoner.summonerId,isFri)"
+               @click="showDetail(match.gameId,summoner.summonerId,isFri,0)"
                class="flex w-full gap-x-2">
             <n-avatar
               :size="30"

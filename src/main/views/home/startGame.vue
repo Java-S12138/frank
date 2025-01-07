@@ -3,20 +3,6 @@ import {NCard,NSpace,NTag, useMessage, NButton,NTable} from 'naive-ui'
 import {open} from "@tauri-apps/plugin-shell";
 
 const message = useMessage()
-const options = [
-  {
-    label: '启动国服',
-    key: 54261
-  },
-  {
-    label: '启动台服',
-    key: 65131
-  },
-  {
-    label: '其它地区',
-    key: 10086
-  },
-]
 
 const startGame = () => {
   const path = localStorage.getItem('clientPath')

@@ -3,7 +3,7 @@ import {onMounted, ref, Ref} from "vue";
 import QuerySummoner from "@/recentMatch/utils/querySummoner";
 import Dashboard from "@/recentMatch/components/dashboard.vue";
 import RecentMatchList from "@/recentMatch/components/recentMatchList.vue";
-import {RecentAllSumInfo, RecentSumInfo} from "@/recentMatch/utils/queryTypes";
+import {ChampInfoTypes, ChampTinyTypes, RecentAllSumInfo, RecentSumInfo} from "@/recentMatch/utils/queryTypes";
 import QueryMatch from "@/recentMatch/utils/queryMatch";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import MatchContent from "@/queryMatch/common/matchContent.vue";
@@ -13,6 +13,8 @@ import {NDrawer, NResult} from "naive-ui";
 import NullPage from "@/recentMatch/components/nullPage.vue";
 import {emitTo, once} from "@tauri-apps/api/event";
 import {window} from "@tauri-apps/api";
+import ChampInfo from "@/recentMatch/components/champInfo.vue";
+import {requestFetch} from "@/main/utils/request.ts";
 
 const querySummoner = new QuerySummoner()
 const queryMatch = new QueryMatch()
@@ -31,6 +33,8 @@ const matchDetials = new MatchDetails()
 const isDetailModal = ref(false)
 const isDetailModalLeft = ref(true)
 const participantsInfo: Ref<ParticipantsInfo | null> = ref(null)
+const isChampInfo = ref(false)
+const champInfo: Ref<{ info:null|ChampTinyTypes,list:ChampInfoTypes[] }> = ref({info:null,list:[]})
 
 interface simpleMatchList{
  [key: string]: SimpleMatchTypes[]
@@ -137,14 +141,40 @@ const getSumInfoFromCache = async (sumInfos: RecentSumInfo[], simpleMatchList: {
   }
 }
 
-const openDetailDrawer = async (gameId: number, summonerId: number, isFri: boolean) => {
+const openDetailDrawer = async (gameId: number, summonerId: number, isFri: boolean,champId:number) => {
   isDetailModalLeft.value = isFri
+  if (gameId === 0 && summonerId === 0) {
+    isChampInfo.value = true
+    isDetailModal.value = true
+    await getChampInfoList(champId)
+    return
+  }
+
   const matchInfo = await matchDetials.queryGameDetail(gameId, summonerId)
   if (matchInfo !== null) {
     currentId.value = summonerId
     participantsInfo.value = matchInfo
   }
   isDetailModal.value = true
+}
+
+const getChampInfoList = async (champId:number) => {
+  const url = `https://game.gtimg.cn/images/lol/act/img/js/hero/${champId}.js?ts=2893692`
+  const res = await requestFetch(url,'GET')
+  if (res !== null && res?.spells) {
+    const info:ChampTinyTypes = {
+      name:res.hero.name +' '+ res.hero.title,
+      alias:`https://game.gtimg.cn/images/lol/act/img/champion/${res.hero.alias}.png`,
+      roles:res.hero.roles
+    }
+    champInfo.value.info = info
+    // 定义排序顺序
+    const order = ["q", "w", "e", "r","passive"];
+    // 对数组进行排序
+    champInfo.value.list = res.spells.sort((a, b) => {
+      return order.indexOf(a.spellKey) - order.indexOf(b.spellKey);
+    })
+  }
 }
 
 const getMaxSummonerStateScore = (recentSumInfoList: RecentSumInfo[]): number => {
@@ -177,12 +207,17 @@ const getMaxSummonerStateScore = (recentSumInfoList: RecentSumInfo[]): number =>
     v-model:show="isDetailModal"
     :placement="!isDetailModalLeft ? 'left':'right'"
     :auto-focus="false"
+    :on-after-leave="() => {isChampInfo=false;champInfo={info:null,list:[]}}"
     width="632px"
   >
     <div
       class="bg-white text-neutral-900 p-3 h-full box-border rounded-lg dark:bg-zinc-900 dark:text-neutral-200">
+      <champ-info v-if="isChampInfo"
+                  :champ-info-list="champInfo.list"
+                  :champ-tiny="champInfo.info" />
+
       <match-content
-        v-if="participantsInfo!==null"
+        v-else-if="participantsInfo!==null"
         :header-info="participantsInfo.headerInfo"
         :team-one="participantsInfo.teamOne"
         :team-two="participantsInfo.teamTwo"
@@ -191,7 +226,8 @@ const getMaxSummonerStateScore = (recentSumInfoList: RecentSumInfo[]): number =>
         :is-game-in="true"
         :game-id="participantsInfo.gameId"
       />
-      <div class="w-full h-full flex justify-center items-center" v-else>
+      <div class="w-full h-full flex justify-center items-center"
+           v-else-if="!isChampInfo && participantsInfo===null">
       <n-result
         size="large"
         status="418"
@@ -199,7 +235,7 @@ const getMaxSummonerStateScore = (recentSumInfoList: RecentSumInfo[]): number =>
         description="请切换其它战绩, 尝试再次获取数据..."
       >
       </n-result>
-    </div>
+  </div>
     </div>
   </n-drawer>
 </template>

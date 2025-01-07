@@ -109,6 +109,7 @@ export interface RecentSumInfo {
   puuid: string;
   summonerState: { label: string, lv: number, score: number };
   championUrl: string;
+  champId:number;
   teamParticipantId: number;
   matchList: MatchItemTypes[];
 }
@@ -142,4 +143,27 @@ export interface SuperChampTypes {
   lastPlayTime: number;
   playerId: number;
   tokensEarned: number;
+}
+
+export interface ChampInfoTypes {
+  heroId:             string;
+  spellKey:           string;
+  name:               string;
+  description:        string;
+  abilityIconPath:    string;
+  abilityVideoPath:   string;
+  dynamicDescription: string;
+  cost:               string;
+  costburn:           string;
+  cooldown:           string;
+  cooldownburn:       string;
+  range:              string;
+  cooldownupgrade:    string;
+  costupgrade:        string;
+}
+
+export interface ChampTinyTypes {
+  alias:string;
+  name: string;
+  roles:string[];
 }
