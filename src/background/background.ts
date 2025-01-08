@@ -28,7 +28,7 @@ class Background {
   private  initializeListeners() {
     invoke('listen_for_client_start').then(async () => {
       listen<string>('client_status', (event) => this.handleClientStatus(event.payload));
-      listen<number>('lol-current-champ-select', (event) => this.handleCueChamp(event.payload));
+      listen<number>('lol-current-champ-select', (event) => this.handleCurrentChamp(event.payload));
       this.unListenSelectSession = await listen<ChampionSession>('lol-champ-select',
         (event) => this.handleChampionSelect(event.payload));
     });
@@ -123,8 +123,8 @@ class Background {
     await this.handleGetCurrentChampion();
   }
 
-  private handleCueChamp(champId:number) {
-    if (champId !== 0 && champId!== this.preChampId) {
+  private handleCurrentChamp(champId:number) {
+    if (champId !== 0 && champId !== this.preChampId) {
       this.preChampId = champId;
       this.gameFlow.sendMesToMain('Champion', champId);
     }

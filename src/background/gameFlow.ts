@@ -1,6 +1,3 @@
-/*import {champSelectSession} from "../lcu/autoBP";
-import {invokeLcu} from "../lcu";
-import {ConfigSettingTypes} from "@/background/utils/backgroundTypes";*/
 import {window} from "@tauri-apps/api";
 import {emitTo} from "@tauri-apps/api/event";
 import { ConfigSettingTypes} from "./types";
@@ -8,6 +5,7 @@ import {champSelectSession} from "@/lcu/autoBP.ts";
 import {invokeLcu} from "@/lcu";
 import {RecentMatchWindow} from "@/background/utils/creatWindow.ts";
 import {invoke} from "@tauri-apps/api/core";
+import {SessionTypes} from "@/recentMatch/utils/queryTypes";
 
 export class GameFlow {
   public mapId = 11
@@ -100,9 +98,10 @@ export class GameFlow {
   }
   // 写入游戏信息
   public writeGameInfo = async () => {
-    const res: any = await invokeLcu('get', '/lol-gameflow/v1/session')
+    const res = await invokeLcu<SessionTypes>('get', '/lol-gameflow/v1/session')
+    if (res===null) return;
     // 获取对局ID和地图ID
-    if (res?.gameData !== undefined) {
+    if (res.gameData !== undefined) {
       this.mapId = res.gameData.queue.mapId
       localStorage.setItem('gameInfo',
         String(JSON.stringify({
