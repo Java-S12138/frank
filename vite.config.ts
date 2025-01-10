@@ -10,6 +10,7 @@ const host = process.env.TAURI_DEV_HOST;
 // @ts-ignore
 export default defineConfig(async () => ({
   plugins: [vue()],
+  publicDir: false,
   define: {
     __APP_VERSION__: JSON.stringify(packageInfo.version),
   },

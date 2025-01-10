@@ -2,6 +2,7 @@
 import {NTag, NPopconfirm, NCard, NButton, NSpace,useMessage} from "naive-ui"
 import {onMounted, Ref, ref} from "vue"
 import {invokeLcu} from "@/lcu";
+import {open} from "@tauri-apps/plugin-shell";
 
 const {champ,champName} = defineProps<{champ:string,champName:string}>()
 
@@ -79,7 +80,7 @@ const getImgUrl = (imgId: any) => {
 }
 
 const openWeb = () => {
-  cube.utils.openUrlInDefaultBrowser('https://www.yuque.com/java-s/frank/introduction#Lmsmu')
+  open('https://www.yuque.com/java-s/frank/introduction#Lmsmu')
 }
 </script>
 
@@ -115,7 +116,7 @@ const openWeb = () => {
           <n-tag :bordered="false" type="error" v-if="clientRune">召唤师符文页</n-tag>
           <n-tag :bordered="false" type="info" v-else>本地英雄符文</n-tag>
           <n-tag :disabled="true" :bordered="false" >点击下方按钮</n-tag>
-          <n-tag :disabled="true" :bordered="false" @click="openWeb">查看使用详情</n-tag>
+          <n-tag class="cursor-pointer" @click="openWeb">查看使用详情</n-tag>
         </n-space>
       </div>
     </n-space>

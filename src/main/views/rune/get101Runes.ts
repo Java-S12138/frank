@@ -65,7 +65,7 @@ const makePerkData = (perk:any, champion:string, position:string) => {
       subStyleId: ``,
     },
   );
-  if (position==='mid'){
+  if (position === 'mid'){
     position = 'middle'
   }
   data.selectedPerkIds = runes
@@ -97,7 +97,12 @@ export const get101Runes = async (champId:string|number) => {
 
       const sorted = _orderBy(pData, (i:any) => i.igamecnt, [`desc`]);
 
-      var pages:any = sorted.slice(0, 2).map((i:any) => makePerkData(i, champDict[champId].alias, position));
+      const filteredData = sorted.filter((item: { runes: any[]; }) => {
+        const valueAtIndex4 = Number(item.runes[4]);
+        return valueAtIndex4 >= 6000;
+      })
+
+      var pages:any = filteredData.slice(0, 2).map((i:any) => makePerkData(i, champDict[champId].alias, position));
     }
     return res.concat(pages);
   }, []);

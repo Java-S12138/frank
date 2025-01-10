@@ -11,6 +11,7 @@ const config:Ref<ConfigSettingTypes> = ref(JSON.parse(localStorage.getItem('conf
 const theme = localStorage.getItem('theme')  || 'light'
 const dialog = useDialog()
 const showModal = ref(false)
+declare const __APP_VERSION__: string;
 
 const saveConfig = () => {
   localStorage.setItem('configSetting',JSON.stringify(config.value))

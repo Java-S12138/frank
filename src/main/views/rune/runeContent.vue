@@ -49,44 +49,44 @@ const getPosition = (pos: string) => {
 </script>
 
 <template>
-  <n-scrollbar style="height: 442px;padding-right: 12px;">
-    <div class="flex flex-col">
-      <n-space justify="space-between" :size="[0,29]">
-        <div v-for="rune in runeList">
-          <div class="runeDivDash dark:border-gray-700"
-               style="width: 100px; padding: 8px 10px 9px">
-            <n-space :size=[0,0] justify="space-between" class="px-1.5">
-              <n-space vertical align="center" :size=[0,10]>
-                <img :src="getImgUrl(rune.selectedPerkIds[0])" class="runImg">
-                <img :src="getImgUrl(rune.selectedPerkIds[1])" class="runImg">
-                <img :src="getImgUrl(rune.selectedPerkIds[2])" class="runImg">
-                <img :src="getImgUrl(rune.selectedPerkIds[3])" class="runImg">
+  <n-scrollbar style="height: 442px;padding-right: 1px;">
+      <div class="flex flex-col">
+        <n-space justify="space-between" :size="[0,29]">
+          <div v-for="rune in runeList">
+            <div class="runeDivDash dark:border-gray-700"
+                 style="width: 100px; padding: 8px 10px 9px">
+              <n-space :size=[0,0] justify="space-between" class="px-1.5">
+                <n-space vertical align="center" :size=[0,10]>
+                  <img :src="getImgUrl(rune.selectedPerkIds[0])" class="runImg">
+                  <img :src="getImgUrl(rune.selectedPerkIds[1])" class="runImg">
+                  <img :src="getImgUrl(rune.selectedPerkIds[2])" class="runImg">
+                  <img :src="getImgUrl(rune.selectedPerkIds[3])" class="runImg">
+                </n-space>
+                <n-space vertical align="center" :size=[0,10]>
+                  <img :src="getImgUrl(rune.selectedPerkIds[4])" class="runImg">
+                  <img :src="getImgUrl(rune.selectedPerkIds[5])" class="runImg">
+                  <div class="flex flex-col">
+                    <img :src="getImgUrl(rune.selectedPerkIds[6])" class="runImgSondary">
+                    <img :src="getImgUrl(rune.selectedPerkIds[7])" class="runImgSondary">
+                    <img :src="getImgUrl(rune.selectedPerkIds[8])" class="runImgSondary">
+                  </div>
+                </n-space>
               </n-space>
-              <n-space vertical align="center" :size=[0,10]>
-                <img :src="getImgUrl(rune.selectedPerkIds[4])" class="runImg">
-                <img :src="getImgUrl(rune.selectedPerkIds[5])" class="runImg">
-                <div class="flex flex-col">
-                  <img :src="getImgUrl(rune.selectedPerkIds[6])" class="runImgSondary">
-                  <img :src="getImgUrl(rune.selectedPerkIds[7])" class="runImgSondary">
-                  <img :src="getImgUrl(rune.selectedPerkIds[8])" class="runImgSondary">
-                </div>
-              </n-space>
-            </n-space>
 
-            <n-space class="mt-1" justify="space-between">
-              <n-tag :bordered="false" type="info">
-                {{ getPosition(rune.position) }}
-              </n-tag>
-              <n-tag :bordered="false" type="success" style="cursor:pointer"
-                     @click="applyRune(rune)">
-                应用
-              </n-tag>
-            </n-space>
+              <n-space class="mt-1" justify="space-between">
+                <n-tag :bordered="false" type="info">
+                  {{ getPosition(rune.position) }}
+                </n-tag>
+                <n-tag :bordered="false" type="success" style="cursor:pointer"
+                       @click="applyRune(rune)">
+                  应用
+                </n-tag>
+              </n-space>
+            </div>
           </div>
-        </div>
-      </n-space>
-    </div>
-  </n-scrollbar>
+        </n-space>
+      </div>
+    </n-scrollbar>
 </template>
 
 <style scoped>

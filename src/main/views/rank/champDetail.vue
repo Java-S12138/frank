@@ -25,7 +25,7 @@ onMounted(async () => {
 const preselectChamp = async (champId:number) => {
   if (preselectActionID===null){
     const res = await invokeLcu('get','/lol-champ-select/v1/session')
-    if (res?.success === false){
+    if (res===null){
       message.error('请在选择英雄阶段使用')
       return
     }
@@ -51,7 +51,9 @@ const champSelectPatchAction = async (actionID:any, champId:number) => {
     "championId": champId
   }
   try {
-    invokeLcu('patch',`/lol-champ-select/v1/session/actions/${actionID}`,[localBody])
+    invokeLcu('patch',
+      `/lol-champ-select/v1/session/actions/${actionID}`,
+      JSON.stringify(localBody))
     return true
   } catch (e) {
     return false
