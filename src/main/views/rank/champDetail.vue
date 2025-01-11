@@ -17,7 +17,7 @@ onMounted(async () => {
   if (res!==null){
     restraintList.value = res
   }else {
-    message.warning('当前英雄数据异常')
+    message.error('获取英雄数据异常')
   }
 })
 

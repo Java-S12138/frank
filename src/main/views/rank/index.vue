@@ -14,7 +14,7 @@ import {
   queryKRServe,
   getPostion, getLacalDateStr
 } from "./utils";
-import {ConfigRank} from "@/background/utils/backgroundTypes";
+import {ConfigRank} from "@/background/types";
 import {ChampInfo} from "./rankTypes";
 import {aliasToId, champDict} from "@/resources/champList";
 import ChampDetail from "@/main/views/rank/champDetail.vue";

@@ -15,8 +15,8 @@
         "label": "background",
         "title": "background",
         "url": "src/background/index.html",
-        "width": 800,
-        "height": 600,
+        "width": 4,
+        "height": 12,
         "visible": false,
         "decorations": false
       }

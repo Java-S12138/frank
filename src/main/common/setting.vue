@@ -12,6 +12,7 @@ const theme = localStorage.getItem('theme')  || 'light'
 const dialog = useDialog()
 const showModal = ref(false)
 declare const __APP_VERSION__: string;
+const version = __APP_VERSION__;
 
 const saveConfig = () => {
   localStorage.setItem('configSetting',JSON.stringify(config.value))
@@ -77,7 +78,7 @@ const openWeb = (isSYJ:boolean) => {
   if (isSYJ){
      open('https://syjun.vip')
   }else {
-     open('https://www.yuque.com/java-s/frank')
+     open('https://www.yuque.com/java-s/frank/introduction')
   }
 }
 const restart = async () => {
@@ -91,7 +92,7 @@ const sponsor = () => {
 
 <template>
   <n-drawer-content body-style='padding:20px 22px' body-content-style="padding:0px">
-      <n-list>
+    <n-list>
         <n-list-item style="padding-top: 0px;">
           <div class="gap-x-5 flex justify-between items-center">
             <n-tag :bordered="false">鼓励开发</n-tag>
@@ -215,7 +216,7 @@ const sponsor = () => {
           <div class="flex justify-between items-center">
             <n-button
               size="small" secondary type="tertiary" @click="openWeb(false)">
-              使用手册
+              版本 {{version}}
             </n-button>
             <n-button
               size="small" secondary type="tertiary" @click="openWeb(true)">
@@ -223,12 +224,11 @@ const sponsor = () => {
             </n-button>
             <n-button
               size="small" secondary type="tertiary" @click="restart">
-              重启软件
+              重启
             </n-button>
           </div>
         </n-list-item>
       </n-list>
-
     <n-modal style="margin:8px;max-width:334px" v-model:show="showModal">
       <Sponsor :is-completed="false"></Sponsor>
     </n-modal>

@@ -195,7 +195,7 @@ export const queryKRServe = async (configRank:ConfigRank,tier:number,lane:string
   localStorage.setItem('configRank',JSON.stringify(configRank))
   try {
     const url = `https://lol.ps/api/statistics/tierlist.json?region=0&version=${version}&tier=${tier}&lane=${lane}`
-    const res = await requestFetch<any>(url,'GET')
+    const res = await requestFetch<any>(url,'GET',undefined,5000)
 
     const champList:ChampInfo[] = res.data.reduce((res:any,item:any,index:number) => {
 
@@ -227,24 +227,37 @@ export const getRestraintData = async (champId:number, lane:string,tier:number,i
   }
   const url = `https://lol.ps/api/champ/${champId}/versus.json?region=0&version=${version}&tier=${tierRes}&lane=${position}`
 
-  const result = await requestFetch<any>(url,'GET')
+  try {
+    const result = await requestFetch<any>(url, 'GET', undefined, 5000);
 
+    const baseUrl = "https://game.gtimg.cn/images/lol/act/img/champion/";
+    const resList: [string, string, number, number, number][] = [];
 
-  if (result===null) {
-    return null
+    const {
+      counterChampionIdList,
+      counterWinrateList,
+      counterCountList,
+    } = {
+      counterChampionIdList: JSON.parse(result.data['counterChampionIdList']),
+      counterWinrateList: JSON.parse(result.data['counterWinrateList']),
+      counterCountList: JSON.parse(result.data['counterCountList']),
+    };
+
+    for (let i = 0; i < counterChampionIdList.length; i++) {
+      const champId: number = counterChampionIdList[i];
+      const champInfo = champDict[champId];
+      if (!champInfo) continue; // 跳过无效的 Champion ID
+
+      const label = `${champInfo.label}•${champInfo.title}`;
+      const imgUrl = `${baseUrl}${champInfo.alias}.png`;
+      const winRate: number = counterWinrateList[i];
+      const countMatch: number = counterCountList[i];
+
+      resList.push([label, imgUrl, winRate, champId, countMatch]);
+    }
+
+    return resList;
+  } catch (e) {
+    return null;
   }
-
-  const resList:[string,string,number,number,number][] = []
-  const counterChampionIdList = JSON.parse(result.data['counterChampionIdList'])
-  const counterWinrateList = JSON.parse(result.data['counterWinrateList'])
-  const counterCountList = JSON.parse(result.data['counterCountList'])
-  for (let i = 0; i < counterChampionIdList.length; i++) {
-    const chapmId:number = counterChampionIdList[i]
-    const label = champDict[chapmId].label +'•' + champDict[chapmId].title
-    const imgUrl = `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[chapmId].alias}.png`
-    const winRate:number = counterWinrateList[i]
-    const countMatch:number = counterCountList[i]
-    resList.push([label, imgUrl, winRate,chapmId,countMatch])
-  }
-  return resList
 }
