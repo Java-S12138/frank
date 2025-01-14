@@ -6,8 +6,8 @@ export class MainWindow {
     const webview = new WebviewWindow('mainWindow', {
       title: 'Frank',
       url: 'src/main/index.html',
-      width: 306,
-      height: 683,
+      width: 320,
+      height: 720,
       visible: false,
       resizable: false,
       decorations: false,
@@ -30,8 +30,8 @@ export class QueryMatchWindow {
     const webview = new WebviewWindow('queryMatchWindow', {
       title: '我的战绩',
       url: 'src/queryMatch/index.html',
-      width: 1160,
-      height: 631,
+      width: 1174,
+      height: 668,
       resizable: false,
       decorations: false,
       center: true,
@@ -49,8 +49,8 @@ export class MatchAnalysisWindow {
     const webview = new WebviewWindow('matchAnalysisWindow', {
       title: '战绩分析',
       url: 'src/matchAnalysis/index.html',
-      width: 1010,
-      height: 539,
+      width: 1024,
+      height: 576,
       resizable: false,
       decorations: false,
       center: true,
@@ -69,8 +69,8 @@ export class RecentMatchWindow {
     const webview = new WebviewWindow('recentMatchWindow', {
       title: '对局详情',
       url: 'src/recentMatch/index.html',
-      width: 1240,
-      height: 525,
+      width: 1254,
+      height: 562,
       resizable: false,
       decorations: false,
       center: true,
@@ -81,7 +81,6 @@ export class RecentMatchWindow {
     })
     webview.once('tauri://created', async function () {
       webview.show()
-
     })
   }
 }

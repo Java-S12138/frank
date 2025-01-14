@@ -1,26 +1,42 @@
-import {TrayIcon} from '@tauri-apps/api/tray';
+import {TrayIcon, TrayIconEvent, TrayIconOptions} from '@tauri-apps/api/tray';
 import {defaultWindowIcon} from '@tauri-apps/api/app';
 import {Menu} from '@tauri-apps/api/menu';
 import {exit} from "@tauri-apps/plugin-process";
 import {window} from "@tauri-apps/api";
 import {QueryMatchWindow, RecentMatchWindow} from "./creatWindow.ts";
+import {Image} from "@tauri-apps/api/image";
+
+const showMain = (isHide:boolean) => {
+  window.Window.getByLabel('mainWindow').then(async (win) => {
+    if (!win) return;
+
+    if (isHide) {
+      await win.hide();
+      return;
+    }
+
+    const isVisible = await win.isVisible();
+    const isMinimized = await win.isMinimized();
+
+    if (!isVisible) {
+      await win.show();
+    }
+
+    if (isMinimized) {
+      await win.unminimize();
+    } else if (isVisible) {
+      await win.hide(); // 如果窗口已经显示，则隐藏
+    }
+  })
+}
 
 const menu = await Menu.new({
   items: [
     {
       id: 'showMain',
-      text: '显示助手',
+      text: '隐藏助手',
       action: () => {
-        window.Window.getByLabel('mainWindow').then(async (win) => {
-          if (win === null) {
-            return
-          }
-          if (await win.isVisible()) {
-            win.hide();
-          } else {
-            win.show();
-          }
-        })
+        showMain(true);
       },
     },
     {
@@ -65,11 +81,17 @@ const menu = await Menu.new({
   ],
 });
 
-const options = {
-  icon: await defaultWindowIcon(),
+const leftClick = async (event: TrayIconEvent) => {
+  if (event.type === "Click" && event.button==='Left' && event.buttonState==='Down') {
+    showMain(false);
+  }
+}
+
+const options:TrayIconOptions = {
+  icon: await defaultWindowIcon() as Image,
   menu,
-  menuOnLeftClick: true,
+  menuOnLeftClick: false,
+  action:leftClick
 };
 
-// @ts-ignore
-const tray = await TrayIcon.new(options);
+TrayIcon.new(options);
