@@ -51,3 +51,18 @@ export interface OnlineRunes {
   runes: Rune[];
   skillsImg: string[];
 }
+
+export interface RuneStoreState {
+  currentChamp: number
+  currentChampImgUrl: string
+  currentChampAlias: string
+  currentChampTitle: string
+  runeDataList: Rune[]
+  blockDataList: {position:string,buildItems:ItemBuild,ps:string}[]
+  skillsList: string[][]
+}
+
+export interface RuneStoreActions {
+  mapChampInfo(champId: number): void
+  initStore(champId: number): void
+}

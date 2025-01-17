@@ -59,7 +59,7 @@ export default class BaseMatch {
   }
 
   public querySpecialMatch = async (puuid: string,queueId:number) => {
-    const matchList = await queryMatchHistory(puuid, 0, 99)
+    const matchList = await queryMatchHistory(puuid, 0, 60)
     if (matchList === null){
       return []
     }

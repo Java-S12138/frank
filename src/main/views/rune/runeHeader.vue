@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import {NCard, NAvatar, NButton, NBadge, NDrawer, useMessage} from 'naive-ui';
-import {useRuneStore} from "@/main/store/useRune";
 import RuneAuto from "@/main/views/rune/runeAuto.vue";
 import {onDeactivated, ref, watch} from "vue";
 import {isStoreageHas} from "@/lcu/utils";
 import {handleRunesWrite} from "@/main/views/rune/runes";
+import {RuneStoreActions, RuneStoreState} from "@/main/views/rune/runeTypes";
+import {Store} from "pinia";
 
-const storeRune = useRuneStore()
+const {storeRune} = defineProps<{
+  storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions>
+}>()
 
 const autoRuneActive = ref(false)
 const isAutoRune = ref(false)
@@ -61,7 +64,9 @@ onDeactivated(() => {
 
 <template>
   <n-card class="shadow" size="small">
-    <div class="flex justify-between items-center">
+    <div
+      v-if="storeRune.skillsList.length > 0"
+      class="flex justify-between items-center">
       <div class="flex gap-x-2 items-center">
         <n-badge style="font-family: DingTalk"
                  :value="isAutoRune?'auto':''" color="#ff6666">
@@ -98,6 +103,16 @@ onDeactivated(() => {
       </div>
     </div>
 
+    <div v-else class="flex w-full items-center justify-between" style="height: 50px">
+      <n-button class="p-2" secondary
+                type="success">
+        暂未选择英雄
+      </n-button>
+      <n-button class="p-2" secondary
+                type="success">
+        空空空空如也
+      </n-button>
+    </div>
   </n-card>
   <n-drawer
     style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"

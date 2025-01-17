@@ -6,8 +6,12 @@ import {Ref, ref, watch} from "vue";
 import {Rune} from "./runeTypes";
 import {useRuneStore} from "@/main/store/useRune";
 import {get101Runes} from "./get101Runes";
+import {RuneStoreActions, RuneStoreState} from "@/main/views/rune/runeTypes";
+import {Store} from "pinia";
 
-const storeRune = useRuneStore()
+const {storeRune} = defineProps<{
+  storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions>
+}>()
 
 const rune101List:Ref<Rune[]> = ref([])
 

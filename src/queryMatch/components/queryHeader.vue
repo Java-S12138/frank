@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NButton, NInput, NSelect, NPagination,NAlert,NModal,NCard,
+import {NButton, NSelect, NPagination,NAlert,NModal,NCard,
   useMessage, NIcon, NSpace, MessageReactive} from "naive-ui"
 import {ref, watch} from "vue";
 import {CircleMinus, CircleX, Settings} from "@vicons/tabler";
@@ -7,6 +7,7 @@ import {CircleMinus, CircleX, Settings} from "@vicons/tabler";
 import useMatchStore from "@/queryMatch/store";
 import {getCurrentWindow} from "@tauri-apps/api/window";
 import { open } from '@tauri-apps/plugin-shell';
+import {summonerInfo} from "@/lcu/types/SummonerTypes";
 
 const matchStore = useMatchStore()
 const inputVal = ref('')
@@ -47,11 +48,13 @@ const options = [
 const showModal = ref(false)
 
 const changeMatchMode = async (queueId: number) => {
-  if (matchStore.sumInfo !== null) {
+  const sumInfo = matchStore.sumInfo as { info: summonerInfo, rank: string[] } | null
+  if (sumInfo !== null) {
     const curMod = options.find(i => i.value === selectVal.value)?.label
     const mes: MessageReactive = message.loading(`${curMod} 加载中...`,
-      {duration:6666})
-    matchStore.getSpecialMatchList(queueId,matchStore.sumInfo.info.puuid).then(() => mes.destroy())
+      {duration:10000})
+
+    matchStore.getSpecialMatchList(queueId,sumInfo.info.puuid).then(() => mes.destroy())
 
   } else {
     matchStore.getSpecialMatchList(queueId)

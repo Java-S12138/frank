@@ -1,20 +1,21 @@
 import {defineStore} from 'pinia'
 import {champDict} from "@/resources/champList";
-import {ItemBuild, Rune} from "@/main/views/rune/runeTypes";
+import {RuneStoreActions, RuneStoreState} from "@/main/views/rune/runeTypes";
 import {QueryRune} from "@/main/views/rune/queryRune";
 
 const queryRune = new QueryRune()
 
-export const useRuneStore = defineStore('useRuneStore', {
+
+export const useRuneStore = defineStore<'useRuneStore', RuneStoreState, {}, RuneStoreActions>('useRuneStore', {
   state: () => {
     return {
       currentChamp: 0,
       currentChampImgUrl: '',
       currentChampAlias: '',
       currentChampTitle: '',
-      runeDataList: [] as Rune[],
-      blockDataList: [] as {position:string,buildItems:ItemBuild,ps:string} [],
-      skillsList: [] as string[][],
+      runeDataList: [] ,
+      blockDataList: [] ,
+      skillsList: [],
     }
   },
   actions: {

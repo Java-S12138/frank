@@ -2,6 +2,7 @@
 import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import {window} from "@tauri-apps/api";
+import {invoke} from "@tauri-apps/api/core";
 import {useRuneStore} from "@/main/store/useRune";
 import {useMessage,MessageReactive} from "naive-ui"
 import Dashboard from "@/main/common/dashboard.vue"
@@ -10,7 +11,6 @@ import {useRecordStore} from "@/main/store/useRecord";
 import Navigation from "@/main/common/navigation.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import {queryFriendInfo} from "@/main/views/teammate/utils";
-import {invoke} from "@tauri-apps/api/core";
 
 const router = useRouter()
 const curPos = ref(0)
@@ -27,7 +27,6 @@ onMounted(() => {
 // 处理不同的状态
 class GameState {
   public curFlow = 'None'
-  public isPolar = false;
   public islistenSession = false
 
   // 重置Store数据
@@ -63,7 +62,6 @@ class GameState {
   }
   // 处理None状态
   public handleNone = (id: string) => {
-    this.isPolar = false
     if (id === this.curFlow) {
       return
     }
@@ -83,9 +81,7 @@ class GameState {
   // 处理ChampSelect状态
   public handleChampSelect = async (id: string) => {
     this.resetStore()
-    if (!this.isPolar) {
-      this.changeState(id, 'teammate', 2)
-    }
+    this.changeState(id, 'teammate', 2)
     this.hanleFriendInfo()
   }
   // 获取队友数据
@@ -139,14 +135,12 @@ class GameState {
         message.error('当前英雄暂无符文数据')
         return
       } else {
-        this.isPolar = true
         this.changeState(id, 'rune', 3)
       }
     })
   }
   // 处理GameStart状态
   public handleGameStart = (id: string) => {
-    this.isPolar = false
     this.changeState(id, 'record', 4)
   }
   // 处理EndOfGame状态
