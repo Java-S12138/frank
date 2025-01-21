@@ -38,7 +38,7 @@ const handleRole = (roleList:string[]) => {
 
 <template>
   <div v-if='champTiny === null'>
-    数据获取异常...
+    数据正在加载中...
   </div>
   <div v-else class="flex flex-col items-start h-full justify-between">
     <div class="flex w-full justify-between">

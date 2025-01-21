@@ -75,7 +75,6 @@ class Background {
 
 
   private handleClientStatus(status: string) {
-    console.log(status);
     switch (status) {
       case 'ClientStarted':
         this.initFrank();
@@ -89,8 +88,8 @@ class Background {
         this.gameFlow.showHideMainWin(false, 'GameStart');
         this.gameFlow.initGameInWindow();
         break;
-      case 'PreEndOfGame': // TODO
-        this.gameFlow.coloseWin('recentMatchWindow');
+      case 'PreEndOfGame':
+        this.gameFlow.closeWin('recentMatchWindow');
         this.gameFlow.showHideMainWin(true, 'EndOfGame');
         this.taskTracker.completeTask();
         break;

@@ -29,9 +29,9 @@ export class GameFlow {
     })
   }
   // 关闭某个窗口
-  public coloseWin = (winName: string) => {
-    window.Window.getByLabel(winName).then((win) => {
-      win?.close();
+  public closeWin = (winName: string) => {
+    window.Window.getByLabel(winName).then(async (win) => {
+      await win?.close()
     })
   }
   // 发送给主窗口游戏启动事件
@@ -75,8 +75,8 @@ export class GameFlow {
   // 选择英雄阶段结束后执行的操作
   public initGameInWindow = async () => {
     //游戏启动关闭桌面战绩历史窗口，打开游戏内战绩历史窗口
-    this.coloseWin('matchAnalysisWindow')
-    this.coloseWin('queryMatchWindow')
+    this.closeWin('matchAnalysisWindow');this.closeWin('queryMatchWindow');this.closeWin('recentMatchWindow')
+
     let count = 0
     const unListenGameStart =  setInterval(() => {
       invoke<boolean>("is_game_start").then((value) => {

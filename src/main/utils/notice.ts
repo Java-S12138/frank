@@ -52,20 +52,22 @@ export class Notice {
 
   public showDialog(isVer:boolean) {
     const notice = this.notice as NoticeTypes
+    const versionInfo = `当前版本${__APP_VERSION__}，最新版本[ ${this.notice?.version} ↑]  请立即更新，获取最佳体验！`
 
     const contentVNode = () => {
-      const textList = notice.content.split('/n')
+      const content = isVer ? versionInfo + notice.content : notice.content
+      const textList = content.split('/n')
       return textList.map((text: string) => {
         return h('p',
           [text])
       })
     }
 
-    const versionInfo = `当前版本${__APP_VERSION__}，最新版本【${this.notice?.version}】↑ 请立即更新，获取最佳体验！`
+
 
     this.dialog[notice.type]({
       title: isVer ?'版本更新':'新的通知',
-      content: isVer ? versionInfo : contentVNode,
+      content: contentVNode,
       showIcon: true,
       maskClosable: true,
       closable: false,
