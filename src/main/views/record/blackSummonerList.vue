@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NList, NListItem, NButton, NEllipsis, NDrawer,NScrollbar} from "naive-ui"
+import {NList, NListItem, NButton, NEllipsis, NDrawer, NScrollbar, NDrawerContent} from "naive-ui"
 import {Hater, HaterItem} from "./blackListTypes";
 import {Ref, ref} from "vue";
 import HaterDetails from "./haterDetails.vue";
@@ -69,13 +69,15 @@ const formatDate = (dateStr: string) => {
     v-model:show="showDetails"
     style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     @after-leave="clearDrawer"
-    :auto-focus="false" height="264" placement="bottom">
-    <hater-details
-      v-if="curHaterDetails && curHaterInfo"
-      :close-drawer="closeDetailsDrawer"
-      :h-content="curHaterDetails"
-      :h-info="curHaterInfo"
-      :is-edit="true"
-    />
+    :auto-focus="false" height="272" placement="bottom">
+    <n-drawer-content>
+      <hater-details
+        v-if="curHaterDetails && curHaterInfo"
+        :close-drawer="closeDetailsDrawer"
+        :h-content="curHaterDetails"
+        :h-info="curHaterInfo"
+        :is-edit="true"
+      />
+    </n-drawer-content>
   </n-drawer>
 </template>

@@ -3,9 +3,10 @@ import {NCard, NAvatar, NButton, NBadge, NDrawer, useMessage} from 'naive-ui';
 import RuneAuto from "@/main/views/rune/runeAuto.vue";
 import {onDeactivated, ref, watch} from "vue";
 import {isStoreageHas} from "@/lcu/utils";
-import {handleRunesWrite} from "@/main/views/rune/runes";
+import {handleRunesWrite, writeAutoRune} from "@/main/views/rune/runes";
 import {RuneStoreActions, RuneStoreState} from "@/main/views/rune/runeTypes";
 import {Store} from "pinia";
+import {RuneTips} from "@/main/utils/notice.ts";
 
 const {storeRune} = defineProps<{
   storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions>
@@ -14,7 +15,9 @@ const {storeRune} = defineProps<{
 const autoRuneActive = ref(false)
 const isAutoRune = ref(false)
 const message = useMessage()
-
+const configSetting = JSON.parse(<string>localStorage.getItem("configSetting"))
+const runeTips = new RuneTips()
+const autoRuneCheckCount = ref<number>(0)
 // 自动配置符文
 const autoWriteRune = (alias:string) => {
   const localRuneStr = localStorage.getItem('autoRune') as string
@@ -36,6 +39,9 @@ const autoWriteRune = (alias:string) => {
 }
 
 watch(() => storeRune.currentChampAlias,async (alias:string) => {
+  if (alias !== ''){
+    autoRuneCheckCount.value = 0
+  }
   isAutoRune.value = isStoreageHas('autoRune',alias)
   if (isAutoRune.value){
     autoWriteRune(alias)
@@ -44,8 +50,26 @@ watch(() => storeRune.currentChampAlias,async (alias:string) => {
   }
 },{ immediate: true })
 
+const setAutoRune = async (checkTwo:boolean) => {
+  // autoRuneActive.value = true
+  if (checkTwo){
+    writeAutoRune(storeRune.currentChampAlias,storeRune.currentChampTitle,message)
+    setupAutoRune('auto')
+    autoRuneCheckCount.value = 0
+    return
+  }
+  if (!configSetting.warmTips.autoRune) {
+    runeTips.init(configSetting)
+    autoRuneCheckCount.value++
+  }else {
+    writeAutoRune(storeRune.currentChampAlias,storeRune.currentChampTitle,message)
+    setupAutoRune('auto')
+  }
+}
 const openDrawer = () => {
-  autoRuneActive.value = true
+  if (isAutoRune){
+    autoRuneActive.value = true
+  }
 }
 const setupAutoRune = (type:string) => {
   if (type ==='auto'){
@@ -77,6 +101,7 @@ onDeactivated(() => {
             :src="storeRune.currentChampImgUrl"
             fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
             style="display: block"
+            @click="openDrawer"
           />
         </n-badge>
           <div class="relative" v-for="skill in storeRune.skillsList">
@@ -95,10 +120,18 @@ onDeactivated(() => {
           </div>
       </div>
       <div>
-        <n-button @click="openDrawer"
+        <n-button @click="setAutoRune(false)"
+                  v-if="autoRuneCheckCount ===0 "
                   :focusable="false" class="p-2" secondary
+
                   :type="isAutoRune?'success':'tertiary'">
-          自动符文
+          {{ isAutoRune?'更新数据':'自动符文' }}
+        </n-button>
+        <n-button @click="setAutoRune(true)"
+                  v-else
+                  :focusable="false" class="p-2" secondary
+                  type='info'>
+          再次点击
         </n-button>
       </div>
     </div>
@@ -117,7 +150,7 @@ onDeactivated(() => {
   <n-drawer
     style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     v-model:show="autoRuneActive"
-    :height="288" :auto-focus="false" placement="bottom">
+    :height="275" :auto-focus="false" placement="bottom">
     <rune-auto :champ="storeRune.currentChampAlias"
                :champ-name="storeRune.currentChampTitle"
                @complete-setup="setupAutoRune"/>

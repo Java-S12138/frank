@@ -1,4 +1,5 @@
 import {applyRunePage} from "@/lcu/aboutRune";
+import {invokeLcu} from "@/lcu";
 
 const Precision = {
   8000: [
@@ -62,4 +63,52 @@ export const handleRunesWrite = (runeData:any) => {
       return false
     }else return true
   })
+}
+
+export const writeAutoRune = async (champ:string,champName:string,message:any) => {
+  if (champ ===''){
+    return
+  }
+  const localAutoRune = localStorage.getItem('autoRune')
+  const runeData = await getCurrentRune(champName)
+  if (runeData===null){
+    message.warning('英雄符文获取异常')
+    return
+  }
+  if (localAutoRune === null || localAutoRune ==='{}'){
+    const autoRuneDict = {
+      [champ]:runeData
+    }
+    localStorage.setItem('autoRune',JSON.stringify(autoRuneDict))
+    message.success('自动配置符文 设置成功')
+  }else {
+    const autoRuneDict = JSON.parse(localAutoRune)
+    const isExist = autoRuneDict[champ]
+    autoRuneDict[champ] = runeData
+    localStorage.setItem('autoRune',JSON.stringify(autoRuneDict))
+    if (isExist === undefined){
+      message.success('自动配置符文 设置成功')
+    }else {
+      message.warning('自动符文 数据已更新')
+    }
+  }
+}
+
+const getCurrentRune = async (champName:string) => {
+  const currentRuneList = await invokeLcu<any>('get','/lol-perks/v1/pages')
+  if (currentRuneList===null){
+    return null
+  }
+  const current = currentRuneList.find((i:any) => i.current)
+  if (current !== undefined){
+    return  {
+      name:champName+ " lolfrank.cn",
+      primaryStyleId:current.primaryStyleId,
+      subStyleId:current.subStyleId,
+      selectedPerkIds:current.selectedPerkIds
+    }
+  }else {
+   return  null
+  }
+
 }

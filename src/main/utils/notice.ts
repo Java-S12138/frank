@@ -2,6 +2,7 @@ import {requestFetch} from "@/main/utils/request";
 import {useDialog} from "naive-ui";
 import {h} from "vue";
 import {open} from "@tauri-apps/plugin-shell";
+import {ConfigSettingTypes} from "@/background/types";
 
 declare const __APP_VERSION__: string;
 
@@ -83,4 +84,41 @@ export class Notice {
       }
     })
   }
+}
+
+
+export class RuneTips{
+  private dig = useDialog()
+
+  public handleContent() {
+    const text = "①：请先确保英雄联盟客户端符文页，是当前英雄的符文数据。/n " +
+      "②：自动符文配置成功后，下次选择此英雄将自动完成符文配置的操作。/n" +
+      "③：点击英雄头像，可查看配置的数据。"
+    const textList = text.split('/n')
+    return textList.map((text: string) => {
+      return h('p',
+        [text])
+    })
+  }
+
+  public init(config:ConfigSettingTypes){
+    this.dig.info({
+      title: '使用提示',
+      content: this.handleContent,
+      showIcon: true,
+      maskClosable: true,
+      closable: false,
+      autoFocus: false,
+      style: 'margin:8px;max-width:334px',
+      positiveText: '我已了解',
+      negativeText: '下次不再弹出',
+      onPositiveClick:  () => {
+      },
+      onNegativeClick: () => {
+        config.warmTips.autoRune = true
+        localStorage.setItem('configSetting', JSON.stringify(config))
+      }
+    })
+  }
+
 }

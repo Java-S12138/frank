@@ -4,6 +4,8 @@ import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {QueryMatch} from "@/main/views/teammate/queryMatch";
 import {queryMasteryChampList} from "@/lcu/aboutSummoner";
 import {Hater, HaterItem, BlackItemsTypes} from "@/main/views/record/blackListTypes";
+import {window} from "@tauri-apps/api";
+import {emitTo} from "@tauri-apps/api/event";
 
 const useMatch = new QueryMatch()
 
@@ -14,7 +16,7 @@ export const useTeammateStore = defineStore('useTeammate', {
       recentMatchList: [] as SimpleMatchTypes[][],
       cacheMatchList: {} as { [key: string]: SimpleMatchTypes[] },
       masteryChampList: [] as string[][][],
-      blackItems: [] as BlackItemsTypes[],
+      blackItems: [] as BlackItemsTypes[][],
       isLcuErr: false,
       isCacheSuccess: 0,
       queueId:0,
@@ -32,13 +34,7 @@ export const useTeammateStore = defineStore('useTeammate', {
       if (!isReGet) {
         await this.cacheMatchRecord(summonerInfo, queueId)
       }
-
-      if (blacklist !== null) {
-        this.blacklist = blacklist
-        setTimeout(() => {
-          this.addBlackList(blacklist)
-        }, 500)
-      }
+      this.updateBlacklist(blacklist)
     },
     async getMatchList(summonerInfo: SummonerInfoList[],isReGet:boolean) {
       for (const [index, summoner] of summonerInfo.entries()) {
@@ -99,12 +95,16 @@ export const useTeammateStore = defineStore('useTeammate', {
         if (hater.blacklist.length === 0) {
           continue
         }
+        const tempList:BlackItemsTypes[]= []
         const hContent: HaterItem = hater.blacklist[0]
+        for (const hContent of hater.blacklist) {
+          tempList.push({
+            hInfo: hInfo,
+            hContent: hContent,
+          })
+        }
+        this.blackItems.push(tempList)
 
-        this.blackItems.push({
-          hInfo: hInfo,
-          hContent: hContent,
-        })
         const haterSum = this.summonerInfo
           .find(sum => sum.summonerId === hInfo.sumId)
         // @ts-ignore
@@ -114,6 +114,24 @@ export const useTeammateStore = defineStore('useTeammate', {
     // 重新获取数据，MatchList进行限制
     reInit(){
       this.initStore(this.summonerInfo,this.queueId,this.blacklist,true)
+    },
+    // 黑名单自动弹出
+    async updateBlacklist(blacklist: Hater[] | null) {
+      if (!blacklist) return; // 提前返回，避免不必要的处理
+
+      this.blacklist = blacklist;
+
+      // 延迟执行
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      this.addBlackList(blacklist);
+
+      if (blacklist.length === 1) {
+        const mainWindow = await window.Window.getByLabel('mainWindow');
+        if (mainWindow) {
+          emitTo('mainWindow', 'blacklist-team', true);
+        }
+      }
     }
   }
 })

@@ -16,11 +16,11 @@ if (theme === 'dark') {
     :theme-overrides="themeOverrides"
     :theme="theme === 'dark' ? darkTheme :null"
   >
-    <n-dialog-provider>
-      <n-message-provider :placement="'bottom'">
-        <Frank/>
-      </n-message-provider>
-    </n-dialog-provider>
+      <n-dialog-provider>
+        <n-message-provider :placement="'bottom'">
+            <Frank/>
+        </n-message-provider>
+      </n-dialog-provider>
   </n-config-provider>
 </template>
 

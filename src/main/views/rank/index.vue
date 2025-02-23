@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NSpace, NSelect,
-  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer
+  NCard, NAvatar, NSpace, NSelect,NBackTop,
+NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer
 } from 'naive-ui'
 import './assistCommon.css'
 import {onDeactivated, onMounted, Ref, ref} from "vue";
@@ -187,6 +187,10 @@ onDeactivated(() => {
   isShowDrawer.value = false
   initDesDrawer(false)
 })
+const scrollContainerRef = ref<HTMLElement | undefined>(undefined)
+const target = () => {
+  return  scrollContainerRef.value
+}
 </script>
 
 <template>
@@ -228,7 +232,7 @@ onDeactivated(() => {
             </n-dropdown>
           </div>
         </template>
-        <n-scrollbar style="max-height: 432px;padding-right: 13px">
+        <n-scrollbar  ref="scrollContainer" style="max-height: 432px;padding-right: 13px">
           <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
             <div class="flex gap-x-3" >
               <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer dark:bg-[#70c0e850]">
@@ -251,14 +255,14 @@ onDeactivated(() => {
                   <text class="text-sm">{{ chapm.name }}</text>
                   <div class="flex justify-between items-end relative">
                     <text
-                      :class="isCheck===2?'text-blue-400':''"
-                      class="text-gray-400 text-xs" >胜率 {{ chapm.win }}</text>
+                      :class="isCheck===2?'text-blue-400':'text-gray-400 '"
+                      class="text-xs" style="width: 70px" >胜率 {{ chapm.win }}</text>
                     <text
-                      :class="isCheck===4?'text-blue-400':''"
-                      class="text-gray-400 text-xs absolute left-20">禁用 {{ chapm.ban }}</text>
+                      :class="isCheck===4?'text-blue-400':'text-gray-400 '"
+                      class="text-xs" style="width: 70px">禁用 {{ chapm.ban }}</text>
                     <text
-                      :class="isCheck===3?'text-blue-400':''"
-                      class="text-gray-400 text-xs">登场 {{ chapm.appearance }}</text>
+                      :class="isCheck===3?'text-blue-400':'text-gray-400 '"
+                      class="text-xs w-16" >登场 {{ chapm.appearance }}</text>
                   </div>
                 </div>
               </div>
@@ -266,13 +270,14 @@ onDeactivated(() => {
             </div>
           </n-list-item>
           <champ-list-load v-else/>
+          <n-back-top :listen-to="target" :bottom="64" :right="15" :visibility-height="360"/>
         </n-scrollbar>
       </n-list>
     </n-card>
     <n-drawer
       style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
       v-model:show="isShowDrawer"
-      placement="bottom" :auto-focus="true" height="444"
+      placement="bottom" :auto-focus="true" height="500"
       @after-leave="initDesDrawer(false)"
     >
       <champ-detail

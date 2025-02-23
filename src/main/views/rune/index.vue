@@ -4,9 +4,8 @@ import RuneMain from "./runeMain.vue";
 import {RuneStoreActions, RuneStoreState} from "@/main/views/rune/runeTypes";
 import {Store} from "pinia";
 import {useRuneStore} from "@/main/store/useRune.ts";
-
+import {runeNotice} from "@/main/utils/notice.ts";
 const storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions> = useRuneStore()
-
 </script>
 
 <template>

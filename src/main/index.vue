@@ -41,11 +41,12 @@ class GameState {
   }
   // 改变底部页面图标
   public navigateToPage = (page: string, index: number) => {
-    if (!this.preventAccess(index)) {
+    // todo
+  /*  if (!this.preventAccess(index)) {
       const mess = index===2?'选择英雄阶段，方可使用':'选择英雄之后，才可使用'
       message.warning(mess, {duration: 2000})
       return
-    }
+    }*/
     curPos.value = index
     router.push({name: page})
   }
@@ -105,7 +106,9 @@ class GameState {
         if (value !== null && value.length !== 0) {
           setTimeout(() => {
             this.changeState('Champion', 'teammate', 2)
-            message.success('检测到被标记玩家！！！')
+            if (value.length > 1){
+              message.error('点击昵称查看被标记玩家！！！',{duration: 5000})
+            }
           }, 3000)
         }
       })
@@ -221,13 +224,13 @@ listen<string>('cacheMatchList', (event) => {
 })
 
 
-
 </script>
 
 <template>
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard/>
 <!--    <button @click="gameState.handleCSSession('CSSession', champSession, true)">NULL</button>-->
+        <button @click="gameState.handleChampion('3',12)">champ</button>
     <router-view v-slot="{ Component }">
       <keep-alive>
         <component :is="Component"/>

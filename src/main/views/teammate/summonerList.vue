@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import LoadMatch from "./loadMatch.vue";
-import {Ref, ref, onDeactivated, watch} from "vue";
+import {Ref, ref, onDeactivated} from "vue";
 import SummonerDetail from "./summonerDetail.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import HaterDetails from "@/main/views/record/haterDetails.vue";
 import {CurrentSumInfoTypes, SummonerInfoList,} from "./teammateTypes";
 import SummonerKdaName from "@/main/views/teammate/summonerKdaName.vue";
-import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag,NSkeleton,useMessage} from "naive-ui";
+import {NAvatar, NDrawer, NList, NListItem, NSpace, NTag, NSkeleton, useMessage, NDrawerContent,NPagination} from "naive-ui";
 import {BlackItemsTypes} from "@/main/views/record/blackListTypes";
+import {listen} from "@tauri-apps/api/event";
 
 const teammateStore = useTeammateStore()
 const drawerActive = ref(false)
@@ -15,13 +16,18 @@ const drawerBlackActive = ref(false)
 const currentSumInfo: Ref<CurrentSumInfoTypes | null> = ref(null)
 const currentHaterInfo: Ref<BlackItemsTypes | null> = ref(null)
 const message = useMessage()
+const allHaterInfo:Ref<BlackItemsTypes[]> = ref([])
+const page = ref(1)
+const blackLen = ref(0)
 
-watch(teammateStore.blackItems, () => {
-  if (teammateStore.blackItems.length !== 0 ){
-    currentHaterInfo.value = teammateStore.blackItems[0]
-    drawerBlackActive.value = true
-  }
+// 只有一个被标记玩家，才会执行
+listen<boolean>('blacklist-team', () => {
+  currentHaterInfo.value = teammateStore.blackItems[0][0]
+  allHaterInfo.value = teammateStore.blackItems[0]
+  blackLen.value = teammateStore.blackItems[0].length
+  drawerBlackActive.value = true
 })
+
 
 const getCurrentSum = (summoner: SummonerInfoList, index: number) => {
   currentSumInfo.value = {
@@ -41,11 +47,17 @@ const clearInfo = () => {
 }
 const clearBlackInfo = () => {
   currentHaterInfo.value = null
+  page.value = 1
 }
 
 const openBlackList = (haterIndex: number) => {
-  currentHaterInfo.value = teammateStore.blackItems[haterIndex]
+  currentHaterInfo.value = teammateStore.blackItems[haterIndex][0]
+  allHaterInfo.value = teammateStore.blackItems[haterIndex]
+  blackLen.value = teammateStore.blackItems[haterIndex].length
   drawerBlackActive.value = true
+}
+const changePgae = (page:number) => {
+  currentHaterInfo.value = allHaterInfo.value[page-1]
 }
 
 onDeactivated(() => {
@@ -127,13 +139,23 @@ onDeactivated(() => {
     v-model:show="drawerBlackActive"
     style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     :auto-focus="false"
-    @after-leave="clearBlackInfo" height="264" placement="bottom">
-    <hater-details
-      v-if="currentHaterInfo"
-      :h-content="currentHaterInfo.hContent"
-      :h-info="currentHaterInfo.hInfo"
-      :is-edit="false"
-    />
+    @after-leave="clearBlackInfo"
+    :height="blackLen>1 ? 308 : 272" placement="bottom">
+    <n-drawer-content>
+      <hater-details
+        v-if="currentHaterInfo"
+        :key="currentHaterInfo.hContent.ID"
+        :h-content="currentHaterInfo.hContent"
+        :h-info="currentHaterInfo.hInfo"
+        :is-edit="false"
+      />
+      <div  v-if="blackLen > 1 " class="flex justify-center pt-2">
+        <n-pagination
+          v-model:page="page"
+          @update-page="changePgae"
+          :page-count="blackLen" :page-slot="blackLen>6 ? 6 : blackLen" />
+      </div>
+    </n-drawer-content>
   </n-drawer>
 
 </template>

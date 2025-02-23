@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  NDrawerContent, NPopover, NTag, NDivider,
+  NPopover, NTag, NDivider,
   NButton, NInput, NSpace, NEllipsis, NPopconfirm, useMessage
 } from "naive-ui"
 import {HaterItem} from "./blackListTypes";
@@ -94,9 +94,8 @@ const changeTag = (oldContnet: HaterItem) => {
 </script>
 
 <template>
-  <n-drawer-content>
     <div class="flex justify-between">
-      <n-popover trigger="hover" :show-arrow="false" placement="top-start">
+      <n-popover trigger="hover" :show-arrow="false" placement="right">
         <template #trigger>
           <n-tag @click="searchMatch(hContent.sumId,hContent.matchId)" size="large" style="cursor: pointer">
             <n-ellipsis :tooltip="false" style="max-width: 170px">
@@ -125,8 +124,12 @@ const changeTag = (oldContnet: HaterItem) => {
       type="textarea" spellcheck="false" autosize
       maxlength="200" style="height: 120px;"
     />
-
-    <n-divider dashed style="margin: 16px 0;"/>
+    <div class="flex justify-center p-1">
+      <text class=" text-xs text-gray-400">
+        点击玩家昵称查询此局详细数据
+      </text>
+    </div>
+    <n-divider dashed style="margin: -1px 0px 16px 0;"/>
     <div v-if="isEdit"  class="flex justify-between">
       <n-button secondary size="small"
                 @click="reviseContent(hContent,true)"
@@ -160,16 +163,20 @@ const changeTag = (oldContnet: HaterItem) => {
                 :type="hContent.isShow?'error':'success'">
         {{ hContent.tag }}
       </n-tag>
-      <n-tag :bordered="false" :type="hContent.isShow?'error':'success'" :disabled="true">
-        <n-ellipsis :tooltip="false" style="max-width: 150px">
-          {{hContent.playerSumName}}
-        </n-ellipsis>
-      </n-tag>
+
+      <n-popover  trigger="hover" :show-arrow="false" placement="left">
+        <template #trigger>
+          <n-tag :bordered="false" :type="hContent.isShow?'error':'success'" :disabled="true">
+            <n-ellipsis :tooltip="false" style="max-width: 150px">
+              {{hContent.playerSumName}}
+            </n-ellipsis>
+          </n-tag>
+        </template>
+        <text>被此玩家标记&rarr;</text>
+      </n-popover>
+
+
     </div>
-    <text class="absolute text-xs text-gray-400" style="bottom: 53px;left: 76px">
-      点击玩家昵称查询此局详细数据
-    </text>
-  </n-drawer-content>
 </template>
 
 

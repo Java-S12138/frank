@@ -11,12 +11,15 @@ import {champDict} from "@/resources/champList";
 import {SimpleMatchTypes} from "@/lcu/types/queryMatchLcuTypes";
 import {querySummonerInfo} from "@/lcu/aboutSummoner";
 import {ChampionSession} from "@/background/types";
+// import {champSession} from "@/test";
 
 // 获取选择英雄时 获取所以友方召唤师ID /lol-champ-select/v1/session 的值
 export const queryAllSummonerId = async (islistenSession:boolean) => {
   await new Promise(resolve => setTimeout(resolve, 666));
 
   const mactchSession = await invokeLcu<ChampionSession>('get','/lol-champ-select/v1/session')
+  // const mactchSession = champSession
+
   if (mactchSession===null) return null;
 
   const getChampId = islistenSession === false ? await invokeLcu<number|null>('get','/lol-champ-select/v1/current-champion') : 0

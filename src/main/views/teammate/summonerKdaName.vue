@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ThumbDown, ThumbUp} from "@vicons/tabler";
-import {NEllipsis, NIcon, NTag} from "naive-ui";
+import {NEllipsis, NIcon, NTag,NButton} from "naive-ui";
 const {kda,name,hater,haterIndex,openDrawer} = defineProps<{
   kda: string | undefined,
   name: string,
@@ -40,7 +40,7 @@ const handleOpenDrawer = (hater:boolean|undefined,haterIndex:number|undefined) =
   <div v-else class="flex gap-x-3">
     <n-tag
       round size="small"
-      style="width: 85px" class="justify-center text-sm"
+      style="width: 60px" class="justify-center text-sm"
       :bordered="false" :type="kda>=9?'success':'error'">
       <div class="flex gap-x-0.5 items-center">
         <n-icon :size="16">
@@ -50,15 +50,18 @@ const handleOpenDrawer = (hater:boolean|undefined,haterIndex:number|undefined) =
         <text>{{ kda }}</text>
       </div>
     </n-tag>
-    <n-tag
-      round size="small" class="w-full justify-center text-sm"
-      :bordered="false" :disabled="hater===undefined?true:false"
-      :type="checkHater(hater)" @click="handleOpenDrawer(hater,haterIndex)"
-      style="cursor: default !important;">
+    <n-button
+      size="tiny"
+      round
+      :disabled="hater===undefined?true:false"
+      class="flex-1 justify-center text-sm"
+      @click="handleOpenDrawer(hater,haterIndex)"
+      :type="checkHater(hater)"
+    >
       <n-ellipsis :tooltip="false" style="max-width: 104px">
         {{name}}
       </n-ellipsis>
-    </n-tag>
+    </n-button>
   </div>
 </template>
 

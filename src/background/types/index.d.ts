@@ -8,6 +8,9 @@ export interface ConfigSettingTypes {
   isGameInTips:boolean;
   autoWriteBlock:boolean;
   inWinOpacity:number;
+  warmTips:{
+    autoRune:boolean
+  }
 }
 export interface ConfigRank {
   tier: number;

@@ -64,5 +64,5 @@ export interface RuneStoreState {
 
 export interface RuneStoreActions {
   mapChampInfo(champId: number): void
-  initStore(champId: number): void
+  initStore(champId: number): Promise<void>
 }
