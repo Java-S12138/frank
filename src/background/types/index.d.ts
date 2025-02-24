@@ -9,7 +9,9 @@ export interface ConfigSettingTypes {
   autoWriteBlock:boolean;
   inWinOpacity:number;
   warmTips:{
-    autoRune:boolean
+    autoRune:boolean,
+    rankTips:boolean,
+    teamTips:boolean,
   }
 }
 export interface ConfigRank {

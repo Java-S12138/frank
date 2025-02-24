@@ -76,14 +76,18 @@ const changeConfig = () => {
             </template>
             {{ winCount.enemy[0] }}/{{ winCount.enemy[1] }}
           </n-tag>
-        </div>
       </div>
-  </div>
+        <n-tag class="h-10 ml-4" style="cursor: default !important;"
+               :bordered="false" type="default" :disabled="true">
+        显示•隐藏&nbsp;&nbsp;&nbsp;&nbsp;Shift + Tab
+      </n-tag>
+    </div>
+</div>
 
     <div class="flex w-1/2 justify-end gap-x-8">
       <n-tag class="h-10" style="cursor: default !important;"
              :bordered="false" type="default" :disabled="true">
-        显示•隐藏&nbsp;&nbsp;&nbsp;&nbsp;Shift + Tab
+        在游戏中显示，请将游戏窗口模式设置成【无边框】
       </n-tag>
       <n-button-group size="large">
         <n-button :focusable="false" @click="isModalOpen = true" style="padding: 12px;" type="default">

@@ -51,7 +51,6 @@ watch(() => storeRune.currentChampAlias,async (alias:string) => {
 },{ immediate: true })
 
 const setAutoRune = async (checkTwo:boolean) => {
-  // autoRuneActive.value = true
   if (checkTwo){
     writeAutoRune(storeRune.currentChampAlias,storeRune.currentChampTitle,message)
     setupAutoRune('auto')
@@ -67,19 +66,21 @@ const setAutoRune = async (checkTwo:boolean) => {
   }
 }
 const openDrawer = () => {
-  if (isAutoRune){
+  if (isAutoRune.value){
     autoRuneActive.value = true
   }
 }
 const setupAutoRune = (type:string) => {
   if (type ==='auto'){
-    autoRuneActive.value = false
     isAutoRune.value = true
   }else {
     isAutoRune.value = false
   }
+  autoRuneActive.value = false
 }
-
+const openTips = () => {
+  runeTips.init(configSetting)
+}
 
 onDeactivated(() => {
   autoRuneActive.value = false
@@ -100,9 +101,9 @@ onDeactivated(() => {
             :size="50"
             :src="storeRune.currentChampImgUrl"
             fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-            style="display: block"
-            @click="openDrawer"
-          />
+            style="display: block;"
+            :style="isAutoRune?'cursor: pointer':''"
+            @click="openDrawer"/>
         </n-badge>
           <div class="relative" v-for="skill in storeRune.skillsList">
             <n-avatar
@@ -121,16 +122,17 @@ onDeactivated(() => {
       </div>
       <div>
         <n-button @click="setAutoRune(false)"
-                  v-if="autoRuneCheckCount ===0 "
+                  v-if="autoRuneCheckCount === 0 "
                   :focusable="false" class="p-2" secondary
-
-                  :type="isAutoRune?'success':'tertiary'">
-          {{ isAutoRune?'更新数据':'自动符文' }}
+                  round
+                  :type="isAutoRune?'success':'info'">
+          {{ isAutoRune ?'更新数据':'自动符文' }}
         </n-button>
         <n-button @click="setAutoRune(true)"
                   v-else
+                  round
                   :focusable="false" class="p-2" secondary
-                  type='info'>
+                  type='error'>
           再次点击
         </n-button>
       </div>
@@ -153,6 +155,7 @@ onDeactivated(() => {
     :height="275" :auto-focus="false" placement="bottom">
     <rune-auto :champ="storeRune.currentChampAlias"
                :champ-name="storeRune.currentChampTitle"
+               :open-tips="openTips"
                @complete-setup="setupAutoRune"/>
   </n-drawer>
 </template>

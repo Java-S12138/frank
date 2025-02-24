@@ -26,9 +26,6 @@ const handleMin = async () => {
 }
 
 const handleClose = async () => {
-  const appWindow = getCurrentWindow()
-  const position = await appWindow.innerPosition()
-  localStorage.setItem('position', `${position.x}+${position.y}`)
   await exit(1)
 }
 

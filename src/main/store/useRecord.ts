@@ -32,7 +32,7 @@ export const useRecordStore = defineStore('useRecordStore', {
         this.haterList = null
         return
       }
-      this.haterList = await blackList.querySumDetails(resBlack[0])
+      this.haterList = await blackList.querySumDetails(resBlack[0],true)
       this.userInfos = resBlack[1]
       // 判断是否数据量匹配
       this.handleHaterVolume(resBlack[0])
@@ -47,7 +47,7 @@ export const useRecordStore = defineStore('useRecordStore', {
       }
     },
     async checkFriSum(sumIdList: string[]) {
-      const existSumDetails = await blackList.querySumDetails(sumIdList)
+      const existSumDetails = await blackList.querySumDetails(sumIdList,false)
       if (existSumDetails === null || existSumDetails.length === 0) {
         return null
       }

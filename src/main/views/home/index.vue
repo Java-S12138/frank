@@ -106,9 +106,9 @@ const openWin = () => {
 
 const taskCheck = () => {
   const data:TaskTrackerTypes = JSON.parse(localStorage.getItem('taskTracker') as string)
-  if (data.taskCount === 12){
+  if (data.taskCount === 24){
     taskCompleted.value = true
-    data.taskCount = 13
+    data.taskCount = 25
     localStorage.setItem('taskTracker', JSON.stringify(data))
   }
 }

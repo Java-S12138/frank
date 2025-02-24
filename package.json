@@ -1,7 +1,7 @@
 {
   "name": "Frank",
   "private": true,
-  "version": "3.13.1502",
+  "version": "3.14.1504",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-process": "^2.2.0",
+    "@tauri-apps/plugin-window-state": "^2.2.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {

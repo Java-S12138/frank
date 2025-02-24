@@ -1,5 +1,4 @@
 import {WebviewWindow} from "@tauri-apps/api/webviewWindow";
-import {PhysicalPosition} from "@tauri-apps/api/dpi";
 
 export class MainWindow {
   constructor() {
@@ -15,11 +14,6 @@ export class MainWindow {
       transparent: true
     })
     webview.once('tauri://created', async function () {
-      const curPos = localStorage.getItem('position')
-      if (curPos !== null) {
-        const parts = curPos.split('+')
-        await webview.setPosition(new PhysicalPosition(Number(parts[0]), Number(parts[1])))
-      }
       webview.show()
     })
   }

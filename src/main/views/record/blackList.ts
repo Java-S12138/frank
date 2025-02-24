@@ -33,7 +33,7 @@ class BlackList {
     }
   }
   // 通过summonerId获取黑名单数据
-  public querySumDetails = async (sumIdList:string[]):Promise<Hater[]|null> => {
+  public querySumDetails = async (sumIdList:string[],isInit:boolean):Promise<Hater[]|null> => {
     this.sumInfo = this.sumInfo|| JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes
     const res = await findHaterByHaterId({
       url:'/hater/findHaterBySumId',
@@ -43,9 +43,26 @@ class BlackList {
     if (res === null){
       return null
     }
-    const rec = res.reverse()
-    return rec
+    return this.transformArray(res,this.sumInfo.summonerId,isInit)
   }
+
+  public transformArray = (res: Hater[],localSumId:number, isInit:boolean) =>  {
+    return [...res]
+      .map(item => {
+        // 根据 isInit 决定是否过滤 blacklist
+        let blacklist = isInit
+          ? item.blacklist.filter(b => Number(b.playerSumId) === localSumId)
+          : [...item.blacklist]; // 如果不过滤，复制一份
+
+        // 逆转 blacklist
+        blacklist = blacklist.reverse();
+        // 返回新对象, 覆盖原对象中的blacklist
+        return { ...item, blacklist };
+      })
+      .filter(item => item.blacklist.length > 0)
+      .reverse(); // 逆转主数组
+  }
+
   // 更新user过期的数据
   public updateUserInfo = async (userInfos:UserInfos,newSumId:string[]) => {
     this.sumInfo = this.sumInfo|| JSON.parse(localStorage.getItem('sumInfo') as string) as sumInfoTypes

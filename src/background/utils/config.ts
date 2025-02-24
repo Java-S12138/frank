@@ -18,7 +18,9 @@ const configSetting: ConfigSettingTypes = {
   'autoWriteBlock':true,
   'inWinOpacity':100,
   'warmTips':{
-    autoRune:false
+    autoRune:false,
+    rankTips:false,
+    teamTips:false
   }
 }
 

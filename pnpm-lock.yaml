@@ -17,6 +17,9 @@ importers:
       '@tauri-apps/plugin-process':
         specifier: ^2.2.0
         version: 2.2.0
+      '@tauri-apps/plugin-window-state':
+        specifier: ^2.2.1
+        version: 2.2.1
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.6.3)
@@ -31,9 +34,6 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       '@tauri-apps/plugin-shell':
-        specifier: ^2.2.0
-        version: 2.2.0
-      '@tauri-apps/plugin-window-state':
         specifier: ^2.2.0
         version: 2.2.0
       '@types/node':
@@ -492,8 +492,8 @@ packages:
   '@tauri-apps/plugin-shell@2.2.0':
     resolution: {integrity: sha512-iC3Ic1hLmasoboG7BO+7p+AriSoqAwKrIk+Hpk+S/bjTQdXqbl2GbdclghI4gM32X0bls7xHzIFqhRdrlvJeaA==}
 
-  '@tauri-apps/plugin-window-state@2.2.0':
-    resolution: {integrity: sha512-PFZ/vkZ6UPaRyuggEn8jWc/xwpiEw3Id8i6bin54zUR3vHY0MOK+ovvpvp6SEHKryCJbZMigYJz0OUT2eZ4YmQ==}
+  '@tauri-apps/plugin-window-state@2.2.1':
+    resolution: {integrity: sha512-L7FhG/ocQNt8t+TMBkvl8eLhCU6I19t848unKMUgNHuvwHPaurzZr4knulNyKzqz7zVYSz9AdvgWy4915eq+AA==}
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
@@ -1472,7 +1472,7 @@ snapshots:
     dependencies:
       '@tauri-apps/api': 2.1.1
 
-  '@tauri-apps/plugin-window-state@2.2.0':
+  '@tauri-apps/plugin-window-state@2.2.1':
     dependencies:
       '@tauri-apps/api': 2.1.1
 

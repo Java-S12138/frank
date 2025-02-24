@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {NTag, NPopconfirm, NCard, NButton, NSpace,useMessage} from "naive-ui"
+import {NPopconfirm, NCard, NButton, NSpace,useMessage} from "naive-ui"
 import {onMounted, Ref, ref} from "vue"
 import {invokeLcu} from "@/lcu";
 import {open} from "@tauri-apps/plugin-shell";
 import {writeAutoRune} from "@/main/views/rune/runes.ts";
 
-const {champ,champName} = defineProps<{champ:string,champName:string}>()
+const {champ,champName,openTips} = defineProps<{champ:string,champName:string,openTips:() => void}>()
 
 const message = useMessage()
 const emits = defineEmits(['completeSetup'])
@@ -68,7 +68,7 @@ const openWeb = () => {
 <template>
   <n-card :bordered="false" content-style="padding:12px 21px" class="divCard">
     <n-button secondary :bordered="false" type="info" class="mb-3 w-full justify-center">
-      👇当前英雄的自动符文数据如下
+      ↓ 当前英雄的自动符文数据如下
     </n-button>
     <n-space justify="space-between">
       <div class="runeDiv runeDivDash"  v-if="runeData!==null">
@@ -93,9 +93,7 @@ const openWeb = () => {
 
       <div class="runeDiv runeDivDash flex justify-center">
         <n-space class="h-full" justify="space-between"  vertical>
-          <n-button v-if="clientRune" type="error" secondary style="width: 120px;">暂无符文数据</n-button>
           <n-popconfirm
-            v-else
             @positive-click="removeAutoRune"
             :show-icon="false"
             positive-text="确定"
@@ -113,10 +111,11 @@ const openWeb = () => {
             secondary size="small" type="success" >更新自动符文</n-button>
 
           <n-button
-            @click="openWeb"
-            secondary size="small" type="default" >功能使用介绍</n-button>
+            @click="openTips"
+            secondary size="small" type="default">查看弹窗提示</n-button>
           <n-button
-            secondary size="small" type="tertiary" >数据保存本地</n-button>
+            @click="openWeb"
+            secondary size="small" type="tertiary">功能使用介绍</n-button>
         </n-space>
       </div>
     </n-space>

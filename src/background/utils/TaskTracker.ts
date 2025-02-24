@@ -52,7 +52,7 @@ export class TaskTracker {
   public completeTask(): void {
     this.checkMonth();
 
-    if (this.taskCount >= 12) {
+    if (this.taskCount >= 24) {
       return;
     }
 

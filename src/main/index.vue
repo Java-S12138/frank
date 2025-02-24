@@ -11,6 +11,7 @@ import {useRecordStore} from "@/main/store/useRecord";
 import Navigation from "@/main/common/navigation.vue";
 import {useTeammateStore} from "@/main/store/useTeammate";
 import {queryFriendInfo} from "@/main/views/teammate/utils";
+import {MainPageTips} from "@/main/utils/notice.ts";
 
 const router = useRouter()
 const curPos = ref(0)
@@ -19,6 +20,9 @@ let messageReactive: MessageReactive | null = null
 const teammateStore = useTeammateStore()
 const runeStore = useRuneStore()
 const recordStore = useRecordStore()
+const pageTips = new MainPageTips()
+const configSetting = JSON.parse(<string>localStorage.getItem("configSetting"))
+const tipsDoneList:number[] = []
 
 onMounted(() => {
   router.push({name: 'home'})
@@ -38,17 +42,29 @@ class GameState {
   public changeState = (id: string, page: string, index: number) => {
     this.curFlow = id
     this.navigateToPage(page, index)
+
   }
   // 改变底部页面图标
   public navigateToPage = (page: string, index: number) => {
-    // todo
-  /*  if (!this.preventAccess(index)) {
+    if (!this.preventAccess(index)) {
       const mess = index===2?'选择英雄阶段，方可使用':'选择英雄之后，才可使用'
       message.warning(mess, {duration: 2000})
       return
-    }*/
+    }
     curPos.value = index
     router.push({name: page})
+
+    // tips
+    if (!tipsDoneList.includes(index)){
+      setTimeout(() => {
+        if (index === 1){
+          pageTips.init(configSetting,1)
+        }else if(index === 2){
+          pageTips.init(configSetting,2)
+        }
+        tipsDoneList.push(index)
+      },1200)
+    }
   }
   // 防止访问
   public preventAccess = (index: number) => {
@@ -230,7 +246,7 @@ listen<string>('cacheMatchList', (event) => {
   <div class="main bg-neutral-100 dark:bg-neutral-900">
     <dashboard/>
 <!--    <button @click="gameState.handleCSSession('CSSession', champSession, true)">NULL</button>-->
-        <button @click="gameState.handleChampion('3',12)">champ</button>
+<!--        <button @click="gameState.handleChampion('3',12)">champ</button>-->
     <router-view v-slot="{ Component }">
       <keep-alive>
         <component :is="Component"/>
