@@ -1,13 +1,12 @@
 import {englishToChinese} from "@/lcu/utils";
 import {aliasToId, champDict} from "@/resources/champList";
 import {invokeLcu} from "@/lcu";
-import {PlayerChampionSelection, RecentSumInfo, SessionTypes, TeamData,SuperChampTypes} from "@/recentMatch/utils/queryTypes";
+import {RecentSumInfo, SessionTypes, TeamData,SuperChampTypes} from "@/recentMatch/utils/queryTypes";
 
 class QuerySummoner {
   public matchSession: null|SessionTypes = null
   public currentId: number = 0
   public queueId: number = 0
-  public playerChampionSelections: any = {}
 
   // 初始化数据
   public init = async () => {
@@ -19,11 +18,7 @@ class QuerySummoner {
       this.queueId = 0
       return
     }
-
     this.currentId = JSON.parse(localStorage.getItem('sumInfo') as string).summonerId
-    this.matchSession.gameData.playerChampionSelections.forEach((res: PlayerChampionSelection) => {
-      this.playerChampionSelections[(res.summonerInternalName).toLowerCase()] = res.championId
-    })
   }
   // 通过Lcu接口查询数据
   public fromLcuQuery = async () => {
@@ -47,7 +42,8 @@ class QuerySummoner {
     if (summoner.championId !== undefined){
       return  champDict[summoner.championId].alias
     }
-    return  champDict[this.playerChampionSelections[(summoner.summonerName.toLowerCase())]].alias
+    return ""
+    // return  champDict[this.playerChampionSelections[(summoner.summonerName.toLowerCase())]].alias
   }
   // 通过lcu接口获取数据再次进行解析
   public simplifySummonerInfo = async (summonerList: TeamData[]) => {

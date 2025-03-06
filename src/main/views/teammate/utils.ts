@@ -25,11 +25,10 @@ export const queryAllSummonerId = async (islistenSession:boolean) => {
   const getChampId = islistenSession === false ? await invokeLcu<number|null>('get','/lol-champ-select/v1/current-champion') : 0
 
   const myTeam: MyTeamObject[] = mactchSession.myTeam
-  let summonerIdList: number[] = []
   if (myTeam) {
-    for (const summoner of myTeam) {
-      summonerIdList.push(summoner.summonerId)
-    }
+
+    const summonerIdList = [...new Set(myTeam.map(summoner => summoner.summonerId))].filter(id => id !== 0);
+
     return {
       summonerIdList:summonerIdList,
       champId:getChampId === null ? 0 : getChampId
