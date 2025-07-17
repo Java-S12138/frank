@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {
-  NCard, NAvatar, NSpace, NSelect,NBackTop,
-NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer
+  NCard, NAvatar, NSpace, NSelect, NBackTop,
+  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer, arDZ
 } from 'naive-ui'
 import './assistCommon.css'
-import {onDeactivated, onMounted, Ref, ref} from "vue";
+import {onActivated, onDeactivated, onMounted, Ref, ref} from "vue";
 import {
   rankOptions,
   cnOptions,
@@ -32,6 +32,7 @@ const tier = ref(configRank.tier)
 const lane = ref(configRank.lane)
 const is101 = ref(configRank.is101)
 const isCheck = ref(1)
+const showBackUp = ref<boolean>(false)
 const champSliceList:Ref<ChampInfo[]> = ref([])
 const currentChampDrawer:Ref<{champId:number,selectedList:string[]}> = ref({
   champId: 0,
@@ -186,11 +187,16 @@ const initDesDrawer = (isInit:boolean,champId?:number,imgUrl?:string,level?:stri
 onDeactivated(() => {
   isShowDrawer.value = false
   initDesDrawer(false)
+  showBackUp.value=false
 })
-const scrollContainerRef = ref<HTMLElement | undefined>(undefined)
-const target = () => {
-  return  scrollContainerRef.value
-}
+
+onActivated(()=>{
+  showBackUp.value=true
+})
+
+
+
+
 </script>
 
 <template>
@@ -232,7 +238,7 @@ const target = () => {
             </n-dropdown>
           </div>
         </template>
-        <n-scrollbar  ref="scrollContainer" style="max-height: 432px;padding-right: 13px">
+        <n-scrollbar  ref="scrollContainerRef" style="max-height: 432px;padding-right: 13px">
           <n-list-item v-if="champSliceList.length!==0" v-for="chapm in champSliceList">
             <div class="flex gap-x-3" >
               <div class="flex items-center justify-center h-12 w-12 rounded bg-blue-100 cursor-pointer dark:bg-[#70c0e850]">
@@ -270,7 +276,7 @@ const target = () => {
             </div>
           </n-list-item>
           <champ-list-load v-else/>
-          <n-back-top :listen-to="target" :bottom="64" :right="15" :visibility-height="360"/>
+          <n-back-top v-if="showBackUp" :bottom="64" :right="15" :visibility-height="360"/>
         </n-scrollbar>
       </n-list>
     </n-card>

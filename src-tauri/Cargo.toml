@@ -15,14 +15,14 @@ name = "frank_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+tauri-build = { version = "2.2.0", features = [] }
 
 [dependencies]
-tauri = { version = "2.4.1", features = ["tray-icon"] }
-tauri-plugin = "2.1.1"
-tauri-plugin-opener = "2.2.6"
+tauri = { version = "2.5.1", features = ["tray-icon"] }
+tauri-plugin = "2.2.0"
+tauri-plugin-opener = "2.2.7"
 tauri-plugin-process = "2.2.1"
-tauri-plugin-http = "2.4.3"
+tauri-plugin-http = "2.4.4"
 tauri-plugin-shell = "2.2.1"
 tauri-plugin-window-state = "2.2.2"
 tauri-plugin-single-instance = "2.2.4"

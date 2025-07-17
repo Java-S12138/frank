@@ -1482,6 +1482,14 @@ export const champDict:{ [key: string]: { label: string, alias: string, title: s
       "mage", "support"
     ]
   },
+  "804": {
+    "label": "不破之誓",
+    "alias": "Yunara",
+    "title": "芸阿娜",
+    "roles": [
+      "marksman"
+    ]
+  },
   "3151": {
     "label": "暴走萝莉",
     "alias": "Jinx",
@@ -2066,6 +2074,10 @@ export const optionsChampion = [
   {
     'value': '800',
     'label': '流光镜影'
+  },
+  {
+    'value': '804',
+    'label': '不破之誓'
   }
 ]
 export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } = {
@@ -2239,6 +2251,7 @@ export const mapNameFromUrl:{ [key: string]: { label: string, name: string } } =
   'Aurora': {'label': '双界灵兔', 'name': '阿萝拉'},
   'Ambessa': {'label': '铁血狼母', 'name': '安蓓萨'},
   'Mel': {'label': '流光镜影', 'name': '梅尔'},
+  'Yunara': {'label': '不破之誓', 'name': '芸阿娜'},
 }
 export const aliasToId:{ [key: string]: number } = {
   "Annie": 1,
@@ -2410,7 +2423,8 @@ export const aliasToId:{ [key: string]: number } = {
   "Smolder": 901,
   "Aurora": 893,
   "Ambessa": 799,
-  "Mel":800
+  "Mel":800,
+  "Yunara":804
 }
 export const keywordsList = [
   {
@@ -3262,5 +3276,10 @@ export const keywordsList = [
     "alias": "Mel",
     "name": "流光镜影",
     "keywords": "梅尔,流光镜影,meier,liuguangjingying,me,lgjy"
+  },
+  {
+    "alias": "Yunara",
+    "name": "不破之誓",
+    "keywords": "芸阿娜,不破之誓,yunara,bupozhishi,yual,bpzs"
   }
 ]

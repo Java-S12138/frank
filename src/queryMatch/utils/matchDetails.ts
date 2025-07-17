@@ -27,8 +27,8 @@ export default class MatchDetails {
 
   public queryGameDetail = async (gameId:number,sumId:number) => {
     this.init()
-    const response:GameDetailedInfo = await invokeLcu('get',`/lol-match-history/v1/games/${gameId}`)
-    if (response?.queueId === undefined){
+    const response:GameDetailedInfo | null = await invokeLcu('get',`/lol-match-history/v1/games/${gameId}`)
+    if (response ===null || response?.queueId === undefined){
       return null
     }
 
@@ -114,7 +114,7 @@ export default class MatchDetails {
       name: nameList.name,
       accountId:nameList.summonerId,
       puuid:nameList.puuid,
-      isCurSum:nameList.summonerId===sumId?true:false,
+      isCurSum:nameList.summonerId === sumId,
       teamType: participant.teamId,
       champLevel:participant.stats.champLevel,
       champImgUrl: `${champDict[participant.championId].alias}.png`,

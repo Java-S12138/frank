@@ -38,7 +38,7 @@ pub async fn run() {
             // 当尝试启动新实例时，聚焦主窗口
             let _ = app.get_webview_window("mainWindow")
                 .expect("no main window")
-                .set_focus();
+                .show();
         }))
         .plugin(tauri_plugin_window_state::Builder::default()
             .with_state_flags(StateFlags::POSITION)
