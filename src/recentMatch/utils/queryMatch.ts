@@ -6,23 +6,48 @@ import {Games} from "@/lcu/types/queryMatchLcuTypes";
 class QueryMatch {
   public winCount = 0
 
-  public queryMatchHistory = async (puuid: string, queueId: number, summonerState: string): Promise<[MatchItemTypes[], number, boolean]> => {
-    let matchList
+  public queryMatchHistory = async (
+    puuid: string,
+    queueId: number,
+    summonerState: string
+  ): Promise<[MatchItemTypes[], number, boolean]> => {
+    try {
+      let matchList: MatchItemTypes[] = [];
 
-    if (queueId === 420 || queueId === 440) {
-      matchList = await this.findSpecialMatch(puuid, queueId)
-    } else {
-      matchList = await this.findMatch(puuid)
+      // Get match list based on queue type
+      if (queueId === 420 || queueId === 440) {
+        matchList = await this.findSpecialMatch(puuid, queueId);
+      } else {
+        matchList = await this.findMatch(puuid);
+      }
+
+      // Remove duplicate matches by gameId
+      const uniqueMatches = matchList.reduce((acc: MatchItemTypes[], current) => {
+        if (!acc.some(match => match.gameId === current.gameId)) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+
+      // Calculate win count (assuming this.winCount is updated in findMatch/findSpecialMatch)
+      const winCount = matchList.length > 0 ? this.winCount : 0;
+
+      // Determine if player is excellent based on their state and match performance
+      const isExcel = this.isExcelPlayer(summonerState, uniqueMatches);
+
+      // Reset win count for future calls
+      this.winCount = 0;
+
+      return [uniqueMatches, winCount, isExcel];
+    } catch (error) {
+      console.error('Error in queryMatchHistory:', error);
+      // Return default values in case of error
+      return [[], 0, false];
     }
-
-    const winCount = matchList.length > 0 ? this.winCount : 0
-    const isExcel = this.isExcelPlayer(summonerState, matchList)
-    this.winCount = 0
-    return [matchList, winCount, isExcel]
-  }
+  };
 
   public parseMatch = (games: Games) => {
-    this.winCount = games.participants[0].stats.win === true ? this.winCount + 1 : this.winCount
+    this.winCount = games.participants[0].stats.win ? this.winCount + 1 : this.winCount
     return <MatchItemTypes>{
       champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[String(games.participants[0].championId)].alias}.png`,
       kills: games.participants[0].stats.kills,

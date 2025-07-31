@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import {NCheckbox, NTag, NIcon, NButton, NButtonGroup, NPopconfirm, NDivider} from 'naive-ui'
-import {ThumbUp, ThumbDown, Bulb, CircleMinus, CircleX} from "@vicons/tabler";
+import {ThumbUp, ThumbDown, Bulb, CircleMinus, CircleX, Refresh} from "@vicons/tabler";
 import {onMounted, reactive, ref} from "vue"
 import {ConfigSettingTypes} from "@/background/types";
 import {getCurrentWindow} from "@tauri-apps/api/window";
 
-const {winCount,isFriCount} = defineProps<{
+const {winCount, isFriCount} = defineProps<{
   winCount:
     { friend: [number, number], enemy: [number, number] },
   isFriCount: boolean
 }>()
-const config:ConfigSettingTypes = reactive(JSON.parse(<string>(localStorage.getItem('configSetting'))))
+const config: ConfigSettingTypes = reactive(JSON.parse(<string>(localStorage.getItem('configSetting'))))
 
 const isModalOpen = ref(false)
-const opacityVal = ref(config.inWinOpacity)
+// const opacityVal = ref(config.inWinOpacity)
 
 onMounted(() => {
-  if (!config.isGameInTips){
+  if (!config.isGameInTips) {
     isModalOpen.value = true
   }
   window.addEventListener('keydown', handleKeyDown);
@@ -26,8 +26,8 @@ const handleMin = async () => {
   await getCurrentWindow().hide()
 }
 
-const handleKeyDown = (event) => {
-  if (event.key === 'Tab'  && event.shiftKey) {
+const handleKeyDown = (event: any) => {
+  if (event.key === 'Tab' && event.shiftKey) {
     handleMin()
   }
 }
@@ -35,15 +35,19 @@ const handleClose = async () => {
   await getCurrentWindow().close()
 }
 
-const closeModalOutside = (event) => {
+const closeModalOutside = (event: any) => {
   // Check if the clicked element is outside the modal
   if (!event.target.closest('.bg-white')) {
     isModalOpen.value = false
   }
 }
 
+const refresh = () => {
+  window.location.reload();
+}
+
 const changeConfig = () => {
-  localStorage.setItem('configSetting',JSON.stringify(config))
+  localStorage.setItem('configSetting', JSON.stringify(config))
 }
 </script>
 
@@ -76,23 +80,30 @@ const changeConfig = () => {
             </template>
             {{ winCount.enemy[0] }}/{{ winCount.enemy[1] }}
           </n-tag>
-      </div>
+        </div>
         <n-tag class="h-10 ml-4" style="cursor: default !important;"
                :bordered="false" type="default" :disabled="true">
-        显示•隐藏&nbsp;&nbsp;&nbsp;&nbsp;Shift + Tab
-      </n-tag>
+          显示•隐藏&nbsp;&nbsp;&nbsp;&nbsp;Shift + Tab
+        </n-tag>
+      </div>
     </div>
-</div>
 
     <div class="flex w-1/2 justify-end gap-x-8">
       <n-tag class="h-10" style="cursor: default !important;"
              :bordered="false" type="default" :disabled="true">
-        在游戏中显示，请将游戏窗口模式设置成【无边框】
+        对局中显示, 请将游戏窗口设置成【无边框】
       </n-tag>
       <n-button-group size="large">
+
         <n-button :focusable="false" @click="isModalOpen = true" style="padding: 12px;" type="default">
           <template #icon>
             <N-icon :size="20" :component="Bulb"/>
+          </template>
+        </n-button>
+        <n-button :focusable="false" @click="refresh"
+                  style="padding: 12px;" type="default">
+          <template #icon>
+            <N-icon :size="20" :component="Refresh"/>
           </template>
         </n-button>
         <n-button
