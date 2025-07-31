@@ -37,26 +37,29 @@ const splitRequests = async (puuid: string, begIndex: number, endIndex: number):
 export const queryMatchHistory = async (puuid: string, begIndex: number, endIndex: number): Promise<Games[] | null> => {
   try {
     let allGames: Games[] = [];
-    // 如果 begIndex 与 endIndex 的差值大于 15，拆分请求
-    if (endIndex - begIndex > 15) {
+    const MAX_REQUEST_SIZE = 15;
+
+    // 如果请求范围超过最大限制，拆分请求
+    if (endIndex - begIndex > MAX_REQUEST_SIZE) {
       allGames = await splitRequests(puuid, begIndex, endIndex);
     } else {
-      // 如果差值不大于 15，直接请求整个范围的数据
       allGames = await fetchMatchHistory(puuid, begIndex, endIndex);
     }
 
-    // 如果没有游戏数据，则返回空数组
-    if (allGames.length === 0) {
+    // 如果没有获取到游戏数据，返回空数组
+    if (!allGames || allGames.length === 0) {
       return [];
     }
 
-    // 判断是否需要反转游戏数据
-    if (allGames[0].gameCreation > allGames[allGames.length - 1].gameCreation) {
-      return allGames;
-    }
+    // 去重操作
+    const uniqueGames = Array.from(
+      new Map(allGames.map(game => [game.gameId, game])).values()
+    );
 
-    return allGames.reverse();
-  } catch (e) {
+    // 按游戏创建时间降序排序
+    return uniqueGames.sort((a, b) => b.gameCreation - a.gameCreation);
+  } catch (error) {
+    console.error('Error fetching match history:', error);
     return null;
   }
 };

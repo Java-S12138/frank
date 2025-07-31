@@ -302,7 +302,7 @@ export default class MatchDetails {
       for (let i = 0; i < nameList.length; i++) {
         result.push(this.analyticalData(participants[i],nameList[i],maxMatchData,sumId))
       }
-      result.sort((a, b) => b.goldEarned - a.goldEarned)
+      result.sort((a, b) => b.totalDamageDealtToChampions - a.totalDamageDealtToChampions)
 
       return {
         headerInfo:titleList,teamOne:result,teamTwo:[],queueId:queId,gameId:gameId

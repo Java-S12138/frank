@@ -3,7 +3,7 @@ import QueryHeader from "./components/queryHeader.vue";
 import SummonerInfoView from "./components/summonerInfoView.vue";
 import MatchMain from "./components/matchMain.vue";
 import useMatchStore from "@/queryMatch/store";
-import {NCard, NResult,NDrawer,NDrawerContent} from "naive-ui";
+import {NCard, NResult,NDrawer,NDrawerContent,NButton} from "naive-ui";
 import MatchErr from "@/queryMatch/components/matchErr.vue";
 import {onBeforeMount, Ref, ref} from "vue";
 import {ParticipantsInfo} from "@/queryMatch/utils/MatchDetail";
@@ -75,7 +75,9 @@ const clearBlackMatch = () => {
               description="此页数不存在数据，请返回前一页"
             >
               <template #footer>
-                生活总归带点荒谬
+                <n-button type="error">
+                  生活总归带点荒谬
+                </n-button>
               </template>
             </n-result>
           </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {NAlert, NCard, NCollapse, NCollapseItem} from "naive-ui"
+import {NAlert, NCard, NCollapse, NCollapseItem,NTag} from "naive-ui"
 
 const Wcchat = new URL("/src/assets/matchImage/Wechat.JPEG", import.meta.url).href
 const Alipay = new URL("/src/assets/matchImage/Alipay.JPEG", import.meta.url).href
@@ -28,17 +28,21 @@ const sentence = '如果您觉得软件的内容有帮助，请考虑为Frank提
 
     <n-collapse class="mt-4">
       <n-collapse-item title="Wechat" name="1">
-        <div class="flex justify-center">
+        <div class="flex flex-col items-center gap-1 justify-center">
           <div style="width: 150px;height: 150px;">
             <img class="w-full" :src="Wcchat"/>
+
           </div>
+          <n-tag style="font-size: 13px" checkable disabled>若需要回复, 请在付款备注中, 留下您的邮箱</n-tag>
         </div>
       </n-collapse-item>
       <n-collapse-item title="Alipay" name="2">
-        <div class="flex justify-center">
+        <div class="flex flex-col items-center gap-1 justify-center">
           <div style="width: 150px;height: 150px;">
             <img class="w-full" :src="Alipay"/>
+
           </div>
+          <n-tag style="font-size: 13px" size="small" checkable disabled>若需要回复, 请在付款备注中, 留下您的邮箱</n-tag>
         </div>
       </n-collapse-item>
     </n-collapse>

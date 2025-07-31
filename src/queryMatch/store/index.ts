@@ -88,6 +88,7 @@ const useMatchStore = defineStore('useMatchStore', {
     async getMatchFromPage(page: number,puuid:string) {
       const matchItems =
         await baseMatch.dealMatchHistory(puuid, (page - 1) * 9, page * 9 - 1)
+
       // 获取战绩详细数据
       if (matchItems === null) {
         this.matchList = null
@@ -96,7 +97,15 @@ const useMatchStore = defineStore('useMatchStore', {
         this.matchList = []
         return false
       }
-      this.matchList = matchItems
+
+      // 处理其它页面的重复数据
+      if (page>1 && this.recentMatchList20[0].gameId === matchItems[0].gameId){
+        this.matchList = []
+        return false
+      }
+
+
+      this.matchList = matchItems.slice(0,9)
       this.getMatchDetail(this.matchList[0].gameId)
     },
     async getSpecialMatchList(queueId: number,puuid?: string, ) {
