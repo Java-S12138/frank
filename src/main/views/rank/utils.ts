@@ -238,9 +238,9 @@ export const getRestraintData = async (champId:number, lane:string,tier:number,i
       counterWinrateList,
       counterCountList,
     } = {
-      counterChampionIdList: JSON.parse(result.data['counterChampionIdList']),
-      counterWinrateList: JSON.parse(result.data['counterWinrateList']),
-      counterCountList: JSON.parse(result.data['counterCountList']),
+      counterChampionIdList: result.data['counterChampionIdList'],
+      counterWinrateList: result.data['counterWinrateList'],
+      counterCountList: result.data['counterCountList']
     };
 
     for (let i = 0; i < counterChampionIdList.length; i++) {
