@@ -2,16 +2,16 @@ mod lcu;
 mod shaco;
 use lcu::{
     get_match_list, init_keyboard, invoke_lcu, is_game_start, is_lol_cilent,
-    listen_for_client_start, start_listener, start_champ_select,start_current_champ_select
+    listen_for_client_start, start_champ_select, start_current_champ_select, start_listener,
 };
 use tauri::Emitter;
 use tauri::{Listener, Manager};
-use tauri_plugin_window_state::{StateFlags};
+use tauri_plugin_window_state::StateFlags;
 
 #[tokio::main]
 pub async fn run() {
     tauri::Builder::default()
-      /*  .setup(|app| {
+        /*  .setup(|app| {
             #[cfg(debug_assertions)] // only include this code on debug builds
             {
                 let window = app.get_webview_window("background").unwrap();
@@ -36,13 +36,22 @@ pub async fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
             // 当尝试启动新实例时，聚焦主窗口
-            let _ = app.get_webview_window("mainWindow")
+            let _ = app
+                .get_webview_window("mainWindow")
                 .expect("no main window")
                 .show();
         }))
-        .plugin(tauri_plugin_window_state::Builder::default()
-            .with_state_flags(StateFlags::POSITION)
-            .with_denylist(&["background","queryMatchWindow","matchAnalysisWindow","recentMatchWindow"]).build())
+        .plugin(
+            tauri_plugin_window_state::Builder::default()
+                .with_state_flags(StateFlags::POSITION)
+                .with_denylist(&[
+                    "background",
+                    "queryMatchWindow",
+                    "matchAnalysisWindow",
+                    "recentMatchWindow",
+                ])
+                .build(),
+        )
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
