@@ -6,7 +6,7 @@ import { getIconImg } from "@/queryMatch/utils/tools";
 import { BlacklistPlanbTypes } from "@/main/views/record/blackListTypes";
 import { QueryMatchWindow } from "@/background/utils/creatWindow.ts";
 import MatchSumDetails from "@/queryMatch/common/matchSumDetails.vue";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import SegmentedControl from "../../common/SegmentedControl.vue";
 
 const { isTeamOne, sumList, addBlackList } = defineProps<{
@@ -35,6 +35,12 @@ watch(
         showMode.value = titleArr[newVal];
     },
 );
+
+const maxValue = computed(() => {
+    if (!sumList || sumList.length === 0) return null;
+    // @ts-ignore
+    return Math.max(...sumList.map((s) => s[showMode.value] || 0));
+});
 
 const searchMatch = (summonerId: number) => {
     localStorage.setItem("queSumMatch", String(summonerId) + "-");
@@ -83,6 +89,11 @@ const handleAdd = (
                         size="small"
                         :bordered="false"
                         class="text-gray-400"
+                        :class="{
+                            'max-value': summoner[showMode] === maxValue,
+                            'max-value-team2':
+                                isTeamOne && summoner[showMode] === maxValue,
+                        }"
                     >
                         {{ summoner[showMode] }}
                     </n-tag>
@@ -194,5 +205,16 @@ const handleAdd = (
         transform-origin: 0% 0%;
         opacity: 1;
     }
+}
+.max-value {
+    /* 队伍1 最高样式 */
+    background-color: #ff6666 !important;
+    color: white !important;
+}
+
+.max-value-team2 {
+    /* 队伍2 最高样式 */
+    background-color: #60a5fa !important;
+    color: white !important;
 }
 </style>
