@@ -1,4 +1,4 @@
-<script setup lang="ts">
+2<script setup lang="ts">
 import { NPopover, NTag, NIcon } from "naive-ui";
 import { ThumbDown, ThumbUp } from "@vicons/tabler";
 import { SummonerDetailInfo } from "@/queryMatch/utils/MatchDetail";

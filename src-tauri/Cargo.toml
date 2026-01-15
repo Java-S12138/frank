@@ -40,6 +40,11 @@ serde-single-key-map = "0.1.0"
 derive_more = { version = "0.99.17", features = ["display"] }
 once_cell = "1.20.2"
 rdev = { version = "0.5.3" }
+windows = { version = "0.52", features = [
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_Graphics_Dwm"
+] }
 
 [profile.release]
 opt-level = "s"     # Optimize for size.

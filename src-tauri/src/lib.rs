@@ -1,24 +1,24 @@
 mod lcu;
+mod lol_window_tracker;
 mod shaco;
 use lcu::{
-    get_match_list, init_keyboard, invoke_lcu, is_game_start, is_lol_cilent,
+    get_match_list, init_keyboard, invoke_lcu, is_game_start, is_lol_cilent, launch_lol,
     listen_for_client_start, start_champ_select, start_current_champ_select, start_listener,
 };
-use tauri::Emitter;
-use tauri::{Listener, Manager};
+use lol_window_tracker::{start_tracking_loop, sync_tracker_config, AppState};
+use std::sync::atomic::AtomicBool;
+use std::sync::{Arc, Mutex};
+use tauri::Manager;
 use tauri_plugin_window_state::StateFlags;
 
 #[tokio::main]
 pub async fn run() {
     tauri::Builder::default()
-        /*  .setup(|app| {
-            #[cfg(debug_assertions)] // only include this code on debug builds
-            {
-                let window = app.get_webview_window("background").unwrap();
-                window.open_devtools();
-            }
-            Ok(())
-        })*/
+        .manage(AppState {
+            is_enabled: Arc::new(AtomicBool::new(false)), // 初始设为 false，等前端同步
+            is_running: Arc::new(AtomicBool::new(false)), // 初始为未运行
+            dock_side: Arc::new(Mutex::new("Right".to_string())),
+        })
         .invoke_handler(tauri::generate_handler![
             is_lol_cilent,
             start_listener,
@@ -28,7 +28,10 @@ pub async fn run() {
             is_game_start,
             init_keyboard,
             listen_for_client_start,
-            start_current_champ_select
+            start_current_champ_select,
+            launch_lol,
+            start_tracking_loop,
+            sync_tracker_config
         ])
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
