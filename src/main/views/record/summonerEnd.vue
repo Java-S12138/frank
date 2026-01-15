@@ -1,4 +1,5 @@
-2<script setup lang="ts">
+2
+<script setup lang="ts">
 import { NPopover, NTag, NIcon } from "naive-ui";
 import { ThumbDown, ThumbUp } from "@vicons/tabler";
 import { SummonerDetailInfo } from "@/queryMatch/utils/MatchDetail";
@@ -69,7 +70,7 @@ const handleAdd = (
             />
         </div>
 
-        <div class="flex flex-col gap-[23px] justify-between">
+        <div class="flex flex-col gap-[27px] justify-between">
             <!--    每一个英雄数据-->
             <div class="flex flex-col" v-for="summoner in sumList">
                 <match-sum-details

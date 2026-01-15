@@ -6,6 +6,7 @@ import Setting from "@/main/common/setting.vue";
 import { Notice } from "@/main/utils/notice";
 import { exit } from "@tauri-apps/plugin-process";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { invokeLcu } from "@/lcu";
 
 const notice = new Notice();
 const isShowDrawer = ref(false);
