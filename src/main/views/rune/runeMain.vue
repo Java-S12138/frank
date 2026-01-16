@@ -1,42 +1,59 @@
 <script setup lang="ts">
-import {NTabs, NTabPane,NCard} from "naive-ui"
+import { NTabs, NTabPane, NCard } from "naive-ui";
 import RuneContent from "./runeContent.vue";
 import BlockContent from "./blockContent.vue";
-import {Ref, ref, watch} from "vue";
-import {Rune} from "./runeTypes";
-import {useRuneStore} from "@/main/store/useRune";
-import {get101Runes} from "./get101Runes";
-import {RuneStoreActions, RuneStoreState} from "@/main/views/rune/runeTypes";
-import {Store} from "pinia";
+import { Ref, ref, watch } from "vue";
+import { Rune } from "./runeTypes";
+import { get101Runes } from "./get101Runes";
+import { RuneStoreActions, RuneStoreState } from "@/main/views/rune/runeTypes";
+import { Store } from "pinia";
 
-const {storeRune} = defineProps<{
-  storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions>
-}>()
+const { storeRune } = defineProps<{
+    storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions>;
+}>();
 
-const rune101List:Ref<Rune[]> = ref([])
+const rune101List: Ref<Rune[]> = ref([]);
 
-watch(() => storeRune.currentChamp,async (champId:number) => {
-  if (champId === 0){
-    return
-  }
-  rune101List.value = await get101Runes(champId)
-},{ immediate: true })
-
+watch(
+    () => storeRune.currentChamp,
+    async (champId: number) => {
+        if (champId === 0) {
+            return;
+        }
+        rune101List.value = await get101Runes(champId);
+    },
+    { immediate: true },
+);
 </script>
 
 <template>
-  <n-card class="shadow" size="small"
-          content-style="padding-top:2px;" style="height: 517px;">
-    <n-tabs class="mt-2.5" type="segment" animated justify-content="space-between">
-      <n-tab-pane name="tab1" tab="推荐符文">
-        <rune-content :rune-list="storeRune.runeDataList"/>
-      </n-tab-pane>
-      <n-tab-pane name="tab2" tab="官方符文">
-        <rune-content :rune-list="rune101List"/>
-      </n-tab-pane>
-      <n-tab-pane name="tab3" tab="配装方案">
-        <block-content/>
-      </n-tab-pane>
-    </n-tabs>
-  </n-card>
+    <n-card
+        class="shadow"
+        size="small"
+        content-style="padding-top:2px;padding-left:0px;padding-right:0px;"
+        style="height: 517px"
+    >
+        <n-tabs
+            class="mt-2.5"
+            type="segment"
+            animated
+            justify-content="space-between"
+        >
+            <n-tab-pane name="tab1" tab="推荐符文">
+                <rune-content :rune-list="storeRune.runeDataList" />
+            </n-tab-pane>
+            <n-tab-pane name="tab2" tab="官方符文">
+                <rune-content :rune-list="rune101List" />
+            </n-tab-pane>
+            <n-tab-pane name="tab3" tab="配装方案">
+                <block-content />
+            </n-tab-pane>
+        </n-tabs>
+    </n-card>
 </template>
+
+<style scoped>
+:deep(.n-tabs .n-tabs-nav) {
+    padding: 0 12px !important;
+}
+</style>
