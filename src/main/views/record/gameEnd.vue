@@ -55,7 +55,9 @@ const backSelectState = (isTeamOne: boolean) => {
 };
 
 const nextGame = async () => {
-    await invokeLcu("post", "/lol-lobby/v2/play-again");
+    await invokeLcu("post", "/lol-lobby/v2/play-again").catch((error) => {
+        console.error("Failed to start next game:", error);
+    });
     closeDrawer();
 };
 </script>
