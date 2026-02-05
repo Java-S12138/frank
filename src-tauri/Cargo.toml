@@ -45,6 +45,7 @@ windows = { version = "0.52", features = [
     "Win32_UI_WindowsAndMessaging",
     "Win32_Graphics_Dwm"
 ] }
+configparser = "3.1.0"
 
 [profile.release]
 opt-level = "s"     # Optimize for size.

@@ -34,45 +34,42 @@ watch(
         content-style="padding-top:2px;padding-left:0px;padding-right:0px;"
         style="height: 517px"
     >
-      <n-tabs
-        class="mt-2.5"
-        type="segment"
-        animated
-        justify-content="space-between"
-        v-if="storeRune.hexAugments === null"
-      >
-        <n-tab-pane name="tab1" tab="推荐符文">
-          <rune-content :rune-list="storeRune.runeDataList" />
-        </n-tab-pane>
-        <n-tab-pane name="tab2" tab="官方符文">
-          <rune-content :rune-list="rune101List" />
-        </n-tab-pane>
-        <n-tab-pane name="tab3" tab="配装方案">
-          <block-content />
-        </n-tab-pane>
-      </n-tabs>
+        <n-tabs
+            class="mt-2.5"
+            type="segment"
+            animated
+            justify-content="space-between"
+            v-if="storeRune.hexAugments === null"
+        >
+            <n-tab-pane name="tab1" tab="推荐符文">
+                <rune-content :rune-list="storeRune.runeDataList" />
+            </n-tab-pane>
+            <n-tab-pane name="tab2" tab="官方符文">
+                <rune-content :rune-list="rune101List" />
+            </n-tab-pane>
+            <n-tab-pane name="tab3" tab="装备方案">
+                <block-content />
+            </n-tab-pane>
+        </n-tabs>
 
-<!--      海克斯数据-->
-      <n-tabs
-        class="mt-2.5"
-        type="segment"
-        animated
-        justify-content="space-between"
-        v-else
-      >
-        <n-tab-pane name="tab1" tab="棱彩">
-          <hex-content :hex-info-list="storeRune.hexAugments.prism"/>
-        </n-tab-pane>
-        <n-tab-pane name="tab2" tab="黄金">
-          <hex-content :hex-info-list="storeRune.hexAugments.gold"/>
-        </n-tab-pane>
-        <n-tab-pane name="tab3" tab="白银">
-          <hex-content :hex-info-list="storeRune.hexAugments.sliver"/>
-        </n-tab-pane>
-        <n-tab-pane name="tab4" tab="出装">
-          <block-content />
-        </n-tab-pane>
-      </n-tabs>
+        <!--      海克斯数据-->
+        <n-tabs
+            class="mt-2.5"
+            type="segment"
+            animated
+            justify-content="space-between"
+            v-else
+        >
+            <n-tab-pane name="tab1" tab="棱彩">
+                <hex-content :hex-info-list="storeRune.hexAugments.prism" />
+            </n-tab-pane>
+            <n-tab-pane name="tab2" tab="黄金">
+                <hex-content :hex-info-list="storeRune.hexAugments.gold" />
+            </n-tab-pane>
+            <n-tab-pane name="tab3" tab="白银">
+                <hex-content :hex-info-list="storeRune.hexAugments.sliver" />
+            </n-tab-pane>
+        </n-tabs>
     </n-card>
 </template>
 

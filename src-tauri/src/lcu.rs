@@ -9,12 +9,16 @@ use crate::lcu::listener::listen_current_champ_select;
 use crate::shaco::ingame;
 use crate::shaco::rest::RESTClient;
 use crate::shaco::utils::process_info::get_auth_info;
+use configparser::ini::Ini;
 use listener::{listen_champ_select, listen_client};
 use once_cell::sync::OnceCell;
 use serde_json::{from_value, Value};
+use std::fs;
+use std::path::Path;
 use std::thread;
 use std::time::{Duration, Instant};
 use tauri::{AppHandle, Emitter};
+use tokio::time::interval;
 
 // 定义全局的 REST 客户端
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
@@ -146,4 +150,97 @@ pub async fn launch_lol(path: &str) -> Result<(), String> {
         .spawn()
         .map(|_| ())
         .map_err(|e| e.to_string())
+}
+
+// use tauri::Window;
+
+#[tauri::command]
+pub async fn in_game_test(path: &str) -> Result<(), String> {
+    let ingame_client = ingame::IngameClient::new().map_err(|_| "Game unstart")?;
+
+    // 在后台开一个新线程（Task）运行，不阻塞当前命令返回
+    tokio::spawn(async move {
+        let mut ticker = interval(Duration::from_secs(1));
+
+        loop {
+            ticker.tick().await;
+
+            // 执行获取逻辑
+            if let Ok(data) = ingame_client.active_player().await {
+                // 1,7,11,15
+                println!("Active player: {:?}", data.level);
+                // 将数据通过事件发送给前端 (前端用 listen() 接收)
+                // window.emit("game-update", data).unwrap();
+            } else {
+                // 如果出错了，可以发送错误消息或跳出循环
+                // window.emit("game-error", "Failed to fetch data").unwrap();
+            }
+        }
+    });
+
+    Ok(()) // 立即告诉前端：轮询任务已启动
+}
+
+// 检查是否游戏窗口模式为无边框
+#[tauri::command]
+pub async fn check_borderless_mode(config_path: &str) -> Result<i32, String> {
+    // 1. 如果文件不存在，按照要求返回 -1
+    if !Path::new(config_path).exists() {
+        return Ok(-1);
+    }
+
+    // 2. 加载配置文件
+    let mut config = Ini::new();
+    if let Err(e) = config.load(config_path) {
+        return Err(format!("读取配置文件失败: {}", e));
+    }
+
+    // 3. 读取 [General] 下的 WindowMode
+    if let Some(mode_str) = config.get("General", "WindowMode") {
+        // 将字符串转换成整数 (i32)
+        match mode_str.trim().parse::<i32>() {
+            Ok(id) => Ok(id),
+            Err(_) => Err(format!("配置项格式非法: {}", mode_str)),
+        }
+    } else {
+        // 如果文件存在但没找到 WindowMode 字段，通常是因为文件损坏或版本不同
+        // 这里可以根据需要返回一个特殊 ID 或错误
+        Err("配置文件中缺少 WindowMode 项".into())
+    }
+}
+
+// 设置游戏窗口模式为无边框
+#[tauri::command]
+pub async fn set_borderless_mode(config_path: &str) -> Result<String, String> {
+    let path = Path::new(config_path);
+
+    // 1. 检查文件是否存在
+    if !path.exists() {
+        return Err("找不到游戏配置文件，请确认路径是否正确。".into());
+    }
+
+    // 2. 处理只读属性 (这是关键，否则写入会失败)
+    let metadata = fs::metadata(path).map_err(|e| e.to_string())?;
+    let mut permissions = metadata.permissions();
+    if permissions.readonly() {
+        permissions.set_readonly(false);
+        fs::set_permissions(path, permissions).map_err(|e| e.to_string())?;
+    }
+
+    // 3. 加载配置文件
+    let mut config = Ini::new();
+    // 强制保留原始大小写（League的cfg有时对大小写敏感）
+    config.set_comment_symbols(&[';', '#']);
+
+    config.load(config_path).map_err(|e| e.to_string())?;
+
+    // 4. 修改配置项
+    // WindowMode: 0=全屏, 1=窗口, 2=无边框
+    config.set("General", "WindowMode", Some("2".to_string()));
+
+    // 5. 写入文件
+    match config.write(config_path) {
+        Ok(_) => Ok("成功设置为无边框模式".into()),
+        Err(e) => Err(format!("写入文件失败: {}", e)),
+    }
 }

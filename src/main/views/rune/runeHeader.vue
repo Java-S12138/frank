@@ -7,6 +7,7 @@ import {handleRunesWrite, writeAutoRune} from "@/main/views/rune/runes";
 import {RuneStoreActions, RuneStoreState} from "@/main/views/rune/runeTypes";
 import {Store} from "pinia";
 import {RuneTips} from "@/main/utils/notice.ts";
+import BlockHexContent from "@/main/views/rune/blockHexContent.vue";
 
 const {storeRune} = defineProps<{
   storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions>
@@ -19,40 +20,40 @@ const configSetting = JSON.parse(<string>localStorage.getItem("configSetting"))
 const runeTips = new RuneTips()
 const autoRuneCheckCount = ref<number>(0)
 // 自动配置符文
-const autoWriteRune = (alias:string) => {
+const autoWriteRune = (alias: string) => {
   const localRuneStr = localStorage.getItem('autoRune') as string
   const runeData = JSON.parse(localRuneStr)[alias]
 
-  if (runeData === undefined){
+  if (runeData === undefined) {
     message.error('自动符文，数据获取失败', {duration: 3000})
     return
   }
 
   handleRunesWrite(runeData).then((writeRes) => {
-    if (writeRes){
+    if (writeRes) {
       message.success('自动符文配置成功')
-    }else{
+    } else {
       message.error('自动符文配置失败')
     }
   })
 
 }
 
-watch(() => storeRune.currentChampAlias,async (alias:string) => {
-  if (alias !== ''){
+watch(() => storeRune.currentChampAlias, async (alias: string) => {
+  if (alias !== '') {
     autoRuneCheckCount.value = 0
   }
-  isAutoRune.value = isStoreageHas('autoRune',alias)
-  if (isAutoRune.value){
+  isAutoRune.value = isStoreageHas('autoRune', alias)
+  if (isAutoRune.value) {
     autoWriteRune(alias)
-  }else {
+  } else {
     isAutoRune.value = false
   }
-},{ immediate: true })
+}, {immediate: true})
 
-const setAutoRune = async (checkTwo:boolean) => {
-  if (checkTwo){
-    writeAutoRune(storeRune.currentChampAlias,storeRune.currentChampTitle,message)
+const setAutoRune = async (checkTwo: boolean) => {
+  if (checkTwo) {
+    writeAutoRune(storeRune.currentChampAlias, storeRune.currentChampTitle, message)
     setupAutoRune('auto')
     autoRuneCheckCount.value = 0
     return
@@ -60,20 +61,20 @@ const setAutoRune = async (checkTwo:boolean) => {
   if (!configSetting.warmTips.autoRune) {
     runeTips.init(configSetting)
     autoRuneCheckCount.value++
-  }else {
-    writeAutoRune(storeRune.currentChampAlias,storeRune.currentChampTitle,message)
+  } else {
+    writeAutoRune(storeRune.currentChampAlias, storeRune.currentChampTitle, message)
     setupAutoRune('auto')
   }
 }
 const openDrawer = () => {
-  if (isAutoRune.value){
+  if (isAutoRune.value) {
     autoRuneActive.value = true
   }
 }
-const setupAutoRune = (type:string) => {
-  if (type ==='auto'){
+const setupAutoRune = (type: string) => {
+  if (type === 'auto') {
     isAutoRune.value = true
-  }else {
+  } else {
     isAutoRune.value = false
   }
   autoRuneActive.value = false
@@ -105,28 +106,28 @@ onDeactivated(() => {
             :style="isAutoRune?'cursor: pointer':''"
             @click="openDrawer"/>
         </n-badge>
-          <div class="relative" v-for="skill in storeRune.skillsList">
-            <n-avatar
-              round
-              :bordered="false"
-              :size="34"
-              :src='skill[0]'
-              fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
-              style="display: block"
-            />
-            <strong
-              class="skillText bg-neutral-900 bg-opacity-80 text-green-400">
-              {{skill[1]}}
-            </strong>
-          </div>
+        <div class="relative" v-for="skill in storeRune.skillsList">
+          <n-avatar
+            round
+            :bordered="false"
+            :size="34"
+            :src='skill[0]'
+            fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
+            style="display: block"
+          />
+          <strong
+            class="skillText bg-neutral-900 bg-opacity-80 text-green-400">
+            {{ skill[1] }}
+          </strong>
+        </div>
       </div>
-      <div>
+      <div v-if="storeRune.hexAugments === null">
         <n-button @click="setAutoRune(false)"
                   v-if="autoRuneCheckCount === 0 "
                   :focusable="false" class="p-2" secondary
                   round
                   :type="isAutoRune?'success':'info'">
-          {{ isAutoRune ?'更新数据':'自动符文' }}
+          {{ isAutoRune ? '更新数据' : '自动符文' }}
         </n-button>
         <n-button @click="setAutoRune(true)"
                   v-else
@@ -134,6 +135,15 @@ onDeactivated(() => {
                   :focusable="false" class="p-2" secondary
                   type='error'>
           再次点击
+        </n-button>
+      </div>
+      <div v-else>
+        <n-button
+          @click="() => {autoRuneActive = true}"
+          :focusable="false" class="p-2" secondary
+          round
+          type="success">
+          装备推荐
         </n-button>
       </div>
     </div>
@@ -153,10 +163,15 @@ onDeactivated(() => {
     style="border-top-left-radius: 0.5rem;border-top-right-radius: 0.5rem"
     v-model:show="autoRuneActive"
     :height="275" :auto-focus="false" placement="bottom">
-    <rune-auto :champ="storeRune.currentChampAlias"
-               :champ-name="storeRune.currentChampTitle"
-               :open-tips="openTips"
-               @complete-setup="setupAutoRune"/>
+    <div v-if="storeRune.hexAugments === null">
+      <rune-auto :champ="storeRune.currentChampAlias"
+                 :champ-name="storeRune.currentChampTitle"
+                 :open-tips="openTips"
+                 @complete-setup="setupAutoRune"/>
+    </div>
+    <div v-else>
+      <block-hex-content :items="storeRune.hexItemList"></block-hex-content>
+    </div>
   </n-drawer>
 </template>
 

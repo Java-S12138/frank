@@ -13,7 +13,10 @@ const applyBlock = () => {
 
 
 <template>
-  <n-scrollbar style="height: 442px;padding-right: 12px;">
+  <n-scrollbar
+    style="height: 442px; padding-right: 0.5px"
+    content-style="padding:0px 12px;"
+  >
     <n-grid :cols="2" x-gap="15" style="margin-top: 4px">
       <n-gi v-for="blockItems in storeRune.blockDataList">
         <div class="blockMain runeDivDash dark:border-gray-700">

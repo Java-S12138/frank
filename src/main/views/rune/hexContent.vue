@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {NTag, useMessage, NAvatar, NScrollbar, NPopover, NEllipsis} from "naive-ui";
+import {NTag, NAvatar, NScrollbar, NPopover,NBackTop} from "naive-ui";
 import {Gold} from "@/main/views/rune/runeTypes";
-import {ref, watch, nextTick} from "vue";
+import {ref,onDeactivated,onActivated} from "vue";
 
 interface SVGMap {
   [key: string]: string;
 }
-
+const showBackUp = ref<boolean>(false)
 
 const {hexInfoList} = defineProps<{ hexInfoList: Gold[] }>();
 
@@ -33,7 +33,13 @@ const SVG: SVGMap = {
   'E': new URL("@/assets/svg/hexE.svg", import.meta.url).href
 }
 
+onDeactivated(() => {
+  showBackUp.value=false
+})
 
+onActivated(()=>{
+  showBackUp.value=true
+})
 </script>
 
 <template>
@@ -41,9 +47,9 @@ const SVG: SVGMap = {
     style="height: 442px; padding-right: 0.5px"
     content-style="padding:0px 12px;"
   >
-    <div class="flex flex-col gap-3 mt-2">
+    <div class="flex flex-col gap-3" style="margin-top: 7px;">
       <div class="flex gap-3" v-for="hex in hexInfoList">
-        <img class="bg-slate-950 dark:bg-[#70c0e850]" style="border-radius: 50px;width: 48px;height: 48px;"
+        <img class="bg-slate-950 dark:bg-[#70c0e850]" style="border-radius: 50px;width: 50px;height: 50px;"
              :src="getImageUrl(hex.skill)"/>
         <div class="flex flex-col justify-between">
           <div class="flex items-top gap-2 mt-1">
@@ -68,6 +74,7 @@ const SVG: SVGMap = {
           </n-popover>
         </div>
       </div>
+      <n-back-top v-if="showBackUp" :bottom="64" :right="15" :visibility-height="360"/>
     </div>
 
   </n-scrollbar>

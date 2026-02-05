@@ -2,8 +2,9 @@ mod lcu;
 mod lol_window_tracker;
 mod shaco;
 use lcu::{
-    get_match_list, init_keyboard, invoke_lcu, is_game_start, is_lol_cilent, launch_lol,
-    listen_for_client_start, start_champ_select, start_current_champ_select, start_listener,
+    check_borderless_mode, get_match_list, in_game_test, init_keyboard, invoke_lcu, is_game_start,
+    is_lol_cilent, launch_lol, listen_for_client_start, set_borderless_mode, start_champ_select,
+    start_current_champ_select, start_listener,
 };
 use lol_window_tracker::{start_tracking_loop, sync_tracker_config, AppState};
 use std::sync::atomic::AtomicBool;
@@ -31,7 +32,10 @@ pub async fn run() {
             start_current_champ_select,
             launch_lol,
             start_tracking_loop,
-            sync_tracker_config
+            sync_tracker_config,
+            in_game_test,
+            set_borderless_mode,
+            check_borderless_mode
         ])
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
