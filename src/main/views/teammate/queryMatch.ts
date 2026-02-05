@@ -6,7 +6,7 @@ import {querySummonerPosition} from "@/lcu/utils";
 export class QueryMatch {
 
   public timestampToDate = (timestamp: number) => {
-    var date = new Date(timestamp)
+    const date = new Date(timestamp);
     return (date.getMonth() + 1 < 10 ?
         '0' + (date.getMonth() + 1) :
         date.getMonth() + 1)
@@ -23,6 +23,8 @@ export class QueryMatch {
         return '灵活';
       case 450 :
         return '极地';
+      case 2400:
+        return '海斗'
       case 1700 :
         return '斗魂';
       case 1900 :
@@ -41,7 +43,7 @@ export class QueryMatch {
       champId: match.participants[0].championId,
       champImgUrl: `${champDict[String(match.participants[0].championId)].alias}.png`,
       // 是否取得胜利
-      isWin: match.participants[0].stats.win === true ? true : false,
+      isWin: match.participants[0].stats.win,
       // 击杀数目
       kills: kills,
       // 死亡数目

@@ -59,10 +59,32 @@ export interface RuneStoreState {
   currentChampTitle: string
   runeDataList: Rune[]
   blockDataList: {position:string,buildItems:ItemBuild,ps:string}[]
-  skillsList: string[][]
+  skillsList: string[][],
+  hexItemList:  string[][],
+  hexAugments:Augments|null,
 }
 
 export interface RuneStoreActions {
   mapChampInfo(champId: number): void
-  initStore(champId: number): Promise<void>
+  initStore(champId: number,queueId:number): Promise<boolean>
+}
+
+export interface HexInfoTypes {
+  augments:  Augments;
+  items:     Array<string[]>;
+  skillsImg: string[];
+  skills:    string[];
+}
+
+export interface Augments {
+  sliver: Gold[];
+  gold:   Gold[];
+  prism:  Gold[];
+}
+
+export interface Gold {
+  name:  string;
+  desc:  string;
+  level: string;
+  skill: string;
 }

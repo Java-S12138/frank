@@ -16,7 +16,7 @@ pub async fn run() {
     tauri::Builder::default()
         .manage(AppState {
             is_enabled: Arc::new(AtomicBool::new(false)), // 初始设为 false，等前端同步
-            is_running: Arc::new(AtomicBool::new(false)), // 初始为未运行
+            is_running: Arc::new(AtomicBool::new(true)),  // 初始为未运行
             dock_side: Arc::new(Mutex::new("Right".to_string())),
         })
         .invoke_handler(tauri::generate_handler![

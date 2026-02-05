@@ -1,16 +1,37 @@
 import {requestFetch} from "@/main/utils/request";
 import {mapNameFromUrl} from "@/resources/champList";
 import {Block, OnlineRunes} from "@/main/views/rune/runeTypes";
+import {hexInfo} from "@/test/hexTest.ts";
+
+type SkillTuple = [
+  icon: string,
+  key: string
+]
 
 export class QueryRune {
 
-  public mapId = 0
+  public queueId = 0
+
+  // 海克斯科技乱斗数据
+  public getHexInfo = async () => {
+    try {
+      const hexI = hexInfo
+      const skillsList = this.getSkillsImgUrl(hexI.skillsImg,hexI.skills)
+      return{
+        skillsList:skillsList,
+        itemList:hexI.items,
+        augments:hexI.augments,
+      }
+    }catch (e){
+      return null
+    }
+  }
 
   // 获取英雄数据
   public getChampInfo = async (alias:string): Promise<OnlineRunes[]> => {
     const timestamp = new Date().getTime()
     const baseUrl = 'https://frank-1304009809.cos.ap-chongqing.myqcloud.com'
-    if (this.mapId === 12) {
+    if (this.queueId === 450) {
       const res = await requestFetch<any>(`${baseUrl}/op.gg-aram/${alias}.json?date${timestamp}`,'GET')
       return res === null ? [] : res
     } else {
@@ -19,16 +40,16 @@ export class QueryRune {
     }
   }
   // 获取技能数据
-  public getSkillsImgUrl = (skillsImg: any, skills: any) =>  {
-    return skillsImg.map((img:string, i:number) => [
+  public getSkillsImgUrl = (skillsImg: any, skills: any):SkillTuple[] =>  {
+    return skillsImg.map((img:string, i:number):string[][] => [
       `https://game.gtimg.cn/images/lol/act/img/spell/${img}`,
       skills[i]
     ])
   }
   // 获取符文数据
-  public getRunesData = async (alias:string) => {
+  public getRunesData = async (alias:string,queueId:number) => {
     try {
-      this.mapId = (JSON.parse(localStorage.getItem('gameInfo') as string)).mapId
+      this.queueId = queueId
       const champInfo: OnlineRunes[] = await this.getChampInfo(alias)
       // 技能
       const skillsList = this.getSkillsImgUrl(champInfo[0].skillsImg, champInfo[0].skills)
@@ -38,7 +59,7 @@ export class QueryRune {
       for (const champ of champInfo) {
         // 符文
         for (const rune of champ.runes) {
-          if (this.mapId === 12) {
+          if (queueId === 450) {
             rune.position = 'aram'
           }
           runeDataList.push(rune)
@@ -47,6 +68,7 @@ export class QueryRune {
         const block = this.getBlocksData(JSON.parse(JSON.stringify(champ)))
         if (block !== null) {
           blockDataList.push(block)
+          console.log(blockDataList)
         }
       }
       return {skillsList,runeDataList,blockDataList}
@@ -58,7 +80,7 @@ export class QueryRune {
   // 获取出装数据
   public getBlocksData = (champ: OnlineRunes) => {
     try {
-      if (this.mapId === 12) {
+      if (this.queueId === 12) {
         champ.position = 'aram'
       }
       const position = this.getPosition(champ.position)

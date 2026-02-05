@@ -16,6 +16,8 @@ export const useRuneStore = defineStore<'useRuneStore', RuneStoreState, {}, Rune
       runeDataList: [] ,
       blockDataList: [] ,
       skillsList: [],
+      hexItemList: [],
+      hexAugments: null,
     }
   },
   actions: {
@@ -25,7 +27,7 @@ export const useRuneStore = defineStore<'useRuneStore', RuneStoreState, {}, Rune
       this.currentChampAlias = champDict[champId].alias
       this.currentChampTitle = champDict[champId].title
     },
-    async initStore(champId: number){
+    async initStore(champId: number,queueId:number){
       // 如果英雄相同，说明已然存在数据
       if (champId === this.currentChamp){
         return false
@@ -36,8 +38,22 @@ export const useRuneStore = defineStore<'useRuneStore', RuneStoreState, {}, Rune
 
       this.mapChampInfo(champId)
 
+      // 处理海克斯大乱斗
+      if(queueId === 2400){
 
-      const runesData = await queryRune.getRunesData(this.currentChampAlias)
+      }
+      if (true){
+        const hexInfo =  await queryRune.getHexInfo()
+        if (hexInfo!==null){
+          this.skillsList = hexInfo.skillsList
+          this.hexItemList = hexInfo.itemList
+          this.hexAugments = hexInfo.augments
+          return false
+        }
+
+      }
+
+      const runesData = await queryRune.getRunesData(this.currentChampAlias,queueId)
       if (runesData !== null){
         this.skillsList = runesData.skillsList
         this.runeDataList = runesData.runeDataList
