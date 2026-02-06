@@ -43,7 +43,7 @@ export const useRuneStore = defineStore<
 			this.mapChampInfo(champId);
 
 			// 处理海克斯大乱斗
-			if (1) {
+			if (queueId === 2400) {
 				const hexInfo = await queryRune.getHexInfo(this.currentChampAlias);
 				if (hexInfo !== null) {
 					this.skillsList = hexInfo.skillsList;

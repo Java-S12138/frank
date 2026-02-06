@@ -1,3 +1,4 @@
+use crate::FrankState;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -138,14 +139,8 @@ impl LolTracker {
     }
 }
 
-pub struct AppState {
-    pub is_enabled: Arc<AtomicBool>,
-    pub is_running: Arc<AtomicBool>,   // 防止重复启动的锁
-    pub dock_side: Arc<Mutex<String>>, // "Left" 或 "Right"
-}
-
 #[tauri::command]
-pub fn sync_tracker_config(enabled: bool, side: String, state: tauri::State<'_, AppState>) {
+pub fn sync_tracker_config(enabled: bool, side: String, state: tauri::State<'_, FrankState>) {
     state.is_enabled.store(enabled, Ordering::Relaxed);
     {
         let mut dock = state.dock_side.lock().unwrap();
@@ -154,7 +149,7 @@ pub fn sync_tracker_config(enabled: bool, side: String, state: tauri::State<'_, 
 }
 
 #[tauri::command]
-pub fn start_tracking_loop(state: tauri::State<'_, AppState>, window: tauri::WebviewWindow) {
+pub fn start_tracking_loop(state: tauri::State<'_, FrankState>, window: tauri::WebviewWindow) {
     // 【防止重复启动的关键】
     // 如果 is_running 原本是 true，则 swap 返回 true，直接 return
     // 如果原本是 false，则设置为 true 并进入后续逻辑

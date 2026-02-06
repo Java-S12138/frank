@@ -2,23 +2,31 @@ mod lcu;
 mod lol_window_tracker;
 mod shaco;
 use lcu::{
-    check_borderless_mode, get_match_list, in_game_test, init_keyboard, invoke_lcu, is_game_start,
-    is_lol_cilent, launch_lol, listen_for_client_start, set_borderless_mode, start_champ_select,
-    start_current_champ_select, start_listener,
+    check_borderless_mode, get_match_list, init_keyboard, invoke_lcu, is_game_start, is_lol_cilent,
+    launch_lol, listen_for_client_start, set_borderless_mode, start_champ_select,
+    start_current_champ_select, start_hex_game_polling, start_listener, stop_hex_game_polling,
 };
-use lol_window_tracker::{start_tracking_loop, sync_tracker_config, AppState};
+use lol_window_tracker::{start_tracking_loop, sync_tracker_config};
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
 use tauri_plugin_window_state::StateFlags;
 
+pub struct FrankState {
+    pub is_enabled: Arc<AtomicBool>,
+    pub is_running: Arc<AtomicBool>,   // 防止重复启动的锁
+    pub dock_side: Arc<Mutex<String>>, // "Left" 或 "Right"
+    pub is_hex_running: Arc<AtomicBool>,
+}
+
 #[tokio::main]
 pub async fn run() {
     tauri::Builder::default()
-        .manage(AppState {
+        .manage(FrankState {
             is_enabled: Arc::new(AtomicBool::new(false)), // 初始设为 false，等前端同步
             is_running: Arc::new(AtomicBool::new(true)),  // 初始为未运行
             dock_side: Arc::new(Mutex::new("Right".to_string())),
+            is_hex_running: Arc::new(AtomicBool::new(false)),
         })
         .invoke_handler(tauri::generate_handler![
             is_lol_cilent,
@@ -33,9 +41,10 @@ pub async fn run() {
             launch_lol,
             start_tracking_loop,
             sync_tracker_config,
-            in_game_test,
             set_borderless_mode,
-            check_borderless_mode
+            check_borderless_mode,
+            start_hex_game_polling,
+            stop_hex_game_polling
         ])
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
@@ -56,6 +65,7 @@ pub async fn run() {
                     "queryMatchWindow",
                     "matchAnalysisWindow",
                     "recentMatchWindow",
+                    "hexRecommend",
                 ])
                 .build(),
         )

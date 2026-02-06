@@ -1,7 +1,7 @@
 mod global_key;
 mod listener;
 mod matchlisthanle;
-
+use crate::FrankState;
 use matchlisthanle::MatchListDetails;
 
 use crate::lcu::global_key::init_global_keyboard;
@@ -15,10 +15,12 @@ use once_cell::sync::OnceCell;
 use serde_json::{from_value, Value};
 use std::fs;
 use std::path::Path;
+use std::sync::atomic::Ordering;
 use std::thread;
 use std::time::{Duration, Instant};
-use tauri::{AppHandle, Emitter};
-use tokio::time::interval;
+use tauri::{AppHandle, Emitter, Manager};
+use tauri::{State, Window};
+use tokio::time::sleep;
 
 // 定义全局的 REST 客户端
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
@@ -152,33 +154,78 @@ pub async fn launch_lol(path: &str) -> Result<(), String> {
         .map_err(|e| e.to_string())
 }
 
-// use tauri::Window;
-
 #[tauri::command]
-pub async fn in_game_test(path: &str) -> Result<(), String> {
-    let ingame_client = ingame::IngameClient::new().map_err(|_| "Game unstart")?;
+pub async fn start_hex_game_polling(
+    app: AppHandle,
+    state: State<'_, FrankState>,
+) -> Result<(), String> {
+    // 1. 防止重复启动
+    if state.is_hex_running.load(Ordering::Relaxed) {
+        return Err("Polling is already running".into());
+    }
 
-    // 在后台开一个新线程（Task）运行，不阻塞当前命令返回
+    // 设置为运行状态
+    state.is_hex_running.store(true, Ordering::SeqCst);
+    let is_hex_running = state.is_hex_running.clone();
+
+    let window = app.get_webview_window("hexRecommend").unwrap();
+
+    // 初始化客户端
+    let client = ingame::IngameClient::new().unwrap();
+
+    // 2. 启动后台异步任务
     tokio::spawn(async move {
-        let mut ticker = interval(Duration::from_secs(1));
-
         loop {
-            ticker.tick().await;
+            // 检查外部手动停止开关
+            if !is_hex_running.load(Ordering::Relaxed) {
+                break;
+            }
 
-            // 执行获取逻辑
-            if let Ok(data) = ingame_client.active_player().await {
-                // 1,7,11,15
-                println!("Active player: {:?}", data.level);
-                // 将数据通过事件发送给前端 (前端用 listen() 接收)
-                // window.emit("game-update", data).unwrap();
+            // 3. 执行查询
+            // 假设 active_player().await 返回的对象里有 level 字段
+            if let Ok(player_data) = client.active_player().await {
+                let level = player_data.level;
+                // 发送当前数据给前端,仅当等级为1，7，11，15
+                match level {
+                    1 | 7 | 11 | 15 => {
+                        let _ = window.emit("game-update", &level);
+                    }
+                    _ => {}
+                }
+
+                // 4. 等级逻辑判断
+                if level >= 15 {
+                    // 到达15级，退出
+                    break;
+                }
+
+                // 5. 动态计算下一次查询的间隔
+                let delay_seconds = match level {
+                    6 | 10 | 14 => 1, // 接近关键等级，1秒一次
+                    _ => 10,          // 其他时间，10秒一次
+                };
+
+                sleep(Duration::from_secs(delay_seconds)).await;
             } else {
-                // 如果出错了，可以发送错误消息或跳出循环
-                // window.emit("game-error", "Failed to fetch data").unwrap();
+                // 如果查询失败（可能游戏退出了），等待5秒重试
+                sleep(Duration::from_secs(5)).await;
             }
         }
+
+        // 任务结束，重置状态
+        is_hex_running.store(false, Ordering::SeqCst);
+        println!("Polling stopped.");
     });
 
-    Ok(()) // 立即告诉前端：轮询任务已启动
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn stop_hex_game_polling(state: State<'_, FrankState>) -> Result<(), String> {
+    // 设置开关为 false，循环会在下一次执行前检测到并退出
+    state.is_hex_running.store(false, Ordering::SeqCst);
+    println!("Polling stopped by hand.");
+    Ok(())
 }
 
 // 检查是否游戏窗口模式为无边框

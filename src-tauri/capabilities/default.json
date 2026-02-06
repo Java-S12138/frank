@@ -1,50 +1,52 @@
 {
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "default",
-  "description": "Capability for the main window",
-  "windows": [
-    "background",
-    "mainWindow",
-    "queryMatchWindow",
-    "matchAnalysisWindow",
-    "recentMatchWindow"
-  ],
-  "permissions": [
-    "core:default",
-    "opener:default",
-    "process:default",
-    "core:window:allow-show",
-    "core:window:allow-hide",
-    "core:window:allow-close",
-    "core:window:allow-unminimize",
-    "core:window:allow-is-visible",
-    "core:window:allow-minimize",
-    "core:window:allow-set-position",
-    "core:window:allow-start-dragging",
-    "core:webview:allow-create-webview-window",
-    "http:default",
-    "shell:allow-open",
-    "core:tray:allow-set-icon",
-    "core:app:allow-default-window-icon",
-    {
-      "identifier": "http:default",
-      "allow": [
-        {
-          "url": "https://*.myqcloud.com"
-        },
-        {
-          "url": "https://*.qq.com"
-        },
-        {
-          "url": "https://lol.ps"
-        },
-        {
-          "url": "http://121.40.58.64:8412"
-        },
-        {
-          "url": "https://game.gtimg.cn"
-        }
-      ]
-    }
-  ]
+	"$schema": "../gen/schemas/desktop-schema.json",
+	"identifier": "default",
+	"description": "Capability for the main window",
+	"windows": [
+		"background",
+		"mainWindow",
+		"queryMatchWindow",
+		"matchAnalysisWindow",
+		"recentMatchWindow",
+		"hexRecommend"
+	],
+	"permissions": [
+		"core:default",
+		"opener:default",
+		"process:default",
+		"core:window:allow-show",
+		"core:window:allow-hide",
+		"core:window:allow-close",
+		"core:window:allow-unminimize",
+		"core:window:allow-is-visible",
+		"core:window:allow-minimize",
+		"core:window:allow-set-position",
+		"core:window:allow-start-dragging",
+		"core:window:allow-set-size",
+		"core:webview:allow-create-webview-window",
+		"http:default",
+		"shell:allow-open",
+		"core:tray:allow-set-icon",
+		"core:app:allow-default-window-icon",
+		{
+			"identifier": "http:default",
+			"allow": [
+				{
+					"url": "https://*.myqcloud.com"
+				},
+				{
+					"url": "https://*.qq.com"
+				},
+				{
+					"url": "https://lol.ps"
+				},
+				{
+					"url": "http://121.40.58.64:8412"
+				},
+				{
+					"url": "https://game.gtimg.cn"
+				}
+			]
+		}
+	]
 }
