@@ -111,7 +111,7 @@ export class GameFlow {
 							new RecentMatchWindow();
 
 							// 打开海克斯推荐
-							if (true) {
+							if (this.queueId === 2400) {
 								new HexRecommend();
 							}
 						}

@@ -18,6 +18,8 @@ const curChampId = ref(-1);
 const appWindow = getCurrentWindow();
 
 onMounted(async () => {
+	window.addEventListener("keydown", handleKeyDown);
+
 	// 向主窗口发送消息
 	tauriWindow.Window.getByLabel("mainWindow").then((win) => {
 		if (win !== null) {
@@ -72,6 +74,12 @@ const changeWin = async (toMin: boolean) => {
 
 		// 5. 更新状态变量
 		winHeight.value = targetHeight;
+	}
+};
+
+const handleKeyDown = (event: any) => {
+	if (event.key === "X" && event.shiftKey) {
+		appWindow.hide();
 	}
 };
 </script>

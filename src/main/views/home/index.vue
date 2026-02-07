@@ -79,7 +79,8 @@ const writeSumInfo = async (sInfo: summonerInfo) => {
 		name: sInfo.name,
 		summonerId: sInfo.currentId,
 		puuid: sInfo.puuid,
-		platformId: platformId,
+		platformId: platformId.oldId,
+		newPlatformId: platformId.newId,
 	};
 	localStorage.setItem("sumInfo", JSON.stringify(sumInfo));
 	recordStore.init();

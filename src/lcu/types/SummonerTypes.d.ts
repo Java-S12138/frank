@@ -1,71 +1,71 @@
 export interface lcuSummonerInfo {
-  accountId: number;
-  displayName: string;
-  gameName: string;
-  internalName: string;
-  nameChangeFlag: boolean;
-  percentCompleteForNextLevel: number;
-  privacy: string;
-  profileIconId: number;
-  puuid: string;
-  rerollPoints: IRerollPoint;
-  summonerId: number;
-  summonerLevel: number;
-  unnamed: boolean;
-  xpSinceLastLevel: number;
-  xpUntilNextLevel: number;
-  success?:boolean
-  tagLine:string
+	accountId: number;
+	displayName: string;
+	gameName: string;
+	internalName: string;
+	nameChangeFlag: boolean;
+	percentCompleteForNextLevel: number;
+	privacy: string;
+	profileIconId: number;
+	puuid: string;
+	rerollPoints: IRerollPoint;
+	summonerId: number;
+	summonerLevel: number;
+	unnamed: boolean;
+	xpSinceLastLevel: number;
+	xpUntilNextLevel: number;
+	success?: boolean;
+	tagLine: string;
 }
 
 interface IRerollPoint {
-  currentPoints: number;
-  maxRolls: number;
-  numberOfRolls: number;
-  pointsCostToRoll: number;
-  pointsToReroll: number;
+	currentPoints: number;
+	maxRolls: number;
+	numberOfRolls: number;
+	pointsCostToRoll: number;
+	pointsToReroll: number;
 }
 
 export interface summonerInfo {
-  name:string,
-  privacy:string,
-  imgUrl:string,
-  lv:string|number,
-  xp:number,
-  puuid:string,
-  currentId:number,
-  tagLine:string|undefined
+	name: string;
+	privacy: string;
+	imgUrl: string;
+	lv: string | number;
+	xp: number;
+	puuid: string;
+	currentId: number;
+	tagLine: string | undefined;
 }
-
 
 export interface SummonerData {
-  summonerInfo:summonerInfo|null;
-  rankList: string[]|null;
-  champLevel: any[][]|null;
+	summonerInfo: summonerInfo | null;
+	rankList: string[] | null;
+	champLevel: any[][] | null;
 }
 export interface ChampionMasteryTypes {
-  championId: number;
-  championLevel: number;
-  championPoints: number;
-  championPointsSinceLastLevel: number;
-  championPointsUntilNextLevel: number;
-  chestGranted: boolean;
-  formattedChampionPoints: string;
-  formattedMasteryGoal: string;
-  highestGrade: string;
-  lastPlayTime: number;
-  playerId: number;
-  puuid: string;
-  tokensEarned: number;
+	championId: number;
+	championLevel: number;
+	championPoints: number;
+	championPointsSinceLastLevel: number;
+	championPointsUntilNextLevel: number;
+	chestGranted: boolean;
+	formattedChampionPoints: string;
+	formattedMasteryGoal: string;
+	highestGrade: string;
+	lastPlayTime: number;
+	playerId: number;
+	puuid: string;
+	tokensEarned: number;
 }
 
-export interface sumInfoTypes{
-  puuid:string;
-  name:string
-  summonerId:number;
-  platformId:string;
+export interface sumInfoTypes {
+	puuid: string;
+	name: string;
+	summonerId: number;
+	platformId: string;
+	newPlatformId: string;
 }
 export interface TaskTrackerTypes {
-  currentMonth:number;
-  taskCount:number;
+	currentMonth: number;
+	taskCount: number;
 }

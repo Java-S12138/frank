@@ -169,12 +169,13 @@ pub async fn start_hex_game_polling(
     let is_hex_running = state.is_hex_running.clone();
 
     let window = app.get_webview_window("hexRecommend").unwrap();
-
-    // 初始化客户端
     let client = ingame::IngameClient::new().unwrap();
 
     // 2. 启动后台异步任务
     tokio::spawn(async move {
+        // --- 记录上一次成功通知过的等级 ---
+        let mut last_notified_level: i32 = 0;
+
         loop {
             // 检查外部手动停止开关
             if !is_hex_running.load(Ordering::Relaxed) {
@@ -182,20 +183,26 @@ pub async fn start_hex_game_polling(
             }
 
             // 3. 执行查询
-            // 假设 active_player().await 返回的对象里有 level 字段
             if let Ok(player_data) = client.active_player().await {
                 let level = player_data.level;
-                // 发送当前数据给前端,仅当等级为1，7，11，15
+
+                // --- 修改后的逻辑：仅当等级在目标范围内，且与上次通知的等级不同时才发送 ---
                 match level {
                     1 | 7 | 11 | 15 => {
-                        let _ = window.emit("game-update", &level);
+                        if level != last_notified_level {
+                            let _ = window.emit("game-update", &level);
+                            last_notified_level = level; // 更新已记录等级
+                        }
                     }
-                    _ => {}
+                    _ => {
+                        // 如果等级变成了其他值，可以考虑是否重置 last_notified_level
+                        // 但通常等级是往上涨的，这里不需要额外操作
+                    }
                 }
 
                 // 4. 等级逻辑判断
                 if level >= 15 {
-                    // 到达15级，退出
+                    // 到达15级，退出前确保最后一次信号已发送（上面逻辑已覆盖）
                     break;
                 }
 

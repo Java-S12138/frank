@@ -3,87 +3,105 @@ import { Games, SimpleMatchDetailsTypes } from "@/lcu/types/queryMatchLcuTypes";
 import { queryMatchHistory } from "@/lcu/aboutMatch";
 import { queryGameType } from "@/lcu/utils";
 import { champDict } from "@/resources/champList";
+import { GamesBySgp } from "@/lcu/types/queryMatchSgpGameTypes";
+import { sumInfoTypes } from "@/lcu/types/SummonerTypes";
 
 export default class BaseMatch {
-  public gerSummonerInfo = async (summonerId?: number) => {
-    const summonerInfo = await querySummonerInfo(summonerId);
-    if (summonerInfo !== null) {
-      const rankList = await queryRankPoint(summonerInfo.puuid);
-      return { summonerInfo, rankList };
-    }
-    return null;
-  };
+	public summonerId = 0;
 
-  public dealMatchHistory = async (
-    puuid: string,
-    begIndex: number,
-    endIndex: number,
-  ): Promise<SimpleMatchDetailsTypes[] | null> => {
-    const matchList = await queryMatchHistory(puuid, begIndex, endIndex);
-    if (matchList === null) {
-      return null;
-    }
+	public gerSummonerInfo = async (summonerId?: number) => {
+		const summonerInfo = await querySummonerInfo(summonerId);
+		if (summonerInfo !== null) {
+			const rankList = await queryRankPoint(summonerInfo.puuid);
+			return { summonerInfo, rankList };
+		}
+		return null;
+	};
 
-    return matchList.map((matchListElement) => {
-      return this.getSimpleMatch(matchListElement);
-    });
-  };
+	public dealMatchHistory = async (
+		puuid: string,
+		begIndex: number,
+		endIndex: number,
+	): Promise<SimpleMatchDetailsTypes[] | null> => {
+		// 写入玩家id
+		if (this.summonerId === 0) {
+			const localSumInfo: sumInfoTypes = JSON.parse(
+				localStorage.getItem("sumInfo") as string,
+			);
+			this.summonerId = localSumInfo.summonerId;
+		}
 
-  public getSimpleMatch = (match: Games): SimpleMatchDetailsTypes => {
-    const times = this.timestampToDate(match.gameCreation);
-    const kills = match.participants[0].stats.kills;
-    const deaths = match.participants[0].stats.deaths;
-    const assists = match.participants[0].stats.assists;
-    const kda =
-      deaths === 0
-        ? kills + assists
-        : Math.round(((kills + assists) / deaths) * 3);
-    return {
-      gameId: match.gameId,
-      champImgUrl: `${champDict[String(match.participants[0].championId)].alias}.png`,
-      // 是否取得胜利
-      isWin: match.participants[0].stats.win === true ? true : false,
-      // 击杀数目
-      kills: kills,
-      // 死亡数目
-      deaths: deaths,
-      // 助攻数目
-      assists: assists,
-      //kda
-      kda: kda,
-      // 游戏时间
-      matchTime: times[1],
-      // 开始时间 22:00
-      startTime: times[0],
-      // 游戏模式
-      gameModel: queryGameType(match.queueId),
-      //游戏对局ID
-      queueId: match.queueId,
-      champId: match.participants[0].championId,
-    };
-  };
+		const matchList = await queryMatchHistory(puuid, begIndex, endIndex);
 
-  public querySpecialMatch = async (puuid: string, queueId: number) => {
-    const matchList = await queryMatchHistory(puuid, 0, 60);
-    if (matchList === null) {
-      return [];
-    }
-    const specialList = matchList.filter(
-      (matchList) => matchList.queueId === queueId,
-    );
+		if (matchList === null) {
+			return null;
+		}
 
-    return specialList.map((matchListElement) => {
-      return this.getSimpleMatch(matchListElement);
-    });
-  };
-  public timestampToDate = (timestamp: number): [string, string] => {
-    const date = new Date(timestamp);
-    // 获取时间
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return [
-      `${hours} : ${minutes}`,
-      date.getMonth() + 1 + "-" + date.getDate(),
-    ];
-  };
+		return matchList.map((matchListElement) => {
+			return this.getSimpleMatch(matchListElement);
+		});
+	};
+
+	public getSimpleMatch = (
+		match: Games | GamesBySgp,
+	): SimpleMatchDetailsTypes => {
+		// 1. 确定参与者数据源
+		const participant = match.participants[0];
+		const stats =
+			"stats" in participant ? (participant as any).stats : participant;
+
+		// 2. 提取核心数值
+		const { kills, deaths, assists, win, championId } = stats;
+
+		// 3. 计算 KDA
+		const kda =
+			deaths === 0
+				? kills + assists
+				: Math.round(((kills + assists) / deaths) * 3);
+
+		// 4. 处理时间和字典查询
+		const [startTime, matchTime] = this.timestampToDate(match.gameCreation);
+		const champAlias = champDict[String(championId)]?.alias || "Unknown";
+
+		// 5. 统一返回
+		return {
+			gameId: match.gameId,
+			champId: championId,
+			champImgUrl: `${champAlias}.png`,
+			isWin: Boolean(win),
+			kills,
+			deaths,
+			assists,
+			kda,
+			matchTime,
+			startTime,
+			gameModel: queryGameType(match.queueId),
+			queueId: match.queueId,
+		};
+	};
+
+	public querySpecialMatch = async (puuid: string, queueId: number) => {
+		const matchList = await queryMatchHistory(puuid, 0, 60);
+		if (matchList === null) {
+			return [];
+		}
+		const specialList = matchList.filter(
+			(matchList) => matchList.queueId === queueId,
+		);
+
+		return specialList.map((matchListElement) => {
+			return this.getSimpleMatch(matchListElement);
+		});
+	};
+
+	public timestampToDate = (timestamp: number): [string, string] => {
+		const date = new Date(timestamp);
+		// 获取时间
+		const hours = date.getHours().toString().padStart(2, "0");
+		const minutes = date.getMinutes().toString().padStart(2, "0");
+		return [
+			`${hours} : ${minutes}`,
+			date.getMonth() + 1 + "-" + date.getDate(),
+		];
+	};
 }

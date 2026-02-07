@@ -79,7 +79,6 @@ export class QueryRune {
 				const block = this.getBlocksData(JSON.parse(JSON.stringify(champ)));
 				if (block !== null) {
 					blockDataList.push(block);
-					console.log(blockDataList);
 				}
 			}
 			return { skillsList, runeDataList, blockDataList };
