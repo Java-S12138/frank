@@ -21,8 +21,6 @@ impl LolTracker {
         thread::spawn(move || {
             let mut last_pos: Option<RECT> = None;
             let mut last_side: Option<String> = None;
-            let mut was_visible = true;
-            let mut is_tracked = false;
 
             loop {
                 if window.inner_position().is_err() {
@@ -35,57 +33,47 @@ impl LolTracker {
                 }
 
                 unsafe {
-                    let lol_info = Self::get_lol_visible_rect();
-                    match lol_info {
-                        Some((hwnd, visible_rect)) => {
-                            let is_minimized = IsIconic(hwnd).as_bool();
-                            let is_offscreen = visible_rect.left <= 0 && visible_rect.top <= 0;
-                            if is_minimized || is_offscreen {
-                                if was_visible {
-                                    let _ = window.hide();
-                                    was_visible = false;
-                                }
-                            } else {
-                                if !is_tracked {
-                                    is_tracked = true;
-                                }
-                                if !was_visible {
-                                    let _ = window.show();
-                                    was_visible = true;
-                                    last_pos = None;
-                                }
+                    if let Some((hwnd, visible_rect)) = Self::get_lol_visible_rect() {
+                        // 1. 检测客户端是否处于“非活跃/隐藏”状态
+                        let is_minimized = IsIconic(hwnd).as_bool();
+                        // Windows 最小化窗口的坐标, 做个判断
+                        let is_offscreen = visible_rect.left <= 0 && visible_rect.top <= 0;
 
-                                // 获取当前的吸附配置
-                                let current_side = {
-                                    let s = dock_side.lock().unwrap();
-                                    s.clone()
-                                };
-
-                                // 核心逻辑：位置改变 OR 吸附方向改变
-                                let pos_changed = !Self::is_same_pos(last_pos, visible_rect);
-                                let side_changed = Some(&current_side) != last_side.as_ref();
-
-                                // 检查位置或吸附方向是否变化
-                                if pos_changed || side_changed {
-                                    // 计算目标 X 坐标
-                                    let target_x = if current_side == "Left" {
-                                        visible_rect.left - 328 // 吸附在左侧
-                                    } else {
-                                        visible_rect.right - 8 // 吸附在右侧
-                                    };
-
-                                    let target_y = visible_rect.top - 2;
-
-                                    let _ = window.set_position(PhysicalPosition {
-                                        x: target_x,
-                                        y: target_y,
-                                    });
-                                    last_pos = Some(visible_rect);
-                                    last_side = Some(current_side);
-                                }
-                            }
+                        if is_minimized || is_offscreen {
+                            // 如果客户端隐藏了，直接跳过本次循环，不更新窗口位置
+                            // 这样窗口就会停留在最后一次记录的有效位置
+                            thread::sleep(Duration::from_millis(100));
+                            continue;
                         }
-                        None => {}
+
+                        // 2. 正常获取吸附配置
+                        let current_side = {
+                            let s = dock_side.lock().unwrap();
+                            s.clone()
+                        };
+
+                        // 3. 检查位置或吸附方向是否变化
+                        let pos_changed = !Self::is_same_pos(last_pos, visible_rect);
+                        let side_changed = Some(&current_side) != last_side.as_ref();
+
+                        if pos_changed || side_changed {
+                            let target_x = if current_side == "Left" {
+                                visible_rect.left - 328
+                            } else {
+                                visible_rect.right - 8
+                            };
+
+                            let target_y = visible_rect.top - 2;
+
+                            // 执行移动
+                            let _ = window.set_position(PhysicalPosition {
+                                x: target_x,
+                                y: target_y,
+                            });
+
+                            last_pos = Some(visible_rect);
+                            last_side = Some(current_side);
+                        }
                     }
                 }
                 thread::sleep(Duration::from_millis(16));
