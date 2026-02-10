@@ -51,8 +51,8 @@ export default class BaseMatch {
 			"stats" in participant ? (participant as any).stats : participant;
 
 		// 2. 提取核心数值
-		const { kills, deaths, assists, win, championId } = stats;
-
+		const { kills, deaths, assists, win } = stats;
+		const { championId } = participant; // championId 始终在参与者根节点
 		// 3. 计算 KDA
 		const kda =
 			deaths === 0

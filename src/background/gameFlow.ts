@@ -3,10 +3,7 @@ import { emitTo } from "@tauri-apps/api/event";
 import { ConfigSettingTypes } from "./types";
 import { champSelectSession } from "@/lcu/autoBP.ts";
 import { invokeLcu } from "@/lcu";
-import {
-	HexRecommend,
-	RecentMatchWindow,
-} from "@/background/utils/creatWindow.ts";
+import { RecentMatchWindow } from "@/background/utils/creatWindow.ts";
 import { invoke } from "@tauri-apps/api/core";
 import { SessionTypes } from "@/recentMatch/utils/queryTypes";
 
@@ -109,11 +106,6 @@ export class GameFlow {
 						);
 						if (configSetting.isGameInWindow) {
 							new RecentMatchWindow();
-
-							// 打开海克斯推荐
-							if (this.queueId === 2400) {
-								new HexRecommend();
-							}
 						}
 					}
 				}

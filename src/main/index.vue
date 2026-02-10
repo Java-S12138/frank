@@ -248,7 +248,7 @@ listen<{ messageId: string; content: number }>("clientStatus", (event) => {
 	}
 });
 
-// gameState.handleChampion("Champion", 904);
+// gameState.handleChampion("Champion", 777);
 
 listen<string>("cacheMatchList", (event) => {
 	if (event.payload === "getMatchList") {
@@ -259,8 +259,7 @@ listen<string>("cacheMatchList", (event) => {
 					"matchListCache",
 					JSON.parse(JSON.stringify(teammateStore.cacheMatchList)),
 				);
-				/*emitTo('recentMatchWindow','matchListCache',
-  session450)*/
+				// emitTo("recentMatchWindow", "matchListCache", session450);
 			}
 		});
 	} else if (event.payload === "getTeammate") {
@@ -280,9 +279,9 @@ listen<string>("cacheMatchList", (event) => {
 			}
 		});
 	} else if (event.payload === "getCurChampId") {
-		window.Window.getByLabel("hexRecommend").then((win) => {
+		window.Window.getByLabel("recentMatchWindow").then((win) => {
 			if (win !== null) {
-				emitTo("hexRecommend", "curChampId", {
+				emitTo("recentMatchWindow", "curChampId", {
 					id: gameState.curChampId,
 				});
 			}

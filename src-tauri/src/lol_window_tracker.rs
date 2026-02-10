@@ -85,11 +85,7 @@ impl LolTracker {
                                 }
                             }
                         }
-                        None => {
-                            if is_tracked {
-                                std::process::exit(0);
-                            }
-                        }
+                        None => {}
                     }
                 }
                 thread::sleep(Duration::from_millis(16));

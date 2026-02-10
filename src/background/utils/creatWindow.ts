@@ -1,6 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
-import { currentMonitor, LogicalPosition } from "@tauri-apps/api/window";
 import { ConfigSettingTypes } from "../types";
 
 export class MainWindow {
@@ -88,47 +87,6 @@ export class RecentMatchWindow {
 		});
 		webview.once("tauri://created", async function () {
 			webview.show();
-		});
-	}
-}
-
-export class HexRecommend {
-	constructor() {
-		const winWidth = 320;
-		const winHeight = 495;
-
-		const webview = new WebviewWindow("hexRecommend", {
-			title: "海克斯推荐",
-			url: "src/hexRecommend/index.html",
-			width: winWidth,
-			height: winHeight,
-			resizable: false,
-			decorations: false,
-			center: false,
-			visible: false,
-			skipTaskbar: true,
-			alwaysOnTop: true,
-			transparent: true,
-		});
-
-		webview.once("tauri://created", async function () {
-			// 1. 获取当前显示器信息
-			const monitor = await currentMonitor();
-
-			if (monitor) {
-				// 2. 计算位置
-				// monitor.size 是物理像素，需要除以 scaleFactor 得到逻辑像素
-				const scaleFactor = monitor.scaleFactor;
-				const screenHeight = monitor.size.height / scaleFactor;
-
-				// 左下角坐标：x=0, y=屏幕高度 - 窗口高度
-				// 如果你想距离边缘有一点边距，可以适当调整，例如 x: 10, y: screenHeight - winHeight - 10
-				const x = -8;
-				const y = screenHeight - winHeight - 2;
-
-				// 3. 设置窗口位置
-				await webview.setPosition(new LogicalPosition(x, y));
-			}
 		});
 	}
 }

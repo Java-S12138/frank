@@ -98,7 +98,6 @@ class Background {
 				break;
 			case "PreEndOfGame":
 				this.gameFlow.closeWin("recentMatchWindow");
-				this.gameFlow.closeWin("hexRecommend");
 				this.gameFlow.showHideMainWin(true, "EndOfGame");
 				this.taskTracker.completeTask();
 				break;

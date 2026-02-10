@@ -6,10 +6,6 @@ import Setting from "@/main/common/setting.vue";
 import { Notice } from "@/main/utils/notice";
 import { exit } from "@tauri-apps/plugin-process";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import {
-	HexRecommend,
-	RecentMatchWindow,
-} from "@/background/utils/creatWindow";
 
 const notice = new Notice();
 const isShowDrawer = ref(false);
@@ -34,10 +30,6 @@ const handleClose = async () => {
 const showDialog = () => {
 	notice.showDialog();
 };
-
-const test = () => {
-	new HexRecommend();
-};
 </script>
 
 <template>
@@ -56,11 +48,11 @@ const test = () => {
 			/>
 		</div>
 		<div class="flex mt-0.5 gap-x-2">
-			<n-button :focusable="false" @click="test" text>
+			<!-- <n-button :focusable="false" @click="test" text>
 				<n-icon size="20" :color="'#f0a020'">
 					<bulb />
 				</n-icon>
-			</n-button>
+			</n-button> -->
 
 			<n-button
 				v-if="isShowNoticeIcon"

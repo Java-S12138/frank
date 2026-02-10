@@ -1,5 +1,5 @@
 use rdev::{listen, Event, EventType, Key};
-use tauri::{AppHandle, Emitter, Manager};
+use tauri::{AppHandle, Manager};
 
 pub fn init_global_keyboard(app: AppHandle) {
     let mut shift_state: bool = false;
@@ -15,8 +15,6 @@ fn callback(event: Event, shift_state: &mut bool, app: &AppHandle) {
         EventType::KeyPress(key_event) => match key_event {
             Key::ShiftLeft | Key::ShiftRight => handle_shift_press(shift_state), // 同时也支持右侧 Shift
             Key::Tab => handle_show_hide_window(shift_state, app, "recentMatchWindow"),
-            Key::KeyZ => handle_z_press(shift_state, app), // 新增 Shift + Z
-            Key::KeyX => handle_show_hide_window(shift_state, app, "hexRecommend"), // 新增 Shift + X
             _ => (),
         },
 
@@ -57,15 +55,6 @@ fn handle_show_hide_window(shift_state: &mut bool, app: &AppHandle, win_name: &s
                     eprintln!("Error checking window visibility: {}", e);
                 }
             }
-        }
-    }
-}
-
-// 处理 Shift + Z
-fn handle_z_press(shift_state: &mut bool, app: &AppHandle) {
-    if *shift_state {
-        if let Some(win) = app.get_webview_window("hexRecommend") {
-            let _ = win.emit("game-update", 99);
         }
     }
 }

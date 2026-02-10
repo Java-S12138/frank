@@ -7,8 +7,7 @@
 		"mainWindow",
 		"queryMatchWindow",
 		"matchAnalysisWindow",
-		"recentMatchWindow",
-		"hexRecommend"
+		"recentMatchWindow"
 	],
 	"permissions": [
 		"core:default",

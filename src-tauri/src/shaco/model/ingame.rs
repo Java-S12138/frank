@@ -223,7 +223,7 @@ pub type ChampionName = String;
 pub type SkinName = String;
 pub type SkinId = i32;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Serialize, Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Player {
     pub champion_name: ChampionName,

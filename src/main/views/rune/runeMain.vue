@@ -8,6 +8,7 @@ import { get101Runes } from "./get101Runes";
 import { RuneStoreActions, RuneStoreState } from "@/main/views/rune/runeTypes";
 import { Store } from "pinia";
 import HexContent from "@/main/views/rune/hexContent.vue";
+import BlockHexContent from "@/main/views/rune/blockHexContent.vue";
 
 const { storeRune } = defineProps<{
 	storeRune: Store<"useRuneStore", RuneStoreState, {}, RuneStoreActions>;
@@ -77,6 +78,9 @@ watch(
 					:scroll-height="'442px'"
 					:hex-info-list="storeRune.hexAugments.sliver"
 				/>
+			</n-tab-pane>
+			<n-tab-pane name="tab4" tab="装备">
+				<block-hex-content :items="storeRune.hexItemList" />
 			</n-tab-pane>
 		</n-tabs>
 	</n-card>

@@ -1,7 +1,7 @@
 mod global_key;
 mod listener;
 mod matchlisthanle;
-use crate::FrankState;
+
 use matchlisthanle::MatchListDetails;
 
 use crate::lcu::global_key::init_global_keyboard;
@@ -15,12 +15,9 @@ use once_cell::sync::OnceCell;
 use serde_json::{from_value, Value};
 use std::fs;
 use std::path::Path;
-use std::sync::atomic::Ordering;
 use std::thread;
 use std::time::{Duration, Instant};
-use tauri::{AppHandle, Emitter, Manager};
-use tauri::{State, Window};
-use tokio::time::sleep;
+use tauri::{AppHandle, Emitter};
 
 // 定义全局的 REST 客户端
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
@@ -152,87 +149,6 @@ pub async fn launch_lol(path: &str) -> Result<(), String> {
         .spawn()
         .map(|_| ())
         .map_err(|e| e.to_string())
-}
-
-#[tauri::command]
-pub async fn start_hex_game_polling(
-    app: AppHandle,
-    state: State<'_, FrankState>,
-) -> Result<(), String> {
-    // 1. 防止重复启动
-    if state.is_hex_running.load(Ordering::Relaxed) {
-        return Err("Polling is already running".into());
-    }
-
-    // 设置为运行状态
-    state.is_hex_running.store(true, Ordering::SeqCst);
-    let is_hex_running = state.is_hex_running.clone();
-
-    let window = app.get_webview_window("hexRecommend").unwrap();
-    let client = ingame::IngameClient::new().unwrap();
-
-    // 2. 启动后台异步任务
-    tokio::spawn(async move {
-        // --- 记录上一次成功通知过的等级 ---
-        let mut last_notified_level: i32 = 0;
-
-        loop {
-            // 检查外部手动停止开关
-            if !is_hex_running.load(Ordering::Relaxed) {
-                break;
-            }
-
-            // 3. 执行查询
-            if let Ok(player_data) = client.active_player().await {
-                let level = player_data.level;
-
-                // --- 修改后的逻辑：仅当等级在目标范围内，且与上次通知的等级不同时才发送 ---
-                match level {
-                    1 | 7 | 11 | 15 => {
-                        if level != last_notified_level {
-                            let _ = window.emit("game-update", &level);
-                            last_notified_level = level; // 更新已记录等级
-                        }
-                    }
-                    _ => {
-                        // 如果等级变成了其他值，可以考虑是否重置 last_notified_level
-                        // 但通常等级是往上涨的，这里不需要额外操作
-                    }
-                }
-
-                // 4. 等级逻辑判断
-                if level >= 15 {
-                    // 到达15级，退出前确保最后一次信号已发送（上面逻辑已覆盖）
-                    break;
-                }
-
-                // 5. 动态计算下一次查询的间隔
-                let delay_seconds = match level {
-                    6 | 10 | 14 => 1, // 接近关键等级，1秒一次
-                    _ => 10,          // 其他时间，10秒一次
-                };
-
-                sleep(Duration::from_secs(delay_seconds)).await;
-            } else {
-                // 如果查询失败（可能游戏退出了），等待5秒重试
-                sleep(Duration::from_secs(5)).await;
-            }
-        }
-
-        // 任务结束，重置状态
-        is_hex_running.store(false, Ordering::SeqCst);
-        println!("Polling stopped.");
-    });
-
-    Ok(())
-}
-
-#[tauri::command]
-pub async fn stop_hex_game_polling(state: State<'_, FrankState>) -> Result<(), String> {
-    // 设置开关为 false，循环会在下一次执行前检测到并退出
-    state.is_hex_running.store(false, Ordering::SeqCst);
-    println!("Polling stopped by hand.");
-    Ok(())
 }
 
 // 检查是否游戏窗口模式为无边框

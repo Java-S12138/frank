@@ -54,7 +54,7 @@ onActivated(() => {
 		<div class="flex flex-col gap-3" style="margin-top: 7px">
 			<div class="flex gap-3" v-for="hex in hexInfoList">
 				<img
-					class="bg-slate-950 dark:bg-[#70c0e850]"
+					class="bg-slate-950"
 					style="border-radius: 50px; width: 50px; height: 50px"
 					:src="getImageUrl(hex.skill)"
 				/>

@@ -42,15 +42,10 @@ const handleConfirm = () => {
 </script>
 
 <template>
-	<div
-		v-if="modeId === 0"
-		class="min-h-screen flex items-center justify-center bg-gray-50"
-	>
-		<FloatingPrompt
-			:show="isVisible"
-			title="窗口设置"
-			@confirm="handleConfirm"
-			@cancel="isVisible = false"
-		/>
-	</div>
+	<FloatingPrompt
+		:show="isVisible"
+		title="窗口设置"
+		@confirm="handleConfirm"
+		@cancel="isVisible = false"
+	/>
 </template>
