@@ -9,6 +9,8 @@ pub(crate) enum ProcessInfoError {
     PortNotFound,
     /// There has been an error getting the API auth token
     AuthTokenNotFound,
+    /// There has been an error getting the RSO platform ID
+    PlatformIdNotFound,
 }
 
 impl Error for ProcessInfoError {}
@@ -29,6 +31,11 @@ impl Display for ProcessInfoError {
             Self::AuthTokenNotFound => write!(
                 f,
                 "{:?}: API auth token could not be parsed from process arguments",
+                self
+            ),
+            Self::PlatformIdNotFound => write!(
+                f,
+                "{:?}: RSO platform ID could not be parsed from process arguments",
                 self
             ),
         }

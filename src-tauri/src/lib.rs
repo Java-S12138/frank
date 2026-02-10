@@ -2,8 +2,8 @@ mod lcu;
 mod lol_window_tracker;
 mod shaco;
 use lcu::{
-    check_borderless_mode, get_match_list, init_keyboard, invoke_lcu, is_game_start, is_lol_cilent,
-    launch_lol, listen_for_client_start, set_borderless_mode, start_champ_select,
+    check_borderless_mode, get_lol_region, get_match_list, init_keyboard, invoke_lcu,
+    is_game_start, launch_lol, listen_for_client_start, set_borderless_mode, start_champ_select,
     start_current_champ_select, start_listener,
 };
 use lol_window_tracker::{start_tracking_loop, sync_tracker_config};
@@ -27,7 +27,7 @@ pub async fn run() {
             dock_side: Arc::new(Mutex::new("Right".to_string())),
         })
         .invoke_handler(tauri::generate_handler![
-            is_lol_cilent,
+            get_lol_region,
             start_listener,
             start_champ_select,
             invoke_lcu,

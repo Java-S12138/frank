@@ -6,8 +6,6 @@ import {
 } from "./types/SummonerTypes";
 import { dealDivsion, englishToChinese } from "./utils";
 import { champDict } from "@/resources/champList";
-import { queryMatchHistory } from "@/lcu/aboutMatch";
-import { TencentRsoPlatformId } from "@/resources/areaList";
 
 // 查询本地召唤师信息
 export const querySummonerInfo = async (
@@ -37,27 +35,6 @@ export const querySummonerInfo = async (
 		),
 		imgUrl: `https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/${summonerInfo.profileIconId}.png`,
 	};
-};
-
-// 查询所在服务器ID
-export const queryPlatformId = async (
-	puuid: string,
-): Promise<{ oldId: string; newId: string }> => {
-	const matchList = await queryMatchHistory(puuid, 0, 1);
-
-	if (matchList === null) {
-		return {
-			oldId: "",
-			newId: "",
-		};
-	} else {
-		return {
-			oldId:
-				TencentRsoPlatformId[matchList[0].platformId] ||
-				matchList[0].platformId,
-			newId: matchList[0].platformId,
-		};
-	}
 };
 
 // 查询召唤师排位分数

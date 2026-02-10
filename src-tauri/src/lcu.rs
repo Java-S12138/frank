@@ -8,7 +8,7 @@ use crate::lcu::global_key::init_global_keyboard;
 use crate::lcu::listener::listen_current_champ_select;
 use crate::shaco::ingame;
 use crate::shaco::rest::RESTClient;
-use crate::shaco::utils::process_info::get_auth_info;
+use crate::shaco::utils::process_info::{get_auth_info, AuthResponse};
 use configparser::ini::Ini;
 use listener::{listen_champ_select, listen_client};
 use once_cell::sync::OnceCell;
@@ -68,11 +68,10 @@ pub async fn get_match_list(uri: &str) -> Result<MatchListDetails, Value> {
 }
 
 #[tauri::command]
-pub fn is_lol_cilent() -> bool {
-    let is_exist = get_auth_info();
-    match is_exist {
-        Ok(_value) => true,
-        Err(_error) => false,
+pub fn get_lol_region() -> Result<String, String> {
+    match get_auth_info() {
+        Ok(info) => Ok(info.region),
+        Err(_) => Err("客户端未运行".to_string()),
     }
 }
 
@@ -89,7 +88,7 @@ pub fn listen_for_client_start(app: AppHandle) {
                 match is_exist {
                     Ok(value) => {
                         let _ = REST_CLIENT
-                            .set(RESTClient::new(value.0, value.1).unwrap())
+                            .set(RESTClient::new(value.token, value.port).unwrap())
                             .map_err(|_| "REST_CLIENT is already initialized".to_string());
                         app.emit_to("background", "client_status", "ClientStarted")
                             .expect("sent background error");

@@ -14,6 +14,7 @@ use crate::{
     shaco::error::LcuWebsocketError,
     shaco::model::ws::{LcuEvent, LcuSubscriptionType},
     shaco::utils::process_info,
+    shaco::utils::process_info::AuthResponse,
 };
 
 /// A client for the League-Client(LCU) websocket API
@@ -24,7 +25,11 @@ impl LcuWebsocketClient {
     /// Tries to establish a connection to the LCU Websocket API \
     /// Returns an [LcuWebsocketError] if the API is not reachable
     pub async fn connect() -> Result<Self, LcuWebsocketError> {
-        let (auth_token, port) = process_info::get_auth_info()
+        let AuthResponse {
+            token: auth_token,
+            port,
+            ..
+        } = process_info::get_auth_info()
             .map_err(|e| LcuWebsocketError::LcuNotAvailable(e.to_string()))?;
 
         let cert = native_tls::Certificate::from_pem(include_bytes!("./riotgames.pem")).unwrap();

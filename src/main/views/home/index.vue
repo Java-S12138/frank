@@ -26,9 +26,9 @@ import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/core";
 import SummonerMasteryChamp from "@/main/common/summonerMasteryChamp.vue";
 import { QueryMatchWindow } from "@/background/utils/creatWindow.ts";
-import { queryPlatformId } from "@/lcu/aboutSummoner.ts";
 import Sponsor from "@/main/common/sponsor.vue";
 import CheckMode from "./checkMode.vue";
+import { TencentRsoPlatformId } from "@/resources/areaList";
 
 const summonerData: SummonerData = reactive({
 	summonerInfo: null,
@@ -37,15 +37,17 @@ const summonerData: SummonerData = reactive({
 });
 const recordStore = useRecordStore();
 const taskCompleted = ref(false);
+const curRegion = ref<string | null>(null);
 
 onMounted(() => {
-	invoke<boolean>("is_lol_cilent").then((val: boolean) => {
-		if (val) {
+	invoke<string>("get_lol_region")
+		.then((region) => {
+			curRegion.value = region;
 			init(true);
-		} else {
+		})
+		.catch((err) => {
 			onClientLaunch();
-		}
-	});
+		});
 });
 
 onActivated(() => {
@@ -73,14 +75,16 @@ const init = async (isFirst: boolean) => {
 };
 
 const writeSumInfo = async (sInfo: summonerInfo) => {
-	const platformId = await queryPlatformId(sInfo.puuid);
+	if (curRegion.value === null) {
+		return;
+	}
 	// 设置召唤师信息
 	const sumInfo: sumInfoTypes = {
 		name: sInfo.name,
 		summonerId: sInfo.currentId,
 		puuid: sInfo.puuid,
-		platformId: platformId.oldId,
-		newPlatformId: platformId.newId,
+		platformId: TencentRsoPlatformId[curRegion.value] || curRegion.value,
+		newPlatformId: curRegion.value,
 	};
 	localStorage.setItem("sumInfo", JSON.stringify(sumInfo));
 	recordStore.init();
