@@ -1,15 +1,30 @@
 <script setup lang="ts">
-import { NIcon, NButton, NPopconfirm, NDrawer } from "naive-ui";
+import {
+	NIcon,
+	NButton,
+	NCheckbox,
+	NSpace,
+	NDrawer,
+	useDialog,
+} from "naive-ui";
 import { CircleMinus, Settings, CircleX, Bulb } from "@vicons/tabler";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, h } from "vue";
 import Setting from "@/main/common/setting.vue";
 import { Notice } from "@/main/utils/notice";
 import { exit } from "@tauri-apps/plugin-process";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { ConfigSettingTypes } from "@/background/types/";
+import { invoke } from "@tauri-apps/api/core";
+
+const { configSetting } = defineProps<{
+	configSetting: ConfigSettingTypes;
+}>();
 
 const notice = new Notice();
 const isShowDrawer = ref(false);
 const isShowNoticeIcon = ref(false);
+const dialog = useDialog();
+const shouldCloseLOL = ref(configSetting.shouldCloseLOL);
 
 onMounted(() => {
 	notice.init().then((v) => {
@@ -23,12 +38,67 @@ const handleMin = async () => {
 	await getCurrentWindow().minimize();
 };
 
-const handleClose = async () => {
-	await exit(1);
-};
-
 const showDialog = () => {
 	notice.showDialog();
+};
+
+const handleConfirm = () => {
+	dialog.error({
+		title: "Exit",
+		// 使用 render 函数自定义内容
+		content: () =>
+			h(
+				NSpace,
+				{ vertical: true },
+				{
+					default: () => [
+						h(
+							"div",
+							{ style: { lineHeight: "1.5", minHeight: "24px" } },
+							"是否退出 Frank?",
+						),
+						h(
+							NCheckbox,
+							{
+								// 绑定值
+								checked: shouldCloseLOL.value,
+								// 更新值的回调
+								"onUpdate:checked": (val) => {
+									shouldCloseLOL.value = val;
+
+									const config: ConfigSettingTypes =
+										JSON.parse(
+											localStorage.getItem(
+												"configSetting",
+											) as string,
+										);
+									config.shouldCloseLOL = val;
+
+									localStorage.setItem(
+										"configSetting",
+										JSON.stringify(config),
+									);
+								},
+							},
+							{ default: () => "同时关闭 LOL 客户端" },
+						),
+					],
+				},
+			),
+		positiveText: "确定",
+		negativeText: "取消",
+		autoFocus: false,
+		transformOrigin: "center",
+		style: "margin:8px;max-width:334px;margin-bottom:78px; border-radius:12px;",
+		closable: false,
+		onPositiveClick: () => {
+			exit(1);
+			if (shouldCloseLOL.value) {
+				invoke("close_lol_client");
+			}
+		},
+		onNegativeClick: () => {},
+	});
 };
 </script>
 
@@ -79,16 +149,11 @@ const showDialog = () => {
 					<settings />
 				</n-icon>
 			</n-button>
-			<n-popconfirm @positive-click="handleClose" :show-icon="false">
-				<template #trigger>
-					<n-button text circle>
-						<n-icon size="20">
-							<circle-x />
-						</n-icon>
-					</n-button>
-				</template>
-				是否退出 Frank?
-			</n-popconfirm>
+			<n-button :focusable="false" @click="handleConfirm" text circle>
+				<n-icon size="20">
+					<circle-x />
+				</n-icon>
+			</n-button>
 		</div>
 	</header>
 

@@ -292,7 +292,7 @@ listen<string>("cacheMatchList", (event) => {
 
 <template>
 	<div class="main bg-neutral-100 dark:bg-neutral-900">
-		<dashboard />
+		<dashboard :configSetting="configSetting" />
 		<!--    <button @click="gameState.handleCSSession('CSSession', champSession, true)">NULL</button>-->
 		<!--        <button @click="gameState.handleChampion('3',12)">champ</button>-->
 		<router-view v-slot="{ Component }">

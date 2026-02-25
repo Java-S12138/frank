@@ -14,6 +14,7 @@ export interface ConfigSettingTypes {
 		teamTips: boolean;
 	};
 	lolTracker: number;
+	shouldCloseLOL: boolean;
 }
 export interface ConfigRank {
 	tier: number;

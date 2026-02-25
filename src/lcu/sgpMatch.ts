@@ -20,16 +20,22 @@ export class SgpMatchHistoryService {
 	/**
 	 * @param _tokenProvider 一个异步函数，调用你提到的“其他接口”来获取最新的 Token
 	 */
-	constructor(private _tokenProvider: () => Promise<string | null>) {
-		const localSumInfo: sumInfoTypes = JSON.parse(
+	constructor(private _tokenProvider: () => Promise<string | null>) {}
+
+	private getBaseUrl() {
+		const localSumInfo: sumInfoTypes | null = JSON.parse(
 			localStorage.getItem("sumInfo") as string,
 		);
-		const sgpServer = SgpServers[localSumInfo.newPlatformId];
-		if (sgpServer === undefined) {
-			return;
+
+		if (!localSumInfo) {
+			return null;
 		}
 
-		this.sgpBaseUrl = sgpServer.matchHistory;
+		const sgpServer = SgpServers[localSumInfo.newPlatformId];
+		if (sgpServer === undefined) {
+			return null;
+		}
+		return sgpServer.matchHistory;
 	}
 
 	/**
@@ -82,7 +88,11 @@ export class SgpMatchHistoryService {
 		token: string,
 	): Promise<GamesBySgp[]> {
 		if (this.sgpBaseUrl === null) {
-			throw new Error(`sgpBaseUrl is null`);
+			const baseUrl = this.getBaseUrl();
+			if (!baseUrl) {
+				throw new Error(`sgpBaseUrl is null`);
+			}
+			this.sgpBaseUrl = baseUrl;
 		}
 
 		const { playerPuuid, start, count, tag } = params;
