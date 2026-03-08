@@ -1,115 +1,86 @@
-use std::{error::Error, fmt, fmt::Display};
+use thiserror::Error;
 
 /// Errors that can occur when trying to get the Riot process information
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone,Error)]
 pub(crate) enum ProcessInfoError {
     /// League client has not been started
+    #[error("Riot/League client process could not be found")]
     ProcessNotAvailable,
     /// There has been an error getting the API port
+    #[error("API port could not be parsed from process arguments")]
     PortNotFound,
     /// There has been an error getting the API auth token
+    #[error("API auth token could not be parsed from process arguments")]
     AuthTokenNotFound,
     /// There has been an error getting the RSO platform ID
+    #[error("RSO platform ID could not be parsed from process arguments")]
     PlatformIdNotFound,
 }
 
-impl Error for ProcessInfoError {}
-
-impl Display for ProcessInfoError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::ProcessNotAvailable => write!(
-                f,
-                "{:?}: Riot/League client process could not be found",
-                self
-            ),
-            Self::PortNotFound => write!(
-                f,
-                "{:?}: API port could not be parsed from process arguments",
-                self
-            ),
-            Self::AuthTokenNotFound => write!(
-                f,
-                "{:?}: API auth token could not be parsed from process arguments",
-                self
-            ),
-            Self::PlatformIdNotFound => write!(
-                f,
-                "{:?}: RSO platform ID could not be parsed from process arguments",
-                self
-            ),
-        }
-    }
-}
-
 /// Errors for the Ingame API
-#[derive(Debug, Clone)]
+#[derive(Error, Debug, Clone)]
 pub enum IngameClientError {
     /// An API might not be available yet during the loading screen
+    #[error("API not available in spectator mode")]
     ApiNotAvailableInSpectatorMode,
+
+    /// An API might not be available yet during the loading screen
+    #[error("API not available during loading screen")]
     ApiNotAvailableDuringLoadingScreen,
-    /// An error occurred on the client side probably because of a malformed request \
-    /// Corresponds to HTTP status responses 400 – 499, excluding 400 and 404 which are [IngameClientError::ApiNotAvailableInSpectatorMode] and [IngameClientError::ApiNotAvailableDuringLoadingScreen]
+
+    /// An error occurred on the client side probably because of a malformed request
+    /// Corresponds to HTTP status responses 400 – 499, excluding 400 and 404
+    #[error("Client error: {0}")]
     ClientError(String),
-    /// An error ocurred on the server side \
+
+    /// An error occurred on the server side
     /// Corresponds to HTTP status responses 500 – 599
+    #[error("Server error: {0}")]
     ServerError(String),
+
     /// There was an error deserializing the received data
+    #[error("Deserialization error: {0}")]
     DeserializationError(String),
-    /// All errors not caught by the other [IngameClientError] variants are categorised as a [IngameClientError::ConnectionError]
+
+    /// All errors not caught by the other variants
+    #[error("Connection error: {0}")]
     ConnectionError(String),
 }
 
 impl From<reqwest::Error> for IngameClientError {
     fn from(error: reqwest::Error) -> Self {
         if let Some(status) = error.status() {
-            if status == 400 {
-                return IngameClientError::ApiNotAvailableInSpectatorMode;
-            } else if status == 404 {
-                return IngameClientError::ApiNotAvailableDuringLoadingScreen;
-            } else if status.is_client_error() {
-                return IngameClientError::ClientError(status.to_string());
-            } else if status.is_server_error() {
-                return IngameClientError::ServerError(status.to_string());
+            match status.as_u16() {
+                400 => return Self::ApiNotAvailableInSpectatorMode,
+                404 => return Self::ApiNotAvailableDuringLoadingScreen,
+                _ if status.is_client_error() => return Self::ClientError(status.to_string()),
+                _ if status.is_server_error() => return Self::ServerError(status.to_string()),
+                _ => {}
             }
         }
         if error.is_decode() {
-            return IngameClientError::DeserializationError(error.to_string());
+            return Self::DeserializationError(error.to_string());
         }
-        IngameClientError::ConnectionError(error.to_string())
-    }
-}
-
-impl Error for IngameClientError {}
-
-impl Display for IngameClientError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt::Debug::fmt(self, f)
+        Self::ConnectionError(error.to_string())
     }
 }
 
 /// Errors for the Websocket connection to the LCU API
-#[derive(Debug, Clone)]
+#[derive(Error, Debug, Clone)]
 pub enum LcuWebsocketError {
     /// The Lcu API can't be reached
+    #[error("LCU API not available: {0}")]
     LcuNotAvailable(String),
+
     /// There was an error preparing the authentication credentials for the connection
+    #[error("Authentication error")]
     AuthError,
-    /// There was an error sending a un-/subscrive messaage to the API
+
+    /// There was an error sending a un-/subscribe message to the API
+    #[error("Error sending message")]
     SendError,
+
     /// The connection was terminated
+    #[error("Websocket disconnected: {0}")]
     Disconnected(String),
-}
-
-impl Error for LcuWebsocketError {}
-
-impl Display for LcuWebsocketError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::LcuNotAvailable(s) => write!(f, "LCU API not available: {}", s),
-            Self::AuthError => write!(f, "Authentication error"),
-            Self::SendError => write!(f, "Error sending message"),
-            Self::Disconnected(s) => write!(f, "Websocket disconnected: {}", s),
-        }
-    }
 }
