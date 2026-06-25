@@ -6,7 +6,7 @@ use lcu::{
     is_game_start, launch_lol, listen_for_client_start, set_borderless_mode, start_champ_select,
     start_current_champ_select, start_listener,
 };
-use lol_window_tracker::{close_lol_client, start_tracking_loop, sync_tracker_config};
+use lol_window_tracker::{start_tracking_loop, sync_tracker_config};
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
@@ -41,13 +41,12 @@ pub async fn run() {
             sync_tracker_config,
             set_borderless_mode,
             check_borderless_mode,
-            close_lol_client
         ])
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
+        .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
             // 当尝试启动新实例时，聚焦主窗口
             let _ = app
                 .get_webview_window("mainWindow")

@@ -1,6 +1,4 @@
 use crate::FrankState;
-use std::os::windows::process::CommandExt;
-use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -146,25 +144,4 @@ pub fn start_tracking_loop(state: tauri::State<'_, FrankState>, window: tauri::W
         .get_webview_window("mainWindow")
         .expect("not found mainWindow");
     LolTracker::start_tracking(main_win, state.is_enabled.clone(), state.dock_side.clone());
-}
-
-#[tauri::command]
-pub fn close_lol_client() -> Result<String, String> {
-    // CREATE_NO_WINDOW (0x08000000) 防止执行命令时弹出黑色 CMD 窗口
-    let output = Command::new("taskkill")
-        .args(&["/F", "/IM", "LeagueClient.exe", "/T"])
-        .creation_flags(0x08000000)
-        .output();
-
-    match output {
-        Ok(out) => {
-            if out.status.success() {
-                Ok("successful".into())
-            } else {
-                // 如果客户端没运行，taskkill 会报错，这里也视作“处理完成”
-                Ok("unsuccessful".into())
-            }
-        }
-        Err(e) => Err(format!("执行命令失败: {}", e)),
-    }
 }

@@ -1,7 +1,7 @@
 {
 	"name": "Frank",
 	"private": true,
-	"version": "3.24.1603",
+	"version": "3.26.1613",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",

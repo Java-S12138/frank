@@ -14,7 +14,7 @@ import { Notice } from "@/main/utils/notice";
 import { exit } from "@tauri-apps/plugin-process";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { ConfigSettingTypes } from "@/background/types/";
-import { invoke } from "@tauri-apps/api/core";
+import { invokeLcu } from "@/lcu";
 
 const { configSetting } = defineProps<{
 	configSetting: ConfigSettingTypes;
@@ -94,7 +94,7 @@ const handleConfirm = () => {
 		onPositiveClick: () => {
 			exit(1);
 			if (shouldCloseLOL.value) {
-				invoke("close_lol_client");
+				invokeLcu("post", "/process-control/v1/process/quit");
 			}
 		},
 		onNegativeClick: () => {},
