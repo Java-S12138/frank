@@ -67,7 +67,8 @@ const useMatchStore = defineStore("useMatchStore", {
 			}
 		},
 		async fetchAndProcessMatches(puuid: string) {
-			const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 20);
+            const matchResults = await baseMatch.dealMatchHistory(puuid, 0, 20);
+            console.log(matchResults)
 			if (matchResults !== null) {
 				// 处理结果
 				for (let i = 0; i < matchResults.length; i++) {

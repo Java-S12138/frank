@@ -25,7 +25,7 @@ const renderMatch = (index:number,gameId:number) => {
         <n-avatar
           :bordered="false"
           :size="42"
-          :src="'https://game.gtimg.cn/images/lol/act/img/champion/'+match.champImgUrl"
+          :src="match.champImgUrl"
           fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
           style="display:block"
         />

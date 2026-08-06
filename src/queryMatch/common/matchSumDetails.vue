@@ -18,10 +18,7 @@ const { summoner, summonerId, isOne, itemWidth } = defineProps<{
             <n-avatar
                 :bordered="false"
                 :size="50"
-                :src="
-                    'https://game.gtimg.cn/images/lol/act/img/champion/' +
-                    summoner.champImgUrl
-                "
+                :src="summoner.champImgUrl"
                 fallback-src="https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/usericon/4027.png"
                 style="display: block"
             />

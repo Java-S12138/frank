@@ -4,10 +4,10 @@ import QuerySummoner from "@/recentMatch/utils/querySummoner";
 import Dashboard from "@/recentMatch/components/dashboard.vue";
 import RecentMatchList from "@/recentMatch/components/recentMatchList.vue";
 import {
-	ChampInfoTypes,
-	ChampTinyTypes,
-	RecentAllSumInfo,
-	RecentSumInfo,
+    ChampInfoTypes,
+    ChampTinyTypes,
+    RecentAllSumInfo,
+    RecentSumInfo,
 } from "@/recentMatch/utils/queryTypes";
 import QueryMatch from "@/recentMatch/utils/queryMatch";
 import { SimpleMatchTypes } from "@/lcu/types/queryMatchLcuTypes";
@@ -40,280 +40,280 @@ const isDetailModalLeft = ref(true);
 const participantsInfo: Ref<ParticipantsInfo | null> = ref(null);
 const isChampInfo = ref(false);
 const champInfo: Ref<{ info: null | ChampTinyTypes; list: ChampInfoTypes[] }> =
-	ref({ info: null, list: [] });
+    ref({ info: null, list: [] });
 
 interface simpleMatchList {
-	[key: string]: SimpleMatchTypes[];
+    [key: string]: SimpleMatchTypes[];
 }
 
 once<simpleMatchList>("matchListCache", (res) => {
-	init(res.payload);
+    init(res.payload);
 });
 
 onMounted(() => {
-	window.Window.getByLabel("mainWindow").then((win) => {
-		if (win !== null) {
-			emitTo("mainWindow", "cacheMatchList", "getMatchList");
-		}
-	});
+    window.Window.getByLabel("mainWindow").then((win) => {
+        if (win !== null) {
+            emitTo("mainWindow", "cacheMatchList", "getMatchList");
+        }
+    });
 });
 
 const init = (simpleMatchList: { [key: string]: SimpleMatchTypes[] }) => {
-	querySummoner
-		.fromLcuQuery()
-		.then(async (allSumInfo: RecentAllSumInfo | null) => {
-			if (allSumInfo === null) {
-				isLcuErr.value = true;
-				return;
-			}
+    querySummoner
+        .fromLcuQuery()
+        .then(async (allSumInfo: RecentAllSumInfo | null) => {
+            if (allSumInfo === null) {
+                isLcuErr.value = true;
+                return;
+            }
 
-			isLcuErr.value = false;
-			queueId.value = allSumInfo.queueId;
-			// 是否从缓存数据中获取队友的战绩数据
-			if (Object.keys(simpleMatchList).length === 0) {
-				await Promise.all([
-					getCompleteSumInfo(
-						allSumInfo.friendList,
-						allSumInfo.queueId,
-						true,
-					),
-					getCompleteSumInfo(
-						allSumInfo.enemyList,
-						allSumInfo.queueId,
-						false,
-					),
-				]);
-			} else {
-				await Promise.all([
-					getSumInfoFromCache(
-						allSumInfo.friendList,
-						simpleMatchList,
-						allSumInfo.queueId,
-					),
-					getCompleteSumInfo(
-						allSumInfo.enemyList,
-						allSumInfo.queueId,
-						false,
-					),
-				]);
-			}
-			// 判断敌我双方谁的赢场最多
-			isFriCount.value =
-				winCount.value.friend[0] >= winCount.value.enemy[0];
-			fScoreMax.value = getMaxSummonerStateScore(friendList.value);
-			eScoreMax.value = getMaxSummonerStateScore(enemyList.value);
-		});
+            isLcuErr.value = false;
+            queueId.value = allSumInfo.queueId;
+            // 是否从缓存数据中获取队友的战绩数据
+            if (Object.keys(simpleMatchList).length === 0) {
+                await Promise.all([
+                    getCompleteSumInfo(
+                        allSumInfo.friendList,
+                        allSumInfo.queueId,
+                        true,
+                    ),
+                    getCompleteSumInfo(
+                        allSumInfo.enemyList,
+                        allSumInfo.queueId,
+                        false,
+                    ),
+                ]);
+            } else {
+                await Promise.all([
+                    getSumInfoFromCache(
+                        allSumInfo.friendList,
+                        simpleMatchList,
+                        allSumInfo.queueId,
+                    ),
+                    getCompleteSumInfo(
+                        allSumInfo.enemyList,
+                        allSumInfo.queueId,
+                        false,
+                    ),
+                ]);
+            }
+            // 判断敌我双方谁的赢场最多
+            isFriCount.value =
+                winCount.value.friend[0] >= winCount.value.enemy[0];
+            fScoreMax.value = getMaxSummonerStateScore(friendList.value);
+            eScoreMax.value = getMaxSummonerStateScore(enemyList.value);
+        });
 };
 
 const getCompleteSumInfo = async (
-	sumInfos: RecentSumInfo[],
-	queueId: number,
-	isFri: boolean,
+    sumInfos: RecentSumInfo[],
+    queueId: number,
+    isFri: boolean,
 ) => {
-	for (const summoner of sumInfos) {
-		// 根据已获取的召唤师puuid获取每一个召唤师的战绩数据
-		const resultList = await queryMatch.queryMatchHistory(
-			summoner.puuid,
-			queueId,
-			summoner.summonerState.label,
-		);
-		summoner.matchList = resultList[0];
-		// 判断是否为小代
-		if (summoner.summonerState.label === "Y" && resultList[2]) {
-			summoner.summonerState.label = "S";
-		} else if (summoner.summonerState.label === "Y") {
-			summoner.summonerState.label = "Z";
-		}
+    for (const summoner of sumInfos) {
+        // 根据已获取的召唤师puuid获取每一个召唤师的战绩数据
+        const resultList = await queryMatch.queryMatchHistory(
+            summoner.puuid,
+            queueId,
+            summoner.summonerState.label,
+        );
+        summoner.matchList = resultList[0];
+        // 判断是否为小代
+        if (summoner.summonerState.label === "Y" && resultList[2]) {
+            summoner.summonerState.label = "S";
+        } else if (summoner.summonerState.label === "Y") {
+            summoner.summonerState.label = "Z";
+        }
 
-		// 判断是否为友方或敌方，分别写入不同的数据
-		const targetList = isFri ? friendList.value : enemyList.value;
-		const countList = isFri ? winCount.value.friend : winCount.value.enemy;
+        // 判断是否为友方或敌方，分别写入不同的数据
+        const targetList = isFri ? friendList.value : enemyList.value;
+        const countList = isFri ? winCount.value.friend : winCount.value.enemy;
 
-		countList[0] += resultList[1];
-		countList[1] += resultList[0].length;
-		targetList.push(summoner);
-		await new Promise((resolve) => setTimeout(resolve, 200));
-	}
+        countList[0] += resultList[1];
+        countList[1] += resultList[0].length;
+        targetList.push(summoner);
+        await new Promise((resolve) => setTimeout(resolve, 200));
+    }
 };
 
 const getSumInfoFromCache = async (
-	sumInfos: RecentSumInfo[],
-	simpleMatchList: { [key: string]: SimpleMatchTypes[] },
-	queueId: number,
+    sumInfos: RecentSumInfo[],
+    simpleMatchList: { [key: string]: SimpleMatchTypes[] },
+    queueId: number,
 ) => {
-	try {
-		for (const sumInfo of sumInfos) {
-			let winMatchCount = 0;
-			const matchListElement = simpleMatchList[
-				String(sumInfo.summonerId)
-			].map((match) => {
-				winMatchCount = match.isWin ? winMatchCount + 1 : winMatchCount;
-				return {
-					champImg: `https://game.gtimg.cn/images/lol/act/img/champion/${match.champImgUrl}`,
-					kills: match.kills,
-					deaths: match.deaths,
-					assists: match.assists,
-					isWin: match.isWin,
-					gameId: match.gameId,
-					queueId: match.queueId,
-				};
-			});
-			// 判断是否为小代
-			if (
-				sumInfo.summonerState.label === "Y" &&
-				queryMatch.isExcelPlayer(
-					sumInfo.summonerState.label,
-					matchListElement,
-				)
-			) {
-				sumInfo.summonerState.label = "S";
-			} else if (sumInfo.summonerState.label === "Y") {
-				sumInfo.summonerState.label = "Z";
-			}
-			sumInfo.matchList = matchListElement;
-			friendList.value.push(sumInfo);
-			winCount.value.friend[0] += winMatchCount;
-			winCount.value.friend[1] += matchListElement.length;
-			await new Promise((resolve) => setTimeout(resolve, 200));
-		}
-	} catch (e) {
-		friendList.value = [];
-		winCount.value.friend[0] = 0;
-		winCount.value.friend[1] = 0;
-		await getCompleteSumInfo(sumInfos, queueId, true);
-	}
+    try {
+        for (const sumInfo of sumInfos) {
+            let winMatchCount = 0;
+            const matchListElement = simpleMatchList[
+                String(sumInfo.summonerId)
+            ].map((match) => {
+                winMatchCount = match.isWin ? winMatchCount + 1 : winMatchCount;
+                return {
+                    champImg: match.champImgUrl,
+                    kills: match.kills,
+                    deaths: match.deaths,
+                    assists: match.assists,
+                    isWin: match.isWin,
+                    gameId: match.gameId,
+                    queueId: match.queueId,
+                };
+            });
+            // 判断是否为小代
+            if (
+                sumInfo.summonerState.label === "Y" &&
+                queryMatch.isExcelPlayer(
+                    sumInfo.summonerState.label,
+                    matchListElement,
+                )
+            ) {
+                sumInfo.summonerState.label = "S";
+            } else if (sumInfo.summonerState.label === "Y") {
+                sumInfo.summonerState.label = "Z";
+            }
+            sumInfo.matchList = matchListElement;
+            friendList.value.push(sumInfo);
+            winCount.value.friend[0] += winMatchCount;
+            winCount.value.friend[1] += matchListElement.length;
+            await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+    } catch (e) {
+        friendList.value = [];
+        winCount.value.friend[0] = 0;
+        winCount.value.friend[1] = 0;
+        await getCompleteSumInfo(sumInfos, queueId, true);
+    }
 };
 
 const openDetailDrawer = async (
-	gameId: number,
-	summonerId: number,
-	isFri: boolean,
-	champId: number,
+    gameId: number,
+    summonerId: number,
+    isFri: boolean,
+    champId: number,
 ) => {
-	isDetailModalLeft.value = isFri;
-	if (gameId === 0 && summonerId === 0) {
-		isChampInfo.value = true;
-		isDetailModal.value = true;
-		await getChampInfoList(champId);
-		return;
-	}
+    isDetailModalLeft.value = isFri;
+    if (gameId === 0 && summonerId === 0) {
+        isChampInfo.value = true;
+        isDetailModal.value = true;
+        await getChampInfoList(champId);
+        return;
+    }
 
-	const matchInfo = await matchDetials.queryGameDetail(gameId, summonerId);
-	if (matchInfo !== null) {
-		currentId.value = summonerId;
-		participantsInfo.value = matchInfo;
-	}
-	isDetailModal.value = true;
+    const matchInfo = await matchDetials.queryGameDetail(gameId, summonerId);
+    if (matchInfo !== null) {
+        currentId.value = summonerId;
+        participantsInfo.value = matchInfo;
+    }
+    isDetailModal.value = true;
 };
 
 const getChampInfoList = async (champId: number) => {
-	try {
-		const url = `https://game.gtimg.cn/images/lol/act/img/js/hero/${champId}.js?ts=2893692`;
-		const res = await requestFetch<any>(url, "GET");
-		if (res !== null && res?.spells) {
-			const info: ChampTinyTypes = {
-				name: res.hero.name + " " + res.hero.title,
-				alias: `https://game.gtimg.cn/images/lol/act/img/champion/${res.hero.alias}.png`,
-				roles: res.hero.roles,
-			};
-			champInfo.value.info = info;
-			// 定义排序顺序
-			const order = ["q", "w", "e", "r", "passive"];
-			// 对数组进行排序
-			champInfo.value.list = res.spells.sort((a: any, b: any) => {
-				return order.indexOf(a.spellKey) - order.indexOf(b.spellKey);
-			});
-		}
-	} catch (error) {
-		console.error(error);
-	}
+    try {
+        const url = `https://game.gtimg.cn/images/lol/act/img/js/hero/${champId}.js?ts=2893692`;
+        const res = await requestFetch<any>(url, "GET");
+        if (res !== null && res?.spells) {
+            const info: ChampTinyTypes = {
+                name: res.hero.name + " " + res.hero.title,
+                alias: `https://game.gtimg.cn/images/lol/act/img/champion/${res.hero.alias}.png`,
+                roles: res.hero.roles,
+            };
+            champInfo.value.info = info;
+            // 定义排序顺序
+            const order = ["q", "w", "e", "r", "passive"];
+            // 对数组进行排序
+            champInfo.value.list = res.spells.sort((a: any, b: any) => {
+                return order.indexOf(a.spellKey) - order.indexOf(b.spellKey);
+            });
+        }
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 const getMaxSummonerStateScore = (
-	recentSumInfoList: RecentSumInfo[],
+    recentSumInfoList: RecentSumInfo[],
 ): number => {
-	if (!recentSumInfoList || recentSumInfoList.length === 0) {
-		return 0;
-	}
+    if (!recentSumInfoList || recentSumInfoList.length === 0) {
+        return 0;
+    }
 
-	return recentSumInfoList.reduce((maxScore, current) => {
-		return Math.max(maxScore, current.summonerState.score);
-	}, 0);
+    return recentSumInfoList.reduce((maxScore, current) => {
+        return Math.max(maxScore, current.summonerState.score);
+    }, 0);
 };
 </script>
 
 <template>
-	<div class="main bg-neutral-100 dark:bg-neutral-900">
-		<dashboard
-			:win-count="winCount"
-			:is-fri-count="isFriCount"
-			:queue-id="queueId"
-		/>
+    <div class="main bg-neutral-100 dark:bg-neutral-900">
+        <dashboard
+            :win-count="winCount"
+            :is-fri-count="isFriCount"
+            :queue-id="queueId"
+        />
 
-		<null-page v-if="isLcuErr" />
+        <null-page v-if="isLcuErr" />
 
-		<div v-else class="flex justify-between">
-			<recent-match-list
-				@show-detail="openDetailDrawer"
-				:max-score="fScoreMax"
-				:sum-list="friendList"
-				:queue-id="queueId"
-				:is-fri="true"
-			/>
-			<recent-match-list
-				@show-detail="openDetailDrawer"
-				:max-score="eScoreMax"
-				:sum-list="enemyList"
-				:queue-id="queueId"
-				:is-fri="false"
-			/>
-		</div>
-	</div>
+        <div v-else class="flex justify-between">
+            <recent-match-list
+                @show-detail="openDetailDrawer"
+                :max-score="fScoreMax"
+                :sum-list="friendList"
+                :queue-id="queueId"
+                :is-fri="true"
+            />
+            <recent-match-list
+                @show-detail="openDetailDrawer"
+                :max-score="eScoreMax"
+                :sum-list="enemyList"
+                :queue-id="queueId"
+                :is-fri="false"
+            />
+        </div>
+    </div>
 
-	<n-drawer
-		style="border-radius: 0.5rem"
-		v-model:show="isDetailModal"
-		:placement="!isDetailModalLeft ? 'left' : 'right'"
-		:auto-focus="false"
-		:on-after-leave="
-			() => {
-				isChampInfo = false;
-				champInfo = { info: null, list: [] };
-			}
-		"
-		width="632px"
-	>
-		<div
-			class="bg-white text-neutral-900 p-3 h-full box-border rounded-lg dark:bg-zinc-900 dark:text-neutral-200"
-		>
-			<champ-info
-				v-if="isChampInfo"
-				:champ-info-list="champInfo.list"
-				:champ-tiny="champInfo.info"
-			/>
+    <n-drawer
+        style="border-radius: 0.5rem"
+        v-model:show="isDetailModal"
+        :placement="!isDetailModalLeft ? 'left' : 'right'"
+        :auto-focus="false"
+        :on-after-leave="
+            () => {
+                isChampInfo = false;
+                champInfo = { info: null, list: [] };
+            }
+        "
+        width="632px"
+    >
+        <div
+            class="bg-white text-neutral-900 p-3 h-full box-border rounded-lg dark:bg-zinc-900 dark:text-neutral-200"
+        >
+            <champ-info
+                v-if="isChampInfo"
+                :champ-info-list="champInfo.list"
+                :champ-tiny="champInfo.info"
+            />
 
-			<match-content
-				v-else-if="participantsInfo !== null"
-				:header-info="participantsInfo.headerInfo"
-				:team-one="participantsInfo.teamOne"
-				:team-two="participantsInfo.teamTwo"
-				:queue-id="participantsInfo.queueId"
-				:summoner-id="currentId"
-				:is-game-in="true"
-				:game-id="participantsInfo.gameId"
-			/>
-			<div
-				class="w-full h-full flex justify-center items-center"
-				v-else-if="!isChampInfo && participantsInfo === null"
-			>
-				<n-result
-					size="large"
-					status="418"
-					title="获取当前战绩数据异常"
-					description="请切换其它战绩, 尝试再次获取数据..."
-				>
-				</n-result>
-			</div>
-		</div>
-	</n-drawer>
+            <match-content
+                v-else-if="participantsInfo !== null"
+                :header-info="participantsInfo.headerInfo"
+                :team-one="participantsInfo.teamOne"
+                :team-two="participantsInfo.teamTwo"
+                :queue-id="participantsInfo.queueId"
+                :summoner-id="currentId"
+                :is-game-in="true"
+                :game-id="participantsInfo.gameId"
+            />
+            <div
+                class="w-full h-full flex justify-center items-center"
+                v-else-if="!isChampInfo && participantsInfo === null"
+            >
+                <n-result
+                    size="large"
+                    status="418"
+                    title="获取当前战绩数据异常"
+                    description="请切换其它战绩, 尝试再次获取数据..."
+                >
+                </n-result>
+            </div>
+        </div>
+    </n-drawer>
 </template>

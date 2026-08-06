@@ -134,7 +134,7 @@ export const findTopChamp = (
 ): RencentDataAnalysisTypes | null => {
 	if (match === undefined || match === null) {
 		return null;
-	}
+    }
 
 	const oneGameId = match[0].gameId;
 	// 使用 Map 统计每个 champId 出现的次数
@@ -151,9 +151,13 @@ export const findTopChamp = (
 	// 初始化 champIdCountMap 并统计 roleCountMap
 	for (const champion of match) {
 		const { champId } = champion;
-		const role = champDict[champId].roles[0];
-		// @ts-ignore
-		roleCountMap[role] = roleCountMap[role] + 1;
+		const champInfo = champDict[champId];
+
+		// champDict 可能缺少该英雄(如新英雄),此时跳过角色统计,但英雄仍计入 champIdCountMap
+		if (champInfo?.roles[0]) {
+			const role = champInfo.roles[0] as keyof RoleCountMapTypes;
+			roleCountMap[role] = roleCountMap[role] + 1;
+		}
 		champIdCountMap.set(champId, (champIdCountMap.get(champId) || 0) + 1);
 	}
 

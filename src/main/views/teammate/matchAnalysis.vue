@@ -1,124 +1,178 @@
 <script setup lang="ts">
-import {NAvatar, NSpace, NTag, NSteps, NStep, NIcon, NProgress, NResult, NSkeleton} from "naive-ui";
-import {Crown, Planet, Bulb} from "@vicons/tabler"
-import {RencentDataAnalysisTypes} from "./teammateTypes";
-import {champDict} from "@/resources/champList";
-import {posRate} from "@/resources/otherList";
+import {
+    NAvatar,
+    NSpace,
+    NTag,
+    NSteps,
+    NStep,
+    NIcon,
+    NProgress,
+    NResult,
+    NSkeleton,
+} from "naive-ui";
+import { Crown, Planet, Bulb } from "@vicons/tabler";
+import { RencentDataAnalysisTypes } from "./teammateTypes";
+import { champDict } from "@/resources/champList";
+import { posRate } from "@/resources/otherList";
 
-const {analysisData, pageType} = defineProps<{
-  analysisData: RencentDataAnalysisTypes,
-  pageType: number
-}>()
+const { analysisData, pageType } = defineProps<{
+    analysisData: RencentDataAnalysisTypes;
+    pageType: number;
+}>();
 // 找出最近使用最多英雄角色
-const roles = analysisData.roleCountMap
-const usedRole = Object.keys(roles).reduce((a, b) => roles[a] > roles[b] ? a : b)
-const WIDTH = pageType === 0 ? 55 : 45
-const proStyle = `width: ${WIDTH}px;font-size: 14px`
+const roles = analysisData.roleCountMap;
+const usedRole = Object.keys(roles).reduce((a, b) =>
+    roles[a] > roles[b] ? a : b,
+);
+const WIDTH = pageType === 0 ? 55 : 45;
+const proStyle = `width: ${WIDTH}px;font-size: 14px`;
 
 const colorGreen = {
-  color: '#18A058',
-  bgColor: 'rgba(24,160,88,0.2)'
-}
+    color: "#18A058",
+    bgColor: "rgba(24,160,88,0.2)",
+};
 const colorBlue = {
-  color: '#f0a020',
-  bgColor: 'rgba(240,160,32,0.2)'
-}
+    color: "#f0a020",
+    bgColor: "rgba(240,160,32,0.2)",
+};
 /*: {
   color: '#2080F0',
     bgColor: 'rgba(32,128,240,0.2)'
 }*/
 
 const getImg = (champId: number) => {
-  return `https://game.gtimg.cn/images/lol/act/img/champion/${champDict[champId].alias}.png`
-}
+    const champAlias = champDict[String(champId)]?.alias;
+    // 字典缺英雄时回退到 CommunityDragon 图标
+    const champImgUrl = champAlias
+        ? `https://game.gtimg.cn/images/lol/act/img/champion/${champAlias}.png`
+        : `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${champId}.png`;
+
+    return champImgUrl;
+};
 
 const getPercent = (num: number, total: number) => {
-  return Math.round((num / total) * 100)
-}
-
-
+    return Math.round((num / total) * 100);
+};
 </script>
 
 <template>
-  <div class="pl-0.5">
-    <n-steps size="small" vertical>
-      <n-step
-        style="margin: 4px 0"
-        title="近期使用英雄">
-        <template #icon>
-          <n-icon>
-            <Crown/>
-          </n-icon>
-        </template>
-        <n-space justify="space-between">
-          <n-space vertical v-for="champ in analysisData.top3Champions">
-            <n-avatar
-              style="display: block"
-              :size="WIDTH"
-              :src="getImg(champ.champId)"
-            />
-            <n-tag v-if="pageType===0" :bordered="false" size="small" class="text-sm"
-                   style="width: 55px;justify-content: center">
-              {{ champ.count }}/{{ analysisData.totalChampions }}
-            </n-tag>
-            <n-tag v-else :bordered="false" size="small" class="text-sm"
-                   style="width: 45px;justify-content: center">
-              {{ champ.count }}/{{ analysisData.totalChampions }}
-            </n-tag>
-          </n-space>
-        </n-space>
-      </n-step>
-      <n-step
-        style="margin: 0"
-        title="近期活跃程度">
-        <template #icon>
-          <n-icon>
-            <Planet/>
-          </n-icon>
-        </template>
-        <n-space  :class="pageType===1?'pt-1':''"  :size="pageType===1?[12,10]:[12,8]" justify="space-between" >
-          <n-space vertical v-for="(pos,index) in posRate">
-            <n-progress
-              :style="proStyle"
-              type="circle"
-              :stroke-width="10"
-              :percentage="getPercent(analysisData.roleCountMap[pos.key],analysisData.totalChampions)"
-              :color="usedRole!==pos.key ? colorGreen.color:colorBlue.color"
-              :rail-color="usedRole!==pos.key ? colorGreen.bgColor:colorBlue.bgColor"
-            />
-            <n-tag v-if="pageType===0" :bordered="false" round
-                   style="width: 55px;padding: 0 12px">
-              <template #avatar>
-                <n-avatar
-                  style="background-color:#ffffff00;"
-                  :src="pos.imgUrl"
-                />
-              </template>
-              <text class="absolute" style="top: 7px;right: 5px">{{ pos.name }}</text>
-            </n-tag>
-            <n-tag v-else :bordered="false" round
-                   style="width: 45px;height:22px;padding: 0 22px;">
-              <template #avatar>
-                <n-avatar
-                  style="background-color:#ffffff00;"
-                  :src="pos.imgUrl"
-                />
-              </template>
-            </n-tag>
-          </n-space>
-        </n-space>
-      </n-step>
-      <n-step
-        v-if="pageType===0"
-        status="wait"
-        title="节选最近 20场对局分析">
-        <template #icon>
-          <n-icon>
-            <Bulb/>
-          </n-icon>
-        </template>
-      </n-step>
-    </n-steps>
-  </div>
+    <div class="pl-0.5">
+        <n-steps size="small" vertical>
+            <n-step style="margin: 4px 0" title="近期使用英雄">
+                <template #icon>
+                    <n-icon>
+                        <Crown />
+                    </n-icon>
+                </template>
+                <n-space justify="space-between">
+                    <n-space
+                        vertical
+                        v-for="champ in analysisData.top3Champions"
+                    >
+                        <n-avatar
+                            style="display: block"
+                            :size="WIDTH"
+                            :src="getImg(champ.champId)"
+                        />
+                        <n-tag
+                            v-if="pageType === 0"
+                            :bordered="false"
+                            size="small"
+                            class="text-sm"
+                            style="width: 55px; justify-content: center"
+                        >
+                            {{ champ.count }}/{{ analysisData.totalChampions }}
+                        </n-tag>
+                        <n-tag
+                            v-else
+                            :bordered="false"
+                            size="small"
+                            class="text-sm"
+                            style="width: 45px; justify-content: center"
+                        >
+                            {{ champ.count }}/{{ analysisData.totalChampions }}
+                        </n-tag>
+                    </n-space>
+                </n-space>
+            </n-step>
+            <n-step style="margin: 0" title="近期活跃程度">
+                <template #icon>
+                    <n-icon>
+                        <Planet />
+                    </n-icon>
+                </template>
+                <n-space
+                    :class="pageType === 1 ? 'pt-1' : ''"
+                    :size="pageType === 1 ? [12, 10] : [12, 8]"
+                    justify="space-between"
+                >
+                    <n-space vertical v-for="(pos, index) in posRate">
+                        <n-progress
+                            :style="proStyle"
+                            type="circle"
+                            :stroke-width="10"
+                            :percentage="
+                                getPercent(
+                                    analysisData.roleCountMap[pos.key],
+                                    analysisData.totalChampions,
+                                )
+                            "
+                            :color="
+                                usedRole !== pos.key
+                                    ? colorGreen.color
+                                    : colorBlue.color
+                            "
+                            :rail-color="
+                                usedRole !== pos.key
+                                    ? colorGreen.bgColor
+                                    : colorBlue.bgColor
+                            "
+                        />
+                        <n-tag
+                            v-if="pageType === 0"
+                            :bordered="false"
+                            round
+                            style="width: 55px; padding: 0 12px"
+                        >
+                            <template #avatar>
+                                <n-avatar
+                                    style="background-color: #ffffff00"
+                                    :src="pos.imgUrl"
+                                />
+                            </template>
+                            <text
+                                class="absolute"
+                                style="top: 7px; right: 5px"
+                                >{{ pos.name }}</text
+                            >
+                        </n-tag>
+                        <n-tag
+                            v-else
+                            :bordered="false"
+                            round
+                            style="width: 45px; height: 22px; padding: 0 22px"
+                        >
+                            <template #avatar>
+                                <n-avatar
+                                    style="background-color: #ffffff00"
+                                    :src="pos.imgUrl"
+                                />
+                            </template>
+                        </n-tag>
+                    </n-space>
+                </n-space>
+            </n-step>
+            <n-step
+                v-if="pageType === 0"
+                status="wait"
+                title="节选最近 20场对局分析"
+            >
+                <template #icon>
+                    <n-icon>
+                        <Bulb />
+                    </n-icon>
+                </template>
+            </n-step>
+        </n-steps>
+    </div>
 </template>
-
