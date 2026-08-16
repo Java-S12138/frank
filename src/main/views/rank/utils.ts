@@ -117,15 +117,15 @@ const toPercent = (point: number) => {
 // 获取对于的位置
 export const getPostion = (lane: string) => {
   switch (lane) {
-    case (lane = "top"):
+    case "top":
       return "0";
-    case (lane = "jungle"):
+    case "jungle":
       return "1";
-    case (lane = "mid"):
+    case "mid":
       return "2";
-    case (lane = "bottom"):
+    case "bottom":
       return "3";
-    case (lane = "support"):
+    case "support":
       return "4";
     default:
       return "2";
