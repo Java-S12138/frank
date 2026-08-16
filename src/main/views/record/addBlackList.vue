@@ -15,7 +15,7 @@ import {
     HaterStructTypes,
     UserInfos,
 } from "@/main/views/record/blackListTypes";
-import { sumInfoTypes } from "@/background/utils/backgroundTypes";
+import { sumInfoTypes } from "@/background/types";
 import { createHaterContent, updatePlayerRecord } from "@/main/utils/request";
 import { useRecordStore } from "@/main/store/useRecord";
 
