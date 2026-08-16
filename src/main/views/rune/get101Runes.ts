@@ -102,9 +102,10 @@ export const get101Runes = async (champId:string|number) => {
         return valueAtIndex4 >= 6000;
       })
 
-      var pages:any = filteredData.slice(0, 2).map((i:any) => makePerkData(i, champDict[champId].alias, position));
+      const pages:any = filteredData.slice(0, 2).map((i:any) => makePerkData(i, champDict[champId].alias, position));
+      return res.concat(pages);
     }
-    return res.concat(pages);
+    return res;
   }, []);
   // @ts-ignore
   return _orderBy(perks.filter(x=>!!x==true), `pickCount`, [`desc`]);
