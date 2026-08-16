@@ -28,12 +28,8 @@ class QuerySummoner {
     }
     const isTeamOne = this.matchSession.gameData.teamOne.find((i: TeamData) => i.summonerId === this.currentId) !== undefined?true:false
     const [friendList,enemyList] = await Promise.all([
-      isTeamOne === true
-        ? await this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
-        : await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo),
-      isTeamOne === true
-        ? await this.simplifySummonerInfo(this.matchSession.gameData.teamTwo)
-        : await this.simplifySummonerInfo(this.matchSession.gameData.teamOne)
+      this.simplifySummonerInfo(isTeamOne ? this.matchSession.gameData.teamOne : this.matchSession.gameData.teamTwo),
+      this.simplifySummonerInfo(isTeamOne ? this.matchSession.gameData.teamTwo : this.matchSession.gameData.teamOne)
     ])
     return {friendList, enemyList,queueId:this.queueId}
   }
@@ -130,7 +126,7 @@ class QuerySummoner {
 
     if (champIndex !== -1) {
       return {
-        label: champIndex < 3 ? 'Z' : 'B',
+        label: champIndex < 3 ? 'A' : 'B',
         lv: curChampMark.lv,
         score: curChampMark.score,
       };
