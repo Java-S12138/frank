@@ -1789,10 +1789,6 @@ export const optionsChampion = [
         label: "不落魔锋",
     },
     {
-        value: "904",
-        label: "不落魔锋",
-    },
-    {
         value: "805",
         label: "灰烬驱魔人",
     },
