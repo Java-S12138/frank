@@ -16,7 +16,7 @@ import {NLayout, NLayoutContent, NLayoutSider, NSkeleton, NSpace} from "naive-ui
           <div class="flex justify-between">
             <n-skeleton v-for="i in [0,1,2,3,4,5,6]" class="imgItem" :sharp="false" />
           </div>
-        </n-layout-content class="dark:bg-[#2C2C32]">
+        </n-layout-content>
         <n-layout-content style="margin-top: 7px;">
           <div class="flex justify-between">
             <n-skeleton style="width: 100%;height: 18px" />
