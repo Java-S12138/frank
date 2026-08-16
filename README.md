@@ -71,7 +71,7 @@ pnpm run tauri build
 
 ## 点个 Star 支持我们 ⭐
 <p align='center'>
-  <a href="https://github.com/Java-S12138/frank/stargazers">
-    <img src="https://star-history.dera.page/svg?repos=Java-S12138/frank&type=Date">
+  <a href="https://github.com/syjun404/frank/stargazers">
+    <img src="https://star-history.dera.page/svg?repos=syjun404/frank&type=Date">
   </a>
 </p>
