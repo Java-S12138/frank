@@ -53,8 +53,8 @@ const {titleList} = defineProps<{
     <n-gi>
       <n-space vertical align="center">
         <text class="text-gray-400">经济差距</text>
-        <text v-if="titleList[6]>titleList[7]" style="color: #FF6666">{{ (titleList[6]-titleList[7] ).toFixed(1)}} K</text>
-        <text v-else style="color: #66B3FF">{{ (titleList[7]-titleList[6] ).toFixed(1)}} K</text>
+        <text v-if="Number(titleList[6]) > Number(titleList[7])" style="color: #FF6666">{{ (Number(titleList[6]) - Number(titleList[7])).toFixed(1) }} K</text>
+        <text v-else style="color: #66B3FF">{{ (Number(titleList[7]) - Number(titleList[6])).toFixed(1) }} K</text>
       </n-space>
     </n-gi>
   </n-grid>

@@ -132,9 +132,9 @@ const fetchSummonerInfoWithRetry = async (
 export const findTopChamp = (
 	match: SimpleMatchTypes[] | undefined | null,
 ): RencentDataAnalysisTypes | null => {
-	if (match === undefined || match === null) {
+	if (match === undefined || match === null || match.length === 0) {
 		return null;
-    }
+	}
 
 	const oneGameId = match[0].gameId;
 	// 使用 Map 统计每个 champId 出现的次数

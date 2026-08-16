@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   NCard, NAvatar, NSpace, NSelect, NBackTop,
-  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer, arDZ
+  NList, NListItem, NScrollbar, useMessage, NDropdown, NButton, NDrawer
 } from 'naive-ui'
 import './assistCommon.css'
 import {onActivated, onDeactivated, onMounted, Ref, ref} from "vue";
@@ -56,19 +56,19 @@ const handlePosSelect = (pos:string) => {
   lane.value = pos
    queryChampRankData().then((value) => {
      switch (pos) {
-         case pos = 'top':
+         case 'top':
            message.success('上单数据更新成功')
            break;
-         case pos = 'jungle':
+         case 'jungle':
            message.success('打野数据更新成功')
            break;
-         case pos = 'mid':
+         case 'mid':
            message.success('中单数据更新成功')
            break;
-         case pos = 'bottom':
+         case 'bottom':
            message.success('下路数据更新成功')
            break;
-         case pos = 'support':
+         case 'support':
            message.success('辅助数据更新成功')
            break;
        }

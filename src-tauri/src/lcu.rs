@@ -23,47 +23,52 @@ use tauri::{AppHandle, Emitter};
 static REST_CLIENT: OnceCell<RESTClient> = OnceCell::new();
 
 // 获取 REST_CLIENT 的函数
-fn get_client() -> Result<&'static RESTClient, String> {
+fn get_client() -> Result<&'static RESTClient, Value> {
     REST_CLIENT
         .get()
-        .ok_or_else(|| "REST_CLIENT is not initialized".to_string())
+        .ok_or(Value::Null)
 }
 
 #[tauri::command]
 pub async fn invoke_lcu(method: &str, uri: &str, body: &str) -> Result<Value, Value> {
     let client = get_client()?; // 获取全局的 REST_CLIENT
     if method == "get" {
-        let res = client.get(uri).await;
-        match res {
-            Ok(res) => return Ok(res),
-            Err(e) => return Err(Value::Null),
+        match client.get(uri).await {
+            Ok(res) => Ok(res),
+            Err(_) => Err(Value::Null),
         }
     } else if method == "patch" {
-        let parsed: Value = serde_json::from_str(body).expect("Failed to parse JSON string");
-        let _res = client.patch(uri, serde_json::json!(parsed)).await.unwrap();
+        let parsed = serde_json::from_str::<Value>(body).unwrap_or(Value::Null);
+        match client.patch(uri, parsed).await {
+            Ok(res) => Ok(res),
+            Err(_) => Err(Value::Null),
+        }
     } else if method == "post" {
-        let parsed = serde_json::from_str::<Value>(body);
-        match parsed {
-            Ok(parsed) => {
-                let _res = client.post(uri, parsed).await.unwrap();
-            }
-            Err(e) => {
-                let _res = client.post(uri, Value::Null).await.unwrap();
-            }
+        let parsed = serde_json::from_str::<Value>(body).unwrap_or(Value::Null);
+        match client.post(uri, parsed).await {
+            Ok(res) => Ok(res),
+            Err(_) => Err(Value::Null),
         }
     } else if method == "delete" {
-        let _res = client.delete(uri).await.unwrap();
+        match client.delete(uri).await {
+            Ok(res) => Ok(res),
+            Err(_) => Err(Value::Null),
+        }
+    } else {
+        Ok(Value::Null)
     }
-    Ok(Value::Null)
 }
 
 #[tauri::command]
 pub async fn get_match_list(uri: &str) -> Result<MatchListDetails, Value> {
     let client = get_client()?;
-    let res: Value = client.get(uri).await.expect("Failed to Url");
-    match from_value::<MatchListDetails>(res.clone()) {
+    let res = match client.get(uri).await {
+        Ok(res) => res,
+        Err(_) => return Err(Value::Null),
+    };
+    match from_value::<MatchListDetails>(res) {
         Ok(match_list) => Ok(match_list),
-        Err(e) => Err(Value::Null),
+        Err(_) => Err(Value::Null),
     }
 }
 
@@ -80,19 +85,20 @@ pub fn listen_for_client_start(app: AppHandle) {
     tokio::spawn({
         async move {
             let start_time = Instant::now();
-            let timeout = Duration::from_secs(180); // 设置一个超时时间，例如 30 秒
+            let timeout = Duration::from_secs(180); // 设置一个超时时间，例如 180 秒
 
             loop {
                 // 获取客户端信息
                 let is_exist = get_auth_info();
                 match is_exist {
                     Ok(value) => {
-                        let _ = REST_CLIENT
-                            .set(RESTClient::new(value.token, value.port).unwrap())
-                            .map_err(|_| "REST_CLIENT is already initialized".to_string());
-                        app.emit_to("background", "client_status", "ClientStarted")
-                            .expect("sent background error");
-                        break; // 找到客户端信息后退出循环
+                        if let Ok(client) = RESTClient::new(value.token, value.port) {
+                            let _ = REST_CLIENT
+                                .set(client)
+                                .map_err(|_| "REST_CLIENT is already initialized".to_string());
+                            let _ = app.emit_to("background", "client_status", "ClientStarted");
+                            break; // 找到客户端信息后退出循环
+                        }
                     }
                     Err(_) => {}
                 }
@@ -104,7 +110,7 @@ pub fn listen_for_client_start(app: AppHandle) {
                 }
 
                 // 每隔一段时间重新检查
-                thread::sleep(Duration::from_secs(3)); // 每秒钟检查一次
+                tokio::time::sleep(Duration::from_secs(3)).await;
             }
         }
     });
