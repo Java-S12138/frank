@@ -73,6 +73,6 @@ pnpm run tauri build
 
 <p align='center'>
   <a href="https://github.com/SYJun404/frank/stargazers">
-    <img src="https://api.star-history.com/svg?repos=SYJun404/frank&type=Date">
+    <img src="https://star-history.dera.page/svg?repos=SYJun404/frank&type=Date">
   </a>
 </p>
